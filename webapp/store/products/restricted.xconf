@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <product id="restricted" name="restricted" ordering="3">
+    <property name="status">ok</property>
+    <property name="description">ok</property>
+  </product>
+  <property name="virtual">true</property>
+  <property name="encoding">UTF-8</property>
+  <permission name="view">
+    <or>
+      <user name="admin"/>
+    </or>
+  </permission>
+</page>

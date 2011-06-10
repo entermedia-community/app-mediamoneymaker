@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="id" editable="true" index="true" stored="true">Product ID</property>
+  <property id="name" editable="true" stored="true">Name</property>
+  <property id="description" index="true">Description</property>
+  <property id="image" index="true" searchtype="asset" catalogid="media/catalogs/public" editable="true" viewtype="asset" >Product Image</property>
+  <property id="video" index="true" searchtype="asset" catalogid="media/catalogs/public" editable="true" viewtype="asset" >Product Video</property>
+  <property id="featured"  index="true"  editable="true" type="boolean" >Featured Product</property>
+
+</properties>

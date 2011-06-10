@@ -1,0 +1,54 @@
+<html>
+<head>
+	<title>E-mail</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+
+<body>
+
+<p>New Listing</p>
+
+
+<hr>
+<br>
+<table width="400">
+<tr><td>Order#:</td>
+	<td>		
+	#set( $id = $context.getRequestParameter("orderid") )
+	#if( $content.hostName )
+		<a href="http://$content.hostName/${catalogid}/admin/orders/orderdetail.html?orderNumber=$id">$id</a>
+	#else
+		$id
+	#end	
+	</td>
+</tr>
+<tr><td>Category:</td>
+	<td>$context.getRequestParameter("category")</td>
+</tr>
+</table>
+<br>
+
+<table>
+<tr><td>Title:</td><td>$context.getRequestParameter("title")</td>
+</tr>
+<tr><td>Price:</td><td>$context.getRequestParameter("price")</td>
+</tr>
+<tr><td>Date Posted:</td><td>$context.getRequestParameter("formatteddate")</td>
+</tr>
+<tr><td colspan="2">
+	$context.getRequestParameter("description")
+</td></tr>
+</table>
+
+<br>
+<hr/>
+<br>
+<b>Contact Information</b>
+<br>
+$pages.stream("/${catalogid}/customers/contactinfo.html")
+
+
+</body>
+
+</html>
+ 

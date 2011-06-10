@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.[remove">
+    <value>[remove</value>
+    <value locale="es">[eliminar</value>
+  </property>
+  <property name="text.Add Product">
+    <value>Add Product</value>
+    <value locale="es">Añadir Producto</value>
+  </property>
+  <property name="text.You can add or remove related products.">
+    <value>You can add or remove related products.</value>
+    <value locale="es">Usted puede agregar o quitar productos relacionados.</value>
+  </property>
+  <property name="text.Add Related Product ID">
+    <value>Add Related Product ID</value>
+    <value locale="es">Añadir relacionados con ID de producto</value>
+  </property>
+  <inner-layout>/${catalogid}/admin/products/innertablayout.html</inner-layout>
+  <path-action name="StoreSearchModule.fieldSearch"/>
+  <path-action name="StoreSearchModule.loadPageOfHits"/>
+  
+</page>

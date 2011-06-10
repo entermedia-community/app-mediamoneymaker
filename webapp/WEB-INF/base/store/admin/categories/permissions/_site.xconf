@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.loadCategory"/>
+  <property name="virtual">true</property>
+  <property name="fallbackdirectory">/WEB-INF/base/system/tools/permissions</property>
+  <property name="title">
+    <value>Category Access Control</value>
+    <value locale="es">Categoría de control de acceso</value>
+  </property>
+  <property name="filerootpath">/${catalogid}/admin/categories/permissions</property>
+  <property name="subtab">categorypermissions</property>
+  <property name="permissionrootpath">/${catalogid}/admin/categories/permissions</property>
+  <inner-layout>/${catalogid}/admin/categories/permissions/layout.html</inner-layout>
+</page>

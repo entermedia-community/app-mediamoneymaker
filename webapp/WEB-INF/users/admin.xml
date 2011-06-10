@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user><user-name>admin</user-name><password>admin</password><properties><property name="ReferenceNumber" value="PAAAIALLIBJBHFAJ"/>
+<property name="State" value="OH"/><property name="Address1" value="5052 Gray Rd."/><property name="ZipCode" value="45232"/>
+<property name="City" value="CINCINNATI"/><property name="firstName" value="Christopher"/><property name="lastName" value="admin"/>
+<property name="Phone1" value="513-542-3401"/><property name="AllowEmail" value="false"/><property name="TaxRate" value="0.070"/><property name="Country" value="USA"/><property name="email" value="cburkey@openedit.org"/><property name="Address2" value=""/></properties>
+
+<group id="administrators" />
+</user>

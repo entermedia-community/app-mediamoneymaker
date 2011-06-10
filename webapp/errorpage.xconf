@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<layout/>
+    <property name="title">Error</property>
+	
+	<generator name="velocity" />
+</page>

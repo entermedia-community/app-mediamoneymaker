@@ -1,0 +1,11 @@
+
+<catalog id="index" name="Index" sortfield="priceOrderingUp">
+  <property id="categoryhome">/store/categories/</property>
+  <catalog id="DGADAAAABEKGGJBC" name="Seminars"/>
+  <catalog id="FNACAAAAHOBAGLBC" name="Gift Cards"/>
+  <catalog id="HDACAAAAINBAGLBC" name="Special Orders"/>
+  <catalog id="SEARCHME" name="Ready for Searching"/>
+  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
+  <catalog id="mugs" name="Mugs"/>
+  <catalog id="cups" name="Cups"/>
+</catalog>

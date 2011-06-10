@@ -1,0 +1,10 @@
+#if ( $error )
+	[[Thumbnails generation failed. Reason]]: ${error}.
+#else
+	[[Thumbnails generation finished.]]
+	#if($failures)
+	[[The following images could not be converted]]:
+	#foreach($failure in $failures)
+		$failure <br>
+	#end
+#end

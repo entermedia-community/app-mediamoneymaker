@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="virtual">true</property>
+  <product name="Coupons" id="4" ordering="4" available="TRUE">
+    <item sku="4444" inventory="1000">
+      <color/>
+      <size/>
+    </item>
+    <catalog id="SEARCHME"/>
+    <price quantity="1">2.00</price>
+  </product>
+</page>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="StoreSearchModule.fieldSearch"/>
+  <page-action name="StoreSearchModule.loadPageOfSearch"/>
+  <property name="text.Add New">
+    <value>Add New</value>
+    <value locale="es">Añadir nuevo</value>
+  </property>
+  <property name="text.[Oldest First">
+    <value>[Oldest First</value>
+    <value locale="es">[El más antiguo primero</value>
+  </property>
+  <property name="text.Forward">
+    <value>Forward</value>
+    <value locale="es">Adelante</value>
+  </property>
+  <property name="text.[Newest First">
+    <value>[Newest First</value>
+    <value locale="es">[El más reciente primero</value>
+  </property>
+  <property name="text.Back">
+    <value>Back</value>
+    <value locale="es">Espalda</value>
+  </property>
+  <property name="text.Sort by">
+    <value>Sort by</value>
+    <value locale="es">Ordenar por</value>
+  </property>
+  <property name="text.Categorize Results">
+    <value>Categorize Results</value>
+    <value locale="es">Categorizar Resultados</value>
+  </property>
+  <property name="text.Save Edits">
+    <value>Save Edits</value>
+    <value locale="es">Guardar las modificaciones</value>
+  </property>
+  <property name="fieldname">product</property>
+</page>

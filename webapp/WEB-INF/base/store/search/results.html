@@ -1,0 +1,80 @@
+<script language="javascript" src="$home/${catalogid}/layout/resultshover.js">     </script> 
+
+
+<div id="slideSheet" class="slidemediumheight clearFix">
+
+#set( $resultdetail = $archive.getDataProperties("resultdetail") )
+#set( $resulthover = $archive.getDataProperties("resulthover") )
+#if( $page.isPropertyTrue('showprice') )
+	#set( $showprice = true )
+#end
+
+#foreach ( $cell in $hits.getPageOfHits() )
+<div class="slide"><div class="positioner">
+			#set( $clink = "$home$cataloghome/products/${cell.sourcepath}.html" )
+	#set ($sourcepath = $cell.sourcepath)
+	
+	#set( $tsize = "$home/media/catalogs/${store.catalogId}/downloads/preview/thumb/productimages/$cell.sourcepath/thumb.jpg")
+	
+	#set( $msize = "$home/media/catalogs/${store.catalogId}/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
+	
+		#if( $cell.votecount )	
+		<a href="$clink"><img src="$tsize" style="border-width: $!{cell.votecount}px; border-color: #00FF00; border-style: solid;" ></a>
+		#else
+		<a href="$clink"  onmouseover="showtrail('float${cell.id}');" onmouseout="hidetrail();"  ><img src="$tsize" border="0"></a>
+		#end
+		
+  		<div class="resultsproductname">
+        <a href="$clink" class=links>$cell.name</a> 
+        </div>
+        #if ($showprice)
+        <div class="resultsprice">
+        #if( $cell.regularprice ) 
+        	<div class="sale_price">Sale: $cell.yourprice</div>
+    		$cell.regularprice
+        #else
+        	$cell.yourprice
+        #end
+        </div>
+        #end
+        
+		<div id="float${cell.id}" style="display: none;">
+			<div class="resultshoverholder">
+				<div class="resultshoverdetail">
+				<img src="$msize" border="0">
+				<div class="resultsproductname">
+			 		<a href="$clink" class=links>$cell.name</a>
+			 		
+			 	</div>
+			 	
+			 	#if ($showprice)
+		        <div class="resultsprice">
+		        #if( $cell.regularprice ) 
+		        	<div class="sale_price">Sale: $cell.yourprice</div>
+		    		$cell.regularprice
+		        #else
+		        	$cell.yourprice
+		        #end
+		        </div>
+		        #end
+		        
+		 		</div>
+			</div>
+		</div>
+	</div>
+	</div>
+#end
+  </div>
+</div>
+
+
+</div>
+
+
+#if ( $hits.totalPages == 0 )
+<p>
+No results found for <b>$hits.friendlyQuery</b>
+</p>
+                                                                                                                                                                                                              
+#end
+

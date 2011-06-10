@@ -1,0 +1,46 @@
+#if( $page.isPropertyTrue('usePaypalSandbox'))
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+#else
+	<form action="https://www.paypal.com/cgi-bin/webscr/pal=A8S2YUFHLZG4Y" method="post">
+	
+#end
+#if( $page.isPropertyTrue('usePaypalSandbox'))
+	<input type="hidden" name="business" value="$context.findValue("sandboxAccount")">
+#else
+	<input type="hidden" name="business" value="$context.findValue("paypalAccount")">
+#end
+<input type="hidden" name="cmd" value="_cart">
+<input type="hidden" name="upload" value="1">
+
+
+#foreach( $item in $cart.getItems() )
+
+ #set( $product = $item.getProduct() )
+<input type="hidden" name="item_name_$velocityCount" value="${product.name}">
+<input type="hidden" name="item_number_$velocityCount" value="${product.id}">
+<input type="hidden" name="amount_$velocityCount" value="$item.getYourPrice()">
+<input type="hidden" name="quantity_$velocityCount" value="$item.getQuantity()">
+#end
+<input type="hidden" name="first_name" value="$!customer.getFirstName()"/>
+<input type="hidden" name="last_name" value="$!customer.getLastName()"/>
+<input type="hidden" name="address1" value="$!customer.getAddress()"/>
+<input type="hidden" name="city" value="$!customer.getCity()"/>
+<input type="hidden" name="state" value="$!customer.getState()"/>
+<input type="hidden" name="zip" value="$!customer.getZip()"/>
+<input type="hidden" name="night_phone_a" value="$!customer.getPhone1()"/>
+<input type="hidden" name="image_url" value="$!context.findValue("paypal_image")"/>
+<input type="hidden" name="page_style" value="$!context.findValue('paypal_pagestyle')"/>
+<input type="hidden" name="shipping" value="$cart.getShippingMethod().getCost()"/>
+
+<input type="hidden" name="return" value="$context.findValue("paypal_return")">
+<input type="hidden" name="cancel_return" value="$context.findValue("paypal_cancel")">
+<input type="hidden" name="notify_url" value="$context.findValue("notify_url")">
+<input type="hidden" name="currency_code" value="CAD">
+<input type="hidden" name="lc" value="CA">
+<input type="hidden" name="bn" value="PP-BuyNowBF">
+<input type="image" src="https://www.paypal.com/en_US/i/logo/PayPal_mark_37x23.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/logo/PayPal_mark_37x23.gif" width="1" height="1">
+
+
+
+</form> 

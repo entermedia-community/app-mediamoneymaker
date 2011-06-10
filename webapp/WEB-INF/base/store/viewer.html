@@ -1,0 +1,12 @@
+<html><head><title>Image Viewer</title>
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<link rel=stylesheet href="/_styles.css" type=text/css></head>
+<body bgcolor="#ffffff" topmargin=8  onload="window.focus()">
+<center>
+
+#set( $path = $context.getRequestParameter("path") )
+
+<img width="400" src="$path" />
+
+</center>
+</body>

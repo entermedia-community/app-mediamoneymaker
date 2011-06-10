@@ -1,0 +1,9 @@
+<page>
+	<inner-layout>/system/data/listlayout.html</inner-layout>
+	<property name="virtual">true</property>
+	<property name="tab">listtab</property>
+	 <path-action name="Date.now" >
+	 	<format>S</format>
+	 </path-action>
+	
+</page>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="StoreSearchModule.searchCatalogs">
+	</path-action>
+	<property name="virtual">true</property>
+	<property name="editable">true</property>
+	
+	<inner-layout>/${catalogid}/layout/catalogdetails.html</inner-layout>
+</page>

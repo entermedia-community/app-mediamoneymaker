@@ -1,0 +1,12 @@
+
+<configuration>
+        <action period="1h">
+                CartModule.convertData
+        </action>
+
+        <!-- should not be needed
+        <action period="1h">
+                CartModule.reIndexStore
+        </action>
+        -->
+</configuration>

@@ -1,0 +1,40 @@
+<table width="100%" class="oedivided-box" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="oedivided-box-blue" valign="top" width="300">
+			<div class="oesubmit-button">
+				<a href="$home$cataloghome/admin/products/imageedit/imageupload.html?type=product&productid=$product.id" class="oesubmit-button">Upload Product Image</a><br>
+			<!-- 
+				<a href="$home$cataloghome/admin/products/imageedit/videoupload.html?type=product&productid=$product.id" class="oesubmit-button">Upload Video</a><br>
+				<a href="$home$cataloghome/admin/products/imageedit/downloadable.html?type=product&productid=$product.id" class="oesubmit-button">Attach Downloadable</a><br>
+				 -->
+			</div>
+		</td>
+		<td valign="top">	
+					$pages.includeContent()
+				<table><tr>
+				[[Current Thumb]]:<br>
+					#set( $productpath = "${store.productPathFinder.idToPath($product.id)}")
+						
+						
+#set ($thumburl = $store.getLinkToThumb($productpath))
+$thumburl
+#set ($mediumurl = $store.getLinkToMedium($productpath))
+						
+						
+						
+								<td valign="top"> 
+									
+									
+										<img src="$home$mediumurl"/> <br />
+										
+									
+									
+									
+									
+								</td>
+				</tr></table>
+			
+		</td>
+	</tr>
+</table>
+

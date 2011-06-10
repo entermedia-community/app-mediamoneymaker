@@ -1,0 +1,28 @@
+<h2>$context.getContentProperty('title')</h2>	
+<form name="xmlEditForm" id="xmlEditForm" method="post" >
+
+
+$pages.stream("/$content.xmledithome/embeded.html")
+
+#if( $selectedelement && ($selectedelement.attributeValue("type") == "list" || $selectedelement.attributeValue("list") == "true" ) )
+<div style="padding-left:20px; text-align:right;">
+<br><br>
+<p>#set( $xmlpath = "/system/data/list/${content.catalogid}/${selectedelement.attributeValue('id')}.html" ) 
+
+<a href="$home$xmlpath?&backto=$content.path" >[[Edit List Values]]</a></p>
+
+</div>	
+#end
+
+</form>
+
+<div style="clear: both;">
+#if( $xmlfile.isExist() )	
+<br>
+#set ( $editPath = $xmlfile.getPath() ) #set ( $origURL=$url_util.getOriginalUrl() ) #set( $parentName = "somepage")
+<a href="#" onclick="if(!window.name)window.name='$parentName';window.open('$home/system/tools/text/edit.html?editPath=$editPath&origURL=$origURL&type=text&parentName='+window.name, 'texteditor','alwaysRaised=yes,menubar=no,resizable=yes,top=100,left=130,width=830,height=550' );return false;">[[edit the Xml]]</a>
+ [[by hand]].
+</div>
+
+#end
+

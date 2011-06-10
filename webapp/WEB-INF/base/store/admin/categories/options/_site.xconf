@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.loadCategory"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Category Options</value>
+    <value locale="es">Categoría Opciones</value>
+  </property>
+  <property name="subtab">categoryoptions</property>
+  <inner-layout>/${catalogid}/admin/categories/options/categoryoptions.html</inner-layout>
+</page>

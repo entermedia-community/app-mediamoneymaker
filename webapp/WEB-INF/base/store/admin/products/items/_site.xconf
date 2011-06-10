@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.selectProduct"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Inventory</value>
+    <value locale="es">Inventario</value>
+  </property>
+  <property name="forceshowsizeoption">true</property>
+  <property name="subtab">productitems</property>
+  <inner-layout>/${catalogid}/admin/products/items/itemeditor.html</inner-layout>
+</page>

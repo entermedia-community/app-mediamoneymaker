@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<group>
+  <group-name>editors</group-name>
+  <permissions>
+    <permission>wsp.edit.ftpUpload</permission>
+    <permission>oe.edit</permission>
+  </permissions>
+  <properties>
+    <property name="wsp.edit.notify" value="true"/>
+  </properties>
+</group>

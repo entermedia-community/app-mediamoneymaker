@@ -1,0 +1,99 @@
+<br><table cellspacing=0 cellpadding=5 border=0 >
+<tr>
+<td  valign="top" nowrap align="right"  >
+                                        #if( $product.hasSizes() )
+                                      <div>
+                                 <b>Size:</b> <select id="sizepicker" name="size" onchange="populate()">
+                                     
+                                  #foreach( $size in $product.getSizesSorted())
+                                           <option value="$size.value" >$size</option>
+                                  #end
+                                     #if ( $store.isAllowSpecialRequest() )
+                                        <option value="na"></option>
+                                        #end
+                                  </select>
+                              </div>
+                        #elseif( $product.hasSize() )
+                             <div><b>Size:</b> ${product.getDefaultSize()} <input type="hidden" name="size" value="$product.getDefaultSize().value" /></div> 
+                        #end
+                        <br>
+                        #if( $product.hasColor() )
+                        <div>
+                                <b>Color:</b> <select id="colorpicker" name="color"> 
+                                #foreach( $color in $product.colorsInSize($product.getDefaultSize() ) )
+                                        <option value="$color.value" >$color</option>
+                                #end
+	                             #if ( $store.isAllowSpecialRequest() )
+	                                <option value="na"></option>
+                                #end
+                        </select>
+                        </div>
+                        #end
+</td>
+<td width="30" nowrap>&nbsp; &nbsp;</td>
+<td valign="top" width="400" >
+#if ( $store.isAllowSpecialRequest() )
+<p>Need a special size or color not listed? Type it in
+and it will be shipped directly from the mfr. at the
+price listed. Proceed to checkout and we will confirm
+your order and estimated delivery in 48 hrs.</p>
+<div><textarea name="option.specialrequest" rows=4 cols=50 ></textarea></div>
+
+#end
+</td>
+</tr>
+</table>
+
+<script type="text/javascript" language="JavaScript">
+	var colors = new Array();
+	function checkSize()
+    {
+			var size = document.getElementById("sizepicker");
+			var selInd = size.selectedIndex; 
+			if ( selInd > 0 )
+			{
+				return true;
+			}
+			alert("Please pick a size")
+			return false;
+   	}
+   	##setup arrays uses ID and text pairs for future use
+	#foreach( $size in $product.getSizesSorted())
+		colors[colors.length] =  new Array(
+		#foreach( $colors in $product.colorsInSize($size) )	
+			#if( $velocityCount > 1 ), #end "$colors.value","$colors"		#end
+		 #if ( $store.isAllowSpecialRequest() ) ,"","na"	#end );
+    #end
+	 #if ( $store.isAllowSpecialRequest() ) 
+		colors[colors.length] =  new Array( 
+		  #foreach( $color in $product.getColors())
+			#if( $velocityCount > 1 ), #end    "$color.value","$color"
+          #end
+			,"","na" );
+	#end
+
+   	function populate()
+   	{
+   		var box = document.getElementById("sizepicker");
+   		if ( box )
+   		{
+			var list = colors[box.selectedIndex];
+			var box2 = document.getElementById("colorpicker");
+			if ( box2 )
+			{
+				box2.options.length = 0;
+				for(var i=0;i<list.length;i+=2)
+				{
+					box2.options[i/2] = new Option(list[i],list[i+1]);
+				}
+			}
+		}
+   	}
+   	
+   	function getColors(inIndex)
+   	{
+   		return colors[inIndex];
+   	
+   	}
+</script>
+<br>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Dashboard">
+    <value>Dashboard</value>
+    <value locale="es">Dashboard</value>
+  </property>
+  <property name="text.Products">
+    <value>Products</value>
+    <value locale="es">Productos</value>
+  </property>
+  <property name="text.Files">
+    <value>Files</value>
+    <value locale="es">Archivos</value>
+  </property>
+  <property name="text.Categories">
+    <value>Categories</value>
+    <value locale="es">Categorías</value>
+  </property>
+  <property name="text.Orders">
+    <value>Orders</value>
+    <value locale="es">Pedidos</value>
+  </property>
+  <property name="text.Administer">
+    <value>Administer</value>
+    <value locale="es">Administrar</value>
+  </property>
+  <property name="text.Reports">
+    <value>Reports</value>
+    <value locale="es">Informes</value>
+  </property>
+  <inner-layout>/${catalogid}/admin/adminlayout.html</inner-layout>
+</page>

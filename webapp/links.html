@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+<HTML>
+<HEAD>
+<TITLE>Wind and Withers</TITLE>
+</HEAD>
+<FRAMESET border="0" frameborder="0" cols="200,*">
+  <FRAME src="menu.html" scrolling="no">
+  #set( $link = $context.getRequestParameter("link") )
+  <FRAME src="$link">
+  <NOFRAMES>
+      <P>This frameset document contains:
+      <UL>
+         <LI><A href="$link">Jump here</A>
+
+      </UL>
+  </NOFRAMES>
+</FRAMESET>
+</HTML>
+

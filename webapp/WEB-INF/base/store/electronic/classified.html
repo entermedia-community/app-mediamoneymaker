@@ -1,0 +1,87 @@
+<form name="emailform" method="post" action="thankyou.html">
+
+<p>Please enter your classified</p>
+
+<table border="1">
+
+<tr><td>Category:</td>
+	<td><select name="category">
+			<option>Horses For Sale</option>
+			<option>Available For Stud</option>
+			<option>Horse Property For Sale</option>
+			<option>Horse Services</option>
+			<option>Misc</option>
+			<option>Boarding/Training</option>
+			<option>Horse Shows/Events</option>
+	</select></td>
+</tr>
+
+<tr><td>Title:</td><td><input type=text name="title" size=20 /></td>
+</tr>
+
+<tr><td>Price:</td><td><input type=text name="price" size=10 /></td>
+</tr>
+
+<tr><td>Full Description:</td><td>
+	<textarea cols="50" rows=18 name="description"></textarea>
+<br>
+<font size="1">
+ Max 800; characters remaining:  <input value="800" size="3" name="msgCL" disabled>
+</FONT>
+
+</td></tr>
+
+<tr><td colspan=2 align="right"> <br>
+<input type="submit" value="Submit For Processing"/>
+<br><br>
+</td></tr>
+</table>
+
+
+<script language="JavaScript">
+<!--
+var supportsKeys = false;
+
+function tick() {
+ calcCharLeft(document.forms[0]);
+ if (!supportsKeys) 
+ {
+ 	timerID = setTimeout("tick()",1000);
+ }
+}
+
+function calcCharLeft(sig) {
+ clipped = false;
+ maxLength = 800;
+ if (document.emailform.description.value.length > maxLength)
+   {
+   document.emailform.description.value = document.emailform.description.value.substring(0,maxLength);
+   charleft = 0;
+   clipped = true;
+   }
+ else
+   {
+   charleft = maxLength - document.emailform.description.value.length;
+   }
+   document.emailform.msgCL.value = charleft;
+   return clipped;
+ }
+
+tick();
+//-->
+</script>
+
+
+
+
+<input type="hidden" name="orderid" value="$order.id">
+<input type="hidden" name="formatteddate" value="$formatteddate">
+
+<input type="hidden" name="to" value="cburkey@openedit.org">
+<input type="hidden" name="from" value="support@openedit.org">
+<input type="hidden" name="subject" value="Classified Details">
+<input type="hidden" name="smtp_server" value="localhost">
+<input type="hidden" name="e-mail_layout" value="./emailbody.html">
+<input type="hidden" name="error_page" value="./error.html">
+
+</form>

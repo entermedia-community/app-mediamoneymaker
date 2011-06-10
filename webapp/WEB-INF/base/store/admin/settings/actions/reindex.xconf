@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="CartModule.reIndexStore"/>
+  <property name="text.Product Reindex is finished">
+    <value>Product Reindex is finished</value>
+    <value locale="es">Volver es producto acabado</value>
+  </property>
+</page>

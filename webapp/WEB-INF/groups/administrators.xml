@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<group id="administrators">
+  <group-name>administrators</group-name>
+  <permissions>
+    <permission>oe.intranet</permission>
+    <permission>oe.usermanager</permission>
+    <permission>oe.edit.editslanguages</permission>
+    <permission>oe.edit.approve.level1</permission>
+    <permission>oe.edit.approve.level2</permission>
+    <permission>oe.edit.approve.level3</permission>
+    <permission>oe.cart.admin</permission>
+    <permission>oe.edit.managenotifications</permission>
+    <permission>oe.administration</permission>
+    <permission>oe.edit.notify</permission>
+    <permission>oe.filemanager</permission>
+    <permission>oe.edit.settings.advanced</permission>
+    <permission>oe.error.notify</permission>
+    <permission>oe.edit.links</permission>
+    <permission>oe.edit.layouts</permission>
+    <permission>oe.edit.recentedits</permission>
+    <permission>oe.edit.approves</permission>
+    <permission>oe.edit.upload</permission>
+    <permission>oe.blog</permission>
+    <permission>oe.edit</permission>
+    <permission>oe.edit.update</permission>
+  </permissions>
+  <properties/>
+</group>

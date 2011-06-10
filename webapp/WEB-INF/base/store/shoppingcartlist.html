@@ -1,0 +1,129 @@
+<script type="text/javascript" src="$home/system/javascript/datetimepicker.js"></script>
+
+<table cellpadding=0 cellspacing=1 border=0 width="100%" class="shoplisting" style="table-layout: fixed;">
+<tr>
+<td class=prodhead style="width : 75px"><b>Description&nbsp;</b></td>
+<td class=prodhead nowrap style="text-align : center;"><b>Size</b></td>
+#if ($cart.hasItemWithOption('color') )
+	<td class=prodhead nowrap><b>Color&nbsp;</b></td>
+#end
+<td class=prodhead><b>Quantity</td>
+ #if($page.isPropertyTrue("multipleaddress"))
+<td class=prodhead><b>Ship to (<a href="$home/$catalogid/myaccount/index.html"> manage addresses</a>)</td>
+#end
+<td class=prodhead><b>Remove</td>
+</tr>
+  #foreach( $item in $cart.getItems() )
+	  #set ($productcounter = ${velocityCount} )
+      #set( $product = $item.getProduct() )
+      <input type="hidden" name="productid.${productcounter}" value="$!product.id" />
+
+	  <tr valign="top">
+      <td  class=proddata3 width="30%">
+        #set ( $thumbnailPath = "$home/media/catalogs/${store.catalogId}/downloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
+		
+			<a href="$home/${catalogid}/products/${product.sourcePath}.html"><img
+ border="0" src="$home$thumbnailPath" width="50" /></a> $product.name
+   		
+ <ul>
+      #foreach( $option in $item.getOtherOptions() )
+		<nobr>
+		#if( $option.dataType &&  $option.dataType == "list" )
+		 #set( $values = $store.getProperties($option.id) )
+		<label>$option.name</label>
+		 <select name="option.${productcounter}.${option.getId()}">
+	 	 <option value=""></option>
+		  #foreach( $key in $values.keys() )
+		   <option value="$key" #if ($option.getValue() == $key) selected #end >$values.get($key)</option>
+		  #end
+	     </select>
+		#elseif( $option.dataType &&  $option.dataType == "text" ) 
+			<label>$option.name</label>
+			
+				<input type="text" name="option.${productcounter}.${option.getId()}" value="$!option.getValue()"/>
+		#elseif( $option.dataType &&  $option.dataType == "multiline" ) 
+			<label>$option.name</label><br>
+			
+				<textarea rows="3" cols="20" name="option.${productcounter}.${option.getId()}">$!option.getValue()</textarea> 
+		#elseif( $option.dataType &&  $option.dataType == "grouped" ) 
+		<input type="radio" name="optiongroup.$!rowCount" value="${option.id}"/>
+ <label>$option.name</label>
+ 		#elseif( $option.dataType &&  $option.dataType == "date" ) 
+ 			<label>$option.name</label>
+ 			<input name="option.${productcounter}.${option.getId()}" id="option.${productcounter}.${option.getId()}" value="$!option.getValue()" size="8" type="text">
+			<a style="padding-right: 5px;"	href="javascript:NewCal('option.${productcounter}.${option.getId()}','mmddyyyy',false,24)"><img	src="$home$cataloghome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+		#else
+		#if( $option.value)
+			#set( $val = $option.value)
+		#else
+			#set( $val = "true")
+		#end
+		<input type="checkbox" name="option.$!rowCount${option.id}" value="$val"><label>$option.name</label>
+		#end
+		</nobr>
+	#end
+      </ul>
+
+
+      </td>
+ 
+	  <td class=proddata2 style="font-size : smaller; text-align : center;">
+      
+      #if( !$item.hasSize() )
+			N/A
+		#else
+			<select name="size.$productcounter"  onChange="javascript:this.form.submit()">
+			#if ( $store.isAllowSpecialRequest() )
+                                        <option value="na"></option>
+            #end
+			
+			#foreach( $size in $product.sizes )
+				#if ( $item.hasOption( $size ) )
+					<option selected>$size</option>
+				#else
+					<option>$size</option>
+				#end				
+			#end
+			</select>
+		#end
+      
+      
+      	
+	  </td>
+	  #if ($cart.hasItemWithOption('color'))
+      <td class=proddata2>
+      	#if ( $item.color )
+			#set( $colors = $product.colorsInSize($item.size ) )
+			<select name="color.$productcounter" onChange="javascript:this.form.submit()">
+			#foreach( $color in $colors )
+				#if ( $item.hasOption( $color ) )
+					<option selected>$color</option>
+				#else
+					<option>$color</option>
+				#end				
+			#end
+			</select>			
+		#else
+					
+		#end	
+	  </td>	  
+	  #end
+	 
+ <ul>
+	  <td class=proddata2><input size="3" type="text" value="$item.getQuantity()"
+ name="quantity.${productcounter}" /></td>
+  #if($page.isPropertyTrue("multipleaddress"))
+	  <td>
+	   <select name = "address.${productcounter}">
+	   #foreach ($address in $customer.getAddressList())		
+        <option value="$address.prefix" #if($item.getShippingPrefix() == $address.prefix)SELECTED#end>$address.prefix</option>
+		#end
+ 	</select>
+ 	</td>
+ 	#end
+	  <td class=proddata2><input type="checkbox" name="remove.${productcounter}"
+ />
+	
+ 	</tr>	  
+   #end
+ </table>

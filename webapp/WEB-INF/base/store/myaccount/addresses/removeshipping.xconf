@@ -1,0 +1,6 @@
+<page>
+		<path-action name="CartModule.removeAddress" />
+		<path-action name="Admin.redirect">
+			<redirectpath>index.html</redirectpath>
+		</path-action>
+</page>

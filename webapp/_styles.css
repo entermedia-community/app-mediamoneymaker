@@ -1,0 +1,40 @@
+/* USED */
+
+body, p, td, ul, .header {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-style: normal;
+}
+
+#p2 {font-size: medium;}
+table#pad {padding:20px;}
+
+.footer {color:white;text-align:center;font-size: smaller;}
+
+
+/*main menu*/
+.smenu {
+	font-weight: bold;
+}
+
+.menu {
+	height: 20px;
+}
+
+.cataloglistborder
+{
+	border-style: solid; border-color: #CCCCCC;
+}
+.cataloglist
+{
+	background-color: #DFCA99;
+}
+
+.selectedcataloglink:visited { color: #663300; text-decoration: none; font-weight: bold}
+.selectedcataloglink:link { color: #663300; text-decoration: none; font-weight: bold}
+.selectedcataloglink:active { color: #663300; text-decoration: none; font-weight: bold}
+.selectedcataloglink:hover { color: #663300; text-decoration: underline; font-weight: bold}
+
+.cataloglink:visited { color: #663300; }
+.cataloglink:link { color: #663300; }
+.cataloglink:active { color: #663300;}
+.cataloglink:hover { color: #663300; }

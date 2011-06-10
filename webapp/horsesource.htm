@@ -1,0 +1,44 @@
+<p>Please enter your last name and phone number</p>
+
+
+<form name="horse" action="/store/search/finduser.html">
+	Last Name: <br>
+	<input name="lastname" size="20" /><br/>
+	
+	Phone Number: <br>
+	<input name="phone1" size="20" />
+	<input type="submit" value="Find Number" />
+</form>
+
+<p>
+Or create a new account:
+</p>
+
+<form name="horse" action="/store/search/finduser.html">
+<table border=0 cellpadding=3 cellspacing=3>
+    	<tr>
+    	<td class=body2>First Name<br><input type="text" name="firstName" size="25" value="$!customer.firstName" /></td>
+    	<td class=body2>Last Name<br><input type="text" name="lastName" size="25" value="$!customer.lastName" /></td>
+    	</tr>
+    	<tr>
+    	<td class=body2>Address<br><input type="text" name="address1" size="25" value="$!customer.address1" /></td>
+    	<td class=body2>Address 2<br><input type="text" name="address2" size="25"  /></td>
+    	</tr>
+    	<tr>
+    	<td class=body2>City<br><input type="text" name="city" size="25" value="$!customer.city"/></td>
+    	<td class=body2>State or Province<br><input type="text" name="state" size="25" maxlength="2" value="$!customer.state" /></td>
+    	</tr>
+    	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="zipCode" maxlength="10" size="25" value="$!customer.zipCode"/></td>
+    	<td class=body2>Country<br><input value="USA" type="text" name="country" size="25" value="$!customer.country"/></td>
+    	</tr>
+    	<tr>
+    	<td class=body2>Email<br><input type="text" name="email" size="25" value="$!customer.email" /></td>
+    	<td class=body2>Allow Emails<br><input type="checkbox" checked name="allowEmail"  /></td>
+    	</tr>
+    	<tr>
+    	<td class=body2>Phone Number<br><input type="text" name="phone1" size="25" value="$!customer.phone1" /></td>
+    	<td></td>
+    	</tr>
+</table>
+	<input type="submit" value="Create Account" />
+</form>

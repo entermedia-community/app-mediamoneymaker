@@ -1,0 +1,86 @@
+<h2>[[Order Manager]]</h2>
+$pages.include("navigate.html")
+<form action="$home$cataloghome/admin/orders/index.html" name="fieldsearch" method="post">
+			#set( $types = $store.getFieldArchive().getDataProperties("order","ordersearch", $user) )
+			$context.putPageValue("details",$types)
+			$context.putPageValue("searcher",$store.getOrderSearcher())
+			$context.putPageValue("hits",$orderidlist)
+
+<div class="oesearchformflat"> 
+$pages.include("/$content.xmledithome/searchfields.html", $context)
+<input type="submit" value="go" />
+</div>
+</form>	
+#set( $types2 = $store.getFieldArchive().getDataProperties("order","ordersearchresults", $user) )
+
+<table cellspacing="2" width="100%" class="standard-table">
+<tr>
+<th align="left">[[Order Number]]</th>
+<th align="left">[[Order Date]]</th>
+<th align="left">[[Customer Name]]</th>
+<th align="left">[[Address]]</th>
+<th align="left">[[Quantity]]</th>
+<th align="left">[[Total Price]]</th>
+<th align="left">[[Order Status]]</th>
+#foreach( $type in $types2 )
+	<th align="left">$type.text</th>
+	#end
+	
+</tr>
+#set( $even = true )
+#foreach ( $orderhit in $orderidlist.getPageOfHits() )
+	#if ( $even == false )
+		<tr style="background-color: #EEEEEE;">
+		#set( $even = true )
+	#else
+		<tr>
+		#set( $even = false )
+	#end
+	
+	#set( $order = $store.getOrderArchive().loadSubmittedOrder($store, $orderhit.customer, $orderhit.id))
+		<td><a href="$home/${catalogid}/admin/orders/data/$order.customer.userName/${order.orderNumber}.html">$order.orderNumber</a></td>
+		<td>$!order.dateOrdered</td>
+		<td>$!order.customer.userName $!order.customer.firstName $!order.customer.lastName</td>
+		#if ( $order.customer.billingAddress && $order.customer.billingAddress.address1 )
+			#set ( $customerAddress = $order.customer.billingAddress )
+		#else
+			#set ( $customerAddress = $order.customer.shippingAddress )
+		#end
+		<td>$!customerAddress.city, $!customerAddress.zipCode</td>
+		<td align="center">$!order.numItems</td>
+		<td align="right">$!order.getTotalPrice()</td>
+		<td align="center">
+				$!order.getOrderState().getDescription()
+		</td>
+			#foreach( $type in $types2 )
+	<td align="left">$!order.get($type.id)</td>
+	#end
+		
+	</tr>
+#end
+</table>
+
+#if ( $orderidlist.getTotal() ==0 )
+<p>[[No orders found]]</p>
+#end
+
+<h2>[[Exporting]]</h2>
+<p>
+#if( $orderidlist.size() > 0 )
+<form action="export.html" name="exportorders" method="post" target="_new">
+			#set( $types = $store.getFieldArchive().getDataProperties("order","ordersearch", $user) )
+			$context.putPageValue("details",$types)
+			$context.putPageValue("searcher",$store.getOrderSearcher())
+			$context.putPageValue("hits",$orderidlist)
+<div class="oesearchformflat" style="display: none;"> 
+$pages.include("/$content.xmledithome/searchfields.html", $context)
+</div>
+</form>	
+<a href="#" onClick="javascript: document.exportorders.submit(); return false;">[[Export This Order]]</a>
+#else
+[[No Orders found to export as CSV]]
+#end
+</p>
+<!-- 
+<a href="$home/${catalogid}/orders/archive/">[[Download Previous Orders]]</a>
+-->

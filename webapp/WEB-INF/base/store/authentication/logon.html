@@ -1,0 +1,30 @@
+
+#if ( $user )<b>
+<P>You are currently logged in as $!user.UserName.</p></b>
+#else
+	<p><p><p>Login as another user:</p><B> </B>
+#end
+$!request.getAttribute( "wsp-exception")
+<script language="JavaScript" >
+	var usingIE = navigator.appVersion.indexOf("MSIE") > 0? true : false;
+	if ( usingIE )
+	{
+		document.body.onload = function() { document.getElementById("accountname" ).focus(); };
+	}
+	else
+	{
+		window.onload = function() { document.getElementById("accountname" ).focus(); };
+	}
+</script>
+<br/>
+<div align="center"><FORM name="login" action="logon.html" method="POST">
+<div><b>Account Name:</b><BR /><INPUT id="accountname" name="accountname" /> </div>
+<div><b>Password:</b><BR /><INPUT name="password" type="password" /> </div>
+#if ( $context.getPageValue("oe-exception") )
+	<div style="border: 1px solid black">$context.getPageValue("oe-exception")</div>
+#end
+<input name="loginokpage" type="hidden" value="/${catalogid}/admin/index.html" />
+<div><INPUT name="submit" type="submit" value="Login" /> </div>
+</FORM></div>
+<p ALIGN="center">If you have forgotten your username and/or password <a href="PasswordHelper.html">click here</a></p>
+<p ALIGN="center">If you do not have an account please contact your administrator for an account.</p>

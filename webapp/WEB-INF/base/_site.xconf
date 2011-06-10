@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <generator accepts="*.jsp" name="servlet"/>
+  <generator accepts="*.php" name="servlet"/>
+  <generator mimetypes="text/html" name="velocity"/>
+  <generator name="file"/>
+  <edit-requirements>
+    <and>
+      <permission name="oe.edit"/>
+      <not>
+        <page-property equals="false" name="editable"/>
+      </not>
+    </and>
+  </edit-requirements>
+  <path-action name="Admin.autoLogin"/>
+  <page-action name="Admin.allowEditing"/>
+  <page-action alltypes="true" name="HtmlEditor.check404"/>
+  <path-action name="LinkTree.setSelectedLinkByUrl">
+    <linkpath>/links.xml</linkpath>
+  </path-action>
+  <property name="allowguestregistration">false</property>
+  <property name="oe.edit.draftedits">true</property>
+  <property name="usemultiplelanguages">
+    <value locale="en">false</value>
+    <value>true</value>
+  </property>
+  <property name="title">OpenEdit Editor Site</property>
+  <property name="description">This is a simple description</property>
+  <property name="keywords">dog cat monkey</property>
+  <property name="languages">
+    <value locale="es">Español</value>
+    <value>English</value>
+  </property>
+  <property name="encoding">UTF-8</property>
+  <inner-layout>/layouts/zengarden/layout.html</inner-layout>
+</page>

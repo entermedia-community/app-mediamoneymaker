@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="virtual">true</property>
+  <product name="Coupons" id="3" ordering="3">
+    <item sku="abdefg" inventory="1000">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <price quantity="1">-5.00</price>
+    </item>
+    <item sku="fifteen" inventory="1000">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <property name="percentage">15</property>
+    </item>
+    <category id="SEARCHME"/>
+    
+  </product>
+</page>

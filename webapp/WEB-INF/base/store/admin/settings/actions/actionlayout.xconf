@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Sync To Databases">
+    <value>Sync To Databases</value>
+    <value locale="es">Sync a las bases de datos</value>
+  </property>
+  <property name="text.Re-Index Products">
+    <value>Re-Index Products</value>
+    <value locale="es">Re-Índice de productos</value>
+  </property>
+  <property name="text.Full Sync">
+    <value>Full Sync</value>
+    <value locale="es">Sincronización completa</value>
+  </property>
+  <property name="text.incremental">
+    <value>incremental</value>
+    <value locale="es">incrementales</value>
+  </property>
+  <property name="text.Re-Index Orders">
+    <value>Re-Index Orders</value>
+    <value locale="es">Re-Índice pedidos</value>
+  </property>
+</page>

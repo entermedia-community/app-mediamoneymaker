@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="openedit-resize">
+ 	<target name="default" >
+		<copy todir="${wardir}">
+			<fileset dir="${webapp}">
+				<include name="base/store/**" />
+			</fileset>
+		</copy>
+		<mkdir dir="${deployDir}/builds" />
+	</target>
+</project>

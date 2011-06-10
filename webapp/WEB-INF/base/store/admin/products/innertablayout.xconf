@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Product Name">
+    <value>Product Name</value>
+    <value locale="es">Nombre del Producto</value>
+  </property>
+  <property name="text.Categories">
+    <value>Categories</value>
+    <value locale="es">Categorías</value>
+  </property>
+  <property name="text.Data">
+    <value>Data</value>
+    <value locale="es">Datos</value>
+  </property>
+  <property name="text.Inventory">
+    <value>Inventory</value>
+    <value locale="es">Inventario</value>
+  </property>
+  <property name="text.Tags">
+    <value>Tags</value>
+    <value locale="es">Las etiquetas</value>
+  </property>
+  <property name="text.Product Manager">
+    <value>Product Manager</value>
+    <value locale="es">Product Manager</value>
+  </property>
+  <property name="text.Back To Search">
+    <value>Back To Search</value>
+    <value locale="es">Volver a la búsqueda</value>
+  </property>
+  <property name="text.Product Permissions">
+    <value>Product Permissions</value>
+    <value locale="es">Permisos de productos</value>
+  </property>
+  <property name="text.Images">
+    <value>Images</value>
+    <value locale="es">Imágenes</value>
+  </property>
+  <property name="text.Related">
+    <value>Related</value>
+    <value locale="es">Relacionado</value>
+  </property>
+  <property name="text.Pricing">
+    <value>Pricing</value>
+    <value locale="es">Precios</value>
+  </property>
+  <property name="text.Options">
+    <value>Options</value>
+    <value locale="es">Opciones</value>
+  </property>
+</page>

@@ -1,0 +1,32 @@
+#set( $methods = $cart.getAvailableShippingMethods() )
+#if( $methods.size() == 0)
+	<!-- no shipping methods found -->	
+#elseif( $methods.size() == 1 )
+	#set( $method = $methods.get(0))
+	#set( $cost = $method.getCost($cart))
+<p><br>Shipping:	$method.description #if( !$cost.isZero() ) $cost#end</p>
+	<input type="hidden" name="shippingmethod" value="$method.id" />
+#else
+<p><br>Please select your method of shipping:<br/><br/>
+
+	<select name="shippingmethod">
+	#foreach( $method in $methods )
+		<option value="$method.id">$method.description: $method.getCost($cart)
+		#if ( $cart.isAdditionalShippingCostsForMethod( $method ) )
+		 (plus extra costs)
+		#end</option>
+	#end
+	</select>
+#end
+    	    	
+#if( $cart.hasBackOrderedItems() )
+<p>These items may have up to one week delay in shipping:
+<ul>
+#foreach( $item in $cart.items )
+ #if( $item.isBackOrdered() )
+ <li>$item.name</li>
+ #end
+#end
+</ul>
+</p>
+#end

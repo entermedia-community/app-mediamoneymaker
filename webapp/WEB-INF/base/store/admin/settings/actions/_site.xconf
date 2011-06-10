@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	    
+	<inner-layout>/${catalogid}/admin/settings/actions/actionlayout.html</inner-layout>
+	
+	<property name="subtab">settingactions</property>
+	
+	
+</page>

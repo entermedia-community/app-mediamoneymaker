@@ -1,0 +1,16 @@
+
+#set ( $orderState = $order.getOrderState() )
+
+#if( $orderState.isOk())
+[[This order has been processed]]: $orderState.description
+#else
+
+[[Problem with processing order]]
+
+$orderState
+
+#end
+
+#set ( $customer = $order.getCustomer() )
+
+<br><a href="$home/${catalogid}/admin/orders/data/$customer.userName/${order.getId()}.html">[[Back To Order]]</a>

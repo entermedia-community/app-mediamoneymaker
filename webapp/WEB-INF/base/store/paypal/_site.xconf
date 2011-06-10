@@ -1,0 +1,15 @@
+<page>	
+	<!-- paypal stuff -->
+		
+	
+	<property name="usePaypalSandbox">true</property>
+	<property name="paypalAccount">ian@ijsolutions.ca</property>
+	<property name="sandboxAccount">owner_1189436034_per@ijsolutions.ca</property>
+	<property name="pdtToken">U2DAQ2Kik3yiaRq_6YsuBdJhlaRyoy1KwqItzudUZnqux0HqgmalrIOSbWK</property>
+	<property name="paypal_return">http://ijsolutions.selfip.com:8080/store/paypal/paymentThanks.html</property>
+	<property name="paypal_cancel">http://ijsolutions.selfip.com:8080/store/paypal/paymentThanks.html</property>
+	<property name="notify_url">http://ijsolutions.selfip.com:8080/store/paypal/notification.html</property>
+	<property name="paypal_image">http://ijsolutions.selfip.com:8080/system/images/oepowered.gif</property>
+	<property name="page_style">PayPal</property>
+
+</page>

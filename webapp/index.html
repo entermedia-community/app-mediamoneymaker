@@ -1,0 +1,18 @@
+<P> Use the <a href="$home/store/admin/">/store/admin/</a> directory to create your products</p>
+
+<p>This is an example page. To enter your own content just add more HTML files in this directory</p>
+
+
+<p><a href="$home/store/products/1.html">Item 1</a> - This is an example product -<a href="store/shoppingbag.html?productid=1&copyproduct=true">Add to cart</a></p>
+<p><a href="$home/store/products/2.html">Item 2</a> - Quantity discount product -<a href="store/shoppingbag.html?productid=2&size=large&color=black">Add to cart</a></p>
+
+	#if ( "eu" == $cart.region)
+	<a href="/store/catalogs/index.html?oe-action=CartModule.setRegion&region=eu">See EU products</a><br>
+	
+	#elseif ( "na" == $cart.region )
+	<a href="/store/catalogs/index.html?oe-action=CartModule.setRegion&region=eu">See NA products</a><br>
+		
+	#else
+	<a href="/store/catalogs/index.html?oe-action=CartModule.setRegion&region=eu">See All products</a><br>
+		
+	#end

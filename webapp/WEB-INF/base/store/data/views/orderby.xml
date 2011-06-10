@@ -1,0 +1,7 @@
+<properties>
+	<property id="name" />
+	<property id="orientation" />
+	<property id="date" />
+	<property id="voteup" />
+	<property id="votedown" />
+</properties>

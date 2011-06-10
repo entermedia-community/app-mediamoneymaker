@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.getStoreEditor"/>
+  <path-action alltypes="true" name="Admin.allowViewing">
+    <login-path>/${catalogid}/authentication/logon.html</login-path>
+  </path-action>
+  <path-action allowduplicates="true" name="TabModule.selectTab">
+    <tablistname>oestoreadmin</tablistname>
+  </path-action>
+  <property name="fallbackdirectory">/WEB-INF/base/store/admin</property>
+  <property name="title">
+    <value>eCommerce Admin</value>
+    <value locale="es">eCommerce Admin</value>
+  </property>
+  <property name="allowpathrequestactions">true</property>
+  <property name="tab">dashboard</property>
+  <property name="editable">false</property>
+  <property name="encoding">UTF-8</property>
+  <inner-layout>/${catalogid}/admin/innerlayout.html</inner-layout>
+  <permission name="view">
+    <permission name="oe.cart.admin"/>
+  </permission>
+  <style href="/system/admin.css" id="admin-styles" />
+</page>

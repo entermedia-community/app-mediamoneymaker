@@ -1,0 +1,9 @@
+ProductId	Name	ShortDescription	ShippingMethod	HandlingChargeLevel
+#foreach( $id in $store.listAllKnownProductIds() ) 
+#set( $product = false )
+#set( $product = $store.getProduct($id) )
+#set($blank = $store.getProductArchive().clearProduct($product))
+#if( $product.isAvailable() )
+$product.id	$product.name	$!product.getShortDescription()	$!product.getShippingMethodId()	$!product.getHandlingChargeLevel()
+#end
+#end

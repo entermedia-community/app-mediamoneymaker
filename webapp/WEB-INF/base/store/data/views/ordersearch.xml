@@ -1,0 +1,10 @@
+<properties>
+<property id="description" />
+<property id="id" />
+<property id="orderstatus" />
+<property id="customer" />
+<property id="products" />
+<property id="categories" />
+<property id="orderdate" />
+
+</properties>

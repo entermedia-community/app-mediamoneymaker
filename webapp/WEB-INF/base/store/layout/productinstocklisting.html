@@ -1,0 +1,13 @@
+#if( $product.isPartlyOutOfStock() )
+	<p><b>Sizes In Stock:</b><br>
+	<table>
+	#foreach( $item in $product.getInventoryItems() )
+		#if( $item.isInStock() )
+		<tr>
+		<td><a href="$home/${catalogid}/shoppingbag.html?productid=$product.getId()&size=$item.size&color=$item.color">$!item.size/$!item.color</a></td>
+		</tr>
+		#end
+	#end
+	</table>
+ 	</p>
+#end

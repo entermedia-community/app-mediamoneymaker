@@ -1,0 +1,44 @@
+import java.io.*;
+import java.util.Iterator;
+import org.openedit.util.*;
+import org.openedit.store.*;
+
+		Store store = (Store) context.get( "store" );
+
+		String filepath = context.getRequestParameter( "path" );
+
+		File input = new File( store.getRootDirectory(), filepath );
+
+		if ( input.exists() )
+		{
+			log.info( "Starting import..." );
+			ImportFile file = new ImportFile( '	' );
+			file.load( input );
+			int processed = 0, skipped = 0;
+			Row row = null;
+			while ( ( row = file.getNextRow() ) != null )
+			{
+				processed++;
+				String categoryId = row.get( "CategoryId" );
+				String productId = row.get( "ProductId" );
+				if ( productId != null && !"".equals( productId.trim() ) )
+				{
+					Product product = store.getProductArchive().getProduct( productId );
+					if ( categoryId != null && !"".equals( categoryId.trim() ) )
+					{
+						Category category = store.getCategory( categoryId );
+						product.addCategory( category );
+						store.getProductArchive().saveProduct( product );
+			            store.getProductArchive().clearProduct( product);
+					}
+				}
+				else
+				{
+					skipped++;
+				}
+			}
+			log.info( "Processed " + processed + " product categories" );
+			log.info( "Skipped " + skipped + " product categories" );
+			log.info(  "Import complete" );
+		}
+		

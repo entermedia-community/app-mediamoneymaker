@@ -1,0 +1,41 @@
+$pages.stream("/${catalogid}/search/search.html")
+
+#if ( $catalog )
+<div class="cataloglistborder">
+        <table cellpadding=2 cellspacing=2 border=0 class="cataloglist"  width="100%">
+#if( $catalog.hasChildren() )
+	#set( $listing = $catalog )
+	#set( $classcss = "selectedcataloglink" )
+#else
+	#set( $listing = $catalog.getParentCatalog() )
+	#set( $classcss = "cataloglink" )
+#end
+#if( $listing )
+        <tr>
+        <td valign=top class=cart2>
+				<nobr><a  href="$home/${catalogid}/categories/${listing.id}.html" class=$classcss>$listing.name</a></nobr><br>
+        </td>
+        </tr>
+
+#foreach ( $subcat in $listing.getChildren() )
+        <tr>
+            <td valign=top class=cart2>
+			#if( $subcat == $catalog )
+				#set( $classcss = "selectedcataloglink" )
+			#else
+				#set( $classcss = "cataloglink" )
+			#end
+				<nobr>
+				#if ($content.url-prefix)
+				  <a  href="${content.url-prefix}${subcat.id}.html" class=$classcss>$subcat.name</a>
+				#else
+				  <a  href="$home/${catalogid}/categories/${subcat.id}.html" class=$classcss>$subcat.name</a>
+				#end
+				</nobr><br>
+        </td>
+        </tr>
+#end
+#end
+     </table>
+</div>
+#end

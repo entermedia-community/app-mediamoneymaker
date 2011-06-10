@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  
+	<generator name="velocity" mimetypes="text/html"/>
+	<generator name="file" />
+
+	<path-action name="Admin.autoLogin"/>
+	<page-action name="Admin.allowEditing">
+ 		<login-path>/intranet/login.html</login-path>
+	</page-action>	
+	<edit-requirements>
+		<and>
+			<permission name="oe.edit" />
+			<not><page-property name="editable" equals="false" /></not>
+		</and>
+	</edit-requirements>
+
+	<page-action name="HtmlEditor.checkExist" alltypes="true" />
+
+	<!-- path-action name="StoreLinkModule.setSelectedLinkByUrl"/  -->
+     
+	<property name="encoding">UTF-8</property>
+	<property name="showToolbar">false</property>
+	<property name="allowguestregistration">true</property>
+
+ <layout>/layout.html</layout>     
+</page>

@@ -1,0 +1,14 @@
+
+<order order_number="WEB0000002" date="9/17/07 7:15:35 PM" shipping_method="1" subtotal="39.95" tax="2.80" shipping_cost="21.00" total="63.75">
+  <customer customerid="admin" first_name="Christopher" last_name="admin" company="Christopher admin" phone1="513-542-3401" email="cburkey@openedit.org">
+    <address type="shipping" address1="5052 Gray Rd." city="CINCINNATI" state="OH" zip_code="45232" country="USA"/>
+  </customer>
+  <item sku="1" product_id="1" quantity="1" price="19.95">
+    <option id="size" value="large" name="size"/>
+  </item>
+  <item sku="2002" product_id="2" quantity="1" price="20.00">
+    <option id="size" value="large" name="size"/>
+    <option id="color" value="black" name="color"/>
+  </item>
+  <payment_method payment_type="credit" card_type="" expiration_date="00/00" bill_me_later="false"/>
+</order>

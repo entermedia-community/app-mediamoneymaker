@@ -1,0 +1,7 @@
+<beans>
+
+<bean  id="searchSearcher" bean="logSearcher" />
+<bean  id="downloadSearcher" bean="logSearcher" />
+<bean  id="editSearcher" bean="logSearcher" />
+
+</beans>

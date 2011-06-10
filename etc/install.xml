@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="upgrade">
+
+  <target name="default" depends="clean, update-dependencies, unwar, upgrade"/>
+   
+    <property name="appname" value="${ant.project.name}"/>
+    <property name="org" value="eInnovation, inc."/>
+    <property name="build" location="./tmp/oe_upgrade"/>
+    <property name="wardir" location="${build}/wartmp"/>
+    <property name="webinf" location="WEB-INF"/>
+    
+    <tstamp>
+      <format property="now.time" pattern="yyyy-MM-dd-HH-mm-ss"
+              />
+  	</tstamp>
+
+    
+  <target name="clean">
+  	<!-- do nothing -->
+  </target>
+  
+ 	
+  <target name="update-dependencies" depends="clean">
+	    <delete dir="${build}"/>
+		<mkdir dir="${build}"/>
+
+	<get src="http://dev.entermediasoftware.com/projects/mediamoneymaker/ROOT.war" dest="${build}/ROOT.war" />	
+	  
+  </target>
+    
+  <target name="unwar" depends="update-dependencies">
+  	<mkdir dir="${build}/unpacked"/>
+    <unwar dest="${build}/unpacked">
+      <fileset dir="${build}">
+        <include name="ROOT.war"/>
+      </fileset>
+    </unwar>
+  </target>
+  
+  <target name="upgrade" depends="unwar">
+    <delete quiet="true">
+      <fileset dir="./lib" includes="openedit-cart**.jar"/>
+        <fileset dir="./lib" includes="mediamoneymaker**.jar"/>
+
+      <fileset dir="./lib" includes="poi**.jar"/>
+      <fileset dir="./lib" includes="castor**.jar"/>
+      <fileset dir="./lib" includes="xerces**.jar"/>
+      <fileset dir="./lib" includes="xml-apis**.jar"/>
+      <fileset dir="./lib" includes="jcsAnet**.jar"/>
+	  <fileset dir="./lib" includes="openedit-money**.jar"/>
+  	  <fileset dir="./lib" includes="money**.jar"/>
+	  <fileset dir="./lib" includes="openecho**.jar"/>
+	  <fileset dir="./lib" includes="xsoap**.jar"/>
+      <fileset dir="./lib" includes="bsh**.jar"/>
+    </delete>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/mediamoneymaker*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/poi*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/jcsAnet*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/openedit-money*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/openecho*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/xsoap*.jar"/>
+    </copy>
+    <copy todir="./lib" overwrite="false">
+      <fileset file="${build}/unpacked/WEB-INF/lib/bsh*.jar"/>
+    </copy>
+    
+    <delete failonerror="false" dir="../base/store"/>
+    <delete failonerror="false" dir="../WEB-INF/base/store"/>
+    <copy todir="../WEB-INF/base/store" preservelastmodified="true">
+      <fileset dir="${build}/unpacked/WEB-INF/base/store"/>
+    </copy>
+    
+    <touch file="web.xml"/>
+    <delete dir="${build}"/>
+
+
+  </target>
+
+  
+ 
+</project>

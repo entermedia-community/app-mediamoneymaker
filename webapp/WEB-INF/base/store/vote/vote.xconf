@@ -1,0 +1,4 @@
+<page>
+	<path-action name="VotingModule.voteForProduct"/>
+	<path-action name="Admin.redirectToOriginal"/>
+</page>

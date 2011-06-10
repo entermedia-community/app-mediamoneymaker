@@ -1,0 +1,53 @@
+<table border=0 cellpadding=0 cellspacing=1 width=590>
+	<tr>
+		<td valign=top>
+			<font class=body>
+			<div align="right">
+				<div style="color:red">$!errorMessage</div>
+			   #if( $store.areCouponsAccepted() )
+				#if($cart.getAdjustments().size() >0)
+					An adjustment of $cart.getAdjustments().get(0) %  has been applied
+				#else
+				<nobr>Gift Certificate/Coupon Code (one per order):</nobr> <input type=text name=couponcode size=8 /><br><br>
+				#end
+			   #end
+				<input type="submit" value="UPDATE"/>
+			<hr size=1 class="shophr" />
+			<br>
+			<table cellspacing="10" width=200>
+				<tr>
+					<td align="right"><font class=body><b>Subtotal:</b></td>
+					<td align="right"><font class=body> $!cart.getSubTotal()</td>
+				</tr>
+			</table>
+			<table cellspacing="0" width=250>
+				<tr>
+					<td align=right><font class=body>
+			        #if( $cart.hasZeroSubTotal() )
+			                <table border=0 cellpadding=0 cellspacing=0>
+			                	<tr>
+			                		<td valign=top nowrap><font class=body><a href="javascript:zeroCostPage();" class=link><b>next page ></b></a></td>
+			                	</tr>
+			                </table>
+			        #else
+			        	#if ( $content.continueShoppingUrl )
+			        		#set ( $continueShoppingUrl = $content.continueShoppingUrl )
+			        	#else
+			        		#set ( $continueShoppingUrl = "$home/index.html" )
+			        	#end
+			                <table border=0 cellpadding=0 cellspacing=0>
+			                	<tr>
+			                		<td valign=center nowrap class=bu align=center><a href="$continueShoppingUrl" class=bu>Continue Shopping</a></td>
+					                <td>&nbsp;&nbsp;</td>
+					                <td valign=center nowrap class=bu align=center><a href="javascript:nextPage();" class=bu><b>Begin Checkout</b></a></td>
+			                	</tr>
+			                </table>
+			        #end
+			    	</td>
+				</tr>
+			</table> 
+			<br>
+			</div>
+		</td>
+	</tr>                                                                                                                                                                                                        
+</table> 

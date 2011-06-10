@@ -1,0 +1,29 @@
+<SCRIPT LANGUAGE="JavaScript">
+
+
+function zeroCostPage()
+{
+	document.cartreport.action= "checkout2.html";
+	document.cartreport.submit(); 	
+}
+function nextPage()
+{
+	document.cartreport.action= "checkout2.html";
+	document.cartreport.submit(); 	
+}
+</SCRIPT>
+<table border=0 cellpadding=0 cellspacing=0>
+ <tr>
+ <td class=body2>
+ <form name="cartreport"  method="post" action="shoppingbag.html"><br>
+ <input type="hidden" name="reloadcart" value="true" />
+ <p><b>You are buying:</b><br/>
+ <br/>
+	$pages.stream("/${catalogid}/shoppingcartlist.html")
+ <br/>
+	$pages.stream("/${catalogid}/shoppingcartsummary.html") 
+ </form>
+ $pages.stream("/${catalogid}/sslcertificate.html")
+ </td>
+ </tr>
+</table>

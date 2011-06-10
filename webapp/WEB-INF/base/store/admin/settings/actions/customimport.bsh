@@ -1,0 +1,459 @@
+/**
+ * Custom import script.
+ * Author: Jorge Valencia <jvalencia@openedit.org>
+ */
+
+import java.text.*;
+import org.openedit.util.*; 
+import com.openedit.util.*;
+ import org.openedit.store.*;
+ import org.openedit.store.orders.*;
+ import org.openedit.store.customer.*;
+ import org.openedit.store.convert.MainFrameConverter;
+ 
+ log.info("Preparing data sources");
+ inStore = context.getPageValue("store");
+
+/******************/
+/* Utility methods */
+/******************/
+
+Product createProduct(String inId)
+{		
+	product = inStore.getProduct(inId);
+	if ( product == null)
+	{
+		product = new Product();
+		product.setId(inId);
+		InventoryItem item = new InventoryItem();
+		item.setSku(product.getId());
+		item.setQuantityInStock(0);
+		product.addInventoryItem(item);
+	}
+	return product;
+}
+
+saveOutput( List inOutputAllProducts ) throws Exception
+{
+	for (int i = 0; i < inOutputAllProducts.size(); i++)
+	{			
+		Product product = (Product) inOutputAllProducts.get(i);
+		if ( product.getOrdering() == -1)
+		{
+			product.setOrdering(i);
+		}
+		product.setAvailable(true);
+		inStore.getProductArchive().saveProduct( product );
+	}
+}
+
+/*******************/
+/* Import Products */
+/*******************/
+
+File inProducts = new File( inStore.getStoreDirectory() , "upload/a-PRODUCTS.txt");
+File inSpecs = new File( inStore.getStoreDirectory() , "upload/b-SPEC.txt");
+products = new Hashtable();
+
+if( inProducts.exists() && inSpecs.exists() )
+{
+	log.info("Converting products...");
+	in = new LineReader(new FileReader(inProducts));
+	try
+	{
+		line = null;
+		rowNum = 0;
+		product = null;
+				
+		for (Iterator i = in.iterator(); i.hasNext(); )
+		{
+			line = i.next();
+			rowNum++;
+			if( line.length() == 0)
+			{
+				continue;
+			}
+			parts = line.split("\\|");
+			partNums = parts[0].split("@");
+			id = partNums[0].trim();
+			product = this.createProduct(id);
+			product.setName(id);
+			product.setAvailable(true);					
+			customerPartNum="";
+			if ( partNums.length > 1)
+			{
+				customerPartNum=partNums[1].trim();
+			}
+					
+			product.setProperty("customerPartNum", customerPartNum);					
+			product.setShortDescription(parts[3].trim()); //This is important. Used in the results 
+					
+			family = parts[1].trim();
+			catid = PathUtilities.extractId(family, true);
+			familycat = inStore.getCategory(catid);
+			if( familycat == null )
+			{
+				familycat = inStore.getCategoryArchive().addChild(new Category(catid,family));
+			}
+		
+			subcategory = null;
+				
+			subFamily = parts[2].trim();
+			if( !subFamily.equals(""))
+			{
+				subcatid = PathUtilities.extractId(catid + "_" + subFamily, true);
+				subcategory = inStore.getCategory(subcatid);
+				if( subcategory == null)
+				{
+					subcategory = new Category(subcatid,subFamily);
+					familycat.addChild(subcategory);
+					inStore.getCategoryArchive().cacheCategory(subcategory);
+				}
+			}	
+			
+			if( subcategory == null)
+			{
+				product.addCatalog(familycat);
+				product.setDefaultCatalog(familycat);
+			}
+			else
+			{
+				product.addCatalog(subcategory);
+				product.setDefaultCatalog(subcategory);
+			}
+					
+			product.setInventoryItems(null);
+			products.put(product.getId(), product);
+		}
+		log.info("Processed: " + products.size() + " products");
+		inStore.getCategoryArchive().saveAll();
+				
+	}
+	finally
+	{
+		FileUtils.safeClose(in.sourceReader);
+		FileUtils.safeClose(in);
+	}
+	
+	/* Product specs */	
+	in=new LineReader(new FileReader(inSpecs));
+	// up to 20 material codes
+	lengths = new int[]{10,20,30,30,6,6,9,9,9,9,1,5,3,6,
+										30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30};
+	header = new FixedLengthFieldsHeader(lengths);
+	try 
+	{
+		line = null;
+		for (it = in.iterator(); it.hasNext();)
+		{
+			line = it.next();
+			if (line.trim().length() == 0)
+				continue;
+			row = header.createRow(line);
+			
+			id = row.get(0);
+			product = products.get(id);
+			if (product != null)
+			{
+				product.setProperty("description", row.get(2,""));
+				product.setProperty("description2", row.get(3,"")); //This is not used much. Mostly numbers
+				product.setProperty("width", row.get(4,""));
+				product.setProperty("length", row.get(5,""));					
+				product.setProperty("die1", row.get(6,""));
+				product.setProperty("die2", row.get(7,""));
+				product.setProperty("die3", row.get(8,""));
+				product.setProperty("die4", row.get(9,""));
+				product.setProperty("unwind", row.get(10,""));
+				product.setProperty("labelsPerRow", row.get(11,""));
+				product.setProperty("labelsPerSheet", row.get(12,""));
+				product.setProperty("UL", row.get(13,""));
+				
+				product.clearKeywords();
+				for (i = 14; !row.get(i).trim().equals("") && i<34; i++)
+					product.addKeyword(row.get(i).trim());
+			}
+		}
+	}
+	finally
+	{
+		FileUtils.safeClose(in.sourceReader);
+		FileUtils.safeClose(in);
+	}
+}
+
+ /*******************/
+ /* Import Inventory */
+ /*******************/
+ //read in Inventory file
+File input = new File( inStore.getStoreDirectory() , "upload/b-INVENTORY.txt");
+if( input.exists() )
+{
+	log.info("Converting product inventory...");
+	LineReader in = new LineReader(new FileReader(input));
+	try
+	{
+		String line = null;
+		int rowNum = 0;
+		Product product = null;
+		header = new FixedLengthFieldsHeader(new int[] {10,37,10});
+		header.setHeaderNames(new String[] {"productid","description","qty"});
+		Iterator i = in.iterator();
+		while( i.hasNext() )
+		{
+			line = i.next();
+			rowNum++;
+			if( line.trim().length() == 0)
+			{
+				break;
+			}
+			row = header.createRow(line);
+			String skuCell = row.get("productid");
+			if (!products.containsKey(skuCell))
+			{
+				log.info("Found inventory items for '"+skuCell+"', but no product to add it to.");
+				continue;
+			}
+			product = (Product) products.get(skuCell);
+			product.setDescription(row.get("description"));
+									
+			InventoryItem inventoryItem = product.getInventoryItemBySku(product.getId());
+			if (inventoryItem == null)
+			{
+				inventoryItem = new InventoryItem();
+				inventoryItem.setSku(skuCell);
+				product.addInventoryItem(inventoryItem);
+			}
+			int count = row.getInt("qty");
+			inventoryItem.setQuantityInStock(count);
+		}
+		log.info("Processed: " + products.size() + " products");
+	}
+	finally
+	{
+		FileUtils.safeClose(in.sourceReader);
+		FileUtils.safeClose(in);
+	}
+}
+saveOutput(new ArrayList(products.values()));			
+
+
+/************************/
+/* Convert Order History */
+/************************/
+
+Set closedorders = new HashSet();
+SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+File input = new File(inStore.getStoreDirectory(), "upload/b-HISTORY.txt");
+if(input.exists())
+{
+	log.info("Orders history...");
+	LineReader in = new LineReader(new FileReader(input));
+	try
+	{
+		String line= null;
+		int rowNum = 0;
+		header = new FixedLengthFieldsHeader(new int[]{6,10,20,8,8,8,8,8,30});
+		header.setHeaderNames(new String[]{"custcode","productid","custpart","orderid","orderdate","qty","sippedqty","duedate","shipto"});
+		Iterator i = in.iterator();
+		while(i.hasNext())
+		{
+			rowNum++;
+			line=i.next();
+			if(line.trim().length() == 0)
+			{
+				break;
+			}
+			row = header.createRow(line);
+			String customercode = row.get("custcode");
+			Customer customer = inStore.getCustomerArchive().getCustomer(customercode);
+			if(customer == null)
+			{
+				customer = inStore.getCustomerArchive().createNewCustomer(customercode, null);
+			}
+			
+			String prodid = row.get("productid");
+			Product product = inStore.getProduct(prodid);
+			String orderid = row.get("orderid");
+			String orderdate = row.get("orderdate");
+			SubmittedOrder order= inStore.getOrderArchive().loadSubmittedOrder(inStore, customercode, orderid);
+			if(order == null)
+			{
+				order = new SubmittedOrder();
+				order.setCustomer(customer);
+				order.setId(orderid);
+			}
+			if(!closedorders.contains(orderid))
+			{
+				if(order.getItems() != null)
+				{
+					order.getItems().clear();
+				}
+				closedorders.add(orderid);
+			}
+			order.setDate(format.parse(orderdate));
+			String orderquantity = row.get("qty");
+			String shipquantity = row.get("shippedqty");;
+			String duedate = row.get("duedate");
+			String shipto = row.get("shipto");
+			
+			CartItem item = new CartItem();
+			if( product == null )
+			{
+				product = new Product(prodid);
+				product.setId(prodid);
+				product.setAvailable(false);
+			}
+			item.setProduct(product);
+			if( product.getInventoryItemCount() == 0)
+			{	
+				InventoryItem inventoryItem = new InventoryItem();
+				inventoryItem.setSku(prodid);
+				inventoryItem.setProduct(product);
+				item.setInventoryItem(inventoryItem);
+			}
+
+			item.putProperty("duedate", duedate);
+			item.putProperty("shiptoname", shipto);
+			item.setShippingPrefix(shipto);
+			item.putProperty("shipquantity", shipquantity);
+			item.setQuantity(Integer.parseInt(orderquantity));
+			item.putProperty("status", "closed");
+			
+			order.addItem(item);
+			String status = "closed";
+			OrderState orderStatus = new OrderState();
+			orderStatus.setDescription("Closed");
+			orderStatus.setId(status);
+			order.setOrderState(orderStatus);
+			inStore.getOrderArchive().saveOrder(inStore, order);
+		}
+	}
+	finally
+	{
+		FileUtils.safeClose(in.sourceReader);
+		FileUtils.safeClose(in);
+	}
+}
+
+
+ /***********************/
+ /* Import Open Orders */
+ /***********************/
+ openorders = new HashSet();
+
+//read in Inventory file
+input = new File( inStore.getStoreDirectory() , "upload/b-OPEN.txt");
+if( input.exists())
+{
+	log.info("Converting open orders...");
+	reader = new LineReader(new FileReader(input));
+	line = null;
+	rowNum = 0;
+	header = new FixedLengthFieldsHeader(new int[]{6,10,20,8,8,10,9,15,10,8,30});
+	header.setHeaderNames(new String[] {"custCode","prodId","custPart","orderId","orderDate","qty","status","custPO","shippedQty","reqDate","shipto"});
+	for (i = reader.iterator(); i.hasNext();)
+	{
+		line=i.next();
+		rowNum++;
+		if( line.trim().length() == 0) break;
+		row = header.createRow(line);
+		
+		customercode = row.get("custCode");
+		customer = inStore.getCustomerArchive().getCustomer(customercode);
+		if( customer == null )
+			customer = inStore.getCustomerArchive().createNewCustomer(customercode, null);
+
+		prodid =  row.get("prodId");
+		product = inStore.getProduct(prodid);
+				
+		orderid = row.get("orderId");
+		order = inStore.getOrderArchive().loadSubmittedOrder(inStore,customercode ,orderid);
+		if(order == null)
+		{
+			order = new SubmittedOrder();
+			order.setCustomer(customer);
+			order.setId(orderid);
+		}
+				
+		orderdate = row.get("orderDate");
+		if( !openorders.contains(orderid) )
+		{
+			if( order.getItems() != null )
+			{
+				order.getItems().clear();
+			}
+			openorders.add(orderid);
+			order.setDate(format.parse(orderdate)); //first one wins
+		}
+		item = new CartItem();
+		item.putProperty("orderdate", orderdate);
+		
+		customerpartnum = row.get("custPart");
+		item.putProperty("customerpartnum", customerpartnum);
+		if( product == null )
+		{
+			product = new Product(prodid);
+			product.setId(prodid);
+			product.setAvailable(false);
+		}
+		item.setProduct(product);
+		if( product.getInventoryItemCount() == 0)
+		{	
+			InventoryItem inventoryItem = new InventoryItem();
+			inventoryItem.setSku(prodid);
+			inventoryItem.setProduct(product);
+			item.setInventoryItem(inventoryItem);
+		}
+		item.setQuantity(row.getInt("qty"));
+
+		status = row.get("status");
+		item.putProperty("status", status);
+		duedate = row.get("reqDate");
+		item.putProperty("duedate", duedate);
+		item.putProperty("shipquantity", row.get("shipQty"));
+		shiptoname = row.get("shipto");
+		item.putProperty("shiptoname", shiptoname);
+		item.setShippingPrefix(shiptoname);
+
+		order.addItem(item);
+
+		orderStatus = new OrderState();
+		orderStatus.setDescription("Open");
+		orderStatus.setId("open");
+		order.setOrderState(orderStatus);
+		inStore.getOrderArchive().saveOrder(inStore, order);
+	}
+	FileUtils.safeClose(reader.sourceReader);
+	FileUtils.safeClose(reader);
+}
+
+closed = new OrderState();
+closed.setId("closed");
+closed.setDescription("Closed");
+orderids = inStore.getOrderArchive().listAllOrderIds(inStore);
+log.info("Close out remaining orders");
+for (Iterator iterator = orderids.iterator(); iterator.hasNext();)
+{
+	id = iterator.next();
+	if( !openorders.contains(id.getOrderId()) && !id.getOrderId().startsWith("WEB") )
+	{
+		order = inStore.getOrderArchive().loadSubmittedOrder(inStore, id.getUsername(), id.getOrderId());
+		if( order != null)
+		{
+			status = order.getOrderStatus();
+			if( status == null || !status.getId().equals("closed"))
+			{
+				order.setOrderState(closed);
+				inStore.getOrderArchive().saveOrder(inStore, order);
+				inStore.getOrderSearcher().updateIndex(order);
+			}
+		}
+	}
+}
+
+inStore.clearProducts();
+inStore.getCategoryArchive().reloadCategories();
+log.info("reindexing " + inStore.getCatalogId());
+inStore.reindexAll();
+inStore.clearProducts();
+log.info("Done.");

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Input">
+    <value>Input</value>
+    <value locale="es">Entrada</value>
+  </property>
+  <property name="text.Downloadable">
+    <value>Downloadable</value>
+    <value locale="es">Descargables</value>
+  </property>
+  <property name="text.uploadpath property not found in">
+    <value>uploadpath property not found in</value>
+    <value locale="es">uploadpath propiedad no se encuentra en</value>
+  </property>
+  <property name="text.Path">
+    <value>Path</value>
+    <value locale="es">Ruta</value>
+  </property>
+  <property name="text.Error">
+    <value>Error</value>
+    <value locale="es">Error</value>
+  </property>
+  <property name="text.Finish">
+    <value>Finish</value>
+    <value locale="es">Finalizar</value>
+  </property>
+</page>

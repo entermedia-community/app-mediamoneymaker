@@ -1,0 +1,100 @@
+1624449GMULTI99-STC-11                L 0042900757          $GRF_ARTSTORE/44/49/1624449G                                                                        
+1000009G#ROCA0001                     L 0019700078          $GRF_ARTSTORE/00/09/1000009G                                                                        
+1624451GMULTI99-STC-12                L 0057200749          $GRF_ARTSTORE/44/51/1624451G                                                                        
+1000016GCITRÖEN0001                   L 0007900075          $GRF_ARTSTORE/00/16/1000016G                                                                        
+1000017GEUROCAS0001                   L 0017800051          $GRF_ARTSTORE/00/17/1000017G                                                                        
+1280191GFLAXMER 02 2CE AZUL OPACO     L 0004300019          $GRF_ARTSTORE/01/91/1280191G                                                                        
+1000035GNO VALE                       L 0116700874          $GRF_ARTSTORE/00/35/1000035G                                                                        
+1000032GCARLSBERG                     L 0051300677          $GRF_ARTSTORE/00/32/1000032G                                                                        
+1280183GOPERADORA A COLOR RA          S 00064000518    23   $GRF_ARTSTORE/01/83/1280183G                                                                        
+1000033GCRUZCAMPO                     L 0029100362          $GRF_ARTSTORE/00/33/1000033G                                                                        
+1000045GIBM,                          L 0024000132          $GRF_ARTSTORE/00/45/1000045G                                                                        
+1000034GNO VALE                       L 0032600410          $GRF_ARTSTORE/00/34/1000034G                                                                        
+1566433GCALLEJA BOADO,MANUEL ARTURO   C 0023100069          $GRF_ARTSTORE/64/33/1566433G                                                                        
+1567174GSANCHEZ MARQUEZ,FAUSTINO      C 0018900025          $GRF_ARTSTORE/71/74/1567174G                                                                        
+1001945GCYPEX S. A.                   L 0007300061          $GRF_ARTSTORE/19/45/1001945G                                                                        
+1000076GGARCIA GONZALEZ,DOLORES       S 00130000605    17   $GRF_ARTSTORE/00/76/1000076G                                                                        
+1278784GL'ART GUINARDO S. A.          C 0013800124          $GRF_ARTSTORE/87/84/1278784G                                                                        
+1280177GNEYPO 02 3CE RJYVD            L 0006600012          $GRF_ARTSTORE/01/77/1280177G                                                                        
+1280179GKINDVOX 03 3CE RJYVD          L 0005600011          $GRF_ARTSTORE/01/79/1280179G                                                                        
+1280180GTOPAK 02 2CE ROJO BN          L 0004800012          $GRF_ARTSTORE/01/80/1280180G                                                                        
+2742536GNATXO PELUQUEROS S.L.         C 0013500034          $GRF_ARTSTORE/25/36/2742536G                                                                        
+1000091GNO VALE                       L 0007100036          $GRF_ARTSTORE/00/91/1000091G                                                                        
+1280161GCLAPERS ALEGRE,JOSE MARIA     C 0033400086          $GRF_ARTSTORE/01/61/1280161G                                                                        
+1681729GELECTRIFICACIONES VI          L 0004900049          $GRF_ARTSTORE/17/29/1681729G                                                                        
+2742538GINSTALACION DE PAVIMENTOS Y TEC 0020900088          $GRF_ARTSTORE/25/38/2742538G                                                                        
+2742539GINSTALACION DE PAVIMENTOS Y TEC 0064200369          $GRF_ARTSTORE/25/39/2742539G                                                                        
+1280148GSIKA 12 2CE TIPEX             L 0017400052          $GRF_ARTSTORE/01/48/1280148G                                                                        
+1000112GNISSAN                        L 0011300079          $GRF_ARTSTORE/01/12/1000112G                                                                        
+1280142GDISOM 03 2CXE ROJJO           L 0008200045          $GRF_ARTSTORE/01/42/1280142G                                                                        
+1528071GHOTEL ALPINO                  S 0020700066147  197  $GRF_ARTSTORE/80/71/1528071G                                                                        
+2742549GRECAMBIOS LOPEZ FUENGIROLA S.LC 0025100093          $GRF_ARTSTORE/25/49/2742549G                                                                        
+2742550GRECAMBIOS LOPEZ FUENGIROLA S.LC 0016700084          $GRF_ARTSTORE/25/50/2742550G                                                                        
+2742552GInstimed                      C 0065200870          $GRF_ARTSTORE/25/52/2742552G                                                                        
+2742551GFONDESTA                      C 0024000050          $GRF_ARTSTORE/25/51/2742551G                                                                        
+1696297GGASTRONOMIA BASKA S.A.        C 0004700080          $GRF_ARTSTORE/62/97/1696297G                                                                        
+2742560GCESPA CONTEN S.A.             L 0022800234          $GRF_ARTSTORE/25/60/2742560G                                                                        
+2113492GAGUADO SANTOS,ANTONIO         L 0008900069          $GRF_ARTSTORE/34/92/2113492G                                                                        
+2742563GREFORMAS ROL                  C 0015400242          $GRF_ARTSTORE/25/63/2742563G                                                                        
+2742564GCESPA CONTEN S.A.             C 0028200387          $GRF_ARTSTORE/25/64/2742564G                                                                        
+2742566GSAR DOMUS                     C 0021100050          $GRF_ARTSTORE/25/66/2742566G                                                                        
+2742567GPUERTAS METALICAS ZEHT S. L.  C 0011000135          $GRF_ARTSTORE/25/67/2742567G                                                                        
+1000168GDANONE001                     L                     $GRF_ARTSTORE/01/68/1000168G                                                                        
+1000165GFORD B/N                      L                     $GRF_ARTSTORE/01/65/1000165G                                                                        
+1000180GBMW0001                       L                     $GRF_ARTSTORE/01/80/1000180G                                                                        
+1000181GBMW0001                       L                     $GRF_ARTSTORE/01/81/1000181G                                                                        
+1280118GRABOSO HERNANDEZ,VICENTE      C 0004100057          $GRF_ARTSTORE/01/18/1280118G                                                                        
+1567325GDIAZ GUERRERO M. Y TABERNA DIAC 0018500110          $GRF_ARTSTORE/73/25/1567325G                                                                        
+1000197GMERCEDES0002                  L 0010200014          $GRF_ARTSTORE/01/97/1000197G                                                                        
+1000198GMITSU/2                       L                     $GRF_ARTSTORE/01/98/1000198G                                                                        
+1000203GTEC                           L                     $GRF_ARTSTORE/02/03/1000203G                                                                        
+1000205GIBM                           L                     $GRF_ARTSTORE/02/05/1000205G                                                                        
+1000222GLAMBERET0001                  L 0010000016          $GRF_ARTSTORE/02/22/1000222G                                                                        
+1000227GBERLONI                       L 0025200055          $GRF_ARTSTORE/02/27/1000227G                                                                        
+1000232GHIPERCOR0001                  L                     $GRF_ARTSTORE/02/32/1000232G                                                                        
+1000234G.                             L 0014000022          $GRF_ARTSTORE/02/34/1000234G                                                                        
+1000194GMERCEDES0001                  L 0009400078          $GRF_ARTSTORE/01/94/1000194G                                                                        
+1000243GBETTOR0001                    L                     $GRF_ARTSTORE/02/43/1000243G                                                                        
+1000244GAENOR0001                     L                     $GRF_ARTSTORE/02/44/1000244G                                                                        
+1000249GROJO                          L 0013700046          $GRF_ARTSTORE/02/49/1000249G                                                                        
+1000253GNEGRO                         L                     $GRF_ARTSTORE/02/53/1000253G                                                                        
+1000254GNEGRO                         L                     $GRF_ARTSTORE/02/54/1000254G                                                                        
+1000259GNEGRO                         L                     $GRF_ARTSTORE/02/59/1000259G                                                                        
+3098926GTALLERES UBEDAUTO S.L.        C 0010500096          $GRF_ARTSTORE/89/26/3098926G                                                                        
+3098927GDIAZ - SANZ NOTARIOS C.B.     C 0006500064          $GRF_ARTSTORE/89/27/3098927G                                                                        
+3098928GSUBASTAS GEMA S.L.            C 0010200226          $GRF_ARTSTORE/89/28/3098928G                                                                        
+3098929GTALLERES UBEDAUTO S.L.        C 0011200010          $GRF_ARTSTORE/89/29/3098929G                                                                        
+1000247GROJO                          L 0009700169          $GRF_ARTSTORE/02/47/1000247G                                                                        
+1000164GIDEAL0001                     L 0025600066          $GRF_ARTSTORE/01/64/1000164G                                                                        
+2646345GWEA                           L 0009800125          $GRF_ARTSTORE/63/45/2646345G                                                                        
+3098930GTECNICAS HOSPITALARIAS ORTOPEDC 0017000150          $GRF_ARTSTORE/89/30/3098930G                                                                        
+3098931GHARO BENAVIDES, MARIA DOLORES C 0017000079          $GRF_ARTSTORE/89/31/3098931G                                                                        
+3098932GHARO BENAVIDES, MARIA DOLORES C 0014100104          $GRF_ARTSTORE/89/32/3098932G                                                                        
+3098933GMUÑOZ AMOROS,ANTONIO          C 0014700029          $GRF_ARTSTORE/89/33/3098933G                                                                        
+3098935GGRUAS TORRE DEL ORO S.L.      C 0024000034          $GRF_ARTSTORE/89/35/3098935G                                                                        
+3098936GSANTAMARTA VILLEGAS ALMEIDA VIC 0032000107          $GRF_ARTSTORE/89/36/3098936G                                                                        
+3098937GMALLORQUINA DE TOLDOS S.L.    C 0022900164          $GRF_ARTSTORE/89/37/3098937G                                                                        
+2646357GAGROPIEZAS S. L.              C 0055500108          $GRF_ARTSTORE/63/57/2646357G                                                                        
+1000298GAENOR                         L                     $GRF_ARTSTORE/02/98/1000298G                                                                        
+2157908GALMANSERVI S.L.               C 0012500125          $GRF_ARTSTORE/79/08/2157908G                                                                        
+2646359GAGROPIEZAS S.L.               C 0024800226          $GRF_ARTSTORE/63/59/2646359G                                                                        
+1000321GAENOR.01 EPS                  L                     $GRF_ARTSTORE/03/21/1000321G                                                                        
+3092748GGRUAS TORRE DEL ORO S.L.      C 0038200283          $GRF_ARTSTORE/27/48/3092748G                                                                        
+1000339GAGFA.EPS                      L                     $GRF_ARTSTORE/03/39/1000339G                                                                        
+1000335GSANYO                         L 0022300069          $GRF_ARTSTORE/03/35/1000335G                                                                        
+1000344GSONITRON                      L 0013100031          $GRF_ARTSTORE/03/44/1000344G                                                                        
+1000357G*                             L 0002900057          $GRF_ARTSTORE/03/57/1000357G                                                                        
+1000353GFABRESA NEGRO                 L                     $GRF_ARTSTORE/03/53/1000353G                                                                        
+1000366GFAC NEGRO                     L                     $GRF_ARTSTORE/03/66/1000366G                                                                        
+1000369GDIMONI001                     L                     $GRF_ARTSTORE/03/69/1000369G                                                                        
+3098941GJOYERIA CASA RUIZ METALES Y PIC 0028100188          $GRF_ARTSTORE/89/41/3098941G                                                                        
+3098942GENGLISH ONE SEVILLA S.L.      C 0021000187          $GRF_ARTSTORE/89/42/3098942G                                                                        
+1000388GFAC NEGRO                     L                     $GRF_ARTSTORE/03/88/1000388G                                                                        
+3098944GCAMIOCAR S.L.                 C 0012000049          $GRF_ARTSTORE/89/44/3098944G                                                                        
+3098946GMANUJAEN S.L.                 C 0008100054          $GRF_ARTSTORE/89/46/3098946G                                                                        
+2155648GCASA LOZANO GERMANS, S.L.     C 0004700093          $GRF_ARTSTORE/56/48/2155648G                                                                        
+2646373GNAVASOLA HUESCA S. L.         L 0018300126          $GRF_ARTSTORE/63/73/2646373G                                                                        
+1000400G#TELEFONICA /001              L 0031100101          $GRF_ARTSTORE/04/00/1000400G                                                                        
+1003026GPUERTAS JIMSA S. L.           C 0006500041          $GRF_ARTSTORE/30/26/1003026G                                                                        
+1000195GMITSU0001                     L 0006600087          $GRF_ARTSTORE/01/95/1000195G                                                                        
+3098662GCLOVER                        C 0027600274165  315  $GRF_ARTSTORE/86/62/3098662G                                                                        

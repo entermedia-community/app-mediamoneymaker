@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<page>
+	<page-action name="CatalogModule.getCatalogTree">
+		<tree-name>catalogTree</tree-name>
+		<root>index</root>
+	</page-action>
+</page>

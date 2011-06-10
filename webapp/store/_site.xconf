@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<!-- <property name="continueShoppingUrl">/index.html</property> -->
+	<!--<property name="usepaypal">true</property>
+	<property name="usePaypalSandbox">true</property>
+	<property name="paypalAccount">ian@ijsolutions.ca</property>
+	<property name="sandboxAccount">owner_1189436034_per@ijsolutions.ca</property>
+	
+	<property name="pdtToken">U2DAQ2Kik3yiaRq_6YsuBdJhlaRyoy1KwqItzudUZnqux0HqgmalrIOSbWK</property>
+	-->
+		<property name="downloadordertimelimit">7</property>
+		<property name="downloadordercountlimit">5</property> 	
+</page>

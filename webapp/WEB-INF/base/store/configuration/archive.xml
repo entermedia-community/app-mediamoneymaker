@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<archive>
+  <!--  This property no longer works. Use the "orginalrootdirectory"
+  			property for products or categories.
+  <originals-root-directory>/tmp/archivefiles</originals-root-directory>
+  -->
+  <cacheoriginals>false</cacheoriginals>
+  <importusers>false</importusers>
+  <deletelogs-directory>C:\Program Files\Canto\Cumulus 6 Enterprise Server\logs</deletelogs-directory>
+  <includecatalogid>true</includecatalogid>
+  <!-- This is not longer used at all. All properties are located in the top level categories -->
+  
+  <!-- catalogsync>
+  	<catalog id="photos" categoryid="photos" text="Photos" path="/data/assets/photos/" uploadpath="/data/assets/uploads/photos/" filter="*.jpg" />
+  </catalogsync -->
+
+  <hidecategory>$Categories</hidecategory>
+
+  <hidecategory>PDRCDRCML02</hidecategory>
+  <hidecategory>PDRKOPCML01</hidecategory>
+  <hidecategory>DAMDEV01</hidecategory>
+  <ignorecategory>$Sources</ignorecategory>
+  <ignorecategory>$Keywords</ignorecategory>
+</archive>

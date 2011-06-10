@@ -1,0 +1,33 @@
+<table border=0 cellpadding=0 cellspacing=0 width=100%>
+<tr>
+<td valign=top class=body width=100%>
+	<h2>$catalog.name</h2>
+
+#if ($canadmincart)
+[<a href="/$catalogid/admin/categories/editor/addnew.html">Add Child Category</a>]
+#end
+
+	$pages.streamContent()
+
+    $pages.stream("/${catalogid}/search/results-navigation.html")
+
+    <div class=proddata>
+     #if( $catalog.hasChildren()  && $page.isPropertyTrue("showsubcategories"))
+ 		$pages.include("/$catalogid/layout/cataloglist.html")
+	#else
+ 			  $pages.include("/${catalogid}/search/results.html")
+	#end
+      
+    </div>
+
+</td>
+<td valign="top">
+$pages.stream("/${catalogid}/search/results-sidebar.html")
+</td>
+</tr>
+<tr>
+<td colspan=2 >
+		$pages.stream("/${catalogid}/search/results-navigation.html")
+</td>
+</tr>
+</table>

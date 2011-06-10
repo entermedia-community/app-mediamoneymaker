@@ -1,0 +1,29 @@
+#set( $type = $context.getRequestParameter("type") )
+
+#set( $donelink = "$home$cataloghome/admin/products/imageedit/${product.id}.html?oe-action=CatalogEditModule.uploadProductDownloads" )
+
+<form name="uploadimage" method="post" enctype="multipart/form-data" action="$donelink" >
+	
+	<h2>[[Downloadable]]</h2>
+		<p>[[Please upload a pdf or other downloadable format]]</p>
+					[[Upload Type]]: <br> <select style="width: 170px;"  name="postfix" > 
+					<option></option>
+						<option value="bro1">[[Brochure]] 1</option>
+						<option value="bro2">[[Brochure]] 2</option>
+						<option value="bro3">[[Brochure]] 3</option>
+						<option value="specs1">[[Specs]] 1</option>
+						<option value="spec3">[[Specs]] 2</option>
+						<option value="specs3">[[Specs]] 3</option>
+					</select> 
+					<br>
+					<p>Select a file to upload<br>
+					<input type="file" size="40" name="file" >
+					</p> 
+		<input type="Submit" name="Finish" value="[[Finish]]" >
+
+		<p> Uploads will be saved as: /$cataloghome/products/downloads/productid-TYPE.pdf </p>
+
+		<input name="productid" value="$product.id" type="hidden" >
+		<input name="productid.1" value="$product.id" type="hidden" >
+			
+</form>

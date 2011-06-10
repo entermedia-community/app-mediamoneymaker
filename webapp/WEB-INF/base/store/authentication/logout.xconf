@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<page-action name="Admin.logout" />
+	<permission name="view">
+		<boolean value="true"/>
+	</permission>
+</page>

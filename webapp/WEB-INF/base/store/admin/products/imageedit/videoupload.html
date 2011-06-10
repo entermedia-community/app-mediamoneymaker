@@ -1,0 +1,36 @@
+
+
+#set( $donelink = "../editor/${product.id}.html?oe-action=CatalogEditModule.uploadProductVideo" )
+<form name="uploadimage" method="post" enctype="multipart/form-data" action="$donelink" onsubmit="window.close()" >
+		
+  <table class="standard-table" width="100%" cellspacing="0">
+  <tr>
+  	<td bgcolor="black"><div class="oe-module-title">[[UPLOAD Video]]</div></td>
+  	<td bgcolor="black" align="right">
+	    <table border="0" cellspacing="5" cellpadding="5">
+    	<tr>
+    	<td><input class="standard-button" type="submit" name="Finish" value="[[Finish]]" ></td>
+    	</tr>
+    	</table>
+    </td>
+   </tr>
+   <tr>
+   	<td colspan="2">
+		<br><p>[[Videos are uploaded to]]  /$catalogid/products/videos/ </p>
+		<p>
+		[[Video]]:  
+					<input type="file" size="30" name="file" > 
+		</p>			
+	 </td>
+	</tr>
+  </table>
+</form>
+
+#set ( $videopath = $product.videopath )
+#if ( !$videopath || ! $pages.getPage($videopath).exists() )
+	#set ( $videopath = "$cataloghome/products/videos/${product.id}.flv" )
+#end
+
+#if ( $pages.getPage($videopath).exists() )
+<p><b>Note</b>: [[there is a previous video for this product]] (<a href="$videopath">[[download]]</a>). [[Uploading a new video will overwrite the previous one.]]</p>
+#end

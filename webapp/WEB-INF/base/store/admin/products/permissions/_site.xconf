@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.selectProduct"/>
+  <property name="virtual">true</property>
+  <property name="fallbackdirectory">/WEB-INF/base/system/tools/permissions</property>
+  <property name="title">
+    <value>Product Access Control</value>
+    <value locale="es">Producto de control de acceso</value>
+  </property>
+  <property name="filerootpath">/${catalogid}/admin/products/permissions</property>
+  <property name="subtab">productpermissions</property>
+  <property name="permissionrootpath">/${catalogid}/admin/products/permissions</property>
+  <inner-layout>/archive/admin/products/permissions/layout.html</inner-layout>
+</page>

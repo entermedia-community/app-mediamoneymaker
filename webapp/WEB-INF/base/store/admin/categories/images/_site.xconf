@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.loadCategory"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Category Images</value>
+    <value locale="es">Categoría Imágenes</value>
+  </property>
+  <property name="subtab">categoryimages</property>
+  <inner-layout>/${catalogid}/admin/categories/images/createimages.html</inner-layout>
+</page>

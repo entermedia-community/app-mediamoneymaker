@@ -1,0 +1,15 @@
+<pre>
+#set( $fields = $store.getFieldArchive().getStoredProperties("product") )
+#foreach( $field in $fields )$field.id	#end
+
+#foreach( $hit in $store.getProductSearcher().getAllHits() )   ##hits
+#set( $product = false )
+#set( $product = $store.getProduct($hit.id) )
+#set($blank = $store.getProductArchive().clearProduct($product))
+#if( $product.isAvailable() )
+#foreach( $field in $fields )$!product.get($field.id)	#end
+
+#end
+#end
+	
+</pre>

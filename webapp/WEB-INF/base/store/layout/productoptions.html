@@ -1,0 +1,48 @@
+<script type="text/javascript" src="$home/${catalogid}/admin/display/datetimepicker.js"></script>
+
+#set( $options  = $product.getAllOptions() )
+
+#if ( $options )
+<div class="storeoptions">
+#foreach( $option in $options )
+	<div class="storeoption">
+		#if( $option.dataType &&  $option.dataType == "list" )
+		 #set( $values = $store.getProperties($option.id) )
+		<label>$option.name</label><br>
+		 <select name="option.$!rowCount${option.id}">
+	 	 <option value=""></option>
+		  #foreach( $key in $values.keys() )
+		   <option value="$key" >$values.get($key)</option>
+		  #end
+	     </select>
+		#elseif( $option.dataType &&  $option.dataType == "text" ) 
+		<label>$option.name</label><br>
+		<input type="text" name="option.$!rowCount${option.id}" value="$!option.value" /> 
+		#elseif( $option.dataType &&  $option.dataType == "grouped" ) 
+		<input type="radio" name="optiongroup.$!rowCount" value="${option.id}" /> <label>$option.name</label>
+		#elseif( $option.dataType && $option.dataType == "multiline" )
+		<label>$option.name</label><br>
+		<textarea rows="3" cols="20" name="option.$!rowCount${option.id}">$!option.value</textarea>
+		#elseif( $option.dataType &&  $option.dataType == "date" ) 
+			<label>$option.name</label>
+			<input name="option.$!rowCount${option.id}" id="option.$!rowCount${option.id}" value="$!option.getValue()" size="8" type="text">
+			<a style="padding-right: 5px;"	href="javascript:NewCal('option.$!rowCount${option.id}','mmddyyyy',false,24)"><img	src="$home$cataloghome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+		#else
+		#if( $option.value)
+			#set( $val = $option.value)
+		#else
+			#set( $val = "true")
+		#end
+		<input type="checkbox" name="option.$!rowCount${option.id}" value="$val"><label>$option.name</label>
+		#end
+		
+		
+		#if( $option.getPriceSupport() )
+			for: $option.getPriceSupport().getRetailPrice()
+		#end
+
+	</div>
+<br>
+	#end
+</div>
+#end

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Please select the type of fields to edit">
+    <value>Please select the type of fields to edit</value>
+    <value locale="es">Por favor seleccione el tipo de campos para editar</value>
+  </property>
+</page>

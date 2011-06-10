@@ -1,0 +1,3 @@
+<page>
+	<page-action name="PaypalModule.handleIPN"/>
+</page>

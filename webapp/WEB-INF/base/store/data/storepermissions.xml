@@ -1,0 +1,5 @@
+<permissions name="ArchivePermissions">
+    <permission id="downloadasset" description="Download Asset" />
+    <permission id="viewasset" description="View Asset" />
+    
+</permissions>

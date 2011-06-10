@@ -1,0 +1,110 @@
+import org.openedit.store.*;
+import com.openedit.page.*;
+
+module = context.getPageValue("CatalogEditModule");
+editor = module.getStoreEditor(context);
+pageManager = module.pageManager;
+
+String existingproductid = context.getRequestParameter("existingproductid");
+Product product = null;
+if (existingproductid != null && existingproductid.length() > 0)
+{
+	product = editor.getProduct(existingproductid);
+}
+
+if (product == null)
+{
+	product = editor.createProductWithDefaults();
+	if (existingproductid != null && existingproductid.length() > 0)
+	{
+		product.setId(existingproductid);
+	}
+}
+
+if (editor.currentCategory != null) 
+{
+	product.addCatalog(editor.currentCategory);
+}
+
+String sourcepath = context.findValue("sourcepath");
+if (sourcepath != null && sourcepath.endsWith("/")) 
+{
+	boolean createAsFolder = Boolean.parseBoolean(context.findValue("createasfolder"));
+	if (createAsFolder)
+	{
+		sourcepath = sourcepath + product.id + "/";
+		//Make the directory for future use? Should not be needed
+//		String folderpath = "/" + editor.store.catalogId + "/data/assets/" + sourcepath;
+//		Page folder = pageManager.getPage(folderpath);
+//		pageManager.putPage(folder);
+	}
+	else
+	{
+		sourcepath = sourcepath + product.id + ".data";
+	}
+}
+
+product.setSourcePath(sourcepath);
+String xconfpath = editor.store.productArchive.buildXconfPath(product);
+Page sourcePage = pageManager.getPage(xconfpath);
+product.setSourcePage(sourcePage);
+product.setProperty("owner", context.userName);
+
+if (product.sourcePath != null && product.sourcePath.startsWith("newproducts/"))
+{
+	Category pcat = editor.store.getCategory("newproducts");
+	if (pcat == null)
+	{
+		pcat = new Category("newproducts", "Pending");
+		editor.store.categoryArchive.addChild(pcat);
+	}
+	Category cat = editor.store.getCategory("pending"+context.userName);
+	if( cat == null)
+	{
+		cat = new Category();
+		cat.setId("pending" + context.userName);
+		cat.setName(context.user.shortDescription );
+		pcat.addChild(cat);
+		editor.store.categoryArchive.saveCategory(cat);
+	}
+	product.addCatalog(cat);
+}
+
+editor.saveProduct(product);
+editor.setCurrentProduct(product);
+context.putPageValue("product", product);
+context.setRequestParameter("productid", product.id);
+context.setRequestParameter("sourcepath", product.sourcePath);
+module.saveProductProperties(context);
+
+category = product.defaultCategory;
+webTree = context.getPageValue("catalogTree");
+webTree.treeRenderer.setSelectedNode(category);
+webTree.treeRenderer.expandNode(category);
+
+context.putPageValue("category", category);
+moduleManager.execute("CatalogModule.loadCrumbs", context );
+
+String sendto = context.findValue("sendtoeditor");
+
+if (Boolean.parseBoolean(sendto))
+{
+	context.redirect("/" + editor.store.catalogId + "/admin/products/editor/" + product.id + ".html");
+}
+
+String tosourcepath = context.findValue("redirecttosourcepath");
+
+if (Boolean.parseBoolean(tosourcepath))
+{
+	String path = "/" + editor.store.catalogId + "/products/" + product.sourcePath;
+	if (path.endsWith("/"))
+	{
+		path = path + "index.html";
+	}
+	else
+	{
+		path = path + ".html";
+	}
+	context.redirect(path);
+}
+

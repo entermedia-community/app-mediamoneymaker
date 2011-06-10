@@ -1,0 +1,49 @@
+#set( $type = $context.getRequestParameter("type") )
+
+#if( $type == "catalog")
+		<title>[[Catalog Image Upload]]</title>
+#elseif ( $type == "product" )
+	<title>[[Product Image Upload]]</title>
+#else
+	<title>[[Item Image Upload]]</title>
+#end
+
+
+#if( $type == "category")
+	#set( $donelink = "$home$cataloghome/admin/categories/editor/${storeeditor.getCurrentCatalog()}.html?oe-action=CatalogEditModule.uploadCatalogImages" )
+#elseif ( $type == "product" )
+	#set( $donelink = "$home$cataloghome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadProductImages" )
+#else
+	#set( $donelink = "$home$cataloghome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadItemImages" )
+#end
+
+
+<form name="uploadimage" method="post" enctype="multipart/form-data" action="$donelink" onsubmit="window.close()" >
+		
+  <table class="standard-table" width="100%" cellspacing="0">
+  <tr>
+  	<td bgcolor="black"><div class="oe-module-title">UPLOAD $type.toUpperCase() [[IMAGE - Add New Image]]</div></td>
+  	<td bgcolor="black" align="right">
+	    <table border="0" cellspacing="5" cellpadding="5">
+    	<tr>
+    	<td><input class="standard-button" type="submit" name="Finish" value="[[Finish]]" ></td>
+    	</tr>
+    	</table>
+    </td>
+   </tr>
+   <tr>
+   	<td colspan="2">
+		<br><p>[[Images will be saved to the directory]] <b>[[thumb]]/</b>, <b>[[medium]]/</b> [[or]] <b>[[original]]/</b> [[directory]].</p>
+		<p> [[The image number will be appended to the file name such as]] <b>-3.jpg</b>.</p>
+		<p>
+					JPG [[Image]]: <select style="width: 170px;"  name="imageid.1" > 
+					<option></option>
+					#foreach( $imagetype in $storeeditor.getImageList() )
+						<option value="$imagetype.id">$imagetype.description</option>
+					#end
+					</select> <input type="file" size="30" name="file" > 
+		</p>			
+	 </td>
+	</tr>
+  </table>
+</form>

@@ -1,0 +1,39 @@
+#set( $image = "/$store.productPathFinder.idToPath($product.id)" )
+
+
+#set ($mediumend = "$home/media/catalogs/${store.catalogId}/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
+			#if( $hits )
+		    	#set( $prev = $hits.previousId($product.getId() ) )
+		    	#set( $next = $hits.nextId($product.getId() ) )
+		    	#if ( $prev )
+		    		#if ( $next )
+		            	<a href="$home/${catalogid}/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a>
+		            #else
+		            	<a href="$home/${catalogid}/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a><br/>
+					#end
+		    	#end
+		
+		        #if ( $next )
+		            <a href="$home/${catalogid}/products/${store.productPathFinder.idToPath($next)}.html">next&gt;</a><br>
+				#end
+			#end
+			<a style="border: 0px;" href="javascript:openWindow();"><img id="largeimage" src="$home$mediumend" border="0"><br/></a><br/>
+			<table border=0 cellpadding=0 cellspacing=0 width=165>
+				<tr>
+					<td valign=top class=relitems>RELATED ITEMS</td>
+				</tr>
+				<tr>	
+					<td valign=top class=rellist><font color="#9B814F">
+						#foreach( $catalog in $product.getDefaultCatalog().getParentCatalog().getChildren() )
+							<nobr><li type=square><a href="$home/${catalogid}/categories/${catalog.id}.html" class=links>$catalog.name</a></nobr></li>	
+						#end
+					</td>
+				</tr>		
+			</table>
+<script type="text/javascript" language="JavaScript">
+    function openWindow()
+    {
+
+        window.open("$home/${catalogid}/viewer.html?path=$home/media/catalogs/${store.catalogId}/downloads/preview/large/productimages/$product.sourcepath/thumb.jpg","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
+    }
+</script>

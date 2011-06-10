@@ -1,0 +1,43 @@
+57728@54800              |4X6                        |CHEESE GUYS                |CH GUYS 54800 5LBS FNCY SHRD  |
+59352@                   |4X6                        |DAVIS CREEK                |MUENSTER CHEESE               |
+57871@54810              |4X6                        |CHEESE GUYS                |CH GUYS 54810 5LBS FNCY SHR MX|
+57912@54815              |4X6                        |CHEESE GUYS                |CH GUYS 54815 5LBS FTHR MOZ PR|
+60960@                   |MISC                       |MISC                       |1ST PLACE 2006                |
+57727@54805              |4X6                        |CHEESE GUYS                |CH GUYS 54805 5LBS LMPS MOZ CS|
+56324@                   |4X6                        |DAVIS CREEK                |FEATHER SHREDDED MUENSTER CHS |
+30232@7468               |3X5                        |ALPHA GOLD                 |ALPHA GOLD 7468 LMPS MOZZ DICE|
+30233@7462               |3X5                        |ALPHA GOLD                 |ALPHA GOLD 7462 LMPS MOZZ SHRD|
+34273@7464               |3X5                        |ALPHA GOLD                 |ALPHA GOLD 7464 LMWM MOZZ DICE|
+25446@7465               |3X5                        |                           |ALPHA GOLD 7465 DICE MOZZ PROV|
+34274@7458               |3X5                        |ALPHA GOLD                 |ALPHA GOLD 7458 DICE TRI BLEND|
+30234@7463               |3X5                        |ALPHA GOLD                 |ALPHA GOLD 7463 WM MOZZ SHRED |
+40731@695645             |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 695645 MUEN MOZZ  |
+41996@158941             |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 158941 LMPS MOZ BR|
+30026@574139  430096     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 574139 LMPS MOZ MU|
+30016@590185  430094     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 590185 DICE PIZZA |
+30027@441767  430097     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 441767 LMPS MOZ PR|
+33879@780995  430098     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 780995 SHRD LMWM M|
+30017@569992             |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 569992 SPECIAL CHS|
+30018@537691  430099     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 537691 SHRD PIZZA |
+30019@529249  430092     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 529249 LMPS MOZ PR|
+30022@571636  430087     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 571636 DELUXE CHS |
+30020@514624  430091     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 514624 LMPS MOZ MU|
+30021@514616  430089     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 514616 LMPS MOZ DI|
+30024@661589  430088     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 661589 ITALIAN CHS|
+30025@654108  430100     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 654108 SHRD CHEESE|
+57740@110540             |4X6                        |VANTAGGIO                  |110540 VCUT WHT CHED & MUEN 5#|
+57743@250229             |4X6                        |VANTAGGIO                  |250229 SP CHS BLD LMPS MZ P 5#|
+57745@265250             |4X6                        |VANTAGGIO                  |265250 DLX CH BLD LMPS MZ P 5#|
+57747@266429             |4X6                        |VANTAGGIO                  |266429 SHR PREM CH BLND MJ  5#|
+61275@421812  430104     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 421812 FTHR SHRD M|
+57749@412660             |4X6                        |VANTAGGIO                  |412660 LMPS MOZZARELLA CH   5#|
+57752@414076             |4X6                        |VANTAGGIO                  |414076 LMWM MOZZ CHEESE     5#|
+57886@277429             |4X6                        |VANTAGGIO                  |277429 FTHR SHRD SUP CH BLD 5#|
+57246@105540             |4X6                        |VANTAGGIO                  |105540 V CUT CHED & LMP MOZ 5#|
+56150@193600  430102     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 193600 LMPS LMWM  |
+58967@413533             |4X6                        |VANTAGGIO                  |413533 DICED LMWM MOZZ CHS 5# |
+57646@850551             |4X6                        |                           |SHIELDS 850551 FTHR SHRD BRICK|
+57742@168440             |4X6                        |VANTAGGIO                  |168440 SHRD LMWM MOZZ CHS  5# |
+57739@106540             |4X6                        |VANTAGGIO                  |106540 V CUT CHED & LMP MOZ 5#|
+62404@679750  430095     |4X6                        |PRIMO GUSTO                |PRIMO GUSTO 679750 DICED MOZZ |
+57741@160420             |4X6                        |VANTAGGIO                  |160420 FTHR SHRED LMPS MOZ  5#|

@@ -1,0 +1,137 @@
+#set ( $catalog = $storeeditor.getCurrentCatalog() )
+<!-- script src="$home/system/javascript/scriptaculous.js?load=effects,dragdrop" type="text/javascript"></script -->
+
+<script language="javascript">
+	
+	//Ajax Enable these!
+	moveCatalogUp = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/admin/categories/move/up.html";
+		sform.submit();
+	}
+	moveCatalogDown = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/admin/categories/move/down.html";
+		sform.submit();
+	}
+	moveCatalog = function()
+	{
+		var sform = document.jumpform;
+		sform.categoryid2.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/admin/categories/move/aschild.html";
+		if( sform.categoryid2.value )
+		{
+			sform.submit();
+		}
+		else
+		{ 
+			alert("No Destination Selected.");
+		}
+	}
+	moveCatalogHere = function()
+	{
+		var sform = document.jumpform;
+		sform.categoryid2.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/admin/categories/move/asparent.html";
+		sform.submit();
+	}
+	sortCatalog = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/admin/categories/move/sort.html";
+		sform.submit();
+	}
+
+moveCatalogTree = new Object();
+moveCatalogTree.lastselected = "";
+moveCatalogTree.name = "moveCatalogTree";
+moveCatalogTree.jumpToNode = function(inUrl, inNodeId)
+{
+	this.selectRow( inNodeId );
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content.catalogid/admin/categories/move/select.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });	
+	//new Ajax.Updater("hidden-category-id", '$home/$content.catalogid/admin/categories/move/updatecategoryid.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });
+	//document.location = "$home/$content.catalogid/admin/categories/move/productcategories.html?cache=false&categoryid=" + inNodeId;
+	return false;
+}
+moveCatalogTree.toggleNode = function(inUrl,inTreeId, inNodeId)
+{
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content.catalogid/admin/categories/move/toggle.html', { parameters: {nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path", categoryid: inNodeId } });
+	return false;
+}
+moveCatalogTree.jumpAndOpenNode = function(inUrl,inTreeId, inNodeId)
+{
+	this.jumpToNode( inUrl, inNodeId );
+	//this.toggleNode( inUrl, inTreeId, inNodeId );
+	return false;
+}
+moveCatalogTree.selectRow = function( inNodeId )
+{
+	if( this.lastselected.length > 0 )
+	{
+		var thediv = document.getElementById(this.name + "treeitem" + this.lastselected);
+		if( thediv )
+		{
+			thediv.style.backgroundColor = "#ffffff";
+		}
+		thediv = document.getElementById(this.name + "treeitem" + inNodeId);
+		if( thediv )
+		{
+			thediv.style.backgroundColor = "#c0d2ec";
+		}
+	}
+	this.lastselected = inNodeId;
+}
+</script>
+
+<table><tr>
+	
+<td>
+	
+<h2>[[Move selected category into]]: </h2>
+  <form name="jumpform" id="jumpform" method="post" >
+		<input type=hidden name="categoryid" id="categoryid" value="$catalog.id" />
+		<input type=hidden name="categoryid2" id="categoryid2" />
+		<table  cellspacing="0" cellpadding="0">
+		<tr>
+		<td valign="top" width="300">
+			<div  style="padding: 0px; border:0px solid #000;">
+			<link rel="stylesheet" type="text/css" href="$home/system/styles/dtree.css">
+			$pages.include("/${catalogid}/admin/categories/move/tree.html" )
+			</div>
+		</td>
+		</tr>
+		<tr><td width="300">
+		<div class="oeactions">	   
+			<ul class="oeactionlist">
+				<li class="oeactionlistitem"><input name="ok" value="[[Save]]" type="button" onclick="moveCatalog()" /></li>
+				<!-- li class="oeactionlistitem"><a href="#" onclick="moveCatalogHere()" >Put As Parent</a></li -->
+			</ul>
+		</div>	
+		</td>
+		</tr>
+		</table>
+</form>
+
+</td><td>
+<form name="moveForm" action="movecatalog.html" method="post">
+
+<input style="margin-left: 25px;" type="image" title="[[Move Up]] "  src="$home/system/images/toolbar/moveup.jpg"  onclick="javascript:moveCatalogUp();"/><br>
+<input style="margin-left: 25px;" type="image" title="[[Move Down]]" src="$home/system/images/toolbar/movedown.jpg"  onclick="javascript:moveCatalogDown();"/>
+
+	<div class="oeactions">	   
+		<ul class="oeactionlist">
+			<li class="oeactionlistitem"><a href="#" onclick="sortCatalog()" >[[Sort Children Alphabetically]]</a></li>
+		</ul>
+	</div>
+
+	<input type=hidden name="categoryid" id="categoryid" value="$catalog.id" />
+</form>
+
+</td></tr></table>
+
+<p>[[Select the category you wish to move from the tree on the left. Then select parent destination category from the tree on the right and press save.]]</p>
