@@ -5,7 +5,7 @@ importPackage( Packages.java.io );
 importPackage( Packages.com.openedit.modules.update );
 
 
-var war = "http://dev.entermediasoftware.com/projects/mediamoneymaker/ROOT.war";
+var war = "http://dev.entermediasoftware.com/jenkins/job/app-mediamoneymaker/lastSuccessfulBuild/artifact/deploy/ROOT.war";
 
 var root = moduleManager.getBean("root").getAbsolutePath();
 var web = root + "/WEB-INF";
@@ -43,4 +43,9 @@ files.copyFiles( tmp + "/WEB-INF/base/store", root + "/WEB-INF/base/store");
 
 files.deleteAll(tmp);
 
-log.add("6. UGRADE COMPLETED");
+log.add("6. UGRADE COMPLETED");openedit.util );
+importPackage( Packages.java.util );
+importPackage( Packages.java.lang );
+importPackage( Packages.com.openedit.modules.update );
+
+

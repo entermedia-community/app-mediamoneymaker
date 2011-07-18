@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="default" name="mediamoneymaker">
+<project basedir="." default="default" name="app-mediamoneymaker">
 
   <target name="default" depends="clean,  source, update-dependencies, compile, junit, jar, javadoc, war"/>
   <target name="dependency" depends="default"/>
