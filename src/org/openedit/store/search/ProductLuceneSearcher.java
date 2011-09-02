@@ -30,7 +30,6 @@ import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
-import org.openedit.store.SearchFilter;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
@@ -699,7 +698,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		}
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		try
 		{
