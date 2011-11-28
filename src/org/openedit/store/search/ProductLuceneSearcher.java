@@ -30,6 +30,7 @@ import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
+import org.openedit.store.SearchFilter;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
@@ -83,12 +84,12 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		{
 			department = getStore().getCategory(withincatalog);
 			search.addMatches("category", withincatalog);
-			search.putInput("department", department.getId());
+			//search.putInput("department", department.getId());
 		}
 		cart.setLastVisitedCatalog(department);
 		
 		String type = inPageRequest.getRequestParameter("type");
-		search.putInput("type", type);
+		//search.putInput("type", type);
 
 		// Filter stuff
 		String include = inPageRequest.getRequestParameter("search.includefilter");
@@ -287,7 +288,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 
 		SearchQuery search = createSearchQuery();
 		search.setAndTogether(true);
-		search.putInput("query", query);
+//		search.putInput("query", query);
 
 		if (query != null)
 		{
@@ -445,29 +446,15 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	 */
 	public void reIndexAll(IndexWriter inWriter) throws OpenEditException
 	{
-		if (fieldRunningReindex)
-		{
-			throw new StoreException("Reindex is already running");
-		}
+		
 		try
 		{
 
-			fieldRunningReindex = true;
 			log.info("Listing all products");
 
-			// http://today.java.net/pub/a/today/2003/07/30/LuceneIntro.html?page=last&x-maxdepth=0
-			// File existing = buildIndexDir("A");
-			// if( IndexReader.indexExists(existing) )
-			// {
-			// getLiveSearcher(); //This allows people to search while we
-			// reindex. The getting would not be null
-			// }
+			indexAll(inWriter);
 
-			// List sourcepaths = getProductArchive().listAllSourcePaths();
-			File newIndex = buildIndexDir("working");
-			indexAll(newIndex);
-
-			log.info("Going to try a restore after the end of reindex. " + newIndex);
+			
 			
 		}
 		catch (IOException ex)
@@ -476,20 +463,13 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		}
 		finally
 		{
-			fieldRunningReindex = false;
+			//fieldRunningReindex = false;
 		}
 	}
 
-	protected void indexAll(File deadIndexDir) throws IOException, OpenEditException
+	protected void indexAll(IndexWriter writer) throws IOException, OpenEditException
 	{
-		new FileUtils().deleteAll(deadIndexDir);
-		deadIndexDir.mkdirs();
-		final IndexWriter writer = new IndexWriter(FSDirectory.getDirectory(deadIndexDir), false, getAnalyzer(), true);
-		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
-		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
-		// writer.mergeFactor = 10;
-		writer.setMergeFactor(100);
-		writer.setMaxBufferedDocs(2000);
+		
 		
 		try
 		{
@@ -504,17 +484,14 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			getProductPaths().clear();
 
 			log.info("Reindex started on with " + reindexer.getExecCount() + " products");
-			writer.optimize();
+			
 
 		}
 		catch (Exception e)
 		{
 			throw new OpenEditException(e);
 		}
-		finally
-		{
-			writer.close();
-		}
+		
 		// HitCollector
 		log.info("Reindex done");
 	}
@@ -698,7 +675,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		}
 	}
 
-	public void saveData(Data inData, User inUser)
+	public void saveData(Object inData, User inUser)
 	{
 		try
 		{

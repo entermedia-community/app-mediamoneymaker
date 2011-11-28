@@ -130,16 +130,16 @@ public class ProductLuceneIndexer
 //	public Document createFolderDoc(Page inDir, String inSourcePath, String inId)
 //	{
 //		Document doc = new Document();
-//		doc.add(new Field("datatype", "folder", Field.Store.YES, Field.Index.NO_NORMS));
+//		doc.add(new Field("datatype", "folder", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 //		
 //		Field id = new Field("id", inId, Field.Store.YES,
-//				Field.Index.TOKENIZED);
+//				Field.Index.ANALYZED);
 //		doc.add(id); // Why is this tokenized? Guess so we can find lower
 //		// case versions
 //		
-//		doc.add(new Field("name", inDir.getName(), Field.Store.YES, Field.Index.NO_NORMS));
+//		doc.add(new Field("name", inDir.getName(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 //
-//		doc.add(new Field("sourcepath", inSourcePath + "/", Field.Store.YES, Field.Index.NO_NORMS));
+//		doc.add(new Field("sourcepath", inSourcePath + "/", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 //		
 //		String[] dirs = inSourcePath.split("/");
 //		StringBuffer description = new StringBuffer();
@@ -149,7 +149,7 @@ public class ProductLuceneIndexer
 //			description.append(dirs[i]);
 //			description.append(' ');			
 //		}
-//		doc.add(new Field("description", description.toString(), Field.Store.NO, Field.Index.TOKENIZED));
+//		doc.add(new Field("description", description.toString(), Field.Store.NO, Field.Index.ANALYZED));
 //
 //		
 //		if (usesSearchSecurity())
@@ -178,13 +178,13 @@ public class ProductLuceneIndexer
 //
 //		
 //		String folderSourcePath = PathUtilities.extractDirectoryPath(inSourcePath) + "/";
-//		doc.add(new Field("foldersourcepath", folderSourcePath, Field.Store.YES, Field.Index.NO_NORMS));
+//		doc.add(new Field("foldersourcepath", folderSourcePath, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 //
 //		//for SF - Jobs
 //		String clientview = inDir.getProperty("clientview");
 //		if (("true").equals(clientview))
 //		{
-//			doc.add(new Field("clientview", "true", Field.Store.YES, Field.Index.NO_NORMS));
+//			doc.add(new Field("clientview", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 //		}
 //		
 //		return doc;
@@ -194,7 +194,7 @@ public class ProductLuceneIndexer
 	{
 		if (key != null && val != null)
 		{
-			doc.add(new Field(key, val, Field.Store.YES, Field.Index.NO_NORMS));	
+			doc.add(new Field(key, val, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));	
 		}
 	}
 	
@@ -207,26 +207,26 @@ public class ProductLuceneIndexer
 		{
 			datatype  = "original";
 		}
-		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NO_NORMS));
+		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 
 		
 		if(product.hasRelatedFiles()){  //TODO: Is this used anymore? Seems like related products should be enough
 			RelatedFile related = product.getPrimaryRelatedFile();
-			doc.add(new Field("primaryrelatedfile", related.getFilename(), Field.Store.YES, Field.Index.NO_NORMS));
+			doc.add(new Field("primaryrelatedfile", related.getFilename(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
 		Field id = new Field("id", product.getId(), Field.Store.YES,
-				Field.Index.TOKENIZED);
+				Field.Index.ANALYZED);
 		doc.add(id); // Why is this tokenized? Guess so we can find lower
 		// case versions
 
 		Field path = new Field("sourcepath", product.getSourcePath(),
-				Field.Store.YES, Field.Index.NO_NORMS);
+				Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
 		doc.add(path);
 		
 		String primaryfile = product.getProperty("primaryimagename");
 		if( primaryfile != null)
 		{
-			Field imagename = new Field("primaryimagename", primaryfile, Field.Store.YES, Field.Index.NO_NORMS);
+			Field imagename = new Field("primaryimagename", primaryfile, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
 			doc.add(imagename);
 		}
 		
@@ -235,19 +235,19 @@ public class ProductLuceneIndexer
 			product.setCatalogId(getStore().getCatalogId());
 		}
 		Field catalogid = new Field("catalogid", product.getCatalogId(),
-				Field.Store.YES, Field.Index.NO_NORMS);
+				Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
 		doc.add(catalogid);		
 
 		Money price = product.getYourPrice();
 		if (price != null)
 		{
 			doc.add(new Field("yourprice", price.toString(), Field.Store.YES,
-					Field.Index.NO_NORMS));
+					Field.Index.NOT_ANALYZED_NO_NORMS));
 			String shortprice = price.toShortString();
 			shortprice = shortprice.replaceAll("\\.", "");
 
 			doc.add(new Field("priceOrdering", pad(shortprice), Field.Store.NO,
-					Field.Index.NO_NORMS));
+					Field.Index.NOT_ANALYZED_NO_NORMS));
 
 			if (product.isOnSale())
 			{
@@ -255,7 +255,7 @@ public class ProductLuceneIndexer
 				if (regular != null)
 				{
 					doc.add(new Field("regularprice", regular.toString(),
-							Field.Store.YES, Field.Index.NO_NORMS));
+							Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public class ProductLuceneIndexer
 		if (product.getOrdering() != -1)
 		{
 			doc.add(new Field("ordering", Integer.toString(product
-					.getOrdering()), Field.Store.NO, Field.Index.NO_NORMS));
+					.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
 
 		Set catalogs = buildCatalogSet(product);
@@ -297,7 +297,7 @@ public class ProductLuceneIndexer
 		if (items.length() > 0)
 		{
 			doc.add(new Field("items", items.toString().trim(), Field.Store.NO,
-					Field.Index.TOKENIZED));
+					Field.Index.ANALYZED));
 		}
 		
 		String folderpath = product.getSourcePath();
@@ -306,7 +306,7 @@ public class ProductLuceneIndexer
 			folderpath = folderpath.substring(0, folderpath.length() - 1);
 		}
 		folderpath = PathUtilities.extractDirectoryPath(folderpath) + "/";
-		doc.add(new Field("foldersourcepath", folderpath, Field.Store.YES, Field.Index.NO_NORMS));
+		doc.add(new Field("foldersourcepath", folderpath, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 		
 		//for SF - Jobs
 		Page sourcePage = product.getSourcePage();
@@ -315,7 +315,7 @@ public class ProductLuceneIndexer
 			String clientview = sourcePage.getProperty("clientview");
 			if (("true").equals(clientview))
 			{
-				doc.add(new Field("clientview", "true", Field.Store.YES, Field.Index.NO_NORMS));
+				doc.add(new Field("clientview", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 			}
 		}
 		
@@ -348,7 +348,7 @@ public class ProductLuceneIndexer
 			buffer.append(" ");
 			buffer.append(allow);
 		}
-		inDoc.add(new Field(inPermission, buffer.toString(), Field.Store.YES, Field.Index.TOKENIZED));
+		inDoc.add(new Field(inPermission, buffer.toString(), Field.Store.YES, Field.Index.ANALYZED));
 	}
 	
 	protected void populatePermission(Document inDoc, Page inPage, String inPermission) throws OpenEditException
@@ -425,7 +425,7 @@ public class ProductLuceneIndexer
 						{
 							Date realdate = det.getDateFormat().parse(date);
 							prop = DateTools.dateToString(realdate, Resolution.SECOND);
-							inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.NO_NORMS));
+							inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 						}
 						catch (Exception ex)
 						{
@@ -440,20 +440,20 @@ public class ProductLuceneIndexer
 					try
 					{
 						String sortable = getNumberUtils().double2sortableStr(prop);
-						inDoc.add(new Field(det.getId() + "_sortable", sortable, Field.Store.YES, Field.Index.NO_NORMS));
+						inDoc.add(new Field(det.getId() + "_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 					}
 					finally
 					{
-						inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.NO_NORMS));
+						inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 					}
 				}
 				else if (det.isStored())
 				{
-					inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.TOKENIZED));
+					inDoc.add(new Field(det.getId(), prop, Field.Store.YES, Field.Index.ANALYZED));
 				}
 				else
 				{
-					inDoc.add(new Field(det.getId(), prop, Field.Store.NO, Field.Index.TOKENIZED));
+					inDoc.add(new Field(det.getId(), prop, Field.Store.NO, Field.Index.ANALYZED));
 				}
 			}
 			
@@ -462,11 +462,11 @@ public class ProductLuceneIndexer
 			{
 				if (Boolean.parseBoolean(prop))
 				{
-					inDoc.add(new Field(det.getId(), "true", Field.Store.YES, Field.Index.NO_NORMS));
+					inDoc.add(new Field(det.getId(), "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 				else
 				{
-					inDoc.add(new Field(det.getId(), "false", Field.Store.YES, Field.Index.NO_NORMS));
+					inDoc.add(new Field(det.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 
 			}
@@ -536,11 +536,11 @@ public class ProductLuceneIndexer
 			String val = DateTools.dateToString(tosave, Resolution.SECOND);
 			if(inIsStored)
 			{
-				doc.add(new Field(inDetail.getId(), val, Field.Store.YES, Field.Index.NO_NORMS));
+				doc.add(new Field(inDetail.getId(), val, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 			}
 			else
 			{
-				doc.add(new Field(inDetail.getId(), val, Field.Store.NO, Field.Index.NO_NORMS));
+				doc.add(new Field(inDetail.getId(), val, Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 			}
 		}
 	}
@@ -573,17 +573,17 @@ public class ProductLuceneIndexer
 		{
 			if (inIsStored)
 			{
-				doc.add(new Field(inType, buffer.toString(), Field.Store.YES, Field.Index.TOKENIZED));
+				doc.add(new Field(inType, buffer.toString(), Field.Store.YES, Field.Index.ANALYZED));
 			}
 			else
 			{
-				doc.add(new Field(inType, buffer.toString(), Field.Store.NO, Field.Index.TOKENIZED));
+				doc.add(new Field(inType, buffer.toString(), Field.Store.NO, Field.Index.ANALYZED));
 			}
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new
 		 * Field("department", item.getDepartment(), Field.Store.YES,
-		 * Field.Index.TOKENIZED)); }
+		 * Field.Index.ANALYZED)); }
 		 */
 
 	}
@@ -601,12 +601,12 @@ public class ProductLuceneIndexer
 
 		if (buffer.length() > 0)
 		{
-			doc.add(new Field("category-exact", buffer.toString(), Field.Store.NO, Field.Index.TOKENIZED));
+			doc.add(new Field("category-exact", buffer.toString(), Field.Store.NO, Field.Index.ANALYZED));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new
 		 * Field("department", item.getDepartment(), Field.Store.YES,
-		 * Field.Index.TOKENIZED)); }
+		 * Field.Index.ANALYZED)); }
 		 */
 	}
 
@@ -614,9 +614,9 @@ public class ProductLuceneIndexer
 	{
 		if (product.getName() != null)
 		{
-			// This cannot be used in sorts since it is TOKENIZED. For sorts use 
-			doc.add(new Field("name", product.getName(), Field.Store.YES, Field.Index.TOKENIZED));
-			doc.add(new Field("name_sortable", product.getName().toLowerCase(), Field.Store.NO, Field.Index.NO_NORMS));
+			// This cannot be used in sorts since it is ANALYZED. For sorts use 
+			doc.add(new Field("name", product.getName(), Field.Store.YES, Field.Index.ANALYZED));
+			doc.add(new Field("name_sortable", product.getName().toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
 		String htmlPath = product.getSourcePath() + ".html";
 		// Low level reading in of text
@@ -664,10 +664,10 @@ public class ProductLuceneIndexer
 		
 		try
 		{
-			String result = fixInvalidCharacters(fullDesc.toString());
-			doc.add(new Field("description", result, Field.Store.NO, Field.Index.TOKENIZED));
+			//String result = fixInvalidCharacters(fullDesc.toString());
+			doc.add(new Field("description", fullDesc.toString(), Field.Store.NO, Field.Index.ANALYZED));
 		}
-		catch( IOException ex)
+		catch( Exception ex)
 		{
 			throw new StoreException(ex);
 		}
@@ -681,37 +681,37 @@ public class ProductLuceneIndexer
 	 * @return
 	 * @throws IOException
 	 */	
-	protected String fixInvalidCharacters(String inString) throws IOException
-	{
-		StringBuffer fixed = new StringBuffer(inString.length() + 20);
-		RecordLookUpAnalyzer analyser = new RecordLookUpAnalyzer();
-		TokenStream stream = analyser.tokenStream("description", new StringReader(inString));
-		Token token = stream.next();
-		while (token != null)
-		{
-			char[] text = token.termBuffer();
-			if (text.length > 3 )
-			{
-				// loop over all the words until we find an invalid one
-				for (int i = 0; i < text.length; i++)
-				{
-					fixed.append(text[i]);
-					//Checking for Y in the middle of words: harleydavidson will now 
-					//index as harley davidson.
-					if( text[i] == 'y')
-					{
-						break;
-					}
-				}
-				fixed.append(' ');
-			}
-			// Always put the original back in there
-			fixed.append(text);
-			fixed.append(' ');
-			token = stream.next();
-		}
-		return fixed.toString();
-	}
+//	protected String fixInvalidCharacters(String inString) throws IOException
+//	{
+//		StringBuffer fixed = new StringBuffer(inString.length() + 20);
+//		RecordLookUpAnalyzer analyser = new RecordLookUpAnalyzer();
+//		TokenStream stream = analyser.tokenStream("description", new StringReader(inString));
+//		Token token = stream.;
+//		while (token != null)
+//		{
+//			char[] text = token.termBuffer();
+//			if (text.length > 3 )
+//			{
+//				// loop over all the words until we find an invalid one
+//				for (int i = 0; i < text.length; i++)
+//				{
+//					fixed.append(text[i]);
+//					//Checking for Y in the middle of words: harleydavidson will now 
+//					//index as harley davidson.
+//					if( text[i] == 'y')
+//					{
+//						break;
+//					}
+//				}
+//				fixed.append(' ');
+//			}
+//			// Always put the original back in there
+//			fixed.append(text);
+//			fixed.append(' ');
+//			token = stream.next();
+//		}
+//		return fixed.toString();
+//	}
 
 	protected void populateKeywords(StringBuffer inFullDesc, Product inProduct, PropertyDetails inDetails) throws StoreException
 	{

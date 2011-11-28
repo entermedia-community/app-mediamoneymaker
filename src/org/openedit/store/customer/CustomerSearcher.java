@@ -5,7 +5,6 @@ package org.openedit.store.customer;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +36,7 @@ public class CustomerSearcher extends BaseLuceneSearcher
 	/* (non-javadoc)
 	 * @see com.openedit.modules.search.BaseLuceneSearch#reIndexAll() 
 	 */
-	public void reIndexAll(IndexWriter inWriter)
+	public void reIndexAll(IndexWriter inWriter) throws OpenEditException
 	{
 		log.info("Reindex of customer users directory");
 		//http://today.java.net/pub/a/today/2003/07/30/LuceneIntro.html?page=last&x-maxdepth=0
@@ -55,38 +54,49 @@ public class CustomerSearcher extends BaseLuceneSearcher
 				return false;
 			}
 		});
-		try
+		
+		for (int i = 0; i < usersxml.length; i++)
 		{
-			for (int i = 0; i < usersxml.length; i++)
+			Document doc = new Document();
+			File xconf = usersxml[i];
+			String username = PathUtilities.extractPageName(xconf.getPath());
+			doc.add( new Field( User.USERNAME_PROPERTY, username, Store.YES, Index.ANALYZED ) );
+			Customer customer = getCustomerArchive().getCustomer(username);
+			//make sure its loaded
+			customer.getUser().getPassword();
+			
+			String phone = customer.cleanPhoneNumber();
+			if( phone != null)
 			{
-				Document doc = new Document();
-				File xconf = usersxml[i];
-				String username = PathUtilities.extractPageName(xconf.getPath());
-				doc.add( new Field( User.USERNAME_PROPERTY, username, Store.YES, Index.ANALYZED ) );
-				Customer customer = getCustomerArchive().getCustomer(username);
-				//make sure its loaded
-				customer.getUser().getPassword();
-				
-				String phone = customer.cleanPhoneNumber();
-				if( phone != null)
-				{
-					doc.add( new Field( "Phone1",phone , Store.YES, Index.ANALYZED) ); //If tokenized then we use our lowercase analyser
-				}
-				
-				String last = customer.getUser().getLastName();
-				if( last != null)
-				{
-					//TODO: We should not have to lower case this since we have a lower casing analyser
-					doc.add( new Field( "lastName",last, Store.YES, Index.ANALYZED) );
-				}
-				inWriter.addDocument(doc);
+				doc.add( new Field( "Phone1",phone , Store.YES, Index.ANALYZED) ); //If tokenized then we use our lowercase analyser
 			}
-			inWriter.optimize();
-			inWriter.close();
-		}
-		catch(IOException ex)
-		{
-			throw new OpenEditException(ex);
+			
+			String last = customer.getUser().getLastName();
+			if( last != null)
+			{
+				//TODO: We should not have to lower case this since we have a lower casing analyser
+				doc.add( new Field( "lastName",last, Store.YES, Index.ANALYZED) );
+			}
+
+//			
+//			for (Iterator iter = customer.getUser().getProperties().keySet().iterator(); iter.hasNext();)
+//			{
+//				String key = (String) iter.next();
+//				String value = (String)customer.getUser().get(key);
+//				if ( value != null)
+//				{
+//					if ( key.equals( Customer.PHONE1 ) )
+//					{
+//						doc.add( new Field( key, customer.cleanPhoneNumber(), Store.YES, Index.NO_NORMS) );
+//					}
+//					else
+//					{
+//						doc.add( new Field( key, value, Store.YES, Index.NO_NORMS ) );
+//					}
+//				}
+//			}
+		
+
 		}
 	}
 

@@ -61,7 +61,7 @@ public class OrderTest extends StoreTestCase {
 
 		store.getOrderSearcher().reIndexAll();
 
-		Collection hits = store.getOrderSearcher().search("customer:admin");
+		Collection hits = store.getOrderSearcher().search("customer","admin");
 		assertTrue(hits.size() > 0);
 	}
 
@@ -198,7 +198,7 @@ public class OrderTest extends StoreTestCase {
 
 		store.getOrderSearcher().reIndexAll();
 
-		Collection hits = store.getOrderSearcher().search("customer:admin");
+		Collection hits = store.getOrderSearcher().search("customer","admin");
 		assertTrue(hits.size() > 0);
 
 	}

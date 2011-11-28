@@ -85,20 +85,7 @@ public class ProductLuceneIndexAll extends ProductProcessor
 	{
 		IndexWriter writer = getWriter();
 		long ramSizeInBytes = writer.ramSizeInBytes();
-		if (ramSizeInBytes > 1024 * 350) // flush every
-		// 35 megs
-		{
-			log.info("Flush writer in reindex mem: " + ramSizeInBytes
-					+ " finished " + getExecCount() + " records ");
-			try
-			{
-				writer.flush();
-			} catch (Exception e)
-			{
-				throw new OpenEditException(e);
-			}
-			getProductArchive().clearProducts();
-		}
+		
 
 		Product product = getProductArchive().getProductBySourcePath(inSourcePath);
 		
