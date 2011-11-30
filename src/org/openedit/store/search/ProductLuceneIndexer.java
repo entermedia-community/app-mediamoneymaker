@@ -210,10 +210,7 @@ public class ProductLuceneIndexer
 		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 
 		
-		if(product.hasRelatedFiles()){  //TODO: Is this used anymore? Seems like related products should be enough
-			RelatedFile related = product.getPrimaryRelatedFile();
-			doc.add(new Field("primaryrelatedfile", related.getFilename(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-		}
+		
 		Field id = new Field("id", product.getId(), Field.Store.YES,
 				Field.Index.ANALYZED);
 		doc.add(id); // Why is this tokenized? Guess so we can find lower

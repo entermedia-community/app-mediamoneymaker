@@ -33,7 +33,7 @@ import org.openedit.store.orders.OrderProcessor;
 import org.openedit.store.orders.OrderSearcher;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.process.ElectronicOrderManager;
-import org.openedit.store.products.RelatedProduct;
+
 import org.openedit.store.search.ProductSearcher;
 import org.openedit.store.search.ProductSecurityArchive;
 import org.openedit.store.search.SearchFilterArchive;
@@ -419,56 +419,9 @@ public class Store {
 
 	// returns all of the related products in a map keyed by the catalogs
 
-	public Map getRelatedProductMap(String inProductId) throws StoreException {
-		Map relatedMap = new HashMap();
-		Product p = getProduct(inProductId);
-		if (p != null) {
-			Collection relatedProductIds = p.getRelatedProducts();
-			for (Iterator iter = relatedProductIds.iterator(); iter.hasNext();) {
-				RelatedProduct related = (RelatedProduct)iter.next();
-				Product current = getProduct(related.getRelatedToProductId());
-				if (current != null) {
-					List catalogs = current.getCategories();
-					for (Iterator iterator = catalogs.iterator(); iterator
-							.hasNext();) {
-						Category cat = (Category) iterator.next();
-						ArrayList l = (ArrayList) relatedMap.get(cat);
-						if (l == null) {
-							l = new ArrayList();
-							relatedMap.put(cat, l);
-						}
-						l.add(current);
-					}
-				}
-			}
-		}
-		return relatedMap;
-	}
+	
 
-	public List getRelatedProductsInCategory(String inProductId,
-			String inCatalogId) throws StoreException {
-		Product p = getProduct(inProductId);
-		ArrayList list = new ArrayList();
-		if (p != null) {
-			Collection relatedProductIds = p.getRelatedProducts();
-
-			for (Iterator iter = relatedProductIds.iterator(); iter.hasNext();) {
-				RelatedProduct related = (RelatedProduct)iter.next();
-				
-				Product current = getProduct(related.getRelatedToProductId());
-				if (current != null) {
-					Category category = getCatalog(inCatalogId);
-					if (category != null) {
-						if (current.isInCatalog(category)) {
-							list.add(current);
-						}
-					}
-				}
-			}
-		}
-		return list;
-
-	}
+	
 
 	/**
 	 * 

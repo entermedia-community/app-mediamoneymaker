@@ -10,7 +10,6 @@ import org.openedit.store.Price;
 import org.openedit.store.PriceSupport;
 import org.openedit.store.Product;
 import org.openedit.store.StoreTestCase;
-import org.openedit.store.products.RelatedProduct;
 
 /**
  * @author cburkey
@@ -113,38 +112,5 @@ public class ProductEditTest extends StoreTestCase
 		getStore().saveProduct(product);
 	}
 
-	public void testEditRelatedProducts() throws Exception
-	{
-		Product product = getStore().getProduct("1");
-		assertNotNull(product);
-	//	assertTrue(product.getRelatedProducts().size() ==0);
-		Product product2 = new Product();
-		product2.setSourcePath("relatedproduct.data");
-		product2.setName("A test product");
-		product2.setId("relatedproduct");	
-		getStore().saveProduct(product2);
-		
-		RelatedProduct relationship = new RelatedProduct();
-		relationship.setType("insert");		
-		relationship.setRelatedToProductId("relatedproduct");
-		product.addRelatedProduct(relationship);
-		getStore().saveProduct(product);
-		
-		try
-		{
-			getStore().clearProducts();
-	
-			product = getStore().getProduct("1");
-			assertEquals("Number of related products", 1, product.getRelatedProducts().size());
-			relationship = (RelatedProduct)product.getRelatedProducts().iterator().next();
-			assertEquals("insert", relationship.getType());
-			assertEquals("relatedproduct", relationship.getRelatedToProductId());
-			
-		}
-		finally
-		{
-			product.clearRelatedProducts();
-			getStore().saveProduct(product);
-		}
-	}
+
 }

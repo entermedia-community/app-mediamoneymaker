@@ -33,7 +33,6 @@ import org.openedit.store.RelatedFile;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
-import org.openedit.store.products.RelatedProduct;
 
 import com.openedit.OpenEditException;
 import com.openedit.config.Configuration;
@@ -326,8 +325,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 
 		loadOptions(inProduct, productConfig);
 
-		loadRelatedProducts(inProduct, productConfig);
-		loadRelatedFiles(inProduct, productConfig);
+	
 		return true;
 	}
 
@@ -371,61 +369,10 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		}
 	}
 
-	protected void loadRelatedProducts(Product inProduct, Configuration inProductConfig)
-	{
-		inProduct.clearRelatedProducts();
-		Configuration relatedProductsElem = inProductConfig.getChild("related-products");
-		if (relatedProductsElem != null)
-		{
-			for (Iterator iter = relatedProductsElem.getChildIterator("product"); iter.hasNext();)
-			{
-				Configuration relatedProdConfig = (Configuration) iter.next();
-				RelatedProduct related  = new RelatedProduct();
-				related.setProductId(inProduct.getId());
-
-				String id = relatedProdConfig.getAttribute("id");
-				related.setRelatedToProductId(id);
-
-				String type = relatedProdConfig.getAttribute("type");
-				related.setType(type);
-
-				String catid = relatedProdConfig.getAttribute("catalogid");
-				if( catid == null)
-				{
-					catid = getCatalogId();
-				}
-				related.setRelatedToCatalogId(catid);
-				inProduct.addRelatedProduct(related);
-			}
-		}
-	}
 	
 	
 	
-	protected void loadRelatedFiles(Product inProduct, Configuration inProductConfig)
-	{
-		inProduct.clearRelatedFiles();
-		Configuration relatedFiles = inProductConfig.getChild("related-files");
-		if (relatedFiles != null)
-		{
-			for (Iterator iter = relatedFiles.getChildIterator("file"); iter.hasNext();)
-			{
-				Configuration relatedProdConfig = (Configuration) iter.next();
-				String id = relatedProdConfig.getAttribute("id");
-				String type = relatedProdConfig.getAttribute("type");
-				String name = relatedProdConfig.getAttribute("name");
-				String path = relatedProdConfig.getAttribute("path");
-				RelatedFile related = new RelatedFile();
-				related.setPrimary(Boolean.parseBoolean(relatedProdConfig.getAttribute("primary")));
-				related.setFilename(path);
-				inProduct.addRelatedFile(related);		
-			}
-			
-			
-		}
-			
-		
-	}
+	
 	
 	
 	public void saveProduct(Product inProduct) throws StoreException
@@ -561,29 +508,11 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 
 		saveOptions(inProduct.getOptions(), productelm);
 
-		saveRelatedProducts(inProduct, productelm);
-		saveRelatedFiles(inProduct, productelm);
+	
+	
 	}
 
-	protected void saveRelatedFiles(Product inProduct, Element inProductElement) {
-		deleteElements(inProductElement, "related-files");
-		if (inProduct.hasRelatedFiles() )
-		{
-			Element relatedProductsElem = inProductElement.addElement("related-files");
-			for (Iterator iter = inProduct.getRelatedFiles().iterator(); iter.hasNext();)
-			{
-				RelatedFile related = (RelatedFile) iter.next();
-				Element e= relatedProductsElem.addElement("file");
-				e.addAttribute("primary", Boolean.toString(related.isPrimary()));
-				e.addAttribute("path", related.getFilename());
-				
-				
-			}
-			
-			
-		}
-		
-	}
+	
 
 	protected boolean hasProperty(Element inRootElement, String inName)
 	{
@@ -712,23 +641,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		}
 	}
 
-	protected void saveRelatedProducts(Product inProduct, Element inProductElement)
-	{
-		deleteElements(inProductElement, "related-products");
-		if (inProduct.hasRelatedProducts() )
-		{
-			Element relatedProductsElem = inProductElement.addElement("related-products");
-			for (Iterator iter = inProduct.getRelatedProducts().iterator(); iter.hasNext();)
-			{
-				RelatedProduct related = (RelatedProduct) iter.next();
-				Element e= relatedProductsElem.addElement("product");
-				e.addAttribute("id", related.getRelatedToProductId());
-				String catid = related.getRelatedToCatalogId();
-				e.addAttribute("catalogid", catid);
-				e.addAttribute("type", related.getType());
-			}
-		}
-	}
+	
 
 	protected void loadCatalogs(Product inProduct, Configuration inProductConfig) throws StoreException
 	{

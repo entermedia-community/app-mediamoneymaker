@@ -20,7 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
-import org.openedit.store.products.RelatedProduct;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -1001,10 +1000,7 @@ public class Product implements Data
 		return null;
 	}
 
-    public boolean isRelated(RelatedProduct inId){
-    	return getRelatedProducts().contains(inId);
-    }
-	
+  
 	public void setKeywords(List inKeywords)
 	{
 		fieldKeywords = inKeywords;
@@ -1084,11 +1080,7 @@ public class Product implements Data
 			product.addKeyword((String)iterator.next());
 		}
 
-		product.getRelatedProducts().clear();
-	    for (Iterator iterator = getRelatedProducts().iterator(); iterator.hasNext();) {
-			product.addRelatedProduct((RelatedProduct)iterator.next());
-		}
-		
+	
 		return product;
 	}
 	
@@ -1143,16 +1135,7 @@ public class Product implements Data
 		return name;
 	}
 
-	public void addRelatedProduct(RelatedProduct inRelationship) 
-	{
-		if( inRelationship.getRelatedToProductId().equals(getId()) && inRelationship.getRelatedToCatalogId().equals(getCatalogId()))
-		{
-			log.error("Can not relate product to itself" + getId());
-			return;
-		}
-		inRelationship.setProductId(getId());
-		getRelatedProducts().add(inRelationship);
-	}
+
 
 	public Collection getRelatedProducts() 
 	{
@@ -1163,41 +1146,6 @@ public class Product implements Data
 		return fieldRelatedProducts;
 	}
 
-	public void removeRelatedProduct(String inCatalogId, String productid)
-	{
-		RelatedProduct toRemove = null;
-		for (Iterator iterator = getRelatedProducts().iterator(); iterator.hasNext();) 
-		{
-			RelatedProduct related = (RelatedProduct) iterator.next();
-			if(related.getRelatedToProductId().equals(productid) && inCatalogId.equals(related.getRelatedToCatalogId()))
-			{
-				toRemove = related;
-				break;
-			}
-		}
-		if(toRemove != null)
-		{
-			getRelatedProducts().remove(toRemove);
-		}
-		else
-		{
-			log.error("Could not find " + productid);
-		}
-		
-	}
-	
-	public List getRelatedProducts(String inType) {
-		ArrayList list = new ArrayList();
-		for (Iterator iterator = getRelatedProducts().iterator(); iterator
-				.hasNext();) {
-			RelatedProduct product = (RelatedProduct) iterator.next();
-			if(inType.equals(product.getType())){
-				list.add(product);
-			}
-		}
-		return list;
-
-	}
 
 	public void clearRelatedProducts() {
 		setRelatedProducts(null);
@@ -1208,45 +1156,8 @@ public class Product implements Data
 		fieldRelatedProducts = inRelatedProducts;
 	}
 
-	public boolean isRelated(String inString) {
-	for (Iterator iterator = getRelatedProducts().iterator(); iterator.hasNext();) {
-		RelatedProduct p = (RelatedProduct) iterator.next();
-		if(p.getRelatedToProductId().equals(inString)){
-			return true;
-		}
-	}
-	return false;
-	}
-
-	public void addRelatedFile(RelatedFile file) {
-		getRelatedFiles().add(file);
 	
-	}
-
-	public boolean hasRelatedFiles() {
-		return getRelatedFiles().size() >0;
-	}
-
 	
-	public void clearRelatedFiles() {
-		setRelatedFiles(null);
-		
-	}
-
-	public RelatedFile getPrimaryRelatedFile() {
-		
-		for (Iterator iterator = getRelatedFiles().iterator(); iterator.hasNext();) {
-			RelatedFile file = (RelatedFile) iterator.next();
-			if(file.isPrimary()){
-				return file;
-			}
-		}
-		if(getRelatedFiles().size() >0){
-			return (RelatedFile)getRelatedFiles().get(0);
-		}
-		return null;
-		
-	}
 	public String getMediaName()
 	{
 		String primaryImageName = getProperty("primaryimagename");
