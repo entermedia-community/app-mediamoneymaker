@@ -349,4 +349,10 @@ public class Customer implements Data {
 		return getUser().getProperties();
 	}
 
+	@Override
+	public void setProperties(Map<String, String> inProperties) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

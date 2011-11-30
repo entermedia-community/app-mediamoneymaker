@@ -43,7 +43,7 @@ files.copyFiles( tmp + "/WEB-INF/base/store", root + "/WEB-INF/base/store");
 
 files.deleteAll(tmp);
 
-log.add("6. UGRADE COMPLETED");openedit.util );
+log.add("6. UGRADE COMPLETED");
 importPackage( Packages.java.util );
 importPackage( Packages.java.lang );
 importPackage( Packages.com.openedit.modules.update );
