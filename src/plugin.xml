@@ -62,6 +62,7 @@
 		<property name="storeMediaManager"><ref bean="storeMediaManager"/></property>
 		<property name="productSecurityArchive"><ref bean="productSecurityArchive" /></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
+				<property name="pageManager"><ref bean="pageManager"/></property>
 		
   	</bean> 
 

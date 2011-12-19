@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -675,7 +676,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		}
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		try
 		{
@@ -780,4 +781,12 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	return new Product();
 	}
 	
+	
+	@Override
+	public void saveAllData(Collection inAll, User inUser) {
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
+			Data object = (Data) iterator.next();
+			saveData(object, null);
+		}
+	}
 }
