@@ -683,6 +683,12 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			if (inData instanceof Product)
 			{
 				Product product = (Product) inData;
+				if(product.getId() == null){
+					product.setId(getProductArchive().nextProductNumber());
+				}
+				if(product.getSourcePath() == null){
+					product.setSourcePath(product.getId());
+				}
 				getProductArchive().saveProduct(product);
 				updateIndex(product);
 			}
