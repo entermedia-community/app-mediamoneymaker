@@ -1,7 +1,7 @@
 #set( $image = "/$store.productPathFinder.idToPath($product.id)" )
 
 
-#set ($mediumend = "$home/media/catalogs/${store.catalogId}/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
+#set ($mediumend = "$home/${store.catalogId}/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
 			#if( $hits )
 		    	#set( $prev = $hits.previousId($product.getId() ) )
 		    	#set( $next = $hits.nextId($product.getId() ) )
@@ -34,6 +34,6 @@
     function openWindow()
     {
 
-        window.open("$home/${catalogid}/viewer.html?path=$home/media/catalogs/${store.catalogId}/downloads/preview/large/productimages/$product.sourcepath/thumb.jpg","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
+        window.open("$home/${catalogid}/viewer.html?path=$home/${store.catalogId}/downloads/preview/large/productimages/$product.sourcepath/thumb.jpg","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
     }
 </script>

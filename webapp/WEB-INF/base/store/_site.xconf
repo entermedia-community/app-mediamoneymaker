@@ -1,8 +1,7 @@
 <page>
 		<property name="catalogid">store</property>
-		<property name="mediacatalogid">media/catalogs/public</property>
-				<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
-		
+		<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+	
 		<property name="editable">false</property>
 		<property name="productName">OpenEdit eCommerce</property>
 		<property name="continueShoppingUrl">/index.html</property>
