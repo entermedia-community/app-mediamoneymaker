@@ -264,7 +264,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		}
 
 		String sourcepath = "/productimages/" + prod.getSourcePath();
-		String path = "/WEB-INF/data/media/catalogs/" + store.getCatalogId()
+		String path = "/WEB-INF/data/" + store.getCatalogId()
 				+ "/originals/" + sourcepath + "/original.jpg";
 
 		properties.saveFirstFileAs(path, inContext.getUser());

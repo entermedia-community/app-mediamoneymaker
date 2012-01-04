@@ -125,10 +125,10 @@ public class Store {
 	
 	
 	public String getLinkToThumb(String sourcepath){
-		return "/" + getStoreMediaManager().getMediaArchive().getCatalogId() + "/downloads/preview/thumb/productimages/" + sourcepath + "/thumb.jpg";
+		return "/" + getCatalogId() + "/downloads/preview/thumb/productimages/" + sourcepath + "/thumb.jpg";
 	}
 	public String getLinkToMedium(String sourcepath){
-		return "/" + getStoreMediaManager().getMediaArchive().getCatalogId() + "/downloads/preview/medium/productimages/" + sourcepath + "/thumb.jpg";
+		return "/" + getCatalogId() + "/downloads/preview/medium/productimages/" + sourcepath + "/thumb.jpg";
 	}
 	public ProductSecurityArchive getProductSecurityArchive() {
 		return fieldProductSecurityArchive;
