@@ -1,7 +1,7 @@
 #set( $image = "/$store.productPathFinder.idToPath($product.id)" )
 
 
-#set ($mediumend = "$home/${store.catalogId}/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
+#set ($mediumend = "$home/media/catalogs/${store.catalogId}/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
 			#if( $hits )
 		    	#set( $prev = $hits.previousId($product.getId() ) )
 		    	#set( $next = $hits.nextId($product.getId() ) )

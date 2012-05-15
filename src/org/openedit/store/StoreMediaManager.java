@@ -23,7 +23,7 @@ public class StoreMediaManager {
 	}
 	public MediaArchive getMediaArchive() {
 		if (fieldMediaArchive == null) {
-			String mediacatid = getStore().getCatalogId();
+			String mediacatid = "media/catalogs/" + getStore().getCatalogId();
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(mediacatid, "mediaArchive");
 		}
 		return fieldMediaArchive;
