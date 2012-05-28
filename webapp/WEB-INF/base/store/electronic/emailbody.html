@@ -16,7 +16,7 @@
 	<td>		
 	#set( $id = $context.getRequestParameter("orderid") )
 	#if( $content.hostName )
-		<a href="http://$content.hostName/${catalogid}/admin/orders/orderdetail.html?orderNumber=$id">$id</a>
+		<a href="http://$content.hostName$apphome/admin/orders/orderdetail.html?orderNumber=$id">$id</a>
 	#else
 		$id
 	#end	
@@ -45,7 +45,7 @@
 <br>
 <b>Contact Information</b>
 <br>
-$pages.stream("/${catalogid}/customers/contactinfo.html")
+$pages.stream("$apphome/customers/contactinfo.html")
 
 
 </body>

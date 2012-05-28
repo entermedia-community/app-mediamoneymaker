@@ -1,4 +1,4 @@
-$pages.stream("/${catalogid}/search/search.html")
+$pages.stream("$apphome/search/search.html")
 
 #if ( $catalog )
 <div class="cataloglistborder">
@@ -13,7 +13,7 @@ $pages.stream("/${catalogid}/search/search.html")
 #if( $listing )
         <tr>
         <td valign=top class=cart2>
-				<nobr><a  href="$home/${catalogid}/categories/${listing.id}.html" class=$classcss>$listing.name</a></nobr><br>
+				<nobr><a  href="$home$apphome/categories/${listing.id}.html" class=$classcss>$listing.name</a></nobr><br>
         </td>
         </tr>
 
@@ -29,7 +29,7 @@ $pages.stream("/${catalogid}/search/search.html")
 				#if ($content.url-prefix)
 				  <a  href="${content.url-prefix}${subcat.id}.html" class=$classcss>$subcat.name</a>
 				#else
-				  <a  href="$home/${catalogid}/categories/${subcat.id}.html" class=$classcss>$subcat.name</a>
+				  <a  href="$home$apphome/categories/${subcat.id}.html" class=$classcss>$subcat.name</a>
 				#end
 				</nobr><br>
         </td>

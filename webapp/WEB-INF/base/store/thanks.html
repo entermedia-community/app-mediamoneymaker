@@ -9,16 +9,16 @@
  
  <p>Your order is complete: </p>
 
- $pages.stream("/${catalogid}/orders/listing.html")
+ $pages.stream("$apphome/orders/listing.html")
 
  
  #if ( $cart.hasZeroSubTotal() )
 
  #else																	
-	$pages.stream("/${catalogid}/orders/subtotal.html")
+	$pages.stream("$apphome/orders/subtotal.html")
  #end
  
-	$pages.stream("/${catalogid}/customers/contactinfo.html")
+	$pages.stream("$apphome/customers/contactinfo.html")
 
 #else
 
@@ -36,6 +36,6 @@
 
 <p><br><b><a href="$home$content.continueShoppingUrl">Continue shopping</a></b></p>
 
-$pages.stream("/${catalogid}/orders/ordermetrics.html")
+$pages.stream("$apphome/orders/ordermetrics.html")
 
 

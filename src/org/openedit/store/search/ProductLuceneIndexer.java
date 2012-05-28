@@ -272,7 +272,7 @@ public class ProductLuceneIndexer
 		// populateSecurity(doc, product, catalogs);
 		if (usesSearchSecurity())
 		{
-			populatePermission(doc, product, "viewasset");
+			populatePermission(doc, product, "viewproduct");
 		}
 		populateExactCategory(doc, product);
 		populateProperties(doc, product, inDetails);
@@ -334,6 +334,8 @@ public class ProductLuceneIndexer
 		if (inAccessList.size() == 0)
 		{
 			inAccessList.add("blank");
+			inAccessList.add("true");
+
 		}
 		
 		// permission is "viewasset" for earch security

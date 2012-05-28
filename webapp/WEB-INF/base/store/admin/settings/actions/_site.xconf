@@ -2,7 +2,7 @@
 
 <page>
 	    
-	<inner-layout>/${catalogid}/admin/settings/actions/actionlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/admin/settings/actions/actionlayout.html</inner-layout>
 	
 	<property name="subtab">settingactions</property>
 	

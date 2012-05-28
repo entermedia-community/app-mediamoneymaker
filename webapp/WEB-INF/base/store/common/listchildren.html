@@ -11,9 +11,9 @@
 
         <tr>
         <td valign=top class=body>
-                <a class=links href="/${catalogid}/catalogs/${subcat.id}.html" class=breadcrumbs><b>$subcat.name</b></a><br>
+                <a class=links href="$apphome/catalogs/${subcat.id}.html" class=breadcrumbs><b>$subcat.name</b></a><br>
                 #foreach ( $subcat2 in $subcat.getChildren() )
-                        &nbsp;<nobr><a href="/${catalogid}/catalogs/${subcat2.id}.html" class=links>$subcat2.name</a></nobr><br>
+                        &nbsp;<nobr><a href="$apphome/catalogs/${subcat2.id}.html" class=links>$subcat2.name</a></nobr><br>
                 #end
         </td>
         </tr>

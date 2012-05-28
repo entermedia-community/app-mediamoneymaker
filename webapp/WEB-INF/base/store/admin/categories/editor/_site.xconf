@@ -8,5 +8,5 @@
     <value locale="es">Categoría Descripción</value>
   </property>
   <property name="subtab">categoryeditor</property>
-  <inner-layout>/${catalogid}/admin/categories/editor/catalogeditor.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/editor/catalogeditor.html</inner-layout>
 </page>

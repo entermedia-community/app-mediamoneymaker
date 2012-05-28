@@ -26,6 +26,7 @@ import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.data.lucene.StemmerAnalyzer;
 import org.openedit.links.Link;
+import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
@@ -44,6 +45,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
+import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
@@ -794,5 +796,77 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			Data object = (Data) iterator.next();
 			saveData(object, null);
 		}
+	}
+	
+	
+	
+	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
+	{
+		//modify in query if we are using search security
+		addShowOnly(inPageRequest, inSearch);
+		if(doesIndexSecurely() && !inSearch.isSecurityAttached())
+		{
+			//TODO: This should be in a child query with 	child.setFilter(true);
+			
+			//viewasset = "admin adminstrators guest designers"
+			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
+			User currentUser = inPageRequest.getUser();
+			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
+			if (currentUser != null)
+			{
+				UserProfile profile = inPageRequest.getUserProfile();
+				if( profile != null)
+				{
+					//Get the libraries
+					Collection libraries = profile.getCombinedLibraries();
+					if( libraries != null)
+					{
+						for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 
+						{
+							String library = (String) iterator.next();
+							buffer.append( " library_" + library);
+						}
+					}
+//					if(profile.getSettingsGroup() != null)
+//					{
+//						buffer.append( " sgroup" + profile.getSettingsGroup().getId() );
+//					}
+//					String value = profile.getValue("assetadmin");
+//					if( Boolean.parseBoolean(value) )
+//					{
+//						buffer.append(" profileassetadmin");
+//					}
+//					value = profile.getValue("viewassets");
+//					if( Boolean.parseBoolean(value) )
+//					{
+//						buffer.append(" profileviewassets");
+//					}
+				}
+//				if(currentUser.getProperty("zone") != null)
+//				{
+//					buffer.append(" zone" + currentUser.getProperty("zone"));
+//				}
+				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
+				{
+					String allow = ((Group)iterator.next()).getId();
+					buffer.append(" group_" + allow);
+				}
+				buffer.append(" user_" + currentUser.getUserName());
+			}
+			inSearch.addOrsGroup("viewproduct", buffer.toString().toLowerCase());
+			inSearch.setSecurityAttached(true);
+		}
+		String filter = inPageRequest.findValue("enableprofilefilters");
+		if( Boolean.parseBoolean(filter))
+		{
+			if( inSearch.getTermByDetailId("album") == null )
+			{
+				addUserProfileSearchFilters( inPageRequest,inSearch);
+			}
+		}
+
+		HitTracker hits = super.cachedSearch(inPageRequest, inSearch);
+
+		return hits;
 	}
 }

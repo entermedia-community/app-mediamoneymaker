@@ -1,0 +1,6 @@
+<properties>
+<property id="mail">Mail</property>
+<property id="fax">Fax</property>
+<property id="upload">Upload</property>
+
+</properties>

@@ -1,0 +1,15 @@
+
+<properties>
+  
+  
+  <property id="repfirstname"  index="true" keyword="true" stored="true" editable="true" searchtype="member" required="true">First Name</property>
+  <property id="replastname"  index="true" keyword="true" stored="true" editable="true" searchtype="member" required="true">Last Name</property>
+  
+
+
+
+
+
+
+
+</properties>

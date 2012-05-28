@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="id" editable="true" index="true" stored="true">Product ID</property>
+  <property id="name" editable="true" stored="true">Name</property>
+  <property id="code" editable="true" stored="true">Model Code</property>
+  <property id="description" index="true">Description</property>
+  <property id="productcategory" index="true" stored="true" editable="true" type="list">Product Category</property>
+  <property id="producttype" index="true" stored="true" editable="true" type="list">Product Type</property>
+  
+  
+  <property id="users" index="true" stored="true" editable="true" type="list">Users</property>
+  <property id="groups" index="true" stored="true" editable="true" type="list">Groups</property>
+  
+  
+  
+</properties>

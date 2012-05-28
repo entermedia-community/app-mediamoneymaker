@@ -1,6 +1,6 @@
 #set ( $product = $storeeditor.getCurrentProduct() )
 
-<form name="search" method="post" action="$home$cataloghome/admin/products/related/results.html">
+<form name="search" method="post" action="$home$apphome/admin/products/related/results.html">
 $context.putPageValue("hits",$hits)	
 #set( $details = $searcher.getDataProperties("adminsearch",$user) )
 $context.putPageValue("details",$details)	
@@ -21,13 +21,13 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 	</div>
 </form>
 
- <form id="relatedproducteditor" action="$home$cataloghome/admin/products/related/add.html" method="post">
+ <form id="relatedproducteditor" action="$home$apphome/admin/products/related/add.html" method="post">
  	<input type="hidden" name="productid" value="$product.id"/>
  	<p>[[Quick Add by product ID]]</p>
  	<table width="80%">
    #foreach($productid in $product.getRelatedProductIds())
     #set($current = $store.getProduct($productid))
-       <tr><td><a href="$home$cataloghome/admin/products/editor/${current.id}.html">$current.name</a></td>
+       <tr><td><a href="$home$apphome/admin/products/editor/${current.id}.html">$current.name</a></td>
        <td>$current.id</td>
        <td>         $current.defaultCatalog</td>
        <td>        <a href="remove.html?relatedid=$current.id&productid=$product.id">[[[remove]]]</a></td>

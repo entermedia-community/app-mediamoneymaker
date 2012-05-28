@@ -8,5 +8,5 @@
     <value locale="es">Categoría Productos</value>
   </property>
   <property name="subtab">categoryproducts</property>
-  <inner-layout>/${catalogid}/admin/categories/products/categoryproducts.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/products/categoryproducts.html</inner-layout>
 </page>

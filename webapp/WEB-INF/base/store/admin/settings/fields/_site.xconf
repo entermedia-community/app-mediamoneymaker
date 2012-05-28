@@ -6,5 +6,5 @@
     <value locale="es">Sector</value>
   </property>
   <property name="subtab">settingfields</property>
-  <inner-layout>/${catalogid}/admin/settings/fields/fieldlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/settings/fields/fieldlayout.html</inner-layout>
 </page>

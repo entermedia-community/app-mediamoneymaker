@@ -9,7 +9,7 @@
 #end
 <td class=prodhead><b>Quantity</td>
  #if($page.isPropertyTrue("multipleaddress"))
-<td class=prodhead><b>Ship to (<a href="$home/$catalogid/myaccount/index.html"> manage addresses</a>)</td>
+<td class=prodhead><b>Ship to (<a href="$home$apphome/myaccount/index.html"> manage addresses</a>)</td>
 #end
 <td class=prodhead><b>Remove</td>
 </tr>
@@ -20,9 +20,9 @@
 
 	  <tr valign="top">
       <td  class=proddata3 width="30%">
-        #set ( $thumbnailPath = "$home/media/catalogs/${store.catalogId}/downloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
+        #set ( $thumbnailPath = "$home$cataloghomedownloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
 		
-			<a href="$home/${catalogid}/products/${product.sourcePath}.html"><img
+			<a href="$home$apphome/products/${product.sourcePath}.html"><img
  border="0" src="$home$thumbnailPath" width="50" /></a> $product.name
    		
  <ul>
@@ -51,7 +51,7 @@
  		#elseif( $option.dataType &&  $option.dataType == "date" ) 
  			<label>$option.name</label>
  			<input name="option.${productcounter}.${option.getId()}" id="option.${productcounter}.${option.getId()}" value="$!option.getValue()" size="8" type="text">
-			<a style="padding-right: 5px;"	href="javascript:NewCal('option.${productcounter}.${option.getId()}','mmddyyyy',false,24)"><img	src="$home$cataloghome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+			<a style="padding-right: 5px;"	href="javascript:NewCal('option.${productcounter}.${option.getId()}','mmddyyyy',false,24)"><img	src="$home$apphome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
 		#else
 		#if( $option.value)
 			#set( $val = $option.value)

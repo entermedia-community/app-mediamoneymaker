@@ -25,5 +25,5 @@
     <value>Company Field Properties</value>
     <value locale="es">Empresa Casas de Campo</value>
   </property>
-  <property name="xmlpath">/${catalogid}/configuration/companyproperties.xml</property>
+  <property name="xmlpath">/${applicationid}/configuration/companyproperties.xml</property>
 </page>

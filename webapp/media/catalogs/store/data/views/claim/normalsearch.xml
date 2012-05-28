@@ -1,0 +1,14 @@
+<properties>
+<property id="id">Claim ID</property>
+<property id="user" index="true" stored="true" editable="false">User</property>
+
+<property id="claimstatus" index="true" stored="true" type="list">Claim Status</property>
+
+<property id="audit" index="true" stored="true" viewtype="boolean">Selected for Audit</property>
+<property id="duplicate" index="true" stored="true" type="boolean">Duplicate</property>
+<property id="todelete" index="true" stored="true" type="boolean">Marked for deletion</property>
+<property id="incentiveid"/>
+<property id="auditid"/>
+
+<property id="approvalstatus" />
+</properties>

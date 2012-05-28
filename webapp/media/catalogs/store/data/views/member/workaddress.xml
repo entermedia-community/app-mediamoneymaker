@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+    <property id="store" viewtype="filteredradio"  editable="true" required="true">Store Details</property>
+ 
+        <property id="businessextension"   editable="true" required="true">Phone Extension</property>
+    
+</properties>

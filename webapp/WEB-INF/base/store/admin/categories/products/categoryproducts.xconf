@@ -5,5 +5,5 @@
     <value>Add New Product</value>
     <value locale="es">Añadir un nuevo producto</value>
   </property>
-  <inner-layout>/${catalogid}/admin/categories/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
 </page>

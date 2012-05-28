@@ -8,5 +8,5 @@
     <value locale="es">Imágenes de los productos</value>
   </property>
   <property name="subtab">productimages</property>
-  <inner-layout>/${catalogid}/admin/products/imageedit/imageeditor.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/imageedit/imageeditor.html</inner-layout>
 </page>

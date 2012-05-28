@@ -1,0 +1,9 @@
+
+<order order_number="WEB0000001" date="5/28/12 10:27:46 AM" subtotal="0.00" tax="0.00" shipping_cost="0.00" total="0.00" order_status="accepted">
+  <customer customerid="admin" first_name="Ian" last_name="Miller" company="IJ Solutions" phone1="705-293-0206" email="ian@ijsolutions.ca">
+    <address type="shipping" address1="sdf" address2="sdf" city="sdf" state="SDF" zip_code="sdf" country="sfd"/>
+  </customer>
+  <customer/>
+  <item sku="101-1" product_id="101" quantity="2" price="0.00" shipto="shipping"/>
+  <payment_method payment_type="credit" card_type="" card_number="" card_verification_code="" expiration_date="00/00" bill_me_later="false"/>
+</order>

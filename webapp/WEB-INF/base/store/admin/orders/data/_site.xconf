@@ -4,5 +4,5 @@
 	<path-action name="StoreOrderModule.changeOrderStatus" />
 	<path-action name="StoreOrderModule.loadOrder" />
 	<property name="virtual">true</property>	
-	<inner-layout>/${catalogid}/admin/orders/data/adminorderlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/admin/orders/data/adminorderlayout.html</inner-layout>
 </page>

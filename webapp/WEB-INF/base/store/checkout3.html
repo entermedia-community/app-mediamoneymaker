@@ -47,7 +47,7 @@
 		</td>
 	</tr>
 	#if( $page.isPropertyTrue('usepaypal'))
-		$pages.include("/$catalogid/paypal/checkoutform.html")
+		$pages.include("$apphome/paypal/checkoutform.html")
 	
 	#end
 	<form method="post" name="orderForm" action="thanks.html">
@@ -98,7 +98,7 @@
 				
 				&nbsp;&nbsp;&nbsp; 
 				#foreach ( $cardType in $store.getCreditCardTypes() )
-					<img src="$home/${catalogid}/images/icon${cardType.id}.gif" > 
+					<img src="$home$apphome/images/icon${cardType.id}.gif" > 
 				#end
 				</td>
 			</tr>

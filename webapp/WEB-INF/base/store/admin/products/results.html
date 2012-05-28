@@ -3,7 +3,7 @@
 #set ( $catalog = $storeeditor.getCurrentCatalog() )
 #set( $cells = $hits.getPageOfHits() )
 
-<form name="search" method="post" action="$home$cataloghome/admin/products/results.html">
+<form name="search" method="post" action="$home$apphome/admin/products/results.html">
 $context.putPageValue("hits",$hits)	
 #set( $details = $searcher.getDataProperties("adminsearch",$user) )
 $context.putPageValue("details",$details)	
@@ -23,7 +23,7 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 	</div>
 </form>
 
-<form name="editresults" id="editresults" action="$home$cataloghome/admin/products/editresults/savepage.html"> 
+<form name="editresults" id="editresults" action="$home$apphome/admin/products/editresults/savepage.html"> 
 <table width="100%" class="standard-table">
 <tr>
 <th width="25"> </th><th> </th>
@@ -48,8 +48,8 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 
 #set ($thumb = "$home$thumbend?productid=$cell.id")
 #set ($med = "$home$mediumend")
-	<td align="center"><a  href="$home$cataloghome/admin/products/editor/index.html?productid=${cell.id}" onmouseover="doTooltip(event,['$med','${cell.name}']);" onmouseout="hideTip();" alt="$cell.name" name="$cell.name" style="text-decoration: none;"><img src="$thumb" height="20"  align="middle" border="0"></a></td>
-	<td><a href="$home$cataloghome/admin/products/editor/index.html?productid=${cell.id}" class="oeactionlink">$!cell.name</a></td>
+	<td align="center"><a  href="$home$apphome/admin/products/editor/index.html?productid=${cell.id}" onmouseover="doTooltip(event,['$med','${cell.name}']);" onmouseout="hideTip();" alt="$cell.name" name="$cell.name" style="text-decoration: none;"><img src="$thumb" height="20"  align="middle" border="0"></a></td>
+	<td><a href="$home$apphome/admin/products/editor/index.html?productid=${cell.id}" class="oeactionlink">$!cell.name</a></td>
 #set( $product = $store.getProductArchive().getProductBySourcePath($cell.sourcepath))
 #foreach( $detail in $details )
 #if( $detail.isStored() || $detail.isEditable() )	
@@ -87,7 +87,7 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 <br><div id="savemessage" > </div>
 </center>
 </form>
-<p><a href="$home$cataloghome/admin/products/editor/new.html">[[Add New]]</a></p>
+<p><a href="$home$apphome/admin/products/editor/new.html">[[Add New]]</a></p>
 #if( $hits)
 
 
@@ -120,9 +120,9 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 #end
 
 
-<!-- p><a href="$home$cataloghome/admin/settings/export/exportresults.csv?hitsname=datalist">Export results to excel</a --> 
+<!-- p><a href="$home$apphome/admin/settings/export/exportresults.csv?hitsname=datalist">Export results to excel</a --> 
 
-<a href="$home$cataloghome/admin/products/editresults/productcategories.html?hitsname=datalist">[[Categorize Results]]</a> 
+<a href="$home$apphome/admin/products/editresults/productcategories.html?hitsname=datalist">[[Categorize Results]]</a> 
 
 </p>
 
@@ -130,12 +130,12 @@ $pages.include("/$content.xmledithome/searchfields.html",$context)
 	//setSubTab("$content.subtab");
 	gotosubtab = function(inDir, inId)
 	{
-		var openpath = "$home$cataloghome/admin/products/" + inDir + "/" + inId + ".html";		
+		var openpath = "$home$apphome/admin/products/" + inDir + "/" + inId + ".html";		
 		jQuery.load("tabsubcontent", openpath, {oemaxlevel: '3', origURL: "$content.path" });	
 	}
 	saveedits = function()
 	{
-		var openpath = "$home$cataloghome/admin/products/editresults/savepage.html";		
+		var openpath = "$home$apphome/admin/products/editresults/savepage.html";		
 		jQuery.load("savemessage", openpath, { method: 'post',parameters: $('editresults').serialize(true), evalScripts: true });	
 	}
 </script>

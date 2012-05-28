@@ -6,11 +6,11 @@
 
 #foreach ( $child in $catalog.getChildren() )
 <div class="slide"><div class="positioner">
-	#set( $clink = "/$catalogid/categories/${child.id}.html" )
-	#set( $img = "/$catalogid/categories/images/thumb/${child.id}.jpg")
+	#set( $clink = "$apphome/categories/${child.id}.html" )
+	#set( $img = "$apphome/categories/images/thumb/${child.id}.jpg")
 
 	#if (!$pages.doesExist($img) )
-		#set( $img = "/$catalogid/layout/media/catalogthumb.jpg")
+		#set( $img = "$apphome/layout/media/catalogthumb.jpg")
 	#end
 	<div class="resultdetails">
 				

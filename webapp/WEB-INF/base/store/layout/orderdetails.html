@@ -23,7 +23,7 @@ $order.getOrderStatus()
 #end
 
 #if( $canmanageorders)
-	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$cataloghome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
+	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$apphome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
 	<span id="messagearea"> </span>
 	
 #end
@@ -83,11 +83,11 @@ $order.getOrderStatus()
 		#end
 	</tr>
 	
-	<form name="permissions" action="$home$cataloghome/admin/orders/updateitemstatus.html" method="post">
-	#set( $types = $searcherManager.getList($store.getCatalogId() ,"itemstatus") )
+	<form name="permissions" action="$home$apphome/admin/orders/updateitemstatus.html" method="post">
+	#set( $types = $searcherManager.getList($store.get/${applicationid}/() ,"itemstatus") )
 		
 	#foreach ( $item in $order.items )
-		#set($path ="$cataloghome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+		#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
 		<tr>
 			<td><a href="$home$path" target="_blank">$item.product.id</a></td>
 			<td>$item.sku</td>
@@ -146,7 +146,7 @@ $order.getOrderStatus()
 	</form>
 	<br><br>
 	#if( $canmanageorders )
-		<form name="permissions" action="$home$cataloghome/admin/orders/updateitemstatus.html" method="post" style="display: inline;">
+		<form name="permissions" action="$home$apphome/admin/orders/updateitemstatus.html" method="post" style="display: inline;">
 		#foreach ( $item in $order.items )
 		
 		<input type="hidden" name="sku" value="$item.sku"/>
@@ -157,7 +157,7 @@ $order.getOrderStatus()
 		#end
 			<input type="submit" value="Approve All"/>
 	</form>	
-	<form name="permissions" action="$home$cataloghome/admin/orders/updateitemstatus.html" method="post" style="display: inline;">
+	<form name="permissions" action="$home$apphome/admin/orders/updateitemstatus.html" method="post" style="display: inline;">
 		#foreach ( $item in $order.items )		
 		<input type="hidden" name="sku" value="$item.sku"/>
 		<input type="hidden" name="ordernumber" value="$orderNumber"/>
@@ -220,7 +220,7 @@ $order.getOrderStatus()
 
 		#if( $order.getOrderState().getId() == "authorized" )
 		<br>
-			<form action="$home/${catalogid}/admin/orders/captureorder.html" name="capture">
+			<form action="$home$apphome/admin/orders/captureorder.html" name="capture">
 				Once the product is shipped then charges can be applied:
 				<!-- Note to customer: <br><textarea rows=5 cols=20 name="note"></textarea>
 				<br> -->
@@ -241,7 +241,7 @@ $order.getOrderStatus()
 	#end
 </p>
 <p>
-<a href="$home$cataloghome/downloads/orders/${orderNumber}.zip">Download</a>
+<a href="$home$apphome/downloads/orders/${orderNumber}.zip">Download</a>
 </p>
 
 

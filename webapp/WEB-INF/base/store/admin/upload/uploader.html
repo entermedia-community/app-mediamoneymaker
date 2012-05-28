@@ -1,6 +1,6 @@
 
 <div id="allfiles">
-$pages.include("/$catalogid/upload/uploadform.html")
+$pages.include("$apphome/upload/uploadform.html")
 </div>
 
 <br>
@@ -21,7 +21,7 @@ $pages.include("/$catalogid/upload/uploadform.html")
 	{
 		rowcount++;
 		new Insertion.Bottom('allfiles', "<div id='addanotherfile" + rowcount + "'>...</div>");
-		new Ajax.Updater('addanotherfile' + rowcount, '$home$cataloghome/admin/upload/uploadform.html',  {evalScripts:true, parameters: { rowcount: rowcount  } } );
+		new Ajax.Updater('addanotherfile' + rowcount, '$home$apphome/admin/upload/uploadform.html',  {evalScripts:true, parameters: { rowcount: rowcount  } } );
 
 	}
 

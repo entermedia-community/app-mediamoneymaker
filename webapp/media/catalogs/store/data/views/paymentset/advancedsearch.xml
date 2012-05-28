@@ -1,0 +1,10 @@
+<properties>
+	<property id="id">Payment Set</property>
+	
+	<property id="creationdate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Claim Date</property>
+	<property id="paymentdate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Payment Sent Date</property>
+	<property id="paymentstatus" index="true" stored="true" type="list" >Payment Status</property>
+	<property id="totalamount" index="true" stored="true">Total Amount</property>
+	<property id="exportid" index="true" stored="true">Export ID</property>
+	
+</properties>

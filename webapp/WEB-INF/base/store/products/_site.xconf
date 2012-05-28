@@ -2,7 +2,7 @@
                                                                                                                                    
 <page>
         <path-action name="CartModule.loadProductDetails"  />
-        <inner-layout>/${catalogid}/layout/productdetails.html</inner-layout>
+        <inner-layout>/${applicationid}/layout/productdetails.html</inner-layout>
         <property name="editable">true</property>
 		<!--
 		<generator name="file" /> 

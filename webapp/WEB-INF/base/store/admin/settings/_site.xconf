@@ -7,5 +7,5 @@
   </property>
   <property name="tab">settings</property>
   <property name="subtab">settingactions</property>
-  <inner-layout>/${catalogid}/admin/settings/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/settings/innertablayout.html</inner-layout>
 </page>

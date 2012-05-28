@@ -16,7 +16,7 @@
    </tr>
    <tr>
    	<td colspan="2">
-		<br><p>[[Videos are uploaded to]]  /$catalogid/products/videos/ </p>
+		<br><p>[[Videos are uploaded to]]  $apphome/products/videos/ </p>
 		<p>
 		[[Video]]:  
 					<input type="file" size="30" name="file" > 
@@ -28,7 +28,7 @@
 
 #set ( $videopath = $product.videopath )
 #if ( !$videopath || ! $pages.getPage($videopath).exists() )
-	#set ( $videopath = "$cataloghome/products/videos/${product.id}.flv" )
+	#set ( $videopath = "$apphome/products/videos/${product.id}.flv" )
 #end
 
 #if ( $pages.getPage($videopath).exists() )

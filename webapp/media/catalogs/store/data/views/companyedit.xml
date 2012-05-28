@@ -1,0 +1,6 @@
+<properties>
+<property id="id" />
+<property id="name" />
+<property id="phone1" />
+<property id="contactperson" />
+</properties>

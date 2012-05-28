@@ -1,0 +1,10 @@
+<properties>
+	<property id="id" index="true" stored="true" editable="true">Product ID</property>
+	<property id="incentivetype"/>
+	
+	<property id="productcategory" index="true" stored="true" editable="true" type="list">Product Category</property>
+	<property id="producttype" index="true" stored="true" editable="true">Invoice Date</property>
+	
+	<property id="startdate" type="date" viewtype="date" index="true" stored="true" editable="true">Valid From</property>
+	<property id="enddate" type="date" viewtype="date" index="true" stored="true" editable="true">Valid To</property>
+</properties>

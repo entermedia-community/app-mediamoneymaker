@@ -1,6 +1,6 @@
 <h2>[[Order Manager]]</h2>
 $pages.include("navigate.html")
-<form action="$home$cataloghome/admin/orders/index.html" name="fieldsearch" method="post">
+<form action="$home$apphome/admin/orders/index.html" name="fieldsearch" method="post">
 			#set( $types = $store.getFieldArchive().getDataProperties("order","ordersearch", $user) )
 			$context.putPageValue("details",$types)
 			$context.putPageValue("searcher",$store.getOrderSearcher())
@@ -38,7 +38,7 @@ $pages.include("/$content.xmledithome/searchfields.html", $context)
 	#end
 	
 	#set( $order = $store.getOrderArchive().loadSubmittedOrder($store, $orderhit.customer, $orderhit.id))
-		<td><a href="$home/${catalogid}/admin/orders/data/$order.customer.userName/${order.orderNumber}.html">$order.orderNumber</a></td>
+		<td><a href="$home$apphome/admin/orders/data/$order.customer.userName/${order.orderNumber}.html">$order.orderNumber</a></td>
 		<td>$!order.dateOrdered</td>
 		<td>$!order.customer.userName $!order.customer.firstName $!order.customer.lastName</td>
 		#if ( $order.customer.billingAddress && $order.customer.billingAddress.address1 )
@@ -82,5 +82,5 @@ $pages.include("/$content.xmledithome/searchfields.html", $context)
 #end
 </p>
 <!-- 
-<a href="$home/${catalogid}/orders/archive/">[[Download Previous Orders]]</a>
+<a href="$home$apphome/orders/archive/">[[Download Previous Orders]]</a>
 -->

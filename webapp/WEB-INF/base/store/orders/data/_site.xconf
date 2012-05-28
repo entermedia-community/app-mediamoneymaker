@@ -7,5 +7,5 @@
 	</view-requirements>
 	<path-action name="StoreOrderModule.loadOrder" />
 	<property name="virtual">true</property>	
-	<inner-layout>/${catalogid}/layout/orderdetails.html</inner-layout>
+	<inner-layout>/${applicationid}/layout/orderdetails.html</inner-layout>
 </page>

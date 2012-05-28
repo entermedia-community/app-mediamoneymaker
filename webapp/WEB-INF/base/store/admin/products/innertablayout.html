@@ -1,12 +1,12 @@
 <div id="tabsubcontent">
 
 <h2>[[Product Manager]] #if( $datalist )
-	<a href="$home$cataloghome/admin/products/results.html?page=$datalist.getPage()">[[Back To Search]]</a>
+	<a href="$home$apphome/admin/products/results.html?page=$datalist.getPage()">[[Back To Search]]</a>
 #end 
 </h2>
 #set ( $catalog = $storeeditor.getCurrentCatalog() )
 #set ( $product = $storeeditor.getCurrentProduct() )
-#set( $clink = "$cataloghome/products/${product.sourcePath}.html")
+#set( $clink = "$apphome/products/${product.sourcePath}.html")
 
 #if( $product)	
 <table class="tabnavigation">
@@ -15,13 +15,13 @@
 <td id="productpricing"><span><a href="#" onclick="gotosubtab('pricing','${product.id}');" >[[Pricing]]</a></span></td>
 <td id="productitems"><span><a href="#" onclick="gotosubtab('items','${product.id}');">[[Inventory]]</a></span></td>
 <td id="productoptions"><span><a href="#" onclick="gotosubtab('options','${product.id}');">[[Options]]</a></span></td>
-<td id="productcategories"><span><a href="$home$cataloghome/admin/products/productcategories/${product.id}.html">[[Categories]]</a></span></td>
+<td id="productcategories"><span><a href="$home$apphome/admin/products/productcategories/${product.id}.html">[[Categories]]</a></span></td>
 </tr></table>
 <script type="text/javascript">
 	//setSubTab("$content.subtab");
 	gotosubtab = function(inDir, inId)
 	{
-		var openpath = "$home$cataloghome/admin/products/" + inDir + "/" + inId + ".html";		
+		var openpath = "$home$apphome/admin/products/" + inDir + "/" + inId + ".html";		
 		jQuery("#tabsubcontent").load(openpath, {oemaxlevel: '3', origURL: "$content.path", editPath: "$clink" });	
 	}
 	//showtab("$home","$content.subtab");		
@@ -30,7 +30,7 @@
 <div class="oetabcontent">
 
 #if( $product)
-	<h2>[[Product Name]]: <A href="$home$cataloghome/products/${product.sourcePath}.html" style="text-decoration: none;">$product.name</a></h2>
+	<h2>[[Product Name]]: <A href="$home$apphome/products/${product.sourcePath}.html" style="text-decoration: none;">$product.name</a></h2>
 #end
 
 $pages.includeContent()

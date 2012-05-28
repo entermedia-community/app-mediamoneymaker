@@ -1,0 +1,6 @@
+<properties>
+<property id="id" keyword="true"  index="true" stored="true" editable="false" number="true" >Company #</property>
+<property id="name" index="true"  editable="true">Company</property>
+<property id="phone1" keyword="true"  index="true" stored="true" editable="true">Phone 1</property>
+<property id="contactperson" keyword="true" editable="true" index="true" stored="true">Contact Person</property>
+</properties>

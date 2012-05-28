@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <page>
-	<inner-layout>/${catalogid}/admin/products/productcategories/productcategories.html</inner-layout>
+	<inner-layout>/${applicationid}/admin/products/productcategories/productcategories.html</inner-layout>
 		<path-action name="CatalogEditModule.selectProduct" />	
 	
 <property name="subtab">productcategories</property>  	 
@@ -10,7 +10,7 @@
 
 	<page-action name="CatalogModule.getCatalogTree">
 		<tree-name>productCatalogTree</tree-name>
-		<url-prefix>/${catalogid}/admin/products/productcategories/productcategories.html?cache=false&amp;categoryid=</url-prefix>
+		<url-prefix>/${applicationid}/admin/products/productcategories/productcategories.html?cache=false&amp;categoryid=</url-prefix>
 		<root>index</root>
 	</page-action>
 	<!-- <view-requirements><blank/></view-requirements> -->

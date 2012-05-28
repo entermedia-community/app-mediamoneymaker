@@ -6,11 +6,11 @@
 	
 <div class="oeactions" style="border: 1px solid gray;">	   
 	<ul class="oeactionlist">
-		<li class="oeactionlistitem"><a href="$home$cataloghome/admin/categories/editor/addnew.html" target="_parent"  >[[Add New Child Category]]</a></li>
+		<li class="oeactionlistitem"><a href="$home$apphome/admin/categories/editor/addnew.html" target="_parent"  >[[Add New Child Category]]</a></li>
 		<li class="oeactionlistitem"><a href="javascript:deleteCatalog()" target="_parent"  >[[Delete Selected Category]]</a></li>	
 		
 	</ul>	
-		$pages.include("$cataloghome/admin/categories/tree.html")
+		$pages.include("$apphome/admin/categories/tree.html")
 </div>
 <div class="oeactionlistitem"><a href="javascript:refreshCatalogs()" target="_parent"  >[[Reload Tree]]</a></div>
 
@@ -36,7 +36,7 @@ $pages.includeContent()
 	refreshCatalogs = function()
 	{
 		var form = document.inputForm;
-		form.action = "$home$cataloghome/admin/categories/tree/refresh.html";
+		form.action = "$home$apphome/admin/categories/tree/refresh.html";
 		form.treeid.value = storeAdminCatalogTree.id;
 		form.categoryid.value = storeAdminCatalogTree.lastselected;
 		form.submit();
@@ -47,7 +47,7 @@ $pages.includeContent()
 		if (respond)
 		{
 			var form = document.inputForm;
-			form.action = "$home$cataloghome/admin/categories/tree/delete.html";
+			form.action = "$home$apphome/admin/categories/tree/delete.html";
 			form.treeid.value = storeAdminCatalogTree.id;
 			form.categoryid.value = storeAdminCatalogTree.lastselected;
 			form.submit();

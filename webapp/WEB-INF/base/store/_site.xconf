@@ -1,5 +1,8 @@
 <page>
-		<property name="catalogid">store</property>
+		<property name="catalogid">media/catalogs/store</property>
+		    <path-action name="MediaArchiveModule.loadApplicationId" />
+		<property name="applicationid">store</property>
+		
 		<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 	
 		<property name="editable">false</property>
@@ -9,7 +12,7 @@
 		<property name="showsubcategories">false</property>
 		<property name="multipleaddress">false</property>
 		<property name="showprice">false</property>
-		<inner-layout>/${catalogid}/layout/storelayout.html</inner-layout>
+		<inner-layout>/${applicationid}/layout/storelayout.html</inner-layout>
 		<property name="downloadordertimelimit">7</property> 	
 		<path-action name="Admin.loadPermissions"/>
 		<permission name="manageorders">

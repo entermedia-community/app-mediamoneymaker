@@ -53,5 +53,5 @@
     <value>No Charges</value>
     <value locale="es">N Cargos</value>
   </property>
-  <inner-layout>/${catalogid}/admin/products/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/innertablayout.html</inner-layout>
 </page>

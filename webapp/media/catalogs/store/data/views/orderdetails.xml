@@ -1,0 +1,6 @@
+<properties>
+  <property id="item.extrainfo.duedate"/>
+  <property id="item.extrainfo.shiptoname"/>
+  <property id="item.extrainfo.shipquantity"/>  
+  <property id="item.extrainfo.status"/>
+</properties>

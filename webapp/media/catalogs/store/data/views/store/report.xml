@@ -1,0 +1,8 @@
+<properties>
+  <property id="businessname" geodata="true" catalogid="member" searchtype="store" index="true" stored="true" keyword="true">Business Name</property>
+  <property id="businessaddress" geodata="true" catalogid="member" searchtype="store" index="true" stored="true" keyword="true">Business Address</property>
+  <property id="businesscity" geodata="true" catalogid="member" searchtype="store" index="true" stored="true" keyword="true">Business City</property>
+  <property id="businessprovince" geodata="true" catalogid="member" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="store" listid="province" datatype="list">Business Province</property>
+  <property id="registrationcode" catalogid="member" searchtype="store" index="true" stored="true" keyword="true" type="list">Store Account Number</property>
+  <property id="salesrep" catalogid="member" searchtype="store" index="true" stored="true" keyword="true" type="list">Samsung Sales Rep</property>
+</properties>

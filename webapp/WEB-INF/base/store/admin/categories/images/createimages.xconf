@@ -45,5 +45,5 @@
     <value>Create missing</value>
     <value locale="es">Cree que falta</value>
   </property>
-  <inner-layout>/${catalogid}/admin/categories/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
 </page>

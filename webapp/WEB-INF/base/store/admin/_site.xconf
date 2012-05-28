@@ -3,7 +3,7 @@
 <page>
   <path-action name="CatalogEditModule.getStoreEditor"/>
   <path-action alltypes="true" name="Admin.allowViewing">
-    <login-path>/${catalogid}/authentication/logon.html</login-path>
+    <login-path>/${applicationid}/authentication/logon.html</login-path>
   </path-action>
   <path-action allowduplicates="true" name="TabModule.selectTab">
     <tablistname>oestoreadmin</tablistname>
@@ -17,7 +17,7 @@
   <property name="tab">dashboard</property>
   <property name="editable">false</property>
   <property name="encoding">UTF-8</property>
-  <inner-layout>/${catalogid}/admin/innerlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/innerlayout.html</inner-layout>
   <permission name="view">
     <permission name="oe.cart.admin"/>
   </permission>

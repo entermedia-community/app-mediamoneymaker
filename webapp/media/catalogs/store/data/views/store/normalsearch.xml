@@ -1,0 +1,4 @@
+
+<properties>
+  <property id="businessname" geodata="true" catalogid="member" searchtype="store" index="true" stored="true" keyword="true">Business Name</property>
+</properties>

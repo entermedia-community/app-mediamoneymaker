@@ -24,5 +24,5 @@
     <value>Item Field Properties</value>
     <value locale="es">Tema campo propiedades</value>
   </property>
-  <property name="xmlpath">/${catalogid}/configuration/itemproperties.xml</property>
+  <property name="xmlpath">/${applicationid}/configuration/itemproperties.xml</property>
 </page>

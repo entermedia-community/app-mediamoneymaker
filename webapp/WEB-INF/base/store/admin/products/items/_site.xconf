@@ -9,5 +9,5 @@
   </property>
   <property name="forceshowsizeoption">true</property>
   <property name="subtab">productitems</property>
-  <inner-layout>/${catalogid}/admin/products/items/itemeditor.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/items/itemeditor.html</inner-layout>
 </page>

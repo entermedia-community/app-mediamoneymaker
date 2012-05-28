@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="homeaddress" note="Home information is captured since this is the location where your 
+  samsung incentive card will be shipped" required="true"/>
+  <property id="homecity" required="true"/>
+  <property id="homeprovince" required="true"/>
+  <property id="homepostalcode" required="true"/>
+  <property id="homephone" required="true"/>
+  
+  <property id="mobilephone" required="true"/>
+</properties>

@@ -5,7 +5,7 @@
 	<property name="virtual">true</property> 
 	<page-action name="CatalogModule.getCatalogTree">
 		<tree-name>productCatalogTree</tree-name>
-		<url-prefix>/${catalogid}/admin/products/productcategories/productcategories.html?cache=false&amp;categoryid=</url-prefix>
+		<url-prefix>/${applicationid}/admin/products/productcategories/productcategories.html?cache=false&amp;categoryid=</url-prefix>
 		<root>index</root>
 	</page-action>
 	<property name="fieldname">product</property>

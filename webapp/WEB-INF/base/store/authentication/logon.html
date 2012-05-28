@@ -23,7 +23,7 @@ $!request.getAttribute( "wsp-exception")
 #if ( $context.getPageValue("oe-exception") )
 	<div style="border: 1px solid black">$context.getPageValue("oe-exception")</div>
 #end
-<input name="loginokpage" type="hidden" value="/${catalogid}/admin/index.html" />
+<input name="loginokpage" type="hidden" value="$apphome/admin/index.html" />
 <div><INPUT name="submit" type="submit" value="Login" /> </div>
 </FORM></div>
 <p ALIGN="center">If you have forgotten your username and/or password <a href="PasswordHelper.html">click here</a></p>

@@ -1,0 +1,19 @@
+
+<properties>
+  <property id="howheard"  index="true" stored="true" editable="true" type="list" required="true">How did you hear about the program?</property>
+
+ <property id="howheard-other" dependson="howheard" dependsonvalue="other" required="true" dependsondefault="NA"/>
+
+
+ 
+ <property id="sin" regex="^\d{3}\s?\d{3}\s?\d{3}$" required="true"  editable="true" note="Your Social Insurance Number is required for income tax purposes. You must enter a valid SIN to participate in The Smart Experience." encrypt="true"  index="true" stored="false"  >Social Insurance Number</property>
+ <property id="repfirstname" index="true" stored="true" editable="true" required="true">Samsung Sales Rep First Name</property>
+ <property id="replastname" index="true" stored="true" editable="true" required="true">Samsung Sales Rep Last Name</property>
+<property id="languages" required="true" />
+
+
+
+
+
+
+</properties>

@@ -25,5 +25,5 @@
     <value>Category Field Properties</value>
     <value locale="es">Categoría Casas de Campo</value>
   </property>
-  <property name="xmlpath">/${catalogid}/configuration/categoryproperties.xml</property>
+  <property name="xmlpath">/${applicationid}/configuration/categoryproperties.xml</property>
 </page>

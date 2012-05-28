@@ -7,5 +7,5 @@
   </property>
   <property name="tab">categories</property>
   <property name="subtab">categoryeditor</property>
-  <inner-layout>/${catalogid}/admin/categories/innerlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/innerlayout.html</inner-layout>
 </page>

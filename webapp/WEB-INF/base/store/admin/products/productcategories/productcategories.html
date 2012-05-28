@@ -1,4 +1,4 @@
-#set( $rootpath = "/${store.catalogId}/admin/products/productcategories")
+#set( $rootpath = "$apphome/admin/products/productcategories")
 
 #set ( $product = $storeeditor.getCurrentProduct() )
 #set ( $categorylist = $product.getCatalogs() )
@@ -74,7 +74,7 @@ removeCategoryToProduct = function(inCat)
 			<tr><td style="white-space:nowrap;" width="100%">
 				#set( $parents = $category.listAncestorsAndSelf(0))
 #foreach( $category in $parents) 
-<a class="node" href="$home$cataloghome/admin/categories/editor/${category.id}.html"><img align="top" src="$home/system/images/tree/folder.gif" border="0" >$category.name</a>#if( $velocityCount < $parents.size())&nbsp;/&nbsp;#end
+<a class="node" href="$home$apphome/admin/categories/editor/${category.id}.html"><img align="top" src="$home/system/images/tree/folder.gif" border="0" >$category.name</a>#if( $velocityCount < $parents.size())&nbsp;/&nbsp;#end
 #end
 			</td>	
 			<td>

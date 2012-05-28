@@ -1,0 +1,45 @@
+<properties>
+<property id="id">Claim ID</property>
+<property id="user" index="true" stored="true" editable="false" type="list" viewtype="list" searchtype="user" listid="user" listcatalogid="system">User</property>
+<property id="date" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Claim Date</property>
+
+<property id="invoicedate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy" required="true">Invoice Date</property>
+<property id="invoicenumber" index="true" stored="true" required="true" >Invoice Number</property>
+
+<property id="claimtype" index="true" stored="true" required="true" type="list">Claim Type</property>
+<property id="incentiveid" index="true" stored="true" required="true" >Incentive Id</property>
+
+<property id="auditid" index="true" stored="true" >Audit</property>
+			  
+<property id="visadate" index="true" stored="true" type="date" viewtype="date">VISA Processed Date</property>
+<property id="paymentid" index="true" stored="true">Payment ID</property>
+<property id="paid" index="true" stored="true" type="boolean">Paid</property>
+
+<property id="duplicate" index="true" stored="true" type="boolean">Duplicate</property>
+<property id="todelete" index="true" stored="true" type="boolean">Marked For Deletion</property>
+
+<property id="notes" index="true" stored="true">Notes</property>
+<property id="claimstatus" index="true" stored="true" type="list" viewtype="list">Claim Status</property>
+<property id="approvalstatus" index="true" stored="true" type="boolean" >Approved for Payment</property>
+<property id="serialschecked" index="true" stored="true" type="boolean" >Serials Checked for Validity</property>
+
+
+
+
+<property id="totalamount" index="true" stored="true">Total Amount</property>
+
+<property id="audit" index="true" stored="true" editable="true" type="boolean" >Selected for Audit</property>
+<property id="auditstatus" index="true" stored="true" editable="true" type="list">Audit Status</property>
+<property id="auditapprovaldate" index="true" stored="true" editable="true" type="date">Audit Approval Date</property>
+<property id="mailsent" index="true" stored="true" editable="true" type="boolean" >Mail Sent</property>
+<property id="auditsentdate" index="true" stored="true" editable="true" type="date" >Mail Sent Date</property>
+
+<property id="auditmaterialsrecieved" index="true" stored="true" editable="true" type="boolean">Audit Materials Received</property>
+<property id="auditdaterx" index="true" stored="true" editable="true" type="date">Materials Received on</property>
+<property id="auditrxtype" index="true" stored="true" editable="true" type="list">Audit Received by:</property>
+
+<property id="reprocessed" index="true" stored="true" editable="true" type="boolean">Reprocessed</property>
+<property id="oldamount" index="true" stored="true" editable="true" >Previous Amount</property>
+
+
+</properties>

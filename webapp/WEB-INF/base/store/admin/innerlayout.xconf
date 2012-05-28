@@ -29,5 +29,5 @@
     <value>Reports</value>
     <value locale="es">Informes</value>
   </property>
-  <inner-layout>/${catalogid}/admin/adminlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/adminlayout.html</inner-layout>
 </page>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/media/catalog</property>
+  <property name="catalogid">media/catalogs/store</property>
+  <property name="usessearchsecurity">true</property>
+</page>

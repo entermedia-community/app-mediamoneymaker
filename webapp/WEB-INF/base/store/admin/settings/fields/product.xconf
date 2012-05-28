@@ -26,5 +26,5 @@
     <value>Product Field Properties</value>
     <value locale="es">Propiedades del producto sobre el terreno</value>
   </property>
-  <property name="xmlpath">/${catalogid}/configuration/productproperties.xml</property>
+  <property name="xmlpath">/${applicationid}/configuration/productproperties.xml</property>
 </page>

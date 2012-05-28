@@ -1,0 +1,12 @@
+<properties>
+	
+	<property id="dollarvalue">Normal Dollar Value</property> 
+	<property id="bonus">Spiff Bonus</property>
+	<property id="unitgate">Unit Gate - Specific Products</property>
+	<property id="categorygate">Unit Gate - Specific Product Categories</property>
+	<property id="matchedset">Matched Set - Specific Products</property>
+	<property id="matchedcategoryset">Matched Set - Specific Product Categories</property>
+
+
+	
+</properties>

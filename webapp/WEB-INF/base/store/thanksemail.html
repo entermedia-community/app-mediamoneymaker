@@ -12,13 +12,13 @@
 
 Order Number: $order.getId()
 
-$pages.stream("/${catalogid}/orders/listing.html")
+$pages.stream("$apphome/orders/listing.html")
  
 #if( $cart.hasZeroSubTotal() )
 
 #else																	
-	$pages.stream("/${catalogid}/orders/subtotal.html")
-	$pages.stream("/${catalogid}/customers/contactinfo.html")
+	$pages.stream("$apphome/orders/subtotal.html")
+	$pages.stream("$apphome/customers/contactinfo.html")
 #end
 #set( $paymentMethod = $order.paymentMethod )
 #if( $paymentMethod.getNote() )

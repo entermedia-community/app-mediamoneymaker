@@ -74,7 +74,7 @@
 				
 					<input name="${searchItem.getId()}.value" id="datevalue${searchItem.id}" value="$!inputed"
 						size="8" type="text">
-					<a style="padding-right: 5px;"	href="javascript:NewCal('datevalue${searchItem.id}','mmddyyyy',false,24)"><img	src="$home$cataloghome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+					<a style="padding-right: 5px;"	href="javascript:NewCal('datevalue${searchItem.id}','mmddyyyy',false,24)"><img	src="$home$apphome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
 					#else
 					#if( $usestartswith)
 					<input name="operation" value="startswith" type="hidden">						
@@ -127,8 +127,8 @@
 			##if( $hits.getInput("search.includefilter") ) checked ##end /> 							<!-- $context.getPageProperty("text.filterlabel") </div> -->
 				##end				
 	
-				#if($pages.doesExist("$cataloghome/search/customsearch.html"))
-					$pages.include("$cataloghome/search/customsearch.html")
+				#if($pages.doesExist("$apphome/search/customsearch.html"))
+					$pages.include("$apphome/search/customsearch.html")
 				#end
 				<td>
 				<input type="submit" value="Go" />

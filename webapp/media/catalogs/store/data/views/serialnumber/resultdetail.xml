@@ -1,0 +1,7 @@
+<properties>
+	<property id="id" editable="true" stored="true" index="true">Serial</property>
+	<property id="validated" editable="true" stored="true" index="true">Validated</property>
+	<property id="used" type="boolean" editable="true" stored="true" index="true">Has been used previously</property>
+	<property id="notes" editable="true" stored="true" index="true" >Used on old program</property>
+	<property id="claimid">Claim ID</property>
+</properties>

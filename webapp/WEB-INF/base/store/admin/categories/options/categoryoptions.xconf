@@ -9,5 +9,5 @@
     <value>Options</value>
     <value locale="es">Opciones</value>
   </property>
-  <inner-layout>/${catalogid}/admin/categories/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
 </page>

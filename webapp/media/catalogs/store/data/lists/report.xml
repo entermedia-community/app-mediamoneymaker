@@ -1,0 +1,9 @@
+<properties>
+	<property id="1" reportname="/${rewardsid}/admin/birt/productssoldbyrep.rptdesign">Products Sold By Rep</property>
+	<property id="2" reportname="/${rewardsid}/admin/birt/productssoldbystore.rptdesign">Products Sold By Store</property>
+	<property id="3" reportname="/${rewardsid}/admin/birt/productssold.rptdesign">Products Sold Overall</property>
+	<property id="4" reportname="/${rewardsid}/admin/birt/incentivereport.rptdesign">Incentive Breakdown Report</property>
+	<property id="5" reportname="/${rewardsid}/admin/birt/paymentreport.rptdesign">Payments Report</property>
+	<property id="6" reportname="/${rewardsid}/admin/birt/top10.rptdesign">Top 10 Report - Reps and Stores</property>
+	
+</properties>

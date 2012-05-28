@@ -1,0 +1,20 @@
+<properties>
+	<property id="id" index="true" stored="true" editable="true">Reward ID</property>
+    
+    <property id="incentivetype" editable="true"/>
+	<property id="disabled"/>
+	<property id="productid" editable="true"/>
+	<property id="productcategory" index="true" stored="true" editable="true" type="list">Product Category</property>
+	<property id="producttype" index="true" stored="true" editable="true" type="list" viewtype="list">Product Type</property>
+	
+	<property id="amount" index="true" stored="true" editable="true">Visa Reward Amount</property>
+	<property id="startdate" type="date" viewtype="date" index="true" stored="true" editable="true">Valid From</property>
+	<property id="enddate" type="date" viewtype="date" index="true" stored="true" editable="true">Valid To</property>
+	<property id="cutoffdate" editable="true" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Current Cuttoff Date (Invoice dates before this date cannot currently be claimed)</property>
+	
+	<property id="registrationcode"/>
+	<property id="disallow"/>
+	
+	<property id="notes" index="true" stored="true" editable="true">Notes</property>
+	<property id="notesfr"  index="true" stored="true" editable="true" >Notes French</property>
+</properties>

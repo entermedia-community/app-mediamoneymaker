@@ -5,7 +5,7 @@
 <td valign="top" width="200" style="padding-left:10px;padding-top:5px;">
 	
 #if( $searcher)
-<form name="searchform" action="$home$cataloghome/admin/reports/logs/search/results.html">
+<form name="searchform" action="$home$apphome/admin/reports/logs/search/results.html">
 #set( $fields = $searcher.getIndexProperties() )
 
 $context.putPageValue("hits",$loghits)
@@ -18,7 +18,7 @@ $pages.include("/system/data/search/fieldsearch.html",$context)
 	<input type="hidden" name="cache" value="false" />
 <input type="submit" value="[[Go]]" />
 </div>
-<a href="$home$cataloghome/admin/reports/logs/reindex.html?foldername=$context.getRequestParameter('foldername')">[[Refresh]]</a>
+<a href="$home$apphome/admin/reports/logs/reindex.html?foldername=$context.getRequestParameter('foldername')">[[Refresh]]</a>
 
 </form>
 #end

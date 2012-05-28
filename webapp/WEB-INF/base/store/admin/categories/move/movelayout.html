@@ -8,21 +8,21 @@
 	{
 		var sform = document.moveForm;
 		sform.categoryid.value = moveCatalogTree.lastselected;
-		sform.action="$home$cataloghome/admin/categories/move/up.html";
+		sform.action="$home$apphome/admin/categories/move/up.html";
 		sform.submit();
 	}
 	moveCatalogDown = function()
 	{
 		var sform = document.moveForm;
 		sform.categoryid.value = moveCatalogTree.lastselected;
-		sform.action="$home$cataloghome/admin/categories/move/down.html";
+		sform.action="$home$apphome/admin/categories/move/down.html";
 		sform.submit();
 	}
 	moveCatalog = function()
 	{
 		var sform = document.jumpform;
 		sform.categoryid2.value = moveCatalogTree.lastselected;
-		sform.action="$home$cataloghome/admin/categories/move/aschild.html";
+		sform.action="$home$apphome/admin/categories/move/aschild.html";
 		if( sform.categoryid2.value )
 		{
 			sform.submit();
@@ -36,14 +36,14 @@
 	{
 		var sform = document.jumpform;
 		sform.categoryid2.value = moveCatalogTree.lastselected;
-		sform.action="$home$cataloghome/admin/categories/move/asparent.html";
+		sform.action="$home$apphome/admin/categories/move/asparent.html";
 		sform.submit();
 	}
 	sortCatalog = function()
 	{
 		var sform = document.moveForm;
 		sform.categoryid.value = moveCatalogTree.lastselected;
-		sform.action="$home$cataloghome/admin/categories/move/sort.html";
+		sform.action="$home$apphome/admin/categories/move/sort.html";
 		sform.submit();
 	}
 
@@ -53,14 +53,14 @@ moveCatalogTree.name = "moveCatalogTree";
 moveCatalogTree.jumpToNode = function(inUrl, inNodeId)
 {
 	this.selectRow( inNodeId );
-	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content.catalogid/admin/categories/move/select.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });	
-	//new Ajax.Updater("hidden-category-id", '$home/$content.catalogid/admin/categories/move/updatecategoryid.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });
-	//document.location = "$home/$content.catalogid/admin/categories/move/productcategories.html?cache=false&categoryid=" + inNodeId;
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content./${applicationid}//admin/categories/move/select.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });	
+	//new Ajax.Updater("hidden-category-id", '$home/$content./${applicationid}//admin/categories/move/updatecategoryid.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });
+	//document.location = "$home/$content./${applicationid}//admin/categories/move/productcategories.html?cache=false&categoryid=" + inNodeId;
 	return false;
 }
 moveCatalogTree.toggleNode = function(inUrl,inTreeId, inNodeId)
 {
-	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content.catalogid/admin/categories/move/toggle.html', { parameters: {nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path", categoryid: inNodeId } });
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content./${applicationid}//admin/categories/move/toggle.html', { parameters: {nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path", categoryid: inNodeId } });
 	return false;
 }
 moveCatalogTree.jumpAndOpenNode = function(inUrl,inTreeId, inNodeId)
@@ -101,7 +101,7 @@ moveCatalogTree.selectRow = function( inNodeId )
 		<td valign="top" width="300">
 			<div  style="padding: 0px; border:0px solid #000;">
 			<link rel="stylesheet" type="text/css" href="$home/system/styles/dtree.css">
-			$pages.include("/${catalogid}/admin/categories/move/tree.html" )
+			$pages.include("$apphome/admin/categories/move/tree.html" )
 			</div>
 		</td>
 		</tr>

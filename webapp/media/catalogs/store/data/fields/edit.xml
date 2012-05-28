@@ -1,0 +1,9 @@
+<properties>
+
+
+<property id="user"  keyword="true"  index="true" stored="true">User</property>
+<property id="product" index="true" stored="true">Product</property>
+<property id="changes" index="true" stored="true" editable="true">Changes</property>
+<property id="date" type="date" date="true" format="MM/dd/yyyy" index="true" stored="true" editable="true">Date</property>
+
+</properties>

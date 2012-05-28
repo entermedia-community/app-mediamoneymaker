@@ -1,12 +1,14 @@
-<form action="$home/${catalogid}/shoppingbag.html" name="shop" id="shop" >
+<form action="$home$apphome/shoppingbag.html" name="shop" id="shop" >
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign=top class=body>
-			$pages.stream("/${catalogid}/layout/productimages.html")
+			$pages.stream("$apphome/layout/productimages.html")
 		</td>
 		<td width="10"></td>
 		<td valign=top class=body><b>$product.getName()</b>
 			<p>
+				$pages.stream("$cataloghome/products/${product.id}.html")
+
 				$pages.streamContent()
 			</p>
 			
@@ -43,11 +45,11 @@
 					
 					#set( $types = $store.getFieldArchive().getDataProperties("product","productsearch",$user) )
 			$context.putPageValue("fields",$types)
-			$pages.include("/${catalogid}/layout/productpropertiesfields.html", $context)
+			$pages.include("$apphome/layout/productpropertiesfields.html", $context)
 					
-						$pages.stream("/${catalogid}/layout/productsizeandcolors.html")
-						$pages.stream("/${catalogid}/layout/productoptions.html")
-						$pages.stream("/${catalogid}/layout/productprice.html")
+						$pages.stream("$apphome/layout/productsizeandcolors.html")
+						$pages.stream("$apphome/layout/productoptions.html")
+						$pages.stream("$apphome/layout/productprice.html")
 					</td>
 				</tr>
 			</table>

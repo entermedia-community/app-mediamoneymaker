@@ -8,5 +8,5 @@
 	<property name="ordersort">orderdateDown</property>
 	<property name="showcompany">true</property>
 	
-	<inner-layout>/${catalogid}/myaccount/myaccountlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/myaccount/myaccountlayout.html</inner-layout>
 </page>

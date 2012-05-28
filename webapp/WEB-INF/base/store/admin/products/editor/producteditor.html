@@ -36,7 +36,7 @@
 	
 #end
 
-<form name="editproduct" action="$home$cataloghome/admin/products/editor/saveproduct.html" method="post" >
+<form name="editproduct" action="$home$apphome/admin/products/editor/saveproduct.html" method="post" >
 <input type="hidden" name="saveasnew" value="false" />				
 <input type="hidden" name="productid" value="$product.getId()" />
 
@@ -66,7 +66,7 @@ $pages.include("/${content.xmledithome}/detaileditor.html", $context)
 					</td>
 					<td>
 						<div class="oesubmit-button">
-							<a href="$home$cataloghome/admin/settings/fields/product.html" class="oesubmit-button">[[Edit Product Field List]]</a>
+							<a href="$home$apphome/admin/settings/fields/product.html" class="oesubmit-button">[[Edit Product Field List]]</a>
 						</div>
 					</td>
 					
@@ -91,7 +91,7 @@ $pages.include("/${content.xmledithome}/detaileditor.html", $context)
 				</form>
 				
 				##Edit product description link
-				#set( $ppath = "/${catalogid}/products/{$product.sourcePath}.html")
+				#set( $ppath = "$apphome/products/{$product.sourcePath}.html")
 	
 							
 			</div>

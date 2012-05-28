@@ -1,9 +1,9 @@
 #set ( $catalog = $storeeditor.getCurrentCatalog() )
 
-$pages.stream("/${catalogid}/admin/categories/productsearch.html?cache=false&categoryid=$catalog.id",$context)
+$pages.stream("$apphome/admin/categories/productsearch.html?cache=false&categoryid=$catalog.id",$context)
 
 <br>
-<form name="addproduct" action="$home$cataloghome/admin/products/editor/new.html">
+<form name="addproduct" action="$home$apphome/admin/products/editor/new.html">
 			<input type="hidden" name="categoryid" value="$catalog.id" />
 			<a href="javascript:document.addproduct.submit()" >[[Add New Product]]</a>
 </form>

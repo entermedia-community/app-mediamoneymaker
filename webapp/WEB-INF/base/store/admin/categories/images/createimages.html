@@ -2,9 +2,9 @@
 
 #set( $type = $context.getRequestParameter("type") )
 
-#set( $donelink = "$home$cataloghome/admin/categories/images/${category.id}.html?oe-action=CatalogEditModule.uploadCatalogImages" )
+#set( $donelink = "$home$apphome/admin/categories/images/${category.id}.html?oe-action=CatalogEditModule.uploadCatalogImages" )
 Change Category Image:
-#set($imagelink = "$cataloghome/categories/images/thumb/${category.id}.jpg") 
+#set($imagelink = "$apphome/categories/images/thumb/${category.id}.jpg") 
 #if($pages.doesExist($imagelink))
 <p>
 <img src="$home$imagelink"/>
@@ -19,7 +19,7 @@ Change Category Image:
             
 </form>
 
-<form name="confirm" action="$home$cataloghome/admin/categories/images/createfinish.html">
+<form name="confirm" action="$home$apphome/admin/categories/images/createfinish.html">
 
 <div class="oeinputform">
 <fieldset>
@@ -35,7 +35,7 @@ Change Category Image:
 
 	<p><label>[[Replace existing]]<br>[[mediums]]?</label><input type="checkbox" name="replacemedium" /></p>
 	
-	<p>[[To change the width and height of thumbnails edit the]] <a href="$home/system/filemanager/tabs/text/textarea.html?editPath=$cataloghome/configuration/imagelist.xml&savecomplete=$cataloghome/admin/categories/images/${category.id}.html">[[image configuration]]</a></p>
+	<p>[[To change the width and height of thumbnails edit the]] <a href="$home/system/filemanager/tabs/text/textarea.html?editPath=$apphome/configuration/imagelist.xml&savecomplete=$apphome/admin/categories/images/${category.id}.html">[[image configuration]]</a></p>
     <input type="hidden" name="categoryid" value="$category.id"/>
 
 <p>[[Are you sure you want to create thumbnails and medium images for all your products?]]</p>

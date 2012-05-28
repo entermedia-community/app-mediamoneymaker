@@ -5,7 +5,7 @@
 <div class="oeinputform">
 <fieldset>
     <legend>Company Data</legend>
-	#set( $searcher = $store.getSearcherManager().getSearcher($content.catalogid,"company" ) )	
+	#set( $searcher = $store.getSearcherManager().getSearcher($content./${applicationid}/,"company" ) )	
 	$context.putPageValue("searcher", $searcher )	 
 	$context.putPageValue("view", "companyedit")
 

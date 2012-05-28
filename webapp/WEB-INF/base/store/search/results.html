@@ -1,4 +1,4 @@
-<script language="javascript" src="$home/${catalogid}/layout/resultshover.js">     </script> 
+<script language="javascript" src="$home$apphome/layout/resultshover.js">     </script> 
 
 
 <div id="slideSheet" class="slidemediumheight clearFix">
@@ -11,12 +11,14 @@
 
 #foreach ( $cell in $hits.getPageOfHits() )
 <div class="slide"><div class="positioner">
-			#set( $clink = "$home$cataloghome/products/${cell.sourcepath}.html" )
+			#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
 	#set ($sourcepath = $cell.sourcepath)
 	
-	#set( $tsize = "$home/media/catalogs/${store.catalogId}/downloads/preview/thumb/productimages/$cell.sourcepath/original.jpg/thumb.jpg")
+
+	#set( $tsize = "$home/${applicationid}/}/downloads/preview/thumb/productimages/$cell.sourcepath/thumb.jpg")
+
 	
-	#set( $msize = "$home/media/catalogs/${store.catalogId}/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
+	#set( $msize = "$home/${applicationid}/}/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
 	
 		#if( $cell.votecount )	
 		<a href="$clink"><img src="$tsize" style="border-width: $!{cell.votecount}px; border-color: #00FF00; border-style: solid;" ></a>

@@ -25,8 +25,8 @@ $pages.includeContent()
 	setTreeSubTab("$content.subtab");
 	gotosubtab = function(inDir, inId)
 	{
-		var openpath = "$home$cataloghome/admin/categories/" + inDir + "/" + inId + ".html";
-		#set( $clink = "$cataloghome/categories/${category.id}.html")
+		var openpath = "$home$apphome/admin/categories/" + inDir + "/" + inId + ".html";
+		#set( $clink = "$apphome/categories/${category.id}.html")
 		jQuery("#tabsubcontent").load(openpath, {oemaxlevel: '3', origURL: "$content.path" , editPath: "$clink", categoryid: "$category.id" });	
 	}
 	showtab("$home","$content.subtab");		

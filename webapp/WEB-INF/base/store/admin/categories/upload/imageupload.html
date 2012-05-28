@@ -10,11 +10,11 @@
 
 
 #if( $type == "category")
-	#set( $donelink = "$home$cataloghome/admin/categories/editor/${storeeditor.getCurrentCatalog()}.html?oe-action=CatalogEditModule.uploadCatalogImages" )
+	#set( $donelink = "$home$apphome/admin/categories/editor/${storeeditor.getCurrentCatalog()}.html?oe-action=CatalogEditModule.uploadCatalogImages" )
 #elseif ( $type == "product" )
-	#set( $donelink = "$home$cataloghome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadProductImages" )
+	#set( $donelink = "$home$apphome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadProductImages" )
 #else
-	#set( $donelink = "$home$cataloghome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadItemImages" )
+	#set( $donelink = "$home$apphome/admin/products/editor/producteditor.html?oe-action=CatalogEditModule.uploadItemImages" )
 #end
 
 

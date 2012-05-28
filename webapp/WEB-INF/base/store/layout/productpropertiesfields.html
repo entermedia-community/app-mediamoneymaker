@@ -53,7 +53,7 @@
 				
 					<input name="${searchItem.getId()}.value" id="datevalue${searchItem.id}" value="$!inputed"
 						size="8" type="text">
-					<a style="padding-right: 5px;"	href="javascript:NewCal('datevalue${searchItem.id}','mmddyyyy',false,24)"><img	src="$home$cataloghome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+					<a style="padding-right: 5px;"	href="javascript:NewCal('datevalue${searchItem.id}','mmddyyyy',false,24)"><img	src="$home$apphome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
 					#else
 					#if( $usestartswith)
 					<input name="operation" value="startswith" type="hidden">						
@@ -65,7 +65,7 @@
 					<br>						
 					 #if($searchItem.getId() == "description")
 					  <a href="#" style="padding-right: 5px;"
-						onclick="if(!window.name)window.name='editor_parent';window.open('$home$cataloghome/search/help.html','popupwindowname','alwaysRaised=yes,menubar=no,resizable=yes,x=10,y=10,width=830,height=550,scrollbars=yes' );return false;">Help</a>
+						onclick="if(!window.name)window.name='editor_parent';window.open('$home$apphome/search/help.html','popupwindowname','alwaysRaised=yes,menubar=no,resizable=yes,x=10,y=10,width=830,height=550,scrollbars=yes' );return false;">Help</a>
 					 #end
 					#end
 				</div>

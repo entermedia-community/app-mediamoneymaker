@@ -1,0 +1,7 @@
+<properties>
+	<property id="id" index="true" stored="true" editable="true">ID</property>
+	<property id="name" index="true" stored="true" editable="true" >Product Type</property>
+	<property id="productcategory" index="true" stored="true" editable="true" type="list">Product Category</property>
+	<property id="FederalBenefit" index="true" stored="true" editable="true" >Federal Benefit</property>
+	<property id="Benefit" index="true" stored="true" editable="true" >Benefit</property>
+</properties>

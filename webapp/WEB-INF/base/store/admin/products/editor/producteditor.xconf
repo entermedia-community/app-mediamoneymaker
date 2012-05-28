@@ -27,5 +27,5 @@
     <value>Save Edits</value>
     <value locale="es">Guardar las modificaciones</value>
   </property>
-  <inner-layout>/${catalogid}/admin/products/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/innertablayout.html</inner-layout>
 </page>

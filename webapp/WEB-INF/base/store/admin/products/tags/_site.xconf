@@ -8,5 +8,5 @@
     <value locale="es">Palabras clave del producto</value>
   </property>
   <property name="subtab">producttags</property>
-  <inner-layout>/${catalogid}/admin/products/tags/layout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/tags/layout.html</inner-layout>
 </page>

@@ -1,14 +1,14 @@
 <script type="text/javascript" src="$home/system/javascript/datetimepicker.js"></script>
 
-$pages.include("$cataloghome/admin/orders/navigate.html")
-<form action="$home$cataloghome/myaccount/orders/results.html" name="fieldsearch" method="post">
+$pages.include("$apphome/admin/orders/navigate.html")
+<form action="$home$apphome/myaccount/orders/results.html" name="fieldsearch" method="post">
 			#set( $types = $store.getFieldArchive().getDataProperties("order","ordersearch", $user) )
 			$context.putPageValue("fields",$types)
-$pages.include("$cataloghome/myaccount/orders/searchfields.html", $context)
+$pages.include("$apphome/myaccount/orders/searchfields.html", $context)
 
 </form>	
-<!--//Filter From: <input type="Text" id="vfrom" name="vfrom" maxlength="10" size="10"><a href="javascript:NewCal('vfrom','mmddyyyy',false,24)"><img src="$home/${catalogid}/admin/display/cal.gif" width="16" height="16" border="0" alt="Pick a date"></a>-->
-<!--	//To: <input type="Text" id="vto" name="vto" maxlength="10" size="10"><a href="javascript:NewCal('vto','mmddyyyy',false,24)"><img src="$home/${catalogid}/admin/display/cal.gif" width="16" height="16" border="0" alt="Pick a date"></a> <input type="submit" value="search" />-->
+<!--//Filter From: <input type="Text" id="vfrom" name="vfrom" maxlength="10" size="10"><a href="javascript:NewCal('vfrom','mmddyyyy',false,24)"><img src="$home$apphome/admin/display/cal.gif" width="16" height="16" border="0" alt="Pick a date"></a>-->
+<!--	//To: <input type="Text" id="vto" name="vto" maxlength="10" size="10"><a href="javascript:NewCal('vto','mmddyyyy',false,24)"><img src="$home$apphome/admin/display/cal.gif" width="16" height="16" border="0" alt="Pick a date"></a> <input type="submit" value="search" />-->
 <br>
 #set( $types2 = $store.getFieldArchive().getDataProperties("order","ordersearchresults", $user) )
 
@@ -40,7 +40,7 @@ $pages.include("$cataloghome/myaccount/orders/searchfields.html", $context)
 	#end
 	
 	#set( $order = $store.getOrderArchive().loadSubmittedOrder($store, $orderhit.customer, $orderhit.id))
-		<td><a href="$home/${catalogid}/myaccount/orders/view/$order.customer.userName/${order.orderNumber}.html">$order.orderNumber</a></td>
+		<td><a href="$home$apphome/myaccount/orders/view/$order.customer.userName/${order.orderNumber}.html">$order.orderNumber</a></td>
 		<td>$!order.dateOrdered</td>
 		<td align="center">
 		#if ($!orderidlist.getInput("products"))

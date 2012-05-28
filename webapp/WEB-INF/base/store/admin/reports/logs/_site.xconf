@@ -6,7 +6,7 @@
     <value>Reports</value>
     <value locale="es">Informes</value>
   </property>
-  <property name="baselogdir">/${catalogid}/admin/reports/logs</property>
+  <property name="baselogdir">/${applicationid}/admin/reports/logs</property>
   <property name="encoding">UTF-8</property>
-  <inner-layout>/${catalogid}/admin/reports/logs/layout/logsinnerlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/reports/logs/layout/logsinnerlayout.html</inner-layout>
 </page>

@@ -10,5 +10,5 @@
     <value locale="es">Volver</value>
   </property>
   <property name="encoding">UTF-8</property>
-  <inner-layout>/${catalogid}/admin/reports/innerlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/reports/innerlayout.html</inner-layout>
 </page>

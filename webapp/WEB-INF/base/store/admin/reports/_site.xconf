@@ -2,7 +2,7 @@
 
 <page>
 
-	<inner-layout>/${catalogid}/admin/reports/innerlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/admin/reports/innerlayout.html</inner-layout>
 
 	<property name="tab">reports</property>
 	

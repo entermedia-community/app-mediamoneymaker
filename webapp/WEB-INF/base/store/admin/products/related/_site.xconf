@@ -8,5 +8,5 @@
     <value locale="es">Productos Relacionados</value>
   </property>
   <property name="subtab">productrelated</property>
-  <inner-layout>/${catalogid}/admin/products/related/relatedproducts.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/related/relatedproducts.html</inner-layout>
 </page>

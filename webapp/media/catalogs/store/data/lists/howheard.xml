@@ -1,0 +1,10 @@
+
+<positions>
+   <position id="salesrep">Samsung Sales Rep</position>
+    <position id="poster">In-Store Poster</position>
+     <position id="co-worker">Co-Worker</position>
+  
+  <position id="other">Other</position>
+
+</positions>
+

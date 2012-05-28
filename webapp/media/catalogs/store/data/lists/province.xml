@@ -1,0 +1,16 @@
+<properties>
+	<property id="AB">Alberta</property>
+	<property id="BC" >British Columbia</property>
+	<property id="MB" >Manitoba</property>
+	<property id="NB" >New Brunswick</property>
+	<property id="NL" >Newfoundland &amp; Labrador</property>
+	<property id="NT" >Northwest Territories</property>
+	<property id="NS" >Nova Scotia</property>
+	<property id="NU" >Nunavut</property>
+	<property id="ON" >Ontario</property>
+	<property id="PE" >Prince Edward Island</property>
+	<property id="QC" >Quebec</property>
+	<property id="SK" >Saskatchewan</property>
+	<property id="TY" >Yukon</property>	
+	<property id="OTH" >Other/Out of Country</property>    
+</properties>

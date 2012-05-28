@@ -17,7 +17,7 @@
     <value>Add Related Product ID</value>
     <value locale="es">Añadir relacionados con ID de producto</value>
   </property>
-  <inner-layout>/${catalogid}/admin/products/innertablayout.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/innertablayout.html</inner-layout>
   <path-action name="StoreSearchModule.fieldSearch"/>
   <path-action name="StoreSearchModule.loadPageOfHits"/>
   

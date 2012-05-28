@@ -9,5 +9,5 @@
     <value locale="es">Lista de Precios</value>
   </property>
   <property name="subtab">productpricing</property>
-  <inner-layout>/${catalogid}/admin/products/pricing/pricing.html</inner-layout>
+  <inner-layout>/${applicationid}/admin/products/pricing/pricing.html</inner-layout>
 </page>

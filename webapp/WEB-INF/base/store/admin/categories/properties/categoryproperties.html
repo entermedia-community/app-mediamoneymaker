@@ -5,12 +5,12 @@
 <fieldset>
     <legend>[[Category Properties]]</legend>
 
-<a href="$home$cataloghome/admin/settings/fields/category.html">[[Edit Category Property Fields]]</a><br><br>
-<form name="savePropertyForm"  method="post" action="$home$cataloghome/admin/categories/properties/save.html" >
+<a href="$home$apphome/admin/settings/fields/category.html">[[Edit Category Property Fields]]</a><br><br>
+<form name="savePropertyForm"  method="post" action="$home$apphome/admin/categories/properties/save.html" >
 	<input type="hidden" value="$category.id" name="categoryid"/>		
 	
 	#set( $fields = $store.getFieldArchive() )
-	#set ($searcher = $store.getSearcherManager().getSearcher($catalogid, "category"))
+	#set ($searcher = $store.getSearcherManager().getSearcher($/${applicationid}/, "category"))
 	$context.putPageValue("fieldArchive", $fields )	 
 	$context.putPageValue("searcher", $searcher)	
 	$context.putPageValue("data", $category)	

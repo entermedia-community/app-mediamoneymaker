@@ -1,0 +1,12 @@
+<properties>
+<property id="id">Claim ID</property>
+
+
+<property id="startdate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy" editable="true">Start Date</property>
+<property id="enddate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy" editable="true">End Date</property>
+<property id="audittype" index="true" stored="true" type="date" viewtype="list" >Audit Type</property>
+
+<property id="percentage" index="true" stored="true" type="number" editable="true" >Percentage</property>
+
+
+</properties>

@@ -1,0 +1,5 @@
+<properties>
+	<property id="invoicedate" editable="true" required="true">Invoice Date</property>
+	<property id="invoicenumber" editable="true" required="true">Invoice Number</property>
+	
+</properties>

@@ -1,0 +1,5 @@
+<properties>
+	<property id="startdate" editable="true" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Start Date</property>
+	<property id="enddate" editable="true" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">End Date</property>
+	<property id="totalamount" editable="true" index="true" stored="true">Payment Caps</property>
+</properties>

@@ -7,7 +7,7 @@ $pages.stream("/$content.xmledithome/embeded.html")
 #if( $selectedelement && ($selectedelement.attributeValue("type") == "list" || $selectedelement.attributeValue("list") == "true" ) )
 <div style="padding-left:20px; text-align:right;">
 <br><br>
-<p>#set( $xmlpath = "/system/data/list/${content.catalogid}/${selectedelement.attributeValue('id')}.html" ) 
+<p>#set( $xmlpath = "/system/data/list/${content./${applicationid}/}/${selectedelement.attributeValue('id')}.html" ) 
 
 <a href="$home$xmlpath?&backto=$content.path" >[[Edit List Values]]</a></p>
 

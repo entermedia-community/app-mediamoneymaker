@@ -9,7 +9,7 @@
 <tr>
 	<td class="divided-box-white" height="100%" valign="top">
 			[[Items are actual price points for ordering such as small, medium or large shoe sizes.]]
-			<form name="listitems" id="listitems" action="$home$cataloghome/admin/products/items/itemeditor.html">
+			<form name="listitems" id="listitems" action="$home$apphome/admin/products/items/itemeditor.html">
 			<font color=red>$!editerror</font><br>
 			<select size="12" style="width: 200px;"  name="sku" onchange="document.listitems.submit();" >
 				#foreach($itemOption in $product.getInventoryItems() )
@@ -25,7 +25,7 @@
 			</select><br>
 			<input type="hidden" name="oe-action" value="CatalogEditModule.selectItem" />
 			</form>
-			<form name="additem" action="$home$cataloghome/admin/products/items/itemeditor.html">
+			<form name="additem" action="$home$apphome/admin/products/items/itemeditor.html">
 				#set($count = $product.getInventoryItemCount()+1)
 				<input type="submit" value="[[Add Item]]" />	
 				<input name="newsku" size="6" value="${product.id}-$count" />
@@ -132,7 +132,7 @@
 						<p><a href="upload/imageupload.html?type=item">[[Upload Item Images]]</a><br>
 						
 										#foreach( $imagetype in $storeeditor.getImageList() )
-										#set( $url = "/${catalogid}/products/images/items/${imagetype.type}/${item.sku}-${imagetype.count}.jpg" )
+										#set( $url = "$apphome/products/images/items/${imagetype.type}/${item.sku}-${imagetype.count}.jpg" )
 										#if( $pages.doesExist( $url) )
 											<br>&nbsp;&nbsp;(found $imagetype.description <a href="$home$url">(view)</a> <a href="producteditor.html?oe-action=CatalogEditModule.resizeImage&width=$imagetype.width&imagepath=$url">[[auto resize]]</a> )
 										#end

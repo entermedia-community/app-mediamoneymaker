@@ -4,12 +4,12 @@
 <div id="oestoreadmintabs">
 <table class="tabnavigation" >
 #if( $oestoreadmin.size() == 0)
-$!oestoreadmin.addNewTab("dashboard","[[Dashboard]]","$cataloghome/admin/stats.html", 2)
-$!oestoreadmin.addNewTab("categories","[[Categories]]","$cataloghome/admin/categories/index.html", 3)
-$!oestoreadmin.addNewTab("products","[[Products]]","$cataloghome/admin/products/index.html",3)
-$!oestoreadmin.addNewTab("orders","[[Orders]]","$cataloghome/admin/orders/index.html",2)
-##$!oestoreadmin.addNewTab("reports","[[Reports]]","$cataloghome/admin/reports/index.html",3)
-$!oestoreadmin.addNewTab("settings","[[Administer]]","$cataloghome/admin/settings/actions/index.html",4)
+$!oestoreadmin.addNewTab("dashboard","[[Dashboard]]","$apphome/admin/stats.html", 2)
+$!oestoreadmin.addNewTab("categories","[[Categories]]","$apphome/admin/categories/index.html", 3)
+$!oestoreadmin.addNewTab("products","[[Products]]","$apphome/admin/products/index.html",3)
+$!oestoreadmin.addNewTab("orders","[[Orders]]","$apphome/admin/orders/index.html",2)
+##$!oestoreadmin.addNewTab("reports","[[Reports]]","$apphome/admin/reports/index.html",3)
+$!oestoreadmin.addNewTab("settings","[[Administer]]","$apphome/admin/settings/actions/index.html",4)
 #end
 <tr>
 #foreach ( $tab in $oestoreadmin.tabs)

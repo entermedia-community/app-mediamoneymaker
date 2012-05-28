@@ -1,3 +1,3 @@
 <page>
-	<inner-layout>/${catalogid}/layout/storelayout.html</inner-layout>
+	<inner-layout>/${applicationid}/layout/storelayout.html</inner-layout>
 </page>

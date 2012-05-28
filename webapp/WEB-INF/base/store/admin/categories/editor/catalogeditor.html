@@ -1,7 +1,7 @@
 
 #set ( $category = $storeeditor.getCurrentcategory() )
 
-<form name="categoryForm" action="$home$cataloghome/admin/categories/editor/${category.id}.html" method="post">
+<form name="categoryForm" action="$home$apphome/admin/categories/editor/${category.id}.html" method="post">
 	<input type="hidden" name="oe-action" value="CatalogEditModule.saveCatalog"/>
 	<input type="hidden" name="saveasnew" value="false" />
 
@@ -24,7 +24,7 @@
 	</p>
 	<p><label>[[Short Description]]</label> <textarea name="shortdescription" cols="55" rows="3">$!category.getShortDescription()</textarea> </p>
 	<p><label></label><a href="javascript: savecategory();" name="Save" class="oesubmit-button">[[Save Edits]]</a></p>
-	<p><label>[[Preview]]</label><a href="$home/${catalogid}/categories/${category.id}.html">$home${cataloghome}/categories/${category.id}.html</a></p>
+	<p><label>[[Preview]]</label><a href="$home$apphome/categories/${category.id}.html">$home${cataloghome}/categories/${category.id}.html</a></p>
 </fieldset>
 </div>
 
@@ -33,10 +33,10 @@
 				#foreach( $imagetype in $storeeditor.getImageList() )
 							#set( $url = "/${categoryid}/categorys/images/${imagetype.type}/${category.id}${imagetype.postfix}.jpg" )
 							#if( $pages.doesExist( $url) )
-								<br>&nbsp;&nbsp;(found $imagetype.description <a href="$url">(view)</a> <a href="$home$cataloghome/admin/categories/editor/${category.id}.html?oe-action=CatalogEditModule.resizeImage&width=$imagetype.width&imagepath=$url">[[auto resize]]</a> )
+								<br>&nbsp;&nbsp;(found $imagetype.description <a href="$url">(view)</a> <a href="$home$apphome/admin/categories/editor/${category.id}.html?oe-action=CatalogEditModule.resizeImage&width=$imagetype.width&imagepath=$url">[[auto resize]]</a> )
 							#end
 				#end
-		<a href="$home$cataloghome/admin/categories/upload/imageupload.html?type=category">[[Add New Image]]</a><br>
+		<a href="$home$apphome/admin/categories/upload/imageupload.html?type=category">[[Add New Image]]</a><br>
 </fieldset>
 </form>
 

@@ -8,8 +8,8 @@
     <value>Category Access Control</value>
     <value locale="es">Categoría de control de acceso</value>
   </property>
-  <property name="filerootpath">/${catalogid}/admin/categories/permissions</property>
+  <property name="filerootpath">/${applicationid}/admin/categories/permissions</property>
   <property name="subtab">categorypermissions</property>
-  <property name="permissionrootpath">/${catalogid}/admin/categories/permissions</property>
-  <inner-layout>/${catalogid}/admin/categories/permissions/layout.html</inner-layout>
+  <property name="permissionrootpath">/${applicationid}/admin/categories/permissions</property>
+  <inner-layout>/${applicationid}/admin/categories/permissions/layout.html</inner-layout>
 </page>

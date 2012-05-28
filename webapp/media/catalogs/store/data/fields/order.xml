@@ -1,0 +1,9 @@
+<properties>
+<property id="description" >Keyword</property>
+<property id="id" keyword="true"  index="true" stored="true" editable="true">Order #</property>
+<property id="orderstatus" type="list" index="true"   editable="true">Status</property>
+<property id="customer" keyword="true"  index="true" stored="true" editable="true">Customer</property>
+<property id="products" editable="true" index="true" stored="true">Products</property>
+<property id="categories" keyword="true" stored="true" editable="true">Default Category</property>
+<property id="orderdate" editable="true" index="true" stored="true"  type="date" format="MM/dd/yyyy" >Order Date</property>
+</properties>

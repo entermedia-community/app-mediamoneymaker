@@ -1,0 +1,15 @@
+
+<properties>
+  <property id="howheard"  index="true" stored="true" editable="true" type="list" required="true">How did you hear about the program?</property>
+
+ <property id="howheard-other" dependson="howheard" dependsonvalue="other" required="true" dependsondefault="NA"/>
+
+
+<property id="languages" required="true" />
+
+
+
+
+
+
+</properties>

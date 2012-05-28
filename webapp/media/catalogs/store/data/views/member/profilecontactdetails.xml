@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="firstName"/>
+  <property id="lastName"/>
+   <property id="email" editable="false"/>
+  <property id="homeaddress"/>
+  <property id="homecity"/>
+  <property id="homeprovince"/>
+  <property id="homepostalcode"/>
+  <property id="mobilephone"/>profilecontactdetails
+ 
+</properties>
