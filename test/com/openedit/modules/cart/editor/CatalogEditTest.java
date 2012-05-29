@@ -285,32 +285,5 @@ public class CatalogEditTest extends StoreTestCase
 	
 	
 
-	public void testMultipleEdits() throws Exception
-	{
-		Product product = getStore().getProduct("1");
-		product.setProperty("stuff", "before");
-		getStore().saveProduct(product);
-		StoreSearchModule module = (StoreSearchModule)getFixture().getModuleManager().getModule("StoreSearchModule");
-		WebPageRequest req = getFixture().createPageRequest();
-		req.setRequestParameter("query","id:1");
-		//assertNotNull(module.getSearcherManager());
-		HitTracker hits  = module.searchStore(req);
-		String id = hits.getIndexId();
-		req.setRequestParameter("multihitsname", "hitsstore");
 	
-		CatalogEditModule mod = (CatalogEditModule) getFixture().getModuleManager()
-		.getModule("CatalogEditModule");
-	
-		mod.createMultiEditData(req);
-		CompositeData data = (CompositeData) req.getSessionValue("multiedit:hitsstore");
-		assertNotNull(data);
-		assertEquals("before", data.get("stuff"));
-		req.setRequestParameter("id" , data.getId());
-		DataEditModule dmodule = (DataEditModule)getFixture().getModuleManager().getModule("DataEditModule");
-		data.setProperty("stuff", "after");
-		dmodule.saveData(req);
-		product = getStore().getProduct("1");
-		assertEquals("after", product.getProperty("stuff"));
-		
-	}
 }
