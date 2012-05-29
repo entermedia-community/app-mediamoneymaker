@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<store>
+	<name>OpenEdit Store</name>
+  <credit-card-type name="Master Card" id="MCARD"/>
+  <credit-card-type name="Visa" id="VISA"/>
+  <credit-card-type name="American Express" id="AMEX"/>
+  <credit-card-type name="Discover" id="DISCOVER"/>
+  <credit-card-type name="GE Finance" id="GEFINANCE"/>
+  <tax statecode="OH" rate=".07"/>
+  <tax statecode="ON" name="GST" applytoshipping="true" rate=".05"/>
+ 	<tax statecode="ON" name="PST" rate=".08"/>
+ 
+  <Xhostname>Test</Xhostname>
+  <coupons enabled="true" />
+  <to-address>cburkey@openedit.org</to-address>
+  <from-address>store@einnovation.com</from-address>
+  <email-layout>/store/thanksemail.html</email-layout>
+  <order-layout>/store/orderemail.html</order-layout>
+   <status-email-layout>/store/orders/statusemail.html</status-email-layout>
+  <assign-shipping-method>false</assign-shipping-method>
+  <price-shipping-method id="1" costs="6" description="Standard Delivery" upperThreshold="199.99">
+	<handling-charge level="A" costs="15" />
+  </price-shipping-method>
+  <price-shipping-method id="2" costs="12" description="3 Day Rush Delivery" upperThreshold="199.99">
+	<handling-charge level="A" costs="25" additionalCosts="true" />
+  </price-shipping-method>
+  <price-shipping-method id="3" costs="2" description="Next Day Delivery"	upperThreshold="199.99">
+	<handling-charge level="A" costs="35" additionalCosts="true" />
+  </price-shipping-method>
+  <price-shipping-method id="4" costs="0" description="Standard Delivery For Orders Over $200"	lowerThreshold="200.00"/>
+  <weight-shipping-method id="5" description="UPS next day air"	lowerThreshold="3" upperThreshold="10" costs="3"/>
+  <shipping-method id="electronic-delivery" costs="0" hidden="true" />
+  	  	  	  	
+  	  	  	  	
+  <uses-po-numbers>true</uses-po-numbers>
+  <display-terms-conditions>false</display-terms-conditions>
+  <uses-bill-me-later>true</uses-bill-me-later>
+  <allow-duplicate-accounts>true</allow-duplicate-accounts>
+  
+</store>

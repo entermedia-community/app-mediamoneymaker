@@ -167,7 +167,7 @@ public class CartTest extends StoreTestCase {
 
 		firstItem.setQuantity(3);
 
-		WebPageRequest updatecontext = getFixture().createPageRequest();
+		WebPageRequest updatecontext = getFixture().createPageRequest("/store/index.html");
 		updatecontext.putSessionValue(store.getCatalogId() + "cart", cart);
 		updatecontext.setRequestParameter("reloadcart", "true");
 		// This should swap out the item
