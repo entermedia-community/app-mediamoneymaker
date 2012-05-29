@@ -41,6 +41,12 @@ files.deleteAll( root + "/WEB-INF/base/store");
 files.copyFiles( tmp + "/WEB-INF/base/store", root + "/WEB-INF/base/store");
 
 
+log.add("5. UPGRADE CART FILES");
+files.deleteAll( root + "/media/catalogs/store");
+files.copyFiles( tmp + "/media/catalogs/store", root + "/WEB-INF/base/media/catalogs/store");
+
+
+
 files.deleteAll(tmp);
 
 log.add("6. UGRADE COMPLETED");
