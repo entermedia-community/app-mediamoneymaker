@@ -12,6 +12,47 @@
   <property id="users" index="true" stored="true" editable="true" type="list">Users</property>
   <property id="groups" index="true" stored="true" editable="true" type="list">Groups</property>
   
-  
+  <property id="accessoryid" index="true" stored="true">AccessoryID</property>
+  <property id="accessoryname" index="true" stored="true">AccessoryName</property>
+  <property id="accessorynamefr" index="true" stored="true">AccessoryNameFR</property>
+  <property id="upc" index="true" stored="true">UPC</property>
+  <property id="manufacturerid" index="true" stored="true">ManufacturerID</property>
+  <property id="image" index="true" stored="true">Image</property>
+  <property id="thumbnailimage" index="true" stored="true">ThumbnailImage</property>
+  <property id="descrip" index="true" stored="true">Descrip</property>
+  <property id="descripfr" index="true" stored="true">DescripFR</property>
+  <property id="rogerssku" index="true" stored="true">RogersSKU</property>
+  <property id="manufacturersku" index="true" stored="true">ManufacturerSKU</property>
+  <property id="categoryid" index="true" stored="true">CategoryID</property>
+  <property id="displaydesignationid" index="true" stored="true">DisplayDesignationID</property>
+  <property id="msrp" index="true" stored="true">MSRP</property>
+  <property id="fidomsrp" index="true" stored="true">FidoMSRP</property>
+  <property id="rogersprice" index="true" stored="true">RogersPrice</property>
+  <property id="standardprice" index="true" stored="true">StandardPrice</property>
+  <property id="wholesaleprice" index="true" stored="true">WholesalePrice</property>
+  <property id="fidowholesaleprice" index="true" stored="true">FidoWholesalePrice</property>
+  <property id="clearanceprice" index="true" stored="true">ClearancePrice</property>
+  <property id="clearancecentre" index="true" stored="true">ClearanceCentre</property>
+  <property id="clearancecentredescrip" index="true" stored="true">ClearanceCentreDescrip</property>
+  <property id="clearancecentredescripfr" index="true" stored="true">ClearanceCentreDescripFR</property>
+  <property id="snapshotonmainpage" index="true" stored="true">SnapshotOnMainPage</property>
+  <property id="snapshotstatic" index="true" stored="true">SnapshotStatic</property>
+  <property id="snapshotdescrip" index="true" stored="true">SnapshotDescrip</property>
+  <property id="snapshotdescripfr" index="true" stored="true">SnapshotDescripFR</property>
+  <property id="featuredonmainpage" index="true" stored="true">FeaturedOnMainPage</property>
+  <property id="featureddescrip" index="true" stored="true">FeaturedDescrip</property>
+  <property id="featureddescripfr" index="true" stored="true">FeaturedDescripFR</property>
+  <property id="approved" index="true" stored="true">Approved</property>
+  <property id="approvedon" index="true" stored="true">ApprovedOn</property>
+  <property id="approvedcomment" index="true" stored="true">ApprovedComment</property>
+  <property id="deleted" index="true" stored="true">Deleted</property>
+  <property id="pending" index="true" stored="true">Pending</property>
+  <property id="pendingon" index="true" stored="true">PendingOn</property>
+  <property id="participantid" index="true" stored="true">ParticipantID</property>
+  <property id="createdon" index="true" stored="true">CreatedOn</property>
+  <property id="banneren" index="true" stored="true">BannerEN</property>
+  <property id="bannerfr" index="true" stored="true">BannerFR</property>
+  <property id="bannerid" index="true" stored="true">BannerID</property>
+  <property id="updatedon" index="true" stored="true">UpdatedOn</property>
   
 </properties>
