@@ -167,7 +167,8 @@
 			<include name="store/*.*" />
 			<include name="store/configuration/store.*" />
 			<include name="store/configuration/authorize.*" />
-			<!--include name="store/products/_default.xconf" /-->
+			<include name="media/catalogs/store/**" />
+				
 		</fileset>
 	</copy>
 	<copy todir="${wardir}/WEB-INF/base/">
