@@ -242,7 +242,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	protected String listCatalogXml()
 	{
-		return "/WEB-INF/data/" + getCatalogId() +  "/storecategories/categories.xml";
+		return "/" + getCatalogId() +  "/categories/categories.xml";
 	}
 
 	/*
