@@ -272,13 +272,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		return new ListHitTracker(list);
 	}
 
-	public String getIndexPath() {
-		if (fieldIndexPath == null) {
-			// This seems like a dumb place to keep this
-			fieldIndexPath = "/" + getCatalogId() + "/orders/data/search/index";
-		}
-		return fieldIndexPath;
-	}
+	
 
 	@Override
 	protected void reIndexAll(IndexWriter inWriter) {

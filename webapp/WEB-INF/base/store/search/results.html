@@ -15,10 +15,10 @@
 	#set ($sourcepath = $cell.sourcepath)
 	
 
-	#set( $tsize = "$home/${applicationid}/}/downloads/preview/thumb/productimages/$cell.sourcepath/thumb.jpg")
+	#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$cell.sourcepath/thumb.jpg")
 
 	
-	#set( $msize = "$home/${applicationid}/}/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
+	#set( $msize = "$home$cataloghome/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
 	
 		#if( $cell.votecount )	
 		<a href="$clink"><img src="$tsize" style="border-width: $!{cell.votecount}px; border-color: #00FF00; border-style: solid;" ></a>
@@ -79,4 +79,3 @@ No results found for <b>$hits.friendlyQuery</b>
 </p>
                                                                                                                                                                                                               
 #end
-
