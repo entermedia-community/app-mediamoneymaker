@@ -108,6 +108,7 @@
 		
 		    <value>directPaymentProcessor</value>
 			<value>paypalOrderProcessor</value>
+			<value>beanstreamOrderProcessor</value>			
 			 <value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
@@ -155,6 +156,12 @@
   </bean>
 
   <bean id="echoOrderProcessor" class="org.openedit.store.gateway.EchoOrderArchive">
+  </bean>	
+
+
+  <bean id="beanstreamOrderProcessor" class="org.openedit.store.gateway.BeanstreamOrderProcessor">
+    	<property name="pageManager"><ref bean="pageManager" /></property>
+  
   </bean>	
 
 

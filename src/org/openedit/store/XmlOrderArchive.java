@@ -247,8 +247,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						.getCreditCardType().getId());
 				paymentElem.addAttribute("card_number", encrypt(paymentMethod
 						.getCardNumber()));
-				paymentElem.addAttribute("card_verification_code",
-						encrypt(paymentMethod.getCardVerificationCode()));
+				/*THIS IS A HUGE NO NO!!!! */
+			//				paymentElem.addAttribute("card_verification_code",
+//						encrypt(paymentMethod.getCardVerificationCode()));
+				
+				
 				paymentElem.addAttribute("expiration_date", paymentMethod
 						.getExpirationDateString());
 				boolean bill = paymentMethod.getBillMeLater();
