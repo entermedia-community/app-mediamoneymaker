@@ -1008,7 +1008,9 @@ public class Store {
 		if( fieldOrderSearch == null)
 		{
 			fieldOrderSearch = (OrderSearcher)getSearcherManager().getSearcher(getCatalogId(), "storeOrder");
-			fieldOrderSearch.setStore(this); //TODO: Remove this need for a store use catalogid
+			
+			//fieldOrderSearch.setStore(this); //TODO: Remove this need for a store use catalogid
+			
 			fieldOrderSearch.setOrderArchive(getOrderArchive()); //TODO: Make sure we set the orderarchive catalogid
 		}
 		return fieldOrderSearch;

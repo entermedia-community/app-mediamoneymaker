@@ -20,7 +20,10 @@
   </bean>
   
   <bean id="storeOrderSearcher" class="org.openedit.store.orders.OrderSearcher"  singleton="false">
-  	  		<property name="rootDirectory"><ref bean="root"/></property>  	
+  	  		<property name="rootDirectory"><ref bean="root"/></property>
+  	  			<property name="moduleManager"><ref bean="moduleManager"/></property>
+  	  		  	  	<property name="storeArchive"><ref bean="storeArchive" /></property>
+  	  		  	
   </bean>
   
   

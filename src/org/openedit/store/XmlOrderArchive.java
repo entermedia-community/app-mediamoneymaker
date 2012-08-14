@@ -36,6 +36,7 @@ import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.ElementData;
 
 import com.openedit.OpenEditException;
@@ -55,8 +56,7 @@ import com.openedit.util.XmlUtil;
 public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		OrderArchive {
 	private static final Log log = LogFactory.getLog(XmlOrderArchive.class);
-	protected static final DateFormat DATE_FORMAT = new SimpleDateFormat(
-			"M/d/yy h:mm:ss a");
+	
 	protected static final String ORDERS_FILENAME = "orders.xml";
 	protected PostMail postMail;
 	protected XmlUtil fieldXmlUtil;
@@ -133,8 +133,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					"order");
 			// add node for order, with basic information about it
 			orderElem.addAttribute("order_number", inOrder.getId());
-			orderElem.addAttribute("date", DATE_FORMAT
-					.format(inOrder.getDate()));
+			orderElem.addAttribute("date", DateStorageUtil.getStorageUtil().formatForStorage(inOrder.getDate()));
 			
 			ShippingMethod shippingMethod = inOrder.getShippingMethod();
 			if (shippingMethod != null) {
@@ -522,10 +521,10 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 		try {
 			String formated = inOrderElement.attributeValue("date");
-			Date date = DATE_FORMAT.parse(formated);
+			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(formated);
 			inOrder.setDate(date);
 			inOrder.setDateOrdered(formated);
-		} catch (ParseException ex) {
+		} catch (Exception ex) {
 			throw new StoreException(ex);
 		}
 

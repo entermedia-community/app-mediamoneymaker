@@ -26,6 +26,7 @@ import org.openedit.store.CartItem;
 import org.openedit.store.Category;
 import org.openedit.store.Option;
 import org.openedit.store.Store;
+import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
 import org.openedit.store.customer.Customer;
 
@@ -40,6 +41,17 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	private static final Log log = LogFactory.getLog(OrderSearcher.class);
 	protected Store fieldStore;
 	protected OrderArchive fieldOrderArchive;
+	protected StoreArchive fieldStoreArchive;
+
+	public StoreArchive getStoreArchive()
+	{
+		return fieldStoreArchive;
+	}
+
+	public void setStoreArchive(StoreArchive inStoreArchive)
+	{
+		fieldStoreArchive = inStoreArchive;
+	}
 
 	public HitTracker fieldSearch(WebPageRequest inReq)
 			throws OpenEditException {
@@ -86,7 +98,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	}
 
 	public OrderArchive getOrderArchive() {
-		return fieldOrderArchive;
+		return (OrderArchive) getModuleManager().getBean(getCatalogId(), "orderArchive");
 	}
 
 	public void setOrderArchive(OrderArchive inOrderArchive) {
@@ -204,8 +216,10 @@ public class OrderSearcher extends BaseLuceneSearcher {
 				}
 				value = categories.toString();
 			} else if (detail.isDate()) {
+				if(inOrder.getDate() != null){
 				value = DateTools.dateToString(inOrder.getDate(),
 						Resolution.MINUTE);
+				}
 			} else {
 				value = inOrder.get(prop);
 			}
@@ -259,7 +273,12 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		}
 	}
 
-	public Store getStore() {
+	public Store getStore()
+	{
+		if (fieldStore == null)
+		{
+			fieldStore = getStoreArchive().getStore(getCatalogId());
+		}
 		return fieldStore;
 	}
 
@@ -267,10 +286,10 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		fieldStore = inStore;
 	}
 
-	public HitTracker getAllHits(WebPageRequest inReq) {
-		List list = getOrderArchive().listAllOrderIds(getStore());
-		return new ListHitTracker(list);
-	}
+//	public HitTracker getAllHits(WebPageRequest inReq) {
+//		List list = getOrderArchive().listAllOrderIds(getStore());
+//		return new ListHitTracker(list);
+//	}
 
 	
 
@@ -284,4 +303,16 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		}
 	}
 
+	@Override
+	public Object searchById(String inId)
+	{
+		Data orderinfo = (Data) super.searchById(inId);
+		
+		return orderinfo;
+		
+	}
+	
+	
+	
+	
 }
