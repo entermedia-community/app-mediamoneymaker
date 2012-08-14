@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.You are editing $settings">
+    <value>You are editing $settings</value>
+    <value locale="es">Está editando la configuración de dólares</value>
+  </property>
+  <property name="subtab">settingoptions</property>
+</page>

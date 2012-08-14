@@ -1,0 +1,13 @@
+#set ( $order = $cart.getCurrentOrder() )
+#set ( $customer = $cart.getCustomer() )
+#set ( $paymentMethod = $customer.getPaymentMethod() )
+
+<p>[[Thank you for your recent order.]]</p>
+
+<p>[[Here is the updated status of your order]]:</p> 
+
+[[Order Number]]: $order.getId()
+
+$pages.stream("/store/orders/statuslisting.html")
+
+<p>[[If you have any questions, please reply to this email]].</p>

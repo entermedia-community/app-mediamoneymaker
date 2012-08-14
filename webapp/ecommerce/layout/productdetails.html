@@ -1,0 +1,61 @@
+<form action="$home$apphome/shoppingbag.html" name="shop" id="shop" >
+<table border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign=top class=body>
+			$pages.stream("$apphome/layout/productimages.html")
+		</td>
+		<td width="10"></td>
+		<td valign=top class=body><b>$product.getName()</b>
+			<p>
+				$pages.stream("$cataloghome/products/${product.id}.html")
+
+				$pages.streamContent()
+			</p>
+			
+			<table cellpadding="1" cellspacing="2" border="0" width="100%">
+					#set( $productdetails = $store.getProductDetails("productdetails", $user) )
+					<br>
+				 #foreach( $detail in $productdetails )
+				 	#if( $detail.isList() )
+						#set( $types = $store.getProperties(${detail.getId()}) ) 
+						#set ($info = $types.get($product.get($detail.getId() )))
+					#else
+						#set ($info = $product.get($detail.getId()))
+					#end
+					#if ($info.length() > 0)
+						<tr>
+							<td class="bodylabel" valign="top">
+								$detail.getText():
+							</td>
+							
+							<td class="bodycontent" valign="top" width="100%">
+								$info
+							</td>
+						</tr>
+					#end
+					#set ($info = "")
+				#end
+			
+			</table>
+			
+			<table cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td class=body>
+					
+					
+					#set( $types = $store.getFieldArchive().getDataProperties("product","productsearch",$user) )
+			$context.putPageValue("fields",$types)
+			$pages.include("$apphome/layout/productpropertiesfields.html", $context)
+					
+						$pages.stream("$apphome/layout/productsizeandcolors.html")
+						$pages.stream("$apphome/layout/productoptions.html")
+						$pages.stream("$apphome/layout/productprice.html")
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+</form>
+

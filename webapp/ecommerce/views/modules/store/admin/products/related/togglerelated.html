@@ -1,0 +1,9 @@
+
+#set($cell = $store.getProductBySourcepath($context.getRequestParameter('productsource')))
+#set($target = $store.getProductBySourcepath($context.getRequestParameter('targetsource')))
+#if ($cell.isInGroup($group))
+            <a id="related${cell.id}" href="javascript:toggleItem('$cell.id');" class="actionlink" >[[Relate Product]]</a>
+        #else
+            <a id="related${cell.id}" href="javascript:toggleItem('$cell.id');" class="actionlink"  >[[Remove Relationship]]</a>
+#end
+     

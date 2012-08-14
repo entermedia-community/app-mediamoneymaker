@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.or">
+    <value>or</value>
+    <value locale="es">o</value>
+  </property>
+  <property name="text.Images will be saved to the directory">
+    <value>Images will be saved to the directory</value>
+    <value locale="es">Las imágenes se guardan en el directorio</value>
+  </property>
+  <property name="text.directory">
+    <value>directory</value>
+    <value locale="es">directorio</value>
+  </property>
+  <property name="text.original">
+    <value>original</value>
+    <value locale="es">original</value>
+  </property>
+  <property name="text.Image">
+    <value>Image</value>
+    <value locale="es">Imagen</value>
+  </property>
+  <property name="text.The image number will be appended to the file name such as">
+    <value>The image number will be appended to the file name such as</value>
+    <value locale="es">El número de imagen se añadirá al nombre del archivo como</value>
+  </property>
+  <property name="text.medium">
+    <value>medium</value>
+    <value locale="es">mediano</value>
+  </property>
+  <property name="text.thumb">
+    <value>thumb</value>
+    <value locale="es">pulgar</value>
+  </property>
+  <property name="text.Finish">
+    <value>Finish</value>
+    <value locale="es">Finalizar</value>
+  </property>
+</page>

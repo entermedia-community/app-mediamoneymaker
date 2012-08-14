@@ -1,0 +1,23 @@
+<table width="100%">
+
+<tr>
+	<td width="300px" align="right" valign="top">
+<form name="search" method="post" action="$home$apphome/search/advanced/results.html">
+$context.putPageValue("hits",$datalist)
+#set( $details = $searcher.getDataProperties("advancedsearch",$user) )	
+$context.putPageValue("details",$details)	
+<div class="oesearchform">
+$pages.include("/$content.xmledithome/searchfields.html",$context)
+	<div style="clear:both;"></div>
+			<input type="submit" value="Go" />
+</div>
+</form>
+		
+	</td>
+	<td valign="top" >&nbsp;
+$pages.includeContent()
+		
+	</td>
+</tr>
+
+</table>

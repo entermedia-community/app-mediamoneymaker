@@ -1,0 +1,231 @@
+<script src="validate.js" language="javascript"></script>
+<script src="validatecc.js" language="javascript"></script>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td class=body2>
+
+<table border=0 cellpadding=0 cellspacing=0>
+	<tr>
+		<td>
+			<table>
+			<tr>
+				<td class=body2 colspan=2>The cost of your order is:</td>
+			</tr>
+			<tr>
+				<td align="right" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td>
+			</tr>
+			#set ( $method = $cart.getShippingMethod() )
+			#if ( $method )
+			<tr>
+				<td align="right" class=body2><nobr>$method.getDescription():</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
+			</tr>
+			#end
+			#if ( $cart.isAdditionalShippingCosts() )
+			<tr>
+				<td align="right" class=body2 colspan=2 ><font color="#ff0000"><b>Additional shipping costs will be added.</b></font></td>
+			</tr>
+			#end
+			#if($customer.getTaxRates().size() >0)
+				#foreach( $taxrate in $customer.getTaxRates())
+				<tr>
+					<td align="right" class=body2>$taxrate.name</td><td align="right" class=body2> $cart.getTotalTax($taxrate)</td>
+				</tr>
+				#end
+			#else
+			<tr>
+				<td align="right" class=body2>Sales Tax:</td><td align="right" class=body2> $cart.getTotalTax()</td>
+			</tr>
+			#end
+			<tr>
+				<td align="right" class=body2><b>Total:</b></td><td align="right" class=body2><b>$cart.getTotalPrice()</b></td>
+			</tr>
+		<!--Add optional billing details -->
+			<tr>
+				<td class=body2 colspan=2><br><b>Please choose a payment method below.</b></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	#if( $page.isPropertyTrue('usepaypal'))
+		$pages.include("$apphome/paypal/checkoutform.html")
+	
+	#end
+	<form method="post" name="orderForm" action="thanks.html">
+	#if ( $store.usesBillMeLater() )
+	<tr>
+		<td>
+			<table>
+			<tr>
+				<td colspan=2 class=body2><br><b><u>Pay Later (we will invoice you)</u></b><td>
+			</tr>
+			<tr>
+				<td colspan=2 class=body2>
+					<input type=checkbox name="billmelater" id="billmelater" value="true" /> Please invoice me 
+				</td>
+			</tr>
+			#if ($store.displayTermsConditions())
+			<tr>
+				<td colspan=1 class=body2 colspan=2>
+					<p>IMPORTANT NOTE: In order to pay later by invoice, you must agree to our Terms & Conditions of Sale (<a href="terms.html">read</a>)</p>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class=body2><input type="checkbox" name="acceptterms" value="Yes">I agree to the Terms & Conditions</td>
+			</tr>	
+			#end
+			</table>
+		</td>
+	</tr>
+	#end
+	<tr>
+		<td>
+			<table>
+			<tr> 
+				<td colspan="2"> <br /> </td>
+			</tr>
+			<tr>
+				<td colspan="2" class="body2"><br><b>Credit Card</b><td>
+			</tr>
+			<tr>
+				<td class="body2">Card Type: </td>
+				<td>
+				<select name="cardType">
+					<option value=""></option>
+					#foreach ( $cardType in $store.getCreditCardTypes() )
+						<option value="$cardType.id" >$cardType.name</option>
+					#end
+				</select>
+				
+				&nbsp;&nbsp;&nbsp; 
+				#foreach ( $cardType in $store.getCreditCardTypes() )
+					<img src="$home$apphome/images/icon${cardType.id}.gif" > 
+				#end
+				</td>
+			</tr>
+			<tr>
+				<td class="body2">Card Number: </td>
+				<td><input type="text" name="cardNumber" size="22" />
+				
+				CVC:
+				<input type="text" name="cardVerificationCode" size="3"/></td>
+			</tr>
+			<tr>
+				<td class="body2">Expiration Date: </td>
+				<td>
+				<select name="expirationMonth">
+					<option value=""></option>
+					<option value="01">01</option>
+					<option value="02">02</option>
+					<option value="03">03</option>
+					<option value="04">04</option>
+					<option value="05">05</option>
+					<option value="06">06</option>
+					<option value="07">07</option>
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+				</select> / <select name="expirationYear">
+							<option value=""></option>
+			                <option value="08">08</option>
+			                <option value="09">09</option>
+			                <option value="10">10</option>
+			                <option value="11">11</option>
+			                <option value="12">12</option>	
+			                <option value="13">13</option>	
+			                <option value="14">14</option>
+			                <option value="15">15</option>	
+			                <option value="16">16</option>	
+			                <option value="17">17</option>	
+				</select>
+				
+				
+				
+				</td>
+			</tr>
+			<tr> 
+				<td colspan=2> <br /> </td>
+			</tr>
+			<tr>
+		
+			<tr> 
+				<td colspan=2> <br /> </td>
+			</tr>
+			<tr>
+		        <td colspan=1 class=body2><b>Billing Details</b></td>
+		    </tr>
+		    <tr>   
+		        <td class=body2><input type=checkbox name="sameasshipping" onclick="populate()"/> Same as Shipping 
+		        </td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+ 	<tr>
+ 		<td>
+ 			<table>
+		 	#if( $store.usesPoNumbers() )
+		 	<tr>
+					<td class=body2 colspan=2>
+					Purchase Order Number (optional)<br>
+					<input size="22" id="purchaseorder" name="purchaseorder" />
+					</td>
+			</tr>
+			#end
+			 <tr>
+		        <td class=body2>Address<br><input type="text" name="billing.address1.value" id="billing.address1.value" size="22"  /></td>
+		        <td class=body2>Address 2<br><input type="text" name="billing.address2.value" id="billing.address2.value" size="22"  /></td>
+		 	</tr>
+		 	<tr>
+		        <td class=body2>City<br><input type="text" name="billing.city.value" id="billing.city.value" size="22" /></td>
+		        <td class=body2>State or Province<br><input type="text" name="billing.state.value" id="billing.state.value" size="22"  /></td>
+		 	</tr>
+		 	<tr>
+		 		<td class=body2>ZIP or Postal Code<br><input type="text" name="billing.zipCode.value" id="billing.zipCode.value" maxlength="10" size="22" /></td>
+		        <td class=body2>Country<br><input  type="text" name="billing.country.value" id="billing.country.value" size="22" />
+				<input type="hidden" name="retainCustomerInfo" value="true"/></td>
+			</tr>
+			<tr>
+				<td colspan="2"><br></td>
+			</tr>
+			<tr>
+				<td colspan="2" class=body2>Notes:<br/><textarea rows=5 cols=50 name="ordernote" ></textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2"><br></td>
+			</tr>
+			<tr>
+			
+				<td class=body2>
+					<table border=0 cellpadding=0 cellspacing=0>
+					<tr>
+					<td valign=top><input type="button" name="done" value="Order" onclick="javascript: validateCreditCardAndSubmit( document.orderForm ); " /></td>
+					<td valign=top>&nbsp;&nbsp;&nbsp;</td>
+					</tr></table>
+				</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<input type="hidden" name="dispTermsConditions" value="$store.displayTermsConditions()">
+</form>
+</td>
+</tr>
+</table>
+<script Language="Javascript">
+function populate()
+{
+	if(document.orderForm.sameasshipping.checked )
+	{
+		document.getElementById("billing.address1.value").value = "$!customer.shippingAddress.address1";
+		document.getElementById("billing.address2.value").value = "$!customer.shippingAddress.address2";
+		document.getElementById("billing.city.value").value = "$!customer.shippingAddress.city";
+		document.getElementById("billing.state.value").value = "$!customer.shippingAddress.state";
+		document.getElementById("billing.zipCode.value").value = "$!customer.shippingAddress.zipCode";
+		document.getElementById("billing.country.value").value = "$!customer.shippingAddress.country";
+	}
+}
+</script>

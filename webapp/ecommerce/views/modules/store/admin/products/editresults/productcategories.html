@@ -1,0 +1,81 @@
+<script type="text/javascript">
+//Need to define this before the tree html code
+
+var productCatalogTree = new Object();
+productCatalogTree.lastselected = "";
+productCatalogTree.name = "productCatalogTree";
+productCatalogTree.jumpToNode = function(inUrl, inNodeId)
+{
+	this.selectRow( inNodeId );
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content./${applicationid}//admin/products/productcategories/select.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });	
+	//new Ajax.Updater("hidden-category-id", '$home/$content./${applicationid}//admin/products/productcategories/updatecategoryid.html', { parameters: {nodeID: inNodeId, path: inUrl, origURL: "$content.path" } });
+	//document.location = "$home/$content./${applicationid}//admin/products/productcategories/productcategories.html?cache=false&categoryid=" + inNodeId;
+	return false;
+}
+productCatalogTree.toggleNode = function(inUrl,inTreeId, inNodeId)
+{
+	new Ajax.Updater(this.name + "treerow"+inNodeId, '$home/$content./${applicationid}//admin/products/productcategories/toggle.html', { parameters: {nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path", categoryid: inNodeId } });
+	return false;
+}
+productCatalogTree.jumpAndOpenNode = function(inUrl,inTreeId, inNodeId)
+{
+	this.jumpToNode( inUrl, inNodeId );
+	this.toggleNode( inUrl, inTreeId, inNodeId );
+	return false;
+}
+productCatalogTree.selectRow = function( inNodeId )
+{
+	if( this.lastselected.length > 0 )
+	{
+		var thediv = document.getElementById(this.name + "treeitem" + this.lastselected);
+		if( thediv )
+		{
+			thediv.style.backgroundColor = "#ffffff";
+		}
+		thediv = document.getElementById(this.name + "treeitem" + inNodeId);
+		if( thediv )
+		{
+			thediv.style.backgroundColor = "#c0d2ec";
+		}
+	}
+	this.lastselected = inNodeId;
+}
+addCategoryToProduct = function()
+{
+	document.addform.categoryid.value = productCatalogTree.lastselected;
+	document.addform.submit();
+}
+removeCategoryFromResults = function()
+{
+	document.removeform.categoryid.value = inCat;
+	document.removeform.submit();
+}
+</script>
+
+<h1>[[Categorize Results]]</h1>
+ 
+<p>[[Editing]] $hits.size() [[products]]</p>
+
+<p>[[Select a category from the tree.]]</p>
+
+
+<div  style="padding: 0px; border:0px solid #000;">
+<link rel="stylesheet" type="text/css" href="$home/system/styles/dtree.css">
+$pages.include("$apphome/admin/products/productcategories/tree.html" )
+</div>
+
+<p>
+<form name="addform" method="post" action="$home$apphome/admin/products/editresults/addtocategory.html" onsubmit="this.categoryid.value = productCatalogTree.lastselected;">
+	  		<input type="hidden" name="categoryid" id="categoryid"  />
+	  		<input type="hidden" name="origURL" value="$content.path" />
+      	    <INPUT TYPE="submit" VALUE="[[Add Results To Category]]" ></INPUT>
+</form>	  		
+</p>
+
+<p>
+<form name="removeform" method="post" action="$home$apphome/admin/products/editresults/removecategory.html" onsubmit="this.categoryid.value = productCatalogTree.lastselected;">
+	  		<input type="hidden" name="categoryid" id="categoryid"  />
+	  		<input type="hidden" name="origURL" value="$content.path" />
+      	    <INPUT TYPE="submit" VALUE="[[Remove Results From Category]]"  ></INPUT>
+</form>	  		
+</p>

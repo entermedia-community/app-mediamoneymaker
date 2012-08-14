@@ -1,0 +1,26 @@
+<div class="box info">
+<h3>Submit a new product</h3>
+				#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+	
+				$context.putPageValue("searcher", $productsearcher)	 
+					$context.putPageValue("view", "product/productsubmit_for_review")	
+
+
+
+<form name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
+
+ 		<input name="searchtype" type="hidden" value="product" />
+ 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
+ 		<input name="field" type="hidden" value="approved" />
+ 		<input name="approved.value" type="hidden" value="false" />
+  	<br/>
+    	Product Image: <input type="file" name="file.0" class="required"/>
+    <br/>
+
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+#set ( $moduleid = $context.findValue("module") )
+
+$pages.include("/system/components/xml/detaileditor.html", $context)
+<input type="submit" name="submit" value="submit"/>
+</form>
+</div>

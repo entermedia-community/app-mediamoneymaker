@@ -1,0 +1,60 @@
+
+<div style="margin:20px;">
+<p>[[Upload your product data and category information]].</p>
+<p>[[Once the upload is completed the store search will automatically contain the new product data]].</p>
+
+<fieldset>
+    <legend>[[CSV Product Import]]</legend>
+	<form name="csvproductupload" method="post" enctype="multipart/form-data" action="./productupload.html">
+<p>[[See the "storeproducts.csv" file created by the "Products" export as an example]].</p>
+	<p><label>CSV Input File</label> <input type="file" size="25" name="file"> </p>
+		<input type="hidden" size="20" name="path" value="$apphome/upload/products.csv" />
+		<input type=submit value="Import" />
+	</form>
+</fieldset>
+<!--  Not supporting Item import / export until a customer requests it
+<fieldset>
+    <legend>CSV Item Import</legend>
+	<form name="csvitemupload" method="post" enctype="multipart/form-data" action="./itemupload.html">
+<p>See the "storeitems.csv" file created by the "Items" export as an example.</p>
+	<p><label>CSV Input File</label> <input type="file" size="25" name="file"> </p>
+		<input type="hidden" size="20" name="path" value="$apphome/upload/productitems.csv" />
+		<input type=submit value="[[Import]]" />
+	</form>
+</fieldset>
+ -->
+<fieldset>
+    <legend>[[CSV Category Import]]</legend>
+	<form name="csvcategoryupload" method="post" enctype="multipart/form-data" action="./categoryupload.html">
+<p>[[See the "storecategories.csv" file created by the "Categories" export as an example.]]</p>
+	<p><label>CSV Input File</label> <input type="file" size="25" name="file"> </p>
+		<input type="hidden" size="20" name="path" value="$apphome/upload/categories.csv" />
+		<input type=submit value="[[Import]]" />
+	</form>
+</fieldset>
+
+<fieldset>
+    <legend>[[CSV Products and Categories Import]]</legend>
+	<form name="csvproductcategoryupload" method="post" enctype="multipart/form-data" action="./productcategoryupload.html">
+<p>[[See the "storeproductsandcategories.csv" file created by the "Products and Categories" export as an example.]]</p>
+	<p><label>CSV Input File</label> <input type="file" size="25" name="file"> </p>
+		<input type="hidden" size="20" name="path" value="$apphome/upload/productsandcategories.csv" />
+		<input type=submit value="Import" />
+	</form>
+</fieldset>
+
+<!--
+<br>
+<fieldset>
+    <legend>Excel Product Import</legend>
+<p>Excel file must have the correct number of data fields. Here is an <a href="http://www.openedit.org/oemanual/pages/plug-ins/ecommerce/setup/automated-loading.html#excel">example file</a></p>
+	<form name="inventoryupload" method="post" enctype="multipart/form-data" action="./uploadcompleted.html">
+	<p><label>Excel XLS Input File</label> <input type="file" size="25" name="file"> </p>
+		<input type="hidden" size="20" name="path" value="$apphome/upload/inventory.xls">
+			<input type=submit value=Import />			
+	</form>
+</fieldset>
+
+-->
+
+</div>

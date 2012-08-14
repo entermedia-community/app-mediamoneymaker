@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.auto resize">
+    <value>auto resize</value>
+    <value locale="es">el tamaño de auto</value>
+  </property>
+  <property name="text.In Stock">
+    <value>In Stock</value>
+    <value locale="es">En Stock</value>
+  </property>
+  <property name="text.Add Item">
+    <value>Add Item</value>
+    <value locale="es">Agregar Elemento</value>
+  </property>
+  <property name="text.Sku ID">
+    <value>Sku ID</value>
+    <value locale="es">SKU ID</value>
+  </property>
+  <property name="text.Weight">
+    <value>Weight</value>
+    <value locale="es">Peso</value>
+  </property>
+  <property name="text.Retail Price">
+    <value>Retail Price</value>
+    <value locale="es">Precio de venta al por menor</value>
+  </property>
+  <property name="text.Delete Item">
+    <value>Delete Item</value>
+    <value locale="es">Borrar Tema</value>
+  </property>
+  <property name="text.Upload Item Images">
+    <value>Upload Item Images</value>
+    <value locale="es">Subir Imágenes del día</value>
+  </property>
+  <property name="text.Sale Price">
+    <value>Sale Price</value>
+    <value locale="es">Precio de Venta</value>
+  </property>
+  <property name="text.Items are actual price points for ordering such as small, medium or large shoe sizes.">
+    <value>Items are actual price points for ordering such as small, medium or large shoe sizes.</value>
+    <value locale="es">Los temas son el precio real de puntos para ordenar tales como pequeñas, medianas o grandes tamaños de zapatos.</value>
+  </property>
+  <property name="text.Size">
+    <value>Size</value>
+    <value locale="es">Tamaño</value>
+  </property>
+  <property name="text.Save Edits">
+    <value>Save Edits</value>
+    <value locale="es">Guardar las modificaciones</value>
+  </property>
+</page>

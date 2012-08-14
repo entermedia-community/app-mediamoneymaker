@@ -1,0 +1,6 @@
+#set( $query = $context.getRequestParameter("query") )
+#set($tracker = $UserManager.findUser($query) )
+AccountName	FirstName	LastName	Email	Phone
+#foreach( $hit in $tracker.getAllHits() )
+$!hit.userName	$!hit.firstName	$!hit.lastName	$!hit.email
+#end

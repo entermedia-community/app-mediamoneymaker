@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Category Properties">
+    <value>Category Properties</value>
+    <value locale="es">Categoría Casas</value>
+  </property>
+  <property name="text.Edit Category Property Fields">
+    <value>Edit Category Property Fields</value>
+    <value locale="es">Editar categoría campos de propiedad</value>
+  </property>
+  <property name="text.Save Edits">
+    <value>Save Edits</value>
+    <value locale="es">Guardar las modificaciones</value>
+  </property>
+  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
+</page>

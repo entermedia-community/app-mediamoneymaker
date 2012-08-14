@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.selectProduct"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Product Images</value>
+    <value locale="es">Imágenes de los productos</value>
+  </property>
+  <property name="subtab">productimages</property>
+  <inner-layout>/${applicationid}/admin/products/imageedit/imageeditor.html</inner-layout>
+</page>

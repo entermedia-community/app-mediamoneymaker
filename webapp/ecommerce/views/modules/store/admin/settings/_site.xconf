@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="title">
+    <value>Settings</value>
+    <value locale="es">Configuración</value>
+  </property>
+  <property name="tab">settings</property>
+  <property name="subtab">settingactions</property>
+  <inner-layout>/${applicationid}/admin/settings/innertablayout.html</inner-layout>
+</page>

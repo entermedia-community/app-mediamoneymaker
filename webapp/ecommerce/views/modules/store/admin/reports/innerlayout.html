@@ -1,0 +1,18 @@
+<h2>[[Activity Reports]]</h2>
+
+<table class="tabnavigation">
+<tr>
+<td id="${content./${applicationid}/}_productLog"><span><a href="$home$apphome/admin/reports/logs/search/index.html?foldername=${content./${applicationid}/}_productLog" target="_parent"  >[[Searches]]</a></span></td>
+<td id="${content./${applicationid}/}_downloadLog"><span><a href="$home$apphome/admin/reports/logs/search/index.html?foldername=${content./${applicationid}/}_downloadLog" target="_parent"  >[[Downloads]]</a></span></td>
+<td id="openedit_authenticationLog"><span><a href="$home$apphome/admin/reports/logs/search/index.html?foldername=openedit_authenticationLog" target="_parent"  >[[Users]]</a></span></td>
+<td id="${content./${applicationid}/}_editLog"><span><a href="$home$apphome/admin/reports/logs/search/index.html?foldername=${content./${applicationid}/}_producteditLog" target="_parent">[[Edits]]</a></span></td>
+</tr>
+</table>
+
+<div class="oetabspacer">
+$pages.includeContent()
+</div>
+
+<script type="text/javascript">
+	showtab("$home","$context.getRequestParameter('foldername')");			
+</script>

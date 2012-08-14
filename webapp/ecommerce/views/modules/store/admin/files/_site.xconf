@@ -1,0 +1,6 @@
+<page>
+		<property name="fallbackdirectory">/WEB-INF/base/system/files</property>
+	<property name="filerootpath">/${applicationid}/admin/files</property>
+			<property name="tab">oeadminfiles</property>
+		
+</page>

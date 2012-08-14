@@ -1,0 +1,30 @@
+#if( !$order )
+#set ( $order = $cart.getCurrentOrder() )
+#end
+
+#if( !$customer )
+	#set ( $customer = $order.getCustomer() )
+#end
+
+<p>Thank you for your recent order.</p>
+
+<p>Here are the order details:</p> 
+
+Order Number: $order.getId()
+
+$pages.stream("$apphome/orders/listing.html")
+ 
+#if( $cart.hasZeroSubTotal() )
+
+#else																	
+	$pages.stream("$apphome/orders/subtotal.html")
+	$pages.stream("$apphome/customers/contactinfo.html")
+#end
+#set( $paymentMethod = $order.paymentMethod )
+#if( $paymentMethod.getNote() )
+ <br/>
+ <p>Notes: $paymentMethod.getNote()</p>
+#end
+
+
+<p>If you have any questions, please reply to this email.</p>

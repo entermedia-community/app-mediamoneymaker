@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/emshare</property>
+  <property name="title">E-commerce</property>
+  <property name="parentapplicationid">media</property>
+  <property name="catalogid">media/catalogs/store</property>
+  <property name="applicationid">ecommerce</property>
+  <permission name="viewdevelopertools">
+    <or>
+      <group id="administrators"/>
+    </or>
+  </permission>
+  <permission name="maximize">
+    <userprofile value="true" name="maximize"/>
+  </permission>
+  <permission name="publish">
+    <userprofile value="true" name="publish"/>
+  </permission>
+  <permission name="backupmaterial">
+    <boolean value="true"/>
+  </permission>
+  <permission name="purchaseinformation">
+    <boolean value="true"/>
+  </permission>
+  <permission name="contactinformation">
+    <boolean value="true"/>
+  </permission>
+  <permission name="description">
+    <boolean value="true"/>
+  </permission>
+  <permission name="view">
+    <user/>
+  </permission>
+  <permission name="deleteasset">
+    <and>
+      <userprofile value="true" name="deleteasset"/>
+      <pagevalue equals="true" name="caneditasset"/>
+    </and>
+  </permission>
+  <path-action name="storeArchive.loadStore"/>
+</page>

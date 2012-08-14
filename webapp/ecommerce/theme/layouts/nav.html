@@ -1,0 +1,68 @@
+ 
+ <ul class="emheaderbuttons" >
+<li><a id="home"  href="$home$apphome/index.html"> Home </a></li>
+ 	
+#set ($lastselected = $content.module )
+ 	#if(!$lastselected)
+ 		#set($lastselected = $userprofile.last_selected_module )
+ 	#end
+ 	#if(!$lastselected)
+        #set($lastselected = "asset" )
+    #end
+    
+    
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
+
+
+#if ($user)
+
+	#set( $urlbase = "$home$apphome/views/modules" )
+	#set ( $modules = $searcherManager.getList($catalogid, "module") )
+
+#if( $modules.size() > 1)
+<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+	<ul id="module-list" style="display: none;">
+		#foreach ( $module in $modules )
+			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+		#end
+	</ul>
+</li>
+#elseif( $canviewhomelink )
+
+<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
+#end
+
+
+#end
+
+#if ( $$lastselected == "asset" )
+    #if( $canviewupload )
+     <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
+    #end
+
+  
+#end
+   <li  style="float: right;">
+   <a href="$apphome/shoppingbag.html">View Cart</a>
+    </li>
+
+ </ul>
+
+
+<div style="float:right; margin-top:-30px;">
+
+#if ($canquicksearch)
+<div id="searchform" class="">
+<form id="search_form" action="$apphome/views/search/search.html" class="em-widget-content">
+	<input type="hidden" name="field" value="description" />
+	<input type="hidden" name="operation" value="startswith" />
+	#set( $input = "Search...")
+	#set( $input = $hits.getInput("description") )
+    <input type="text"  id="assetsearchinput" initialtext="Search..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+</form>
+</div>
+#end
+
+
+</div>

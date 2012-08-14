@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Downloadable">
+    <value>Downloadable</value>
+    <value locale="es">Descargables</value>
+  </property>
+  <property name="text.Specs">
+    <value>Specs</value>
+    <value locale="es">Especificaciones</value>
+  </property>
+  <property name="text.Upload Type">
+    <value>Upload Type</value>
+    <value locale="es">Subir Tipo</value>
+  </property>
+  <property name="text.Brochure">
+    <value>Brochure</value>
+    <value locale="es">Folleto</value>
+  </property>
+  <property name="text.Finish">
+    <value>Finish</value>
+    <value locale="es">Finalizar</value>
+  </property>
+  <property name="text.Please upload a pdf or other downloadable format">
+    <value>Please upload a pdf or other downloadable format</value>
+    <value locale="es">Por favor, sube un pdf o de otro tipo de formato descargable</value>
+  </property>
+</page>

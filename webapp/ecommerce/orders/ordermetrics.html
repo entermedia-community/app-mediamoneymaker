@@ -1,0 +1,20 @@
+#set ( $customer = $cart.getCustomer() )
+#set ( $paymentMethod = $customer.getPaymentMethod() )
+
+<script type="text/javascript">
+	// create url to send the information to insite metrics
+	
+	// http://www.insitemetrics.com/imv2/uRMJ/uniformv2.php is the action used to submit forms to insite metrics
+	url = "https://www.insitemetrics.com/imv2/uRMJ/uniformv2.php";
+	url += "?actk=125mf2l-lkg00lk5r"; //unique action key
+	url += "&imReferrerField=" + escape(document.location);
+	url += "&Name=" + escape("$customer.getName()");
+	url += "&Phone=" + escape("$customer.phone1");
+	url += "&Email=" + escape("$customer.email");
+	url += "&TotalPrice=" + escape("$cart.getTotalPrice()");
+	  		
+	// use an image to call the url
+	//img = new Image(0,0);
+	//img.src = url;
+	
+</script>

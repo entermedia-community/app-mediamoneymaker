@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.selectProduct"/>
+  <path-action name="CatalogEditModule.saveProductProperties"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Options</value>
+    <value locale="es">Opciones</value>
+  </property>
+  <property name="subtab">productoptions</property>
+  <inner-layout>/${applicationid}/admin/products/options/productoptions.html</inner-layout>
+</page>

@@ -1,0 +1,8 @@
+<page>
+	<path-action name="Page.uploadFile">
+	
+	</path-action>
+	<path-action name="Script.run">
+		<script>/${applicationid}/scripts/submitforreview.groovy</script>
+	</path-action>
+</page>

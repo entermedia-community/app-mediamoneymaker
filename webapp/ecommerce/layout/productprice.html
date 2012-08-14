@@ -1,0 +1,13 @@
+	#if ( $product.isOnSale() )
+		Regularly $product.getRetailPrice()<br>
+		<div class="sale_price">On Sale! $product.getYourPrice()</div>
+	#else
+		<b>Price:</b> $product.getYourPrice()
+	#end
+	<p>
+	 	#if( $product.isAvailable() )                                                                                                                                                                          
+	 <input type="hidden" name="productid" value="$product.getId()" />	<input type="submit" value="ADD TO CART" class="bu"/>
+		#else	
+		<b>Product No Longer Available.</b> please select another product
+		#end
+	 </p>

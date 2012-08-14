@@ -1,0 +1,21 @@
+<script type="text/javascript" src="$home/system/javascript/tabs.js"> </script>
+<script type="text/javascript" src="$home/system/javascript/datetimepicker.js"> </script>
+
+<div id="oestoreadmintabs">
+<table class="tabnavigation" >
+#if( $oestoreadmin.size() == 0)
+$!oestoreadmin.addNewTab("categories","[[Categories]]","$apphome/views/modules/store/admin/categories/index.html", 3)
+$!oestoreadmin.addNewTab("products","[[Products]]","$apphome/views/modules/store/admin/products/index.html",3)
+$!oestoreadmin.addNewTab("orders","[[Orders]]","$apphome/views/modules/store/admin/orders/index.html",2)
+$!oestoreadmin.addNewTab("settings","[[Administer]]","$apphome/views/modules/store/admin/settings/actions/index.html",4)
+#end
+<tr>
+#foreach ( $tab in $oestoreadmin.tabs)
+<td id="$tab.id" #if($oestoreadmin.lastSelected && $tab == $oestoreadmin.lastSelected )class="catalogadmintabselected" #end><span><a href="$home$tab.path" >$tab.name</a></span></td>
+#end
+</tr>	
+</table>
+<div style="padding: 15px;">	
+$pages.includeContent()
+</div>
+</div>

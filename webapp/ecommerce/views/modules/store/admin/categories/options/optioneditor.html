@@ -1,0 +1,101 @@
+<div class="oeblue-list-box">                                               
+	<table cellspacing="10">
+		<tr>
+			<td>
+				[[Edit Existing Options]]
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<form id="saveForm" name="saveForm" action="$home$apphome/admin/categories/options/save.html">
+				<input type="hidden" value="$category.id" name="categoryid"/>
+				<input type="hidden" name="type" value="$type" />
+				<input type="hidden" name="oe-action" value="CatalogEditModule.saveObjectOptions" />
+				#if ($options.size() > 0)
+				<table cellspacing=5>
+					<tr>
+						<td><b>[[Id]]</b>*</td>
+						<td><b>[[Description]]</b>*</td>
+						<td><b>[[Price]]</b></td>
+						<td><b>[[Is Required]]</b></td>
+						<td><b>[[Data Type]]</b></td>
+						<td><b>[[Default]]</b></td>
+						<td><b>[[Delete]]</b></td>
+					</tr>
+					#foreach( $option in $options )
+					<tr>
+						<td><input type="text" name="optionid" value="$option.id" /></td>
+						<td><input type="text" size="30" name="optionname" value="$option.name" /></td>
+						<td><input type="text" size="10" name="price" value="$!option.getPriceSupport().getRetailPrice()" /></td>
+						<td><input type="checkbox" name="required" value="$option.id" #if ($option.isRequired()) checked #end /></td>
+
+						<td><select name="dataType">
+							
+    						<option> </option>
+    						<option value="boolean" #if( $!option.dataType == "boolean") selected #end>[[Check Box]]</option>
+    						<option value="text" #if( $!option.dataType == "text") selected #end>[[User Input]]</option>
+    						<option value="list" #if( $!option.dataType == "list") selected #end>[[List]]</option>
+    						<option value="grouped" #if( $!option.dataType == "grouped") selected #end>[[Radio Button]]</option>
+    						<option value="multiline" #if( $!option.dataType == "multiline") selected #end>[[Multiple Line Entry]]</option>
+    						<option value="date" #if( $!option.dataType == "date") selected #end>[[Calendar Date]]</option>
+    						
+						</select></td>
+
+						<td><input type="text" size="10" name="defaultvalue" value="$!option.getValue()" /></td>
+						<td><input type="checkbox" name="delete" value="$option.id" /></td>
+					</tr>
+					#end
+				</table>
+				#else
+					<b>[[No Options Found]]</b>
+				#end
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="oesubmit-button">
+					<a href="javascript: document.saveForm.submit();" name="[[Save Edits]]" class="oesubmit-button">[[Save Edits]]</a>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<hr>
+				[[Add A New Option]]
+				<form name="finputForm" action="$home$apphome/admin/categories/options/save.html">
+					<input type="hidden" value="$category.id" name="categoryid"/>
+					<input type="hidden" name="type" value="$type" />
+					<input type="hidden" name="oe-action" value="CatalogEditModule.addOption" />
+
+				<table cellspacing=5>
+					<tr>
+						<td><b>[[Option Id]]</b></td>
+						<td><b>[[Description]]</b></td>
+						<td><b>[[Price]]</b></td>
+						<td><b>[[Is Required]]</b></td>
+						<td><b>[[Data Type]]</b></td>
+						<td><b>[[Default]]</b></td>
+					</tr>
+					<tr>
+						<td><input type="text" size="10" name="optionid" /></td>
+						<td><input type="text" size="30" name="optionname" /></td>
+						<td><input type="text" size="10" name="price"  /></td>
+						<td><input type="checkbox" name="required" value="true" /></td>
+						<td><select name="dataType">
+    						<option value="boolean">[[Check Box]]</option>
+    						<option value="text" >[[User Input]]</option>
+    						<option value="list">[[List]]</option>
+    						<option value="grouped">[[Radio Button]]</option>
+    						<option value="multiline">[[Multiple Line Entry]]</option>
+    						<option value="date">[[Calendar Date]]</option>
+						</select></td>
+						<td><input type="text" size="10" name="defaultvalue" /></td>
+					</tr>
+				</table>
+					<input type="submit" value="Add" />
+				</form>	
+			</td>
+		</tr>
+	</table>
+</div>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Thank you for your recent order.">
+    <value>Thank you for your recent order.</value>
+    <value locale="es">Gracias por su reciente orden.</value>
+  </property>
+  <property name="text.If you have any questions, please reply to this email">
+    <value>If you have any questions, please reply to this email</value>
+    <value locale="es">Si tiene alguna pregunta, por favor, responda a este mensaje</value>
+  </property>
+  <property name="text.Order Number">
+    <value>Order Number</value>
+    <value locale="es">Número de pedido</value>
+  </property>
+  <property name="text.Here are the order details">
+    <value>Here are the order details</value>
+    <value locale="es">Aquí están a la orden detalles</value>
+  </property>
+  <property name="text.Notes">
+    <value>Notes</value>
+    <value locale="es">Notas</value>
+  </property>
+  <property name="editable">false</property>
+  <property name="encoding">UTF-8</property>
+  <layout/>
+  <inner-layout/>
+</page>

@@ -1,0 +1,90 @@
+<script src="validate.js" language="javascript"></script>
+
+<table border=0 cellpadding=0 cellspacing=0 width=510>
+<tr>
+<td valign=center nowrap><font class=header><b>Horse Source Club</b></font></td>
+<td valign=top align=right>
+<a href="$home$apphome/shoppingbag.html"><img src="$home/media/shopping.gif" border=0></a></td>
+</tr>
+<tr>
+<td colspan=2><img src="$home/media/line.gif" border=0><br><br></td>
+</tr>
+</table>
+
+
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+<td valign=top class=body>
+<p>Please enter your last name and phone number</p>
+
+
+<form name="search" action="$home$apphome/search/finduser.html">
+	Last Name: <br>
+	<input name="lastName" size="20" /><br/>
+	
+	Phone Number: <br>
+	<input name="phone1" size="20" />
+	<input type="submit" value="Find Number" />
+	#set( $oklink = $context.getRequestParameter("oklink") )
+	<input type="hidden" name="oklink" value="$oklink" />
+	
+</form>
+
+<p>
+Or create a new account:
+</p>
+<form name="createa" action="$home$apphome/createcustomer.html">
+
+<table border=0 cellpadding=0 cellspacing=0>
+	<tr>
+	<td class=body2>Please enter your <b>shipping and contact</b> information:<br/><br/></td>
+	</tr>
+	<tr>
+	<td class=body2>First Name<br><input type="text" name="firstName" size="25" value="$!customer.firstName" /></td>
+	<td />
+	</tr>
+	<tr>
+	<td class=body2>Last Name<br><input type="text" name="lastName" size="25" value="$!customer.lastName" /></td>
+	<td class=body2>Company (optional)<br><input type="text" name="company" size="25" value="$!customer.company" /></td>
+	</tr>
+	<tr>
+	<td class=body2>Address<br><input type="text" name="shippingaddress1" size="25" value="$!customer.shippingAddress.address1" /></td>
+	<td class=body2>Address 2 (optional)<br><input type="text" name="shippingaddress2" size="25" value="$!customer.shippingAddress.address2"  /></td>
+	</tr>
+	<tr>
+	<td class=body2>City<br><input type="text" name="shippingcity" size="25" value="$!customer.shippingAddress.city"/></td>
+	<td class=body2>State or Province<br><input type="text" name="shippingstate" size="25" value="$!customer.shippingAddress.state" /></td>
+	</tr>
+	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shippingzipCode" size="25" value="$!customer.shippingAddress.zipCode"/></td>
+	<td class=body2>Country<br><input type="text" name="shippingcountry" size="25" value="$!customer.shippingAddress.country"/></td>
+	</tr>
+	<tr>
+	<td class=body2>Email<br><input type="text" name="email" size="25" value="$!customer.email" /></td>
+	<td class=body2>Phone Number<br><input type="text" name="phone1" size="25" value="$!customer.phone1" /></td>
+	</tr>
+	<tr>
+		<td class=body2 colspan="2">FAX Number (optional)<br><input type="text" name="fax" size="25" value="$!customer.FAX" /></td>
+	</tr>
+#if ( $content.showExtraInfo )
+	<tr>
+	<td class=body2>VAT Tax Number<br><input type="text" name="userfield2" size="25" value="$!customer.userfield2" /></td>
+	<td class=body2>FAX Number<br><input type="text" name="userfield1" size="25" value="$!customer.userfield1" /></td>
+	</tr>
+#end
+	<tr>
+	<td class=body2>
+		<table border=0 cellpadding=0 cellspacing=0>
+		<tr>
+		<td valign=top><input type="button" name="done" value="Continue" onclick="javascript: validateCustomerAndSubmit( document.createa ); " /></td>
+		<td valign=top>&nbsp;&nbsp;&nbsp;</td>
+		</tr></table>
+	</td></tr>
+</table>
+
+	#set( $oklink = $context.getRequestParameter("oklink") )
+	<input type="hidden" name="oklink" value="$oklink" />
+
+</form>
+</td>
+</tr>
+</table>

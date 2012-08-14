@@ -1,0 +1,26 @@
+#set( $oklink = $context.getRequestParameter("oklink") )
+<table border=0 cellpadding=3 cellspacing=0 width=530>
+	<tr>
+		<td>#if ( $users )
+					<p>Here is your $content.customerClub information</p>
+					#foreach( $hit in $users )
+						
+							Firstname: $!hit.getFirstName()
+							<br>Lastname: $!hit.getLastName()
+							<br>Email: $!hit.getEmail()
+
+							<br>Horse Source Number: 
+							#if( $oklink )
+								<a href="$oklink?customerId=$hit.getUserName()">$hit.getUserName()</a>
+							#else
+								$!hit.getUserName()
+							#end
+							<hr>
+					#end
+			#else
+				<p>No users found please try again</p>
+				$!error
+			#end
+		</td>
+    </tr>
+</table>

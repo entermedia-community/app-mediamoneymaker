@@ -1,0 +1,12 @@
+#set( $type = $context.getRequestParameter("type") )
+
+#set( $donelink = "$home$apphome/admin/products/imageedit/${product.id}.html?oe-action=CatalogEditModule.uploadProductImages" )
+
+<form name="uploadimage" method="post" enctype="multipart/form-data" action="$donelink" >
+		
+		<input type="file" size="40" name="file" > 	
+		<input type="Submit" name="Finish" value="[[Finish]]" >
+		<input name="productid" value="$product.id" type="hidden" >
+		<input name="productid.1" value="$product.id" type="hidden" >
+			
+</form>
