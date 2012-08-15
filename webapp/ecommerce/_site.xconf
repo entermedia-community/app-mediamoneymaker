@@ -4,7 +4,7 @@
   <property name="fallbackdirectory">/WEB-INF/base/emshare</property>
   <property name="title">E-commerce</property>
   <property name="parentapplicationid">media</property>
-  <property name="catalogid">media/catalogs/store</property>
+  <property name="catalogid">media/catalogs/public</property>
   <property name="applicationid">ecommerce</property>
   <permission name="viewdevelopertools">
     <or>
@@ -38,16 +38,11 @@
       <pagevalue equals="true" name="caneditasset"/>
     </and>
   </permission>
-  
   <permission name="viewdistributorsection">
-		<or>
-			<group name="administrators"/>
-			<group name="distributors"/>
-		</or>
-		
-	</permission>
-  
-  
-  
+    <or>
+      <group id="administrators"/>
+      <group id="distributors"/>
+    </or>
+  </permission>
   <path-action name="storeArchive.loadStore"/>
 </page>
