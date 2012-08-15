@@ -38,5 +38,16 @@
       <pagevalue equals="true" name="caneditasset"/>
     </and>
   </permission>
+  
+  <permission name="viewdistributorsection">
+		<or>
+			<group name="administrators"/>
+			<group name="distributors"/>
+		</or>
+		
+	</permission>
+  
+  
+  
   <path-action name="storeArchive.loadStore"/>
 </page>

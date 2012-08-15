@@ -15,6 +15,17 @@
 
 
 
+	#if($canviewdistributorsection)
+                	<li><a href="$apphome/distributors/">Distributors</a></li>
+    #end
+
+
+   <li  style="float: right;">
+   <a href="$apphome/shoppingbag.html">View Cart</a>
+    </li>
+
+
+
 #if ($user)
 
 	#set( $urlbase = "$home$apphome/views/modules" )
@@ -43,13 +54,7 @@
 
   
 #end
-   <li  style="float: right;">
-   <a href="$apphome/shoppingbag.html">View Cart</a>
-    </li>
-
  </ul>
-
-
 <div style="float:right; margin-top:-30px;">
 
 #if ($canquicksearch)

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<path-action name="StoreSearchModule.searchCatalogs">
-	</path-action>
+	<page-action name="StoreSearchModule.searchCatalogs">
+	</page-action>
 	<property name="virtual">true</property>
 	<property name="editable">true</property>
 	
