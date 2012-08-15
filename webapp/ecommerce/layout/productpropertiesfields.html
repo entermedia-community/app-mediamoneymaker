@@ -1,3 +1,6 @@
+#if ($fields.size() > 0 )
+<li>
+    <h5>Search Terms</h5>  
 #foreach( $searchItem in $fields)
 					#set( $inputed = "$!hits.getInput($searchItem.getId())")
 
@@ -71,3 +74,5 @@
 				</div>
 				
 				#end
+</li>
+#end

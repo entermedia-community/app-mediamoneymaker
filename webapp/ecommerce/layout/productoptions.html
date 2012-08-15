@@ -1,8 +1,11 @@
 <script type="text/javascript" src="$home$apphome/admin/display/datetimepicker.js"></script>
 
+
 #set( $options  = $product.getAllOptions() )
 
-#if ( $options )
+#if ( $options.size() > 0 )
+<li>
+    <h5>Product Options</h5>
 <div class="storeoptions">
 #foreach( $option in $options )
 	<div class="storeoption">
@@ -45,4 +48,5 @@
 <br>
 	#end
 </div>
+</li>
 #end

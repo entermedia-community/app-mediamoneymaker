@@ -1,7 +1,3 @@
-<script language="javascript" src="$home$apphome/layout/resultshover.js">     </script> 
-
-
-<div id="slideSheet" class="slidemediumheight clearFix">
 
 #set( $resultdetail = $archive.getDataProperties("resultdetail") )
 #set( $resulthover = $archive.getDataProperties("resulthover") )
@@ -9,69 +5,44 @@
 	#set( $showprice = true )
 #end
 
+<ul class="products-list">
+
 #foreach ( $cell in $hits.getPageOfHits() )
-<div class="slide"><div class="positioner">
+
 			#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
 	#set ($sourcepath = $cell.sourcepath)
 	
 
-	#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$cell.sourcepath/thumb.jpg")
+	#set( $tsize = "$home$cataloghome/downloads/preview/135crop/productimages/$cell.sourcepath/thumb.jpg")
 
 	
 	#set( $msize = "$home$cataloghome/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
-	
-		#if( $cell.votecount )	
-		<a href="$clink"><img src="$tsize" style="border-width: $!{cell.votecount}px; border-color: #00FF00; border-style: solid;" ></a>
-		#else
-		<a href="$clink"  onmouseover="showtrail('float${cell.id}');" onmouseout="hidetrail();"  ><img src="$tsize" border="0"></a>
-		#end
+	<li class="product-listing">
+	    
+		<a href="$clink"><img src="$tsize" border="0" width="170" height="135" /></a>
 		
-  		<div class="resultsproductname">
-        <a href="$clink" class=links>$cell.name</a> 
-        </div>
-        #if ($showprice)
-        <div class="resultsprice">
-        #if( $cell.regularprice ) 
-        	<div class="sale_price">Sale: $cell.yourprice</div>
-    		$cell.regularprice
-        #else
-        	$cell.yourprice
-        #end
-        </div>
-        #end
-        
-		<div id="float${cell.id}" style="display: none;">
-			<div class="resultshoverholder">
-				<div class="resultshoverdetail">
-				<img src="$msize" border="0">
-				<div class="resultsproductname">
-			 		<a href="$clink" class=links>$cell.name</a>
-			 		
-			 	</div>
-			 	
-			 	#if ($showprice)
-		        <div class="resultsprice">
+		<div class="product-details">
+		    <div class="product-title">
+                <a href="$clink">$cell.name</a> 
+            </div>
+            <div class="product-cat">
+                <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer)</a> 
+            </div>
+            <div class="product-price">
 		        #if( $cell.regularprice ) 
-		        	<div class="sale_price">Sale: $cell.yourprice</div>
+		        	Sale: $cell.yourprice
 		    		$cell.regularprice
 		        #else
 		        	$cell.yourprice
 		        #end
-		        </div>
-		        #end
-		        
-		 		</div>
-			</div>
-		</div>
-	</div>
-	</div>
+            </div>
+        </div>
+    </li>
 #end
-  </div>
-</div>
 
+</ul>
 
-</div>
-
+$pages.include("$apphome/components/results/pages.html")
 
 #if ( $hits.totalPages == 0 )
 <p>
@@ -79,3 +50,4 @@ No results found for <b>$hits.friendlyQuery</b>
 </p>
                                                                                                                                                                                                               
 #end
+

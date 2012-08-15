@@ -6,4 +6,7 @@
    <path-action name="Admin.forwardToSecureSocketsLayer" />
    <property name="useshttps">true</property>
    <page-action name="CartModule.loadCustomer" />	
+   
+   <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
+   
 </page>

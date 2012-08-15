@@ -1,7 +1,8 @@
 #set( $image = "/$store.productPathFinder.idToPath($product.id)" )
 
 
-#set ($mediumend = "$home$cataloghome/downloads/preview/medium/productimages/$product.sourcepath/thumb.jpg")
+#set ($mediumend = "$home$cataloghome/downloads/preview/535crop/productimages/$product.sourcepath/thumb.jpg")
+#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$product.sourcepath/thumb.jpg")
 			#if( $hits )
 		    	#set( $prev = $hits.previousId($product.getId() ) )
 		    	#set( $next = $hits.nextId($product.getId() ) )
@@ -16,20 +17,12 @@
 		        #if ( $next )
 		            <a href="$home$apphome/products/${store.productPathFinder.idToPath($next)}.html">next&gt;</a><br>
 				#end
-			#end
-			<a style="border: 0px;" href="javascript:openWindow();"><img id="largeimage" src="$home$mediumend" border="0"><br/></a><br/>
-			<table border=0 cellpadding=0 cellspacing=0 width=165>
-				<tr>
-					<td valign=top class=relitems>RELATED ITEMS</td>
-				</tr>
-				<tr>	
-					<td valign=top class=rellist><font color="#9B814F">
-						#foreach( $catalog in $product.getDefaultCatalog().getParentCatalog().getChildren() )
-							<nobr><li type=square><a href="$home$apphome/categories/${catalog.id}.html" class=links>$catalog.name</a></nobr></li>	
-						#end
-					</td>
-				</tr>		
-			</table>
+			#end           
+            <a class="thickbox" href="$home$extralarge" target="_parent" title="[[$product]]">
+                <img id="main-media" class="emdropshadow" src="$home$mediumend" alt="$!asset.name"/>
+                <link rel="image_src" type="image/jpeg" href="$home$mediumplus" />
+            </a>
+						
 <script type="text/javascript" language="JavaScript">
     function openWindow()
     {

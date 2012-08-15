@@ -1,4 +1,4 @@
-<table border=0 cellpadding=0 cellspacing=1 width=590>
+<table border=0 cellpadding=0 cellspacing=1 width="100%">
 	<tr>
 		<td valign=top>
 			<font class=body>
@@ -8,10 +8,10 @@
 				#if($cart.getAdjustments().size() >0)
 					An adjustment of $cart.getAdjustments().get(0) %  has been applied
 				#else
-				<nobr>Gift Certificate/Coupon Code (one per order):</nobr> <input type=text name=couponcode size=8 /><br><br>
+				<nobr>Gift Certificate/Coupon Code (one per order): </nobr> <input style="margin-left: 5px;" type=text name=couponcode size=8 /><br><br>
 				#end
 			   #end
-				<input type="submit" value="UPDATE"/>
+				<input class="btn" type="submit" value="Update Your Cart"/>
 			<hr size=1 class="shophr" />
 			<br>
 			<table cellspacing="10" width=200>
@@ -36,11 +36,13 @@
 			        		#set ( $continueShoppingUrl = "$home/index.html" )
 			        	#end
 			                <table border=0 cellpadding=0 cellspacing=0>
-			                	<tr>
-			                		<td valign=center nowrap class=bu align=center><a href="$continueShoppingUrl" class=bu>Continue Shopping</a></td>
-					                <td>&nbsp;&nbsp;</td>
-					                <td valign=center nowrap class=bu align=center><a href="javascript:nextPage();" class=bu><b>Begin Checkout</b></a></td>
+
+			                 <tr>
+					                <td valign=center nowrap class=bu align=center><a href="javascript:nextPage();" class="btn" style="margin-top: 10px;"><b>Begin Checkout</b></a></td>
 			                	</tr>
+			                 <tr>
+                                    <td valign=center nowrap class=bu align=center><a style="color: #999; font-size: 11px; font-weight: normal; float: right;" href="$continueShoppingUrl">Continue Shopping</a></td>
+                             </tr>
 			                </table>
 			        #end
 			    	</td>

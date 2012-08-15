@@ -1,62 +1,91 @@
 
 <catalog id="index" name="Index">
-  <property id="categoryhome">/store/categories/</property>
-  <property id="sortfield">priceOrderingUp</property>
-  <catalog id="DGADAAAABEKGGJBC" name="Seminars"/>
-  <catalog id="FNACAAAAHOBAGLBC" name="Gift Cards"/>
-  <catalog id="HDACAAAAINBAGLBC" name="Special Orders"/>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
-  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
-  <catalog id="mugs" name="Mugs"/>
-  <catalog id="cups" name="Cups"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff">
-    <option id="one" name="Another"/>
+  <property id="categoryhome">/media/catalogs/store/categories/</property>
+  <catalog id="collections" name="Collections"/>
+  <catalog id="users" name="Users"/>
+  <catalog id="accessories" name="Accessories">
+    <catalog id="11" name="11"/>
+    <catalog id="4" name="4"/>
+    <catalog id="2" name="2"/>
+    <catalog id="13" name="13"/>
+    <catalog id="12" name="12"/>
+    <catalog id="3" name="3"/>
+    <catalog id="1" name="1"/>
+    <catalog id="16" name="16"/>
+    <catalog id="18" name="18"/>
+    <catalog id="21" name="21"/>
+    <catalog id="20" name="20"/>
+    <catalog id="19" name="19"/>
+    <catalog id="14" name="14"/>
+    <catalog id="23" name="23"/>
+    <catalog id="24" name="24"/>
+    <catalog id="22" name="22"/>
+    <catalog id="25" name="25"/>
   </catalog>
-  <catalog id="GOODSTUFF" name="Some Good Stuff">
-    <related-categories>
-      <category id="RELATED"/>
-    </related-categories>
+  <catalog id="manufacturers" name="Manufacturers">
+    <catalog id="manu24" name="manu24"/>
+    <catalog id="manu10" name="manu10"/>
+    <catalog id="manu16" name="manu16"/>
+    <catalog id="manu5" name="manu5"/>
+    <catalog id="manu27" name="manu27"/>
+    <catalog id="manu22" name="manu22"/>
+    <catalog id="manu13" name="manu13"/>
+    <catalog id="manu9" name="manu9"/>
+    <catalog id="manu42" name="manu42"/>
+    <catalog id="manu6" name="manu6"/>
+    <catalog id="manu44" name="manu44"/>
+    <catalog id="manu46" name="manu46"/>
+    <catalog id="manu45" name="manu45"/>
+    <catalog id="manu47" name="manu47"/>
+    <catalog id="manu19" name="manu19"/>
+    <catalog id="manu35" name="manu35"/>
+    <catalog id="manu32" name="manu32"/>
+    <catalog id="manu51" name="manu51"/>
+    <catalog id="manu52" name="manu52"/>
+    <catalog id="manu54" name="manu54"/>
+    <catalog id="manu55" name="manu55"/>
+    <catalog id="manu58" name="manu58"/>
+    <catalog id="manu7" name="manu7"/>
+    <catalog id="manu64" name="manu64"/>
+    <catalog id="manu63" name="manu63"/>
+    <catalog id="manu69" name="manu69"/>
+    <catalog id="manu48" name="manu48"/>
+    <catalog id="manu70" name="manu70"/>
+    <catalog id="manu62" name="manu62"/>
+    <catalog id="manu71" name="manu71"/>
+    <catalog id="manu73" name="manu73"/>
+    <catalog id="manu23" name="manu23"/>
+    <catalog id="manu80" name="manu80"/>
+    <catalog id="manu77" name="manu77"/>
+    <catalog id="manu86" name="manu86"/>
+    <catalog id="manu81" name="manu81"/>
+    <catalog id="manu84" name="manu84"/>
+    <catalog id="manu50" name="manu50"/>
+    <catalog id="manu83" name="manu83"/>
+    <catalog id="manu56" name="manu56"/>
+    <catalog id="manu87" name="manu87"/>
+    <catalog id="manu89" name="manu89"/>
+    <catalog id="manu90" name="manu90"/>
+    <catalog id="manu91" name="manu91"/>
+    <catalog id="manu76" name="manu76"/>
+    <catalog id="manu21" name="manu21"/>
+    <catalog id="manu53" name="manu53"/>
+    <catalog id="manu11" name="manu11"/>
+    <catalog id="manu94" name="manu94"/>
+    <catalog id="manu95" name="manu95"/>
+    <catalog id="manu20" name="manu20"/>
+    <catalog id="manu92" name="manu92"/>
+    <catalog id="manu98" name="manu98"/>
+    <catalog id="manu96" name="manu96"/>
+    <catalog id="manu99" name="manu99"/>
+    <catalog id="manu102" name="manu102"/>
+    <catalog id="manu43" name="manu43"/>
+    <catalog id="manu97" name="manu97"/>
+    <catalog id="manu103" name="manu103"/>
+    <catalog id="manu105" name="manu105"/>
+    <catalog id="manu106" name="manu106"/>
+    <catalog id="manu108" name="manu108"/>
+    <catalog id="manu109" name="manu109"/>
+    <catalog id="manu107" name="manu107"/>
   </catalog>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
-  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
-  <catalog id="4x6" name="4X6">
-    <catalog id="4x6_vantaggio" name="VANTAGGIO"/>
-  </catalog>
-  <catalog id="GOODSTUFF" name="Some Good Stuff">
-    <property id="image1big">/images/small.jpg</property>
-    <property id="image1small">/images/small.jpg</property>
-    <property id="otherdownload">/pdfs/other.pdf</property>
-    <property id="includequickship">true</property>
-  </catalog>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff">
-    <option id="one" name="Another"/>
-  </catalog>
-  <catalog id="GOODSTUFF" name="Some Good Stuff">
-    <related-categories>
-      <category id="RELATED"/>
-    </related-categories>
-  </catalog>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
-  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
-  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
-  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
-  <catalog id="SEARCHME" name="Ready for Searching"/>
 </catalog>

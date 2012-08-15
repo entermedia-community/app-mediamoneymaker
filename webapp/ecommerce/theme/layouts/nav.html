@@ -20,10 +20,8 @@
     #end
 
 
-   <li  style="float: right;">
-   <a href="$apphome/shoppingbag.html">View Cart</a>
-    </li>
 
+ 
 
 
 #if ($user)
@@ -54,20 +52,31 @@
 
   
 #end
+
+<li  style="float: right;">
+ 	  <a href="$apphome/shoppingbag.html">View Cart</a>
+ </li>
+
+<li style="float: right;">
+	<div id="searchform" class="">
+		<form target="_parent" name="qsearch" action="$home$apphome/search/results.html">
+#if( $hits.userQuery.length() > 0 && !$hits.userQuery.contains("[") )
+<input name="query" size="18" value="$!url_util.xmlEscape($hits.userQuery)" type="text" />
+#else
+<input name="query" type="text" size="18" value="Store Search" onclick="value='';" /> 
+#end
+</form>
+	</div>
+</li>
+
+ 
+
+
  </ul>
 <div style="float:right; margin-top:-30px;">
 
-#if ($canquicksearch)
-<div id="searchform" class="">
-<form id="search_form" action="$apphome/views/search/search.html" class="em-widget-content">
-	<input type="hidden" name="field" value="description" />
-	<input type="hidden" name="operation" value="startswith" />
-	#set( $input = "Search...")
-	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" initialtext="Search..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
-</form>
-</div>
-#end
+
+
 
 
 </div>

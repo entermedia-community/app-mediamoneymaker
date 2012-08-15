@@ -220,13 +220,19 @@ tr.odd {
     background: #FEFAEA;
     color: #444;
 }
-
 .deals {
-	
 	list-style: none;
 	
 }
-
 .deals  {
 	padding: 0px;
+}
+#nav .flat-right {
+    border-right-color: #FB796A;
+}
+
+/* ADDED STYLES FOR ECOMMERCE THEME */
+
+h1, h2, h3, h4, h5, h6 {
+    color: #444;
 }
