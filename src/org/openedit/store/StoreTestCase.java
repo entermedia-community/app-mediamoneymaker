@@ -44,7 +44,7 @@ public abstract class StoreTestCase extends BaseTestCase
 	{
 		if ( fieldStore == null)
 		{
-			StoreArchive reader = (StoreArchive)getFixture().getModuleManager().getBean("storeArchive");
+			StoreArchive reader = (StoreArchive)getStaticFixture().getModuleManager().getBean("storeArchive");
 			fieldStore = reader.getStore("store");
 		}
 		return fieldStore;
