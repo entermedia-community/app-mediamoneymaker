@@ -15,6 +15,9 @@
              #if($page.isPropertyTrue("multipleaddress"))
             <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html"> Manage Addresses</a>)</td>
             #end
+            #if($canvieweol)
+            	<td class="prodhead" style="width: 200px;">EOL</td>
+            #end
             <td class="prodhead" style="width: 60px;">Remove</td>
         </tr>
         
@@ -124,6 +127,25 @@
      	</select>
      	</td>
      	#end
+     	
+     	#if($canvieweol)
+        		
+        		            	<td class="prodhead" style="width: 120px;">
+        		 				
+        		 				
+        		 				#if($product.expectedendoflife)
+        		 				
+        		 				
+        		 				
+        		 					#set($end = $DateStorageUtil.parseFromStorage($product.expectedendoflife))
+        		 					#set($start = $DateStorageUtil.parseFromStorage($product.createdon))
+        		 					#set($high = (($end.time - $start.time) * .8) + $start.time)
+        		 					
+	        		            	$product.createdon <meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter> $product.expectedendoflife  
+        		            	#end
+        		            	</td>
+        	     
+        #end
     	  <td class="proddata2" style="text-align: center;"><input type="checkbox" name="remove.${productcounter}"/>
     	
      	</tr>	  

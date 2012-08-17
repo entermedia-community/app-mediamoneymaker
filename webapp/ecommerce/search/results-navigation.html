@@ -1,28 +1,48 @@
-$hits.setHitsPerPage(12)
+#if( $hits && $hits.totalPages > 1 )
+#set($resultsPage = "$home$apphome/search/results.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&resultstype=$!resultstype")
+#set($resultsPage = "$resultsPage&page")
+#set($thispage = $hits.getPage())
 
-#if ( $hits.totalPages == 0 )
-	
-#elseif( $hits.totalPages == 1 )
+#set($targetdivinner = "emresultscontent")
+        #if ( $hits )
 
-	
-#else
-		
-		#set($thispage = $hits.getPage())
-		<table border=0 cellpadding=0 cellspacing=0>
-		<tr>
-			<td valign=top class=body >Page <b>$thispage</b> of $hits.totalPages </td>
-			<td>&nbsp;&nbsp;</td>
-			<td valign=top class=body>
-			#if( $hits.prevPage() )
-			<a href="$home$content.path?page=$hits.prevPage()&hitssessionid=$hits.sessionId" class=arrow><b>&lt; &lt;  Back</a>
-			#end
-			</td>
-			<td>&nbsp;&nbsp;</td>
-			<td valign=top class=body>
-			#if ( $hits.nextPage() )
-			<a href="$home$content.path?page=$hits.nextPage()&hitssessionid=$hits.sessionId" class=arrow><b> Forward &gt;&gt; </a>
-			#end
- 		   </td>
-		</tr>
-		</table>
-#end
+        <p class="resultsnumber">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
+    #end
+			<div id="pages">
+				<ul>
+					#if( $hits.prevPage() )
+					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >Previous</a></li>
+					#end
+					#set( $befores = $hits.linksBefore() )					
+						#if($befores.size()!=0)
+						  #if($befores.get(0)>1)
+							<li><a  targetdivinner="$targetdivinner" href="$resultsPage=1" >1</a></li>	
+						    <li class="ellipsis">...</li>
+						   #end
+						#end
+						#set( $afters = $hits.linksAfter() )
+					#foreach( $before in $befores )
+						<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$before" >$before</a></li>		
+					#end
+						<li class="current"><a   targetdivinner="$targetdivinner" href="$resultsPage=$thispage" >$!thispage</a></li>
+					#foreach( $after in $afters )
+						<li><a   targetdivinner="$targetdivinner" href="$resultsPage=$after">$after</a></li>		
+					#end
+					#set($size=${afters.size()})
+					#set( $size = $size - 1 )
+					#if($size>0)
+						#if ($afters.get($size)< $hits.getTotalPages() )
+							<li class="ellipsis">...</li>
+							<li><a   targetdivinner="$targetdivinner" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+						#end
+					#end
+					#if ( $hits.nextPage() )
+					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">Next</a>
+					#end
+				</ul>
+			</div>
+	#end
+
+
+
+

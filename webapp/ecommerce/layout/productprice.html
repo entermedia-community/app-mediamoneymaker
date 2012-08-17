@@ -10,5 +10,23 @@
 	 <input type="hidden" name="productid" value="$product.getId()" />	
 		#else	
 		<b>Product No Longer Available.</b> please select another product
+
 		#end
+
+#if($canvieweol)
+#if($product.expectedendoflife)
+        		 					#set($end = $DateStorageUtil.parseFromStorage($product.expectedendoflife))
+        		 					#set($start = $DateStorageUtil.parseFromStorage($product.createdon))
+        		 					#set($high = (($end.time - $start.time) * .8) + $start.time)
+        		 				
+        		 					
+	        		            EOL Status:	<meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter>  
+        		            	<br/>
+        		            	Creation Date: $product.createdon 
+        		            	<br/>
+        		            	Expected EOL: $product.expectedendoflife
+        		            	#end
+#end
+
 </li>
+

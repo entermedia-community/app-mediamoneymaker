@@ -6,7 +6,8 @@
   <property name="parentapplicationid">media</property>
   <property name="catalogid">media/catalogs/store</property>
   <property name="applicationid">ecommerce</property>
-  
+     <path-action name="Date.now" />
+   
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
   
   <permission name="viewdevelopertools">
@@ -50,5 +51,18 @@
       <group id="distributors"/>
     </or>
   </permission>
+  
+   <permission name="vieweol">
+    <or>
+      <group id="administrators"/>
+      <group id="distributors"/>
+    </or>
+  </permission>
+  
+  
   <path-action name="storeArchive.loadStore"/>
+  
+  	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable" allowduplicates="true" class="org.openedit.util.DateStorageUtil" />
+    	<path-action bean="Date" name="PageValue.loadPageVariable" allowduplicates="true" class="java.util.Date" />
+  
 </page>

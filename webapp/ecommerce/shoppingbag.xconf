@@ -4,6 +4,7 @@
    <page-action name="CartModule.updateCart" />	
    <page-action name="CartModule.addCoupon" />	
    <path-action name="Admin.forwardToSecureSocketsLayer" />
+   
    <property name="useshttps">true</property>
    <page-action name="CartModule.loadCustomer" />	
    

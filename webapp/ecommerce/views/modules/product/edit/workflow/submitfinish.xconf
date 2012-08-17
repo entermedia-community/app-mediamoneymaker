@@ -1,0 +1,13 @@
+<page>
+	
+
+	
+	<path-action name="Email.sendEmail">
+	
+	
+	</path-action>
+	<property name="to">ian@ijsolutions.ca</property>
+	<property name="from">ian@ijsolutions.ca</property>
+	<property name="subject">Submission Reviewed</property>
+	<property name="emailbody">/${applicationid}/views/modules/product/edit/workflow/notify-template.html</property>
+</page>

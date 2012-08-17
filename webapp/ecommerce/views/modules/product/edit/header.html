@@ -1,0 +1,40 @@
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+#set( $moduleid = $context.findValue("module") )
+#set($searchtype = $context.getRequestParameter("searchtype"))
+#if( !$searchtype)
+	#set( $searchtype = $moduleid)
+#end
+	#set( $tsize = "$home$cataloghome/downloads/preview/135crop/productimages/$data.sourcepath/thumb.jpg")
+#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
+
+<div id="default-top" class="clearfix" style="margin: -20px 0 20px 0;">
+     
+        <div class="thumbnail">
+          
+          <a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
+                <img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
+                <link rel="image_src" type="image/jpeg" href="$home$tsize" />
+            </a>
+          
+        </div>
+        
+        
+   
+
+     <div class="main-info" style="padding-bottom: 30px;">
+        <div class="primary">
+           $!data.first_name $!data.last_name $!data.get("name")
+        </div>
+        <div class="secondary">
+           #if ($data.company)
+             $searcherManager.getData($catalogid, "company", $data.company)
+           #end
+        </div>
+    </div>
+    
+</div>
+
+<div class="editholder">
+<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype">Edit</a>
+</div>
