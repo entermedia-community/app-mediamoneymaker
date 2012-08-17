@@ -6,6 +6,7 @@ package com.openedit.modules.cart;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import com.openedit.BaseTestCase;
 import com.openedit.modules.cart.editor.CatalogEditTest;
 import com.openedit.store.PriceSupportTest;
 import com.openedit.store.convert.ExcelConverterTest;
@@ -38,7 +39,7 @@ public class AllTests
 		//suite.addTestSuite(ImageResizerTest.class);
 		suite.addTestSuite(OrderExportTest.class);
 		suite.addTestSuite(PriceSupportTest.class);
-		
+		BaseTestCase.getStaticFixture().getWebServer().getOpenEditEngine().shutdown();
 		//$JUnit-END$
 		return suite;
 	}

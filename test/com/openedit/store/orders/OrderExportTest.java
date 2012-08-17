@@ -36,9 +36,9 @@ public class OrderExportTest extends StoreTestCase
 	}
 	public void testElectronicOrder() throws Exception
 	{
-		CartModule cartModule = (CartModule)getFixture().getModuleManager().getModule("CartModule");
+		CartModule cartModule = (CartModule)getStaticFixture().getModuleManager().getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();//"/store/index.html");
+		WebPageRequest context = getStaticFixture().createPageRequest();//"/store/index.html");
 		Store store = cartModule.getStore(context);
 
 		context.setRequestParameter( "productid", "1" );

@@ -41,10 +41,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testUpdateItemQuantity() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest(
+		WebPageRequest context = getStaticFixture().createPageRequest(
 				"/store/index.html");
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
@@ -66,7 +66,7 @@ public class CartTest extends StoreTestCase {
 		firstItem.setQuantity(3);
 
 		// This should swap out the item
-		WebPageRequest updatecontext = getFixture().createPageRequest(
+		WebPageRequest updatecontext = getStaticFixture().createPageRequest(
 				"/store/index.html");
 		updatecontext.putSessionValue(store.getCatalogId() + "cart", cart);
 
@@ -91,10 +91,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testUpdateNoSizeNoColor() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest(
+		WebPageRequest context = getStaticFixture().createPageRequest(
 				"/store/index.html");
 
 		Store store = cartModule.getStore(context);
@@ -115,7 +115,7 @@ public class CartTest extends StoreTestCase {
 		assertEquals(NOSIZE_ITEM_SKU, firstItem.getSku());
 		firstItem.setQuantity(3);
 
-		WebPageRequest updatecontext = getFixture().createPageRequest(
+		WebPageRequest updatecontext = getStaticFixture().createPageRequest(
 				"/store/index.html");
 		updatecontext.putSessionValue(store.getCatalogId() + "cart", cart);
 
@@ -139,10 +139,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testUpdateSpecialRequest() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest(
+		WebPageRequest context = getStaticFixture().createPageRequest(
 				"/store/index.html");
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
@@ -167,7 +167,7 @@ public class CartTest extends StoreTestCase {
 
 		firstItem.setQuantity(3);
 
-		WebPageRequest updatecontext = getFixture().createPageRequest("/store/index.html");
+		WebPageRequest updatecontext = getStaticFixture().createPageRequest("/store/index.html");
 		updatecontext.putSessionValue(store.getCatalogId() + "cart", cart);
 		updatecontext.setRequestParameter("reloadcart", "true");
 		// This should swap out the item
@@ -187,10 +187,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testSameProductTwoColors() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
@@ -228,10 +228,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testShippingAndOptions() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest(
+		WebPageRequest context = getStaticFixture().createPageRequest(
 				"/store/index.html");
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
@@ -290,10 +290,10 @@ public class CartTest extends StoreTestCase {
 
 	public void testShipByWeight() throws Exception {
 
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 		assertTrue(store.getAllShippingMethods().size() > 0);
@@ -320,10 +320,10 @@ public class CartTest extends StoreTestCase {
 		// THis test depends on search working so the reindex must have happened
 		// already
 		// And the product 3 should be marked as available
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Cart cart = cartModule.getCart(context);
 
 		context.setRequestParameter("productid", "2");
@@ -349,10 +349,10 @@ public class CartTest extends StoreTestCase {
 		// THis test depends on search working so the reindex must have happened
 		// already
 		// And the product 3 should be marked as available
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Cart cart = cartModule.getCart(context);
 
 		context.setRequestParameter("productid", "2");
@@ -375,10 +375,10 @@ public class CartTest extends StoreTestCase {
 
 
 	public void testHandling() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
@@ -414,10 +414,10 @@ public class CartTest extends StoreTestCase {
 
 		final double INVOICE_PRICE = 15557.81;
 
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
@@ -502,9 +502,9 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testStartCheckOut() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		context.setRequestParameter("productid", "1");
 		// Where did this come from?
 		// assertNull( context.getRequestParameter( "size" ) );
@@ -572,10 +572,10 @@ public class CartTest extends StoreTestCase {
 	 * @throws Exception
 	 */
 	public void testCheckOut() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		context.setRequestParameter("productid", "1");
 		context.setRequestParameter("size", "large");
 
@@ -615,13 +615,13 @@ public class CartTest extends StoreTestCase {
 
 	public void testCreateNewCustomer() throws Exception {
 		// First lets create a customer
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 
 		// Now create a customer account
-		context = getFixture().createPageRequest();
+		context = getStaticFixture().createPageRequest();
 		context.setRequestParameter("firstName", "John");
 		context.setRequestParameter("lastName", "Doe");
 		context.setRequestParameter("email", "cburkey@einnovation.com");
@@ -648,7 +648,7 @@ public class CartTest extends StoreTestCase {
 		// At this point the customer is on the hard drive and we have an ID
 
 		// Now Try to order some stuff using only the ID we just created
-		context = getFixture().createPageRequest();
+		context = getStaticFixture().createPageRequest();
 		// Now start ordering stuff
 		context.setRequestParameter("productid", "1");
 		context.setRequestParameter("size", "large");
@@ -675,13 +675,13 @@ public class CartTest extends StoreTestCase {
 
 	public void testAddressManagement() throws Exception {
 		// First lets create a customer
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 
 		// Now create a customer account
-		context = getFixture().createPageRequest();
+		context = getStaticFixture().createPageRequest();
 		Customer customer = cartModule.loadCustomer(context);
 		List list = customer.getAddressList();
 	    assertEquals(0, list.size() );
@@ -722,10 +722,10 @@ public class CartTest extends StoreTestCase {
 	}
 
 	public void testAddsRequiredOptions() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
@@ -743,10 +743,10 @@ public class CartTest extends StoreTestCase {
 	
 	
 	public void testDuplicateProducts() throws Exception {
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 				.getModule("CartModule");
 
-		WebPageRequest context = getFixture().createPageRequest();		
+		WebPageRequest context = getStaticFixture().createPageRequest();		
 		context.setRequestParameter("productid", "1");
 		context.setRequestParameter("size", "large");
 		context.setRequestParameter("quantity", "1");
@@ -762,7 +762,7 @@ public class CartTest extends StoreTestCase {
 		
 		
 		//Now reload cart
-		context = getFixture().createPageRequest();
+		context = getStaticFixture().createPageRequest();
 		context.setRequestParameter("productid.1","1");
 		context.setRequestParameter("quantity.1","44");
 		context.setRequestParameter("size.1","large");
@@ -786,8 +786,8 @@ public class CartTest extends StoreTestCase {
 	
 	public void testCreateProductFromTemplate() throws Exception
 	{
-		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
-		WebPageRequest context = getFixture().createPageRequest();
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager().getModule("CartModule");
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 		
@@ -848,8 +848,8 @@ public class CartTest extends StoreTestCase {
 	
 	public void testItemProperties() throws Exception
 	{
-		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
-		WebPageRequest context = getFixture().createPageRequest();
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager().getModule("CartModule");
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 		
@@ -890,9 +890,9 @@ public class CartTest extends StoreTestCase {
 	 */
 	public void testRemoveShippingAddress() throws Exception
 	{
-		CartModule cartModule = (CartModule) getFixture().getModuleManager()
+		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager()
 		.getModule("CartModule");
-		WebPageRequest context = getFixture().createPageRequest();
+		WebPageRequest context = getStaticFixture().createPageRequest();
 		
 		Customer customer = cartModule.loadCustomer(context);
 		

@@ -100,7 +100,7 @@ public class SearchTest extends StoreTestCase
 	 }
 	 
  
-	public void testCatalogSearch() throws Exception
+	public void xtestCatalogSearch() throws Exception
 	{
 	
 		StoreEditor editor = getStoreEditor();
