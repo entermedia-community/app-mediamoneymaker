@@ -169,7 +169,8 @@
 			<include name="store/configuration/store.*" />
 			<include name="store/configuration/authorize.*" />
 			<include name="media/catalogs/store/*.*" />
-				
+			<include name="ecommerce/*.*" />
+
 		</fileset>
 	</copy>
 	<copy todir="${wardir}/WEB-INF/base/">
