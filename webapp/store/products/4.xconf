@@ -2,12 +2,15 @@
 
 <page>
   <property name="virtual">true</property>
-  <product name="Coupons" id="4" ordering="4" available="TRUE">
+  <product name="Coupons" id="4" ordering="4">
     <item sku="4444" inventory="1000">
-      <color/>
-      <size/>
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
     </item>
-    <catalog id="SEARCHME"/>
+    <category id="SEARCHME"/>
+    <category id="SEA_R,Ch-ME.txt"/>
     <price quantity="1">2.00</price>
   </product>
 </page>
