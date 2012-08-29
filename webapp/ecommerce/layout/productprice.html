@@ -1,5 +1,16 @@
 <li class="price">
     <h5>Product Price<input class="btn right" type="submit" value="Add to Cart" /></h5>
+	
+#if($canvieweol)
+<input type="hidden" name="field" value="store">
+   Store:     <select name= "store.value" style="width:100px">
+    		<option value=""></option>
+    	   #foreach ($store in $searcherManager.getList($catalogid, "store"))
+    	   		
+            <option value="$store.id" #if($item.store == $store.id) SELECTED #end>$store.name</option>
+    		#end
+     	</select>
+	#end
 	#if ( $product.isOnSale() )
 		<div class="mainprice onsale" $product.getRetailPrice()</div>
 		<div class="saleprice">$product.getYourPrice()</div>
@@ -12,8 +23,17 @@
 		<b>Product No Longer Available.</b> please select another product
 
 		#end
+<h5>Additional Details</h5>
+
+$context.putPageValue("data", $product)
+$context.putPageValue("searcher", $store.getProductSearcher())
+$context.putPageValue("view", "product/productdetails")
+$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+
 
 #if($canvieweol)
+
 #if($product.expectedendoflife)
         		 					#set($end = $DateStorageUtil.parseFromStorage($product.expectedendoflife))
         		 					#set($start = $DateStorageUtil.parseFromStorage($product.createdon))

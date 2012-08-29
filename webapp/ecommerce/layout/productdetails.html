@@ -28,6 +28,21 @@
 					#end
 					#set ($info = "")
 				#end
+
+
+    	
+    	$context.putPageValue("view", $viewpath)
+    	$context.putPageValue("searcher", $store.getProductSearcher())
+    	$context.putPageValue("data", $product)
+
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+#set ( $moduleid = $context.findValue("module") )
+
+$pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
+    	
+    
+
+
 			
 </div>
 <div class="product-right-col">					
@@ -43,4 +58,42 @@
     </ul>
 </div>
 </form>
+
+<div style="clear:both;">
+
+
+<div class="ui-widget-header">Rogers Order Details</div>
+	           <div class="ui-widget-content categories-widget no-padding-for-real">
+	                 #set($storesearcher = $searcherManager.getSearcher($catalogid, "store" ))
+	                  <!-- 
+	                 #set($query = $storesearcher.createSearchQuery())
+	                 $query.addMatches("id", "*")
+	                 $query.setSortBy("level")
+	                 #set($stores = $storesearcher.search($query) )
+	                  -->
+	         <form action="updaterogersorders.html">        
+	                 <table>
+	                 <tr>
+	                 <td><b>Store</b></td>
+	                 <td><b>Store Level</b></td>
+	                 <td><b>Quantity</b></td>
+	                 </tr>
+	                 #foreach($store in $stores)
+	                 <tr>
+	                              <td>$store </td>
+	                              <td>$store.level</td>
+	                              <td><input type="text" value="" name="quantity" size=4></td>
+	                              
+	                 </tr>
+	                 
+	                 #end
+	                 </table>
+
+ 
+                </div>
+			</form>
+
+
+
+</div>
 

@@ -12,9 +12,15 @@
             	<td class="prodhead">Color</td>
             #end
             <td class="prodhead" style="width: 100px;">Quantity</td>
+           
+           
              #if($page.isPropertyTrue("multipleaddress"))
             <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html"> Manage Addresses</a>)</td>
             #end
+             #if($canvieweol)
+            	<td class="prodhead" >Store</td>
+            #end
+            
             #if($canvieweol)
             	<td class="prodhead" style="width: 200px;">EOL</td>
             #end
@@ -128,7 +134,18 @@
      	</td>
      	#end
      	
+     	
      	#if($canvieweol)
+        
+        <td>
+        <input type="hidden" name="field" value="store">
+        <select name= "store.value.$productcounter" style="width:100px">
+    	   #foreach ($store in $searcherManager.getList($catalogid, "store"))
+    	   		
+            <option value="$store.id" #if($item.store == $store.id) SELECTED #end>$store.name</option>
+    		#end
+     	</select>
+        </td>
         		
         		            	<td class="prodhead" style="width: 120px;">
         		 				

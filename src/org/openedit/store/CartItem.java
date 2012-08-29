@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.openedit.data.BaseData;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 
@@ -20,7 +21,7 @@ import org.openedit.money.Money;
  * @author dbrown
  *
  */
-public class CartItem 
+public class CartItem extends BaseData
 {
 	protected int fieldQuantity = 1;
 	protected Money fieldYourPrice;
@@ -334,7 +335,7 @@ public class CartItem
 		return fieldProperties;
 	}
 
-	protected void setProperties(Map inProperties)
+	public void setProperties(Map inProperties)
 	{
 		fieldProperties = inProperties;
 	}

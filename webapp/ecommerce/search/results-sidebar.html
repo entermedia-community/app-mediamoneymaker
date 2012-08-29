@@ -2,7 +2,22 @@
 
 ##$pages.stream("$apphome/search/search.html")
 
- 
+  <div class="ui-widget-header">Categories</div>
+	           <div class="ui-widget-content categories-widget no-padding-for-real">
+	               <ul id="settings-menu" class="sidebar-list">
+  
+          
+                #set($mans = $searcherManager.getList("media/catalogs/store", "categoryid"))
+               
+          	#foreach($man in $mans)
+                	<li><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=startswith">$man.name</a></li>
+                	
+                	
+                	#end
+                	
+                </ul>
+                </div>
+
  <div class="ui-widget-header">Manufacturers</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">

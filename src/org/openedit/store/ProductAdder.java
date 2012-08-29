@@ -165,6 +165,18 @@ public class ProductAdder {
 					}
 				}
 			}
+			
+			String []fields = inReq.getRequestParameters("field");
+		if(fields != null){
+			for (int j = 0; j < fields.length; j++)
+		{
+			String field = fields[j];
+			String val = inReq.getRequestParameter(field + ".value" + counter );
+			if(val != null){
+				cartItem.setProperty(field, val);
+			}
+		}
+		}
 			// If product supports custom price, then get price from user
 			if (product.isCustomPrice()) {
 				String priceStr = (String) params.get("price" + counter);

@@ -1,11 +1,12 @@
 <page>
 	
 
+	        <path-action name="CartModule.loadProductDetails"  />
 	
-	<path-action name="Email.sendEmail">
+	<page-action name="Email.sendEmail">
 	
 	
-	</path-action>
+	</page-action>
 	<property name="to">ian@ijsolutions.ca</property>
 	<property name="from">ian@ijsolutions.ca</property>
 	<property name="subject">Submission Reviewed</property>
