@@ -71,9 +71,10 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 	                 $query.setSortBy("level")
 	                 #set($stores = $storesearcher.search($query) )
 	                  -->
-	         <form action="updaterogersorders.html">        
-	                 <table>
-	                 <tr>
+	         <form action="updaterogersorders.html">   
+     
+	                 <table id="store-table">
+	                 <tr class="tableheader">
 	                 <td><b>Store</b></td>
 	                 <td><b>Store Level</b></td>
 	                 <td><b>Quantity</b></td>
