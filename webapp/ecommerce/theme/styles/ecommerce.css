@@ -96,8 +96,8 @@ ul.products-list li a:hover {
     color: #78C042;
 }
 .sc-tableheader {
-    background: #eee;
-    border-bottom: 1px solid #ddd;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
 }
 .sc-tableheader td {
     padding: 8px 10px;
@@ -115,4 +115,31 @@ ul.products-list li a:hover {
 .sc-tabledata td {
     vertical-align: middle;
     padding: 8px 10px;
+}
+.coupon {
+    background: #f1f1f1;
+    padding: 14px 20px 10px 20px;
+    margin: 10px 0 10px 0;
+    border: 1px solid #ddd;
+    text-align: right;
+}
+.cart-price {
+    text-align: right;
+    font-size: 20px;
+    padding-top: 10px;
+}
+.formholder {
+    border: 1px solid #eee;
+    background: #f7f7f7;
+    padding: 15px;
+    display: inline-block;
+}
+.formholder td {
+    padding: 5px;
+}
+.small-field {
+    width: 260px;
+}
+.large-field {
+    width: 578px;
 }

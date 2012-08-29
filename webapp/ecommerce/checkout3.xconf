@@ -4,4 +4,5 @@
    <path-action name="CartModule.createCustomer" />	
    <path-action name="CartModule.updateCustomer" />	
    <path-action name="CartModule.saveShippingMethod" />
+   <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 </page>
