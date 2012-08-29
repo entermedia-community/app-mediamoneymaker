@@ -5,4 +5,5 @@
    <path-action name="CartModule.saveShippingMethod" />
    <path-action name="CartModule.loadCustomer" />
    <path-action name="Admin.login" />
+   <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 </page> 

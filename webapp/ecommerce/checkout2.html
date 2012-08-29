@@ -1,5 +1,7 @@
 <script src="validate.js" language="javascript"></script>
 
+<div class="formholder">
+
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>
 <td class=body2>
@@ -20,52 +22,52 @@ $pages.stream("./logon.html")
 #if ( !$store.allowDuplicateAccounts )
 	<td class=body2>For new accounts please enter your <b>shipping and contact</b> information:<br/><br/></td>
 #else
-	<td class=body2>Please enter your <b>shipping and contact</b> information:<br/><br/></td>
+	<td colspan="2" style="border-bottom: 1px solid #ddd; padding-bottom: 10px;" class=body2><center>Please enter your <b>shipping and contact</b> information:</center></td>
 #end
 	</tr>
 	<tr>
-	<td class=body2>First Name<br><input type="text" name="firstName" size="25" value="$!customer.firstName" /></td>
-	<td />
+	<td class=body2 style="padding-top: 20px;">First Name<br><input type="text" name="firstName" class="small-field" value="$!customer.firstName" /></td>
+    <td class=body2 style="padding-top: 20px;">Last Name<br><input type="text" name="lastName" class="small-field" value="$!customer.lastName" /></td>
 	</tr>
 	<tr>
-	<td class=body2>Last Name<br><input type="text" name="lastName" size="25" value="$!customer.lastName" /></td>
-	<td class=body2>Company (optional)<br><input type="text" name="company" size="25" value="$!customer.company" /></td>
+	
+	<td colspan="2" class=body2>Company (optional)<br><input type="text" name="company" class="large-field" value="$!customer.company" /></td>
 	</tr>
 	<tr>
-	<td class=body2>Address<br><input type="text" name="shipping.address1.value" id="shipping.address1.value"  size="25" value="$!customer.shippingAddress.address1" /></td>
-	<td class=body2>Address 2 (optional)<br><input type="text" name="shipping.address2.value" size="25" value="$!customer.shippingAddress.address2"  /></td>
+	<td colspan="2" class=body2>Address<br><input type="text" name="shipping.address1.value" id="shipping.address1.value"  class="large-field" value="$!customer.shippingAddress.address1" /></td>
 	</tr>
 	<tr>
-	<td class=body2>City<br><input type="text" name="shipping.city.value" id="shipping.city.value" size="25" value="$!customer.shippingAddress.city"/></td>
-	<td class=body2>State or Province<br><input type="text" name="shipping.state.value" id="shipping.state.value" size="25" value="$!customer.shippingAddress.state" /></td>
-	</tr>
-	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shipping.zipCode.value" id="shipping.zipCode.value" size="25" value="$!customer.shippingAddress.zipCode"/></td>
-	<td class=body2>Country<br><input type="text" name="shipping.country.value" id="shipping.country.value" size="25" value="$!customer.shippingAddress.country"/></td>
+	    <td colspan="2" class=body2>Address 2 (optional)<br><input type="text" name="shipping.address2.value" class="large-field" value="$!customer.shippingAddress.address2"  /></td>
 	</tr>
 	<tr>
-	<td class=body2>Email<br><input type="text" name="email" size="25" value="$!customer.email" /></td>
-	<td class=body2>Phone Number<br><input type="text" name="phone1" size="25" value="$!customer.phone1" /></td>
+	<td class=body2>City<br><input type="text" name="shipping.city.value" id="shipping.city.value" class="small-field" value="$!customer.shippingAddress.city"/></td>
+	<td class=body2>State or Province<br><input type="text" name="shipping.state.value" id="shipping.state.value" class="small-field" value="$!customer.shippingAddress.state" /></td>
+	</tr>
+	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shipping.zipCode.value" id="shipping.zipCode.value" class="small-field" value="$!customer.shippingAddress.zipCode"/></td>
+	<td class=body2>Country<br><input type="text" name="shipping.country.value" id="shipping.country.value" class="small-field" value="$!customer.shippingAddress.country"/></td>
 	</tr>
 	<tr>
-		<td class=body2 colspan="2">FAX Number (optional)<br><input type="text" name="fax" size="25" value="$!customer.FAX" /></td>
+	<td class=body2>Email<br><input type="text" name="email" class="small-field" value="$!customer.email" /></td>
+	<td class=body2>Phone Number<br><input type="text" name="phone1" class="small-field" value="$!customer.phone1" /></td>
+	</tr>
+	<tr>
+		<td class=body2 colspan="2">FAX Number (optional)<br><input type="text" name="fax" class="small-field" value="$!customer.FAX" /></td>
 	</tr>
 #if ( $content.showExtraInfo )
 	<tr>
-	<td class=body2>VAT Tax Number<br><input type="text" name="userfield2" size="25" value="$!customer.userfield2" /></td>
-	<td class=body2>FAX Number<br><input type="text" name="userfield1" size="25" value="$!customer.userfield1" /></td>
+	<td class=body2>VAT Tax Number<br><input type="text" name="userfield2" class="small-field" value="$!customer.userfield2" /></td>
+	<td class=body2>FAX Number<br><input type="text" name="userfield1" class="small-field" value="$!customer.userfield1" /></td>
 	</tr>
 #end
-	<tr>
+	<tr style="border-top: 1px solid #ddd;">
 	<td class=body2>	
 		$pages.include("./shipping.html")
-		<table border=0 cellpadding=0 cellspacing=0>
-		<tr>
-		<td valign=top><input type="button" name="done" value="Continue" onclick="javascript: validateCustomerAndSubmit( document.orderForm ); " /></td>
-		<td valign=top>&nbsp;&nbsp;&nbsp;</td>
-		</tr></table>
-	</td></tr>
+		</td>
+	<td valign=middle><input class="btn right" style="margin-top: 25px;" type="button" name="done" value="Continue" onclick="javascript: validateCustomerAndSubmit( document.orderForm ); " /></td>
+    </tr>
 </table>
 </form>
 </td>
 </tr>
 </table>
+</div>

@@ -1,55 +1,35 @@
-<table border=0 cellpadding=0 cellspacing=1 width="100%">
-	<tr>
-		<td valign=top>
-			<font class=body>
-			<div align="right">
-				<div style="color:red">$!errorMessage</div>
+
+			   <div style="color:red">$!errorMessage</div>
 			   #if( $store.areCouponsAccepted() )
 				#if($cart.getAdjustments().size() >0)
 					An adjustment of $cart.getAdjustments().get(0) %  has been applied
 				#else
-				<nobr>Gift Certificate/Coupon Code (one per order): </nobr> <input style="margin-left: 5px;" type=text name=couponcode size=8 /><br><br>
+				<div class="coupon">
+				    Gift Certificate/Coupon Code (one per order): <input style="margin-left: 5px;" type=text name=couponcode size=8 />
+				</div>
 				#end
 			   #end
-				<input class="btn" type="submit" value="Update Your Cart"/>
-			<hr size=1 class="shophr" />
-			<br>
-			<table cellspacing="10" width=200>
-				<tr>
-					<td align="right"><font class=body><b>Subtotal:</b></td>
-					<td align="right"><font class=body> $!cart.getSubTotal()</td>
-				</tr>
-			</table>
-			<table cellspacing="0" width=250>
-				<tr>
-					<td align=right><font class=body>
+                <div class="cart-price clearfix">
+                    <span class="price-label"><b>Subtotal:</b></span>
+                     <span class="price">$!cart.getSubTotal()</span>
+                </div>
+
 			        #if( $cart.hasZeroSubTotal() )
-			                <table border=0 cellpadding=0 cellspacing=0>
-			                	<tr>
-			                		<td valign=top nowrap><font class=body><a href="javascript:zeroCostPage();" class=link><b>next page ></b></a></td>
-			                	</tr>
-			                </table>
+
+			          <a href="javascript:zeroCostPage();" class=link><b>next page ></b></a>
+
 			        #else
 			        	#if ( $content.continueShoppingUrl )
 			        		#set ( $continueShoppingUrl = $content.continueShoppingUrl )
 			        	#else
 			        		#set ( $continueShoppingUrl = "$home/index.html" )
 			        	#end
-			                <table border=0 cellpadding=0 cellspacing=0>
-
-			                 <tr>
-					                <td valign=center nowrap class=bu align=center><a href="javascript:nextPage();" class="btn" style="margin-top: 10px;"><b>Begin Checkout</b></a></td>
-			                	</tr>
-			                 <tr>
-                                    <td valign=center nowrap class=bu align=center><a style="color: #999; font-size: 11px; font-weight: normal; float: right;" href="$continueShoppingUrl">Continue Shopping</a></td>
-                             </tr>
-			                </table>
+			        	<div class="checkout-options">
+			        	    <div class="clearfix">
+			                     <a href="javascript:nextPage();" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Begin Checkout</b></a>
+			                </div>
+			               <div style="text-align: right;" class="clearfix">
+			                 <a style="color: #999; font-size: 12px; font-weight: normal; margin-right: 4px;" href="$continueShoppingUrl">Continue Shopping</a>
+			               </div>
+                        </div>
 			        #end
-			    	</td>
-				</tr>
-			</table> 
-			<br>
-			</div>
-		</td>
-	</tr>                                                                                                                                                                                                        
-</table> 
