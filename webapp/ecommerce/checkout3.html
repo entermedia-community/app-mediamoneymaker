@@ -10,43 +10,42 @@
 <table border=0 cellpadding=0 cellspacing=0>
 	<tr>
 		<td>
-			<table style="width: 100%;">
-			<tr>
-				<td class=body2 colspan=2>The cost of your order is:</td>
-			</tr>
-			<tr>
-				<td align="right" colspan="2" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td>
-			</tr>
-			#set ( $method = $cart.getShippingMethod() )
-			#if ( $method )
-			<tr>
-				<td align="right" class=body2><nobr>$method.getDescription():</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
-			</tr>
-			#end
-			#if ( $cart.isAdditionalShippingCosts() )
-			<tr>
-				<td align="right" class=body2 colspan=2 ><font color="#ff0000"><b>Additional shipping costs will be added.</b></font></td>
-			</tr>
-			#end
-			#if($customer.getTaxRates().size() >0)
-				#foreach( $taxrate in $customer.getTaxRates())
-				<tr>
-					<td align="right" class=body2>$taxrate.name</td><td align="right" class=body2> $cart.getTotalTax($taxrate)</td>
-				</tr>
-				#end
-			#else
-			<tr>
-				<td align="right" class=body2>Sales Tax:</td><td align="right" class=body2> $cart.getTotalTax()</td>
-			</tr>
-			#end
-			<tr>
-				<td align="right" class=body2><b>Total:</b></td><td align="right" class=body2><b>$cart.getTotalPrice()</b></td>
-			</tr>
-		<!--Add optional billing details -->
-			<tr>
-				<td class=body2 colspan=2><br><b>Please choose a payment method below.</b></td>
-			</tr>
-			</table>
+		    <span style="vertical-align: top; height: 30px; font-size: 16px; margin-bottom: 0px; display: block;"><b>The cost of your order is:</b></span>
+		    <div style=" background: #fff; border: 1px solid #ddd; padding: 10px 20px;">
+    			<table style="width: 100%; font-size: 14px;">
+    			<tr>
+    				<td align="right" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td>
+    			</tr>
+    			#set ( $method = $cart.getShippingMethod() )
+    			#if ( $method )
+    			<tr>
+    				<td align="right" class=body2><nobr>$method.getDescription():</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
+    			</tr>
+    			#end
+    			#if ( $cart.isAdditionalShippingCosts() )
+    			<tr>
+    				<td align="right" class=body2 colspan=2 ><font color="#ff0000"><b>Additional shipping costs will be added.</b></font></td>
+    			</tr>
+    			#end
+    			#if($customer.getTaxRates().size() >0)
+    				#foreach( $taxrate in $customer.getTaxRates())
+    				<tr>
+    					<td align="right" class=body2>$taxrate.name</td><td align="right" class=body2> $cart.getTotalTax($taxrate)</td>
+    				</tr>
+    				#end
+    			#else
+    			<tr>
+    				<td align="right" class=body2>Sales Tax:</td><td align="right" class=body2> $cart.getTotalTax()</td>
+    			</tr>
+    			#end
+    			<tr style="border-top: 1px solid #ddd;">
+    				<td align="right" class=body2><b>Total:</b></td><td align="right" class=body2><b>$cart.getTotalPrice()</b></td>
+    			</tr>
+    			</table>
+    		</div>
+    		<div style="margin-top: 10px;">
+                <b>Please choose a payment method below.</b>
+            </div>
 		</td>
 	</tr>
 	#if( $page.isPropertyTrue('usepaypal'))
@@ -56,13 +55,13 @@
 	<form method="post" name="orderForm" action="thanks.html">
 	#if ( $store.usesBillMeLater() )
 	<tr>
-		<td>
+		<td style="padding: 0;">
 			<table>
 			<tr>
 				<td colspan=2 class=body2><br><b><u>Pay Later (we will invoice you)</u></b><td>
 			</tr>
 			<tr>
-				<td colspan=2 class=body2>
+				<td colspan=2 class=body2 style="padding-bottom: 20px;">
 					<input type=checkbox name="billmelater" id="billmelater" value="true" /> Please invoice me 
 				</td>
 			</tr>
@@ -81,10 +80,10 @@
 	</tr>
 	#end
 	<tr>
-		<td>
+		<td style="padding: 0; margin: 0;">
 			<table style="width: 100%;">
 			<tr style="border-top: 1px solid #ddd;">
-				<td colspan="2" class="body2"><br><b>Credit Card</b><td>
+				<td colspan="2"  class="body2 thead"><b>Credit Card</b><td>
 			</tr>
 			<tr>
 				<td class="body2">Card Type: </td>
@@ -102,9 +101,9 @@
 				##end
 				</td>
 			</tr>
-			<tr style="vertical-align: middle;">
-				<td class="body2">Card Number: </td>
-				<td><input type="text" name="cardNumber" class="small-field" />
+			<tr>
+				<td class="body2" style="vertical-align: middle; width: 110px;">Card Number: </td>
+				<td style="vertical-align: middle;"><input type="text" name="cardNumber" class="small-field" />
 				
 				CVC:
 				<input type="text" name="cardVerificationCode" size="3"/></td>
@@ -145,10 +144,10 @@
 				</td>
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
-		        <td style="padding-top: 20px;" colspan=2 class=body2><b>Billing Details</b></td>
+		        <td colspan=2 class="body2 thead"><b>Billing Details</b></td>
 		    </tr>
 		    <tr>   
-		        <td class=body2><input type=checkbox name="sameasshipping" onclick="populate()"/> Same as Shipping 
+		        <td colspan="2" class=body2><input type=checkbox name="sameasshipping" onclick="populate()"/> Same as Shipping 
 		        </td>
 			</tr>
 			</table>
