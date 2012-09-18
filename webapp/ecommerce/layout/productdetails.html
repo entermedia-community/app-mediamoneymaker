@@ -100,8 +100,11 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 				       <td>$!store.level</td>
 				       #end
 	                   				<input type="hidden" name="productid.$velocityCount" value="$product.id"/>
-	                              <td><input type="text" class="quantity"  value="" name="quantity.$velocityCount" size=4>
+	                              <td><input type="text" class="quantity level-$store.level"  value="" name="quantity.$velocityCount" size=4>
 	                              <br/><a style="display: none;" class="applytoall" href="#">Apply to All</a>
+	                              #if($store.level)
+	                              <br/><a style="display: none;" class="applytolevel" data-level="$store.level" href="#">Apply to all Level $!store.level</a>
+	                              #end
 	                              </td>
 	                              <input type="hidden" name="store.value.$velocityCount" value="$store.id"/>
 	                 </tr>
@@ -125,6 +128,7 @@ jQuery(".applytoall").click(function () {
 	
 	
 	var amount = jQuery(this).siblings("input[type='text']").val();
+	
 	jQuery(".quantity").val(amount);
 	
 	return false;
@@ -132,12 +136,28 @@ jQuery(".applytoall").click(function () {
 	
 });
 
+jQuery(".applytolevel").click(function () {
+	
+	
+	var amount = jQuery(this).siblings("input[type='text']").val();
+	var level = jQuery(this).data("level");
+	jQuery(".level-" + level ).val(amount);
+	
+	return false;
+	
+	
+});
+
+
 jQuery(".quantity").change(function () {
 	var amount = jQuery(this).val();
 	jQuery(".applytoall").hide();
+	jQuery(".applytolevel").hide();
+	
 	if(amount){
 		
 		jQuery(this).siblings(".applytoall").fadeIn();
+		jQuery(this).siblings(".applytolevel").fadeIn();
 	}
 });
 
