@@ -784,66 +784,7 @@ public class CartTest extends StoreTestCase {
 		
 	}
 	
-	public void testCreateProductFromTemplate() throws Exception
-	{
-		CartModule cartModule = (CartModule) getStaticFixture().getModuleManager().getModule("CartModule");
-		WebPageRequest context = getStaticFixture().createPageRequest();
-		Store store = cartModule.getStore(context);
-		assertNotNull(store);
-		
-		Product productTemplate = new Product();
-		productTemplate.setId("template");
-				
-		Option o = new Option();
-		o.setDataType("text");
-		o.setId("title");
-		o.setName("Title");
-		//o.setPrice("0");
-		o.setRequired(false);
-		o.setValue("");
-		productTemplate.addOption(o);
-		o = new Option();
-		o.setDataType("boolean");
-		o.setId("banana");
-		o.setName("Banana");
-		o.setPrice("5");
-		o.setRequired(false);
-		o.setValue("");
-		productTemplate.addOption(o);
-		
-		// start new
-		InventoryItem inventoryItem = new InventoryItem();
-		PriceSupport priceSupport = new PriceSupport();
-		Price price = new Price();
-		price.setRetailPrice(new Money(100));
-		priceSupport.addTierPrice(1, price);
-		inventoryItem.setPriceSupport(priceSupport);
-		productTemplate.addInventoryItem(inventoryItem);
-		// end new
-		
-		store.saveProduct(productTemplate);		
-		assertNotNull(store.getProduct("template"));
-		
-		context.setRequestParameter("copyproduct", "true");
-		context.setRequestParameter("productid", "template");
-		context.setRequestParameter("option.banana", "true");
-		
-		cartModule.clearCart(context);
-		cartModule.updateCart(context);
-		Product product = ((CartItem) cartModule.getCart(context).getItems().get(0)).getInventoryItem().getProduct();
-		assertNotNull(product);
-		assertNotNull(store.getProduct(product.getId()));
-		assertFalse(product.getId().equals(productTemplate.getId()));
-		assertNull(product.getOption("title"));
-		assertNotNull(product.getOption("banana"));
-		
-		product = store.getProductArchive().getProduct(product.getId());
-		assertNotNull(product);
-		assertFalse(product.getId().equals(productTemplate.getId()));
-		assertNull(product.getOption("title"));
-		assertNotNull(product.getOption("banana"));
-		assertEquals(new Money("105"), cartModule.getCart(context).getSubTotal());
-	}
+	
 	
 	
 	public void testItemProperties() throws Exception
