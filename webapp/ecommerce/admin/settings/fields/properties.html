@@ -1,0 +1,32 @@
+		<table class="oemenuback">
+		<tr>
+			<td class="oe-module-title">$context.getPageProperty('title')</td>
+			<td class="oe-module-actions"></td>
+	</td>
+	</tr>
+	</table>
+#set($backto =  $context.getRequestParameter("backto"))
+
+<p><a href="$apphome/admin/" >[[Admin]]</a> > <a href="$backto">[[Data Fields]]</a> > [[List Editor]]</p>
+	
+<form name="xmlEditForm" id="xmlEditForm" method="post" >
+
+
+	<p>[[Please select a property]]:</p><br>
+
+$pages.stream("/$content.xmledithome/embeded.html")
+
+#set($xmlpath =  $context.getRequestParameter("xmlpath"))
+<input name="xmlpath" type="hidden" value="$xmlpath" />
+<input name="backto" type="hidden" value="$backto" />
+</form>
+
+
+#if( $xmlfile.isExist() )	
+<div style="float:left; width:25em;">
+<p>#set ( $origURL=$url_util.getOriginalUrl() ) #set( $parentName = "parent$content.contentItem.length")
+<a href="#" onclick="if(!window.name)window.name='$parentName';window.open('$home/system/tools/text/edit.html?editPath=$xmlpath&origURL=$origURL&type=text&parentName='+window.name, 'texteditor','alwaysRaised=yes,menubar=no,resizable=yes,top=100,left=130,width=830,height=550' );return false;">Edit Text</a>
+ by hand </p>
+</div>
+#end
+

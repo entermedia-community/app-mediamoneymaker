@@ -1,0 +1,56 @@
+#set ( $category = $storeeditor.getCurrentCatalog() )
+
+<table width="100%" cellspacing="10" >
+<tr>
+<td valign="top" width="250px;">
+	
+<div class="oeactions" style="border: 1px solid gray;">	   
+	<ul class="oeactionlist">
+		<li class="oeactionlistitem"><a href="$home$apphome/admin/categories/editor/addnew.html" target="_parent"  >[[Add New Child Category]]</a></li>
+		<li class="oeactionlistitem"><a href="javascript:deleteCatalog()" target="_parent"  >[[Delete Selected Category]]</a></li>	
+		
+	</ul>	
+		$pages.include("$apphome/admin/categories/tree.html")
+</div>
+<div class="oeactionlistitem"><a href="javascript:refreshCatalogs()" target="_parent"  >[[Reload Tree]]</a></div>
+
+</td>
+<td valign="top">
+
+<h2>$context.getPageProperty('title')</h2>
+
+<div id="tabsubcontent">
+$pages.includeContent()
+</div>
+<td>
+</tr>
+</table>
+
+<form name="inputForm" method="post" >
+	<input type="hidden" name="oe-action" id="oe-action" />
+	<input type="hidden" name="treeid" />
+	<input type="hidden" name="categoryid" id="categoryid"  />
+</form>
+<script language="javascript">
+
+	refreshCatalogs = function()
+	{
+		var form = document.inputForm;
+		form.action = "$home$apphome/admin/categories/tree/refresh.html";
+		form.treeid.value = storeAdminCatalogTree.id;
+		form.categoryid.value = storeAdminCatalogTree.lastselected;
+		form.submit();
+	}
+	deleteCatalog = function()
+	{
+		var respond = confirm("[[Are you sure you want to delete this category?]]");
+		if (respond)
+		{
+			var form = document.inputForm;
+			form.action = "$home$apphome/admin/categories/tree/delete.html";
+			form.treeid.value = storeAdminCatalogTree.id;
+			form.categoryid.value = storeAdminCatalogTree.lastselected;
+			form.submit();
+		}
+	}
+</script>

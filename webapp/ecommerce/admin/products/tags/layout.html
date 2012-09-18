@@ -1,0 +1,17 @@
+#set ( $product = $storeeditor.getCurrentProduct() )
+
+<div class="oeinputform">
+<fieldset>
+    <legend>[[User Defined Tags]]</legend>
+	<br>
+	#foreach( $keyword in $product.keywords )
+		<p><label>$keyword</label> <a href="$home$apphome/admin/products/tags/removetag.html?keyword=$keyword">[[[remove]]]</a></p>
+	#end
+	<form name="keyadd" action="$home$apphome/admin/products/tags/addtag.html" method="post">
+	<input name="keyword" size="30" />
+	<input type="submit" value="[[Add New]]" />
+	<input type="hidden" name="productid" value="$product.getId()" />
+	</form>
+
+</fieldset>
+</div>

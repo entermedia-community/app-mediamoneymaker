@@ -1,0 +1,7 @@
+#set( $details = $archive.getDataProperties("listview"))#foreach ($detail in $details)$detail.getText()	#end
+
+#foreach($item in $hits.getAllHits())#set($product = $store.getProduct($item.id))
+#foreach ($detail in $details)
+#if( $detail.isList() )#set( $types = $store.getProperties(${detail.getId()}))$!types.get($product.get($detail.getId() ))#else$!product.get($detail.getId())#end	#end
+
+#end

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.loadCategory"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Category Products</value>
+    <value locale="es">Categoría Productos</value>
+  </property>
+  <property name="subtab">categoryproducts</property>
+  <inner-layout>/${applicationid}/admin/categories/products/categoryproducts.html</inner-layout>
+</page>

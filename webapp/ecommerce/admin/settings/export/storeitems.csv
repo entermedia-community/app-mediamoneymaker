@@ -1,0 +1,12 @@
+ProductId	ItemSku	RetailPrice	YourPrice	Quantity	Size	Color#foreach ($detail in $storeeditor.getItemProperties())	$detail.id#end
+#foreach( $hit in $store.getProductSearcher().getAllHits() )   ##hits
+#set( $product = false )
+#set( $product = $store.getProduct($hit.id) )
+#foreach( $item in $product.getInventoryItems() )
+#if( $product.isAvailable() )
+
+$product.id	$item.sku	$!item.retailPrice	$!item.yourPrice	$item.quantityInStock	$!item.size	$!item.color#foreach ($detail in $storeeditor.getItemProperties())	$!item.get($detail.id)#end
+#end
+#end
+#set($blank = $store.getProductArchive().clearProduct($product))
+#end

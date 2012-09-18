@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Select a category from the tree.">
+    <value>Select a category from the tree.</value>
+    <value locale="es">Seleccione una categoría del árbol.</value>
+  </property>
+  <property name="text.products">
+    <value>products</value>
+    <value locale="es">productos</value>
+  </property>
+  <property name="text.Add Category To Results">
+    <value>Add Category To Results</value>
+    <value locale="es">Añadir categoría a los resultados</value>
+  </property>
+  <property name="text.Remove Category From Results">
+    <value>Remove Category From Results</value>
+    <value locale="es">Eliminar la categoría de resultados</value>
+  </property>
+  <property name="text.Editing">
+    <value>Editing</value>
+    <value locale="es">Edición</value>
+  </property>
+  <property name="text.Categorize Results">
+    <value>Categorize Results</value>
+    <value locale="es">Categorizar Resultados</value>
+  </property>
+</page>

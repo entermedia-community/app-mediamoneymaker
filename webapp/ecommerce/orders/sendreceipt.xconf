@@ -1,5 +1,0 @@
-<page>
-	<path-action name="StoreOrderModule.sendReceipt" />
-	<layout/>
-	<inner-layout/>
-</page>

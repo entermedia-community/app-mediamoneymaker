@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CatalogEditModule.selectProduct"/>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Related Products</value>
+    <value locale="es">Productos Relacionados</value>
+  </property>
+  <property name="subtab">productrelated</property>
+  <inner-layout>/${applicationid}/admin/products/related/relatedproducts.html</inner-layout>
+</page>

@@ -1,0 +1,21 @@
+<link rel="stylesheet" type="text/css" href="$home/system/styles/tools.css"/>
+<link rel="stylesheet" href="$home/system/styles/tabs.css"> 
+<script type="text/javascript" src="$home/system/javascript/tabs.js"></script>
+
+<table class="tabnavigation"><tr>
+<td id="myaccountuser"><span><a href="$home$apphome/myaccount/user/index.html">User</a></span></td>
+<td id="myaccountaddresses"><span><a href="$home$apphome/myaccount/addresses/index.html">Addresses</a></span></td>
+#if ("true" == $content.showcompany)
+<td id="myaccountcompany"><span><a href="$home$apphome/myaccount/company/index.html">Company</a></span></li>
+#end
+</tr></table>
+<div class="oetabspacer">
+$pages.includeContent()
+</div>
+
+<script type="text/javascript">
+	#if( $content.tab)
+	showtab("$home","$content.tab");		
+	#end
+</script>
+

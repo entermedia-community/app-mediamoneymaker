@@ -59,7 +59,12 @@
     </or>
   </permission>
   
-  
+   <permission name="manageorders">
+    <or>
+      <group id="administrators"/>
+      
+    </or>
+  </permission>
   <path-action name="storeArchive.loadStore"/>
   
   	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable" allowduplicates="true" class="org.openedit.util.DateStorageUtil" />

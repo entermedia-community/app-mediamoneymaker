@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="title">
+    <value>Fields</value>
+    <value locale="es">Sector</value>
+  </property>
+  <property name="subtab">settingfields</property>
+  <inner-layout>/${applicationid}/admin/settings/fields/fieldlayout.html</inner-layout>
+</page>

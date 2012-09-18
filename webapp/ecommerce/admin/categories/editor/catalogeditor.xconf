@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Random">
+    <value>Random</value>
+    <value locale="es">Random</value>
+  </property>
+  <property name="text.Category ID">
+    <value>Category ID</value>
+    <value locale="es">Categoría ID</value>
+  </property>
+  <property name="text.Product Ordering">
+    <value>Product Ordering</value>
+    <value locale="es">Pedido de Productos</value>
+  </property>
+  <property name="text.Short Description">
+    <value>Short Description</value>
+    <value locale="es">Descripción corta</value>
+  </property>
+  <property name="text.Category Settings">
+    <value>Category Settings</value>
+    <value locale="es">Categoría Configuración</value>
+  </property>
+  <property name="text.You must type a category ID.">
+    <value>You must type a category ID.</value>
+    <value locale="es">Usted debe escribir una categoría ID.</value>
+  </property>
+  <property name="text.auto resize">
+    <value>auto resize</value>
+    <value locale="es">el tamaño de auto</value>
+  </property>
+  <property name="text.Name A-Z">
+    <value>Name A-Z</value>
+    <value locale="es">Nombre A-Z</value>
+  </property>
+  <property name="text.Preview">
+    <value>Preview</value>
+    <value locale="es">Vista previa</value>
+  </property>
+  <property name="text.Sort By">
+    <value>Sort By</value>
+    <value locale="es">Ordenar por</value>
+  </property>
+  <property name="text.Add New Image">
+    <value>Add New Image</value>
+    <value locale="es">Añadir nueva imagen</value>
+  </property>
+  <property name="text.Category Name">
+    <value>Category Name</value>
+    <value locale="es">Nombre de la categoría</value>
+  </property>
+  <property name="text.No spaces or invalid characters">
+    <value>No spaces or invalid characters</value>
+    <value locale="es">No hay espacios o caracteres no válidos</value>
+  </property>
+  <property name="text.Save Edits">
+    <value>Save Edits</value>
+    <value locale="es">Guardar las modificaciones</value>
+  </property>
+  <property name="text.Category Images">
+    <value>Category Images</value>
+    <value locale="es">Categoría Imágenes</value>
+  </property>
+  <property name="text.Name Z-A">
+    <value>Name Z-A</value>
+    <value locale="es">Nombre Z-A</value>
+  </property>
+  <property name="text.Price">
+    <value>Price</value>
+    <value locale="es">Precio</value>
+  </property>
+  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
+</page>

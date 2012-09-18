@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<page>
+	<inner-layout>/${applicationid}/admin/products/editresults/productcategories.html</inner-layout>
+
+	<path-action name="CatalogEditModule.addResultsToCategory"/>
+</page>

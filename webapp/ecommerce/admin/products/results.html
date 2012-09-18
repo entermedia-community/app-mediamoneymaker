@@ -1,0 +1,142 @@
+<script language="javascript" src="$home/system/javascript/resultshover.js">     </script>
+
+#set ( $catalog = $storeeditor.getCurrentCatalog() )
+#set( $cells = $hits.getPageOfHits() )
+
+<form name="search" method="post" action="$home$apphome/admin/products/results.html">
+$context.putPageValue("hits",$hits)	
+#set( $details = $searcher.getDataProperties("adminsearch",$user) )
+$context.putPageValue("details",$details)	
+<div class="oesearchformflat">
+$pages.include("/$content.xmledithome/searchfields.html",$context)
+<p>		[[Sort by]]: <select name="sortby"><option value=""></option>
+		#set( $sortdetails = $searcher.getDataProperties("orderby",$user) )
+			#foreach( $searchItem in $sortdetails )
+			<option value="${searchItem.getId()}Up" #if( $cells.getOrdering() && $cells.getOrdering() == "${searchItem.getId()}Up" ) selected #end >${searchItem.getText()}#if($searchItem.isDate()) [[[Oldest First]]] #else [A-Z]#end</option>
+			<option value="${searchItem.getId()}Down" #if( $cells.getOrdering() && $cells.getOrdering() == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText()}#if($searchItem.isDate()) [[[Newest First]]] #else [Z-A]#end</option>
+			#end
+			<option value="random" #if( $cells.getOrdering() && $cells.getOrdering() == "random" ) selected #end >Random</option>			
+			</select>
+</p>		
+
+			<input type="submit" value="Go" />
+	</div>
+</form>
+
+<form name="editresults" id="editresults" action="$home$apphome/admin/products/editresults/savepage.html"> 
+<table width="100%" class="standard-table">
+<tr>
+<th width="25"> </th><th> </th>
+#foreach( $detail in $details )
+#if( $detail.isStored() || $detail.isEditable() )	
+<th align="left" nowrap >$detail.getText()</th>
+#end
+#end		
+</tr>	
+	
+#foreach ( $cell in $hits.getPageOfHits() )
+
+#if( $even )#set( $even = false )
+<tr>
+#else #set( $even = true )
+	<tr style="background-color: #EEEEEE;">
+#end
+#set ($sourcepath = $cell.sourcepath)
+
+#set ($thumbend = $store.getLinkToThumb($sourcepath))
+#set ($mediumend = $store.getLinkToMedium($sourcepath,$cell.name,$cell.fileformat))
+
+#set ($thumb = "$home$thumbend?productid=$cell.id")
+#set ($med = "$home$mediumend")
+	<td align="center"><a  href="$home$apphome/admin/products/editor/index.html?productid=${cell.id}" onmouseover="doTooltip(event,['$med','${cell.name}']);" onmouseout="hideTip();" alt="$cell.name" name="$cell.name" style="text-decoration: none;"><img src="$thumb" height="20"  align="middle" border="0"></a></td>
+	<td><a href="$home$apphome/admin/products/editor/index.html?productid=${cell.id}" class="oeactionlink">$!cell.name</a></td>
+#set( $product = $store.getProductArchive().getProductBySourcePath($cell.sourcepath))
+#foreach( $detail in $details )
+#if( $detail.isStored() || $detail.isEditable() )	
+	#set( $newval = "$!product.get($detail.getId())")
+		#if( $detail.isEditable() &&  ($detail.id == "jobnotes" || $detail.id == "notes"))
+			<input type="hidden" name="editfield" value="${cell.id}.$detail.id" />
+			<td nowrap><textarea name="${cell.id}.$detail.id" cols="30" rows="1">$newval</textarea></td>
+		#elseif($detail.isEditable() &&  $detail.isList() )
+			<td>
+			<input type="hidden" name="editfield" value="${cell.id}.$detail.id" />				
+			#set( $types = $store.searcherManager.getList($detail) )
+			#if($types)
+				<select name="${cell.id}.$detail.id">
+				<option value=""></option>
+				#foreach( $type in $types )
+				<option value="$type.id" #if( $type.id == $newval ) selected #end>$type</option>
+				#end
+			   </select>
+			#else
+				No properties found in ../configuration/lists/${detail.getId()}.xml 
+			#end   
+			</td>	
+		#elseif( $detail.isEditable() &&  !$detail.isDate())
+			<input type="hidden" name="editfield" value="${cell.id}.$detail.id" />
+			<td nowrap><input name="${cell.id}.$detail.id" value="$newval" /></td>
+		#else		
+			<td nowrap>$newval</td>
+		#end
+	#end	
+#end
+#end
+</tr>
+</table>	
+<center><input type="button" onclick="saveedits();" value="[[Save Edits]]" />
+<br><div id="savemessage" > </div>
+</center>
+</form>
+<p><a href="$home$apphome/admin/products/editor/new.html">[[Add New]]</a></p>
+#if( $hits)
+
+
+#if ( $hits.totalPages == 0 )
+	
+#elseif( $hits.totalPages == 1 )
+
+	
+#else
+		
+		#set($thispage = $hits.getPage())
+		<table border=0 cellpadding=0 cellspacing=0>
+		<tr>
+			<td valign=top class=body >Page <b>$thispage</b> of $hits.totalPages </td>
+			<td>&nbsp;&nbsp;</td>
+			<td valign=top class=body>
+			#if( $hits.prevPage() )
+			<a href="$home$content.path?page=$hits.prevPage()&hitssessionid=$hits.sessionId" class=arrow><b>&lt; &lt;  Back</a>
+			#end
+			</td>
+			<td>&nbsp;&nbsp;</td>
+			<td valign=top class=body>
+			#if ( $hits.nextPage() )
+			<a href="$home$content.path?page=$hits.nextPage()&hitssessionid=$hits.sessionId" class=arrow><b> Forward &gt;&gt; </a>
+			#end
+ 		   </td>
+		</tr>
+		</table>
+#end
+#end
+
+
+<!-- p><a href="$home$apphome/admin/settings/export/exportresults.csv?hitsname=datalist">Export results to excel</a --> 
+
+<a href="$home$apphome/admin/products/editresults/productcategories.html?hitsname=datalist">[[Categorize Results]]</a> 
+
+</p>
+
+<script type="text/javascript">
+	//setSubTab("$content.subtab");
+	gotosubtab = function(inDir, inId)
+	{
+		var openpath = "$home$apphome/admin/products/" + inDir + "/" + inId + ".html";		
+		jQuery.load("tabsubcontent", openpath, {oemaxlevel: '3', origURL: "$content.path" });	
+	}
+	saveedits = function()
+	{
+		var openpath = "$home$apphome/admin/products/editresults/savepage.html";		
+		jQuery.load("savemessage", openpath, { method: 'post',parameters: $('editresults').serialize(true), evalScripts: true });	
+	}
+</script>
+		

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="CartModule.convertData"/>
+  <property name="text.Click here">
+    <value>Click here</value>
+    <value locale="es">Haga clic aquí</value>
+  </property>
+  <property name="text.Import is complete">
+    <value>Import is complete</value>
+    <value locale="es">Importar es completa</value>
+  </property>
+  <property name="text.to go back to admin area">
+    <value>to go back to admin area</value>
+    <value locale="es">para volver al área de administración</value>
+  </property>
+</page>

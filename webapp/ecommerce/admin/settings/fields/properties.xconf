@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="Xml.loadXmlFile">
+    <fileid>propertyfield</fileid>
+    <element-name>property</element-name>
+    <attribute id="id" description="Id"/>
+    <attribute id="text" description="Label" size="20"/>
+    <reload>true</reload>
+  </page-action>
+  <property name="text.Please select a property">
+    <value>Please select a property</value>
+    <value locale="es">Por favor, seleccione una propiedad</value>
+  </property>
+  <property name="title">
+    <value>Property List Editor</value>
+    <value locale="es">Lista de propiedades Editor</value>
+  </property>
+  <property name="text.List Editor">
+    <value>List Editor</value>
+    <value locale="es">Lista Editor</value>
+  </property>
+  <property name="text.Admin">
+    <value>Admin</value>
+    <value locale="es">Admin</value>
+  </property>
+  <property name="text.Data Fields">
+    <value>Data Fields</value>
+    <value locale="es">Campos de Datos</value>
+  </property>
+</page>

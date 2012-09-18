@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="StoreOrderModule.captureOrder"/>
+  <property name="text.Back To Order">
+    <value>Back To Order</value>
+    <value locale="es">Volver a la orden</value>
+  </property>
+  <property name="text.This order has been processed">
+    <value>This order has been processed</value>
+    <value locale="es">Esta orden ha sido procesada</value>
+  </property>
+  <property name="text.Problem with processing order">
+    <value>Problem with processing order</value>
+    <value locale="es">Problema con el fin de procesamiento</value>
+  </property>
+</page>

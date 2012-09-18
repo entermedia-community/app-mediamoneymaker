@@ -1,0 +1,10 @@
+<h2>[[My Orders]]</h2>
+
+$pages.include("results.html")
+<p>
+<a href="openorders.html">View my open orders</a><br/>
+<a href="orderhistory.html">View  my orders history</a><br/>
+</p>
+#if ( $user.hasPermission("oe.cart.admin" ) )
+  <a href="$home$apphome/admin/orders/index.html">Manage orders</a><br/>
+#end			

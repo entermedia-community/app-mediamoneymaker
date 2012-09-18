@@ -84,7 +84,7 @@ $order.getOrderStatus()
 	</tr>
 	
 	<form name="permissions" action="$home$apphome/admin/orders/updateitemstatus.html" method="post">
-	#set( $types = $searcherManager.getList($store.get/${applicationid}/() ,"itemstatus") )
+	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 		
 	#foreach ( $item in $order.items )
 		#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")

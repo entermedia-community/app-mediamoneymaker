@@ -1,0 +1,142 @@
+#set($usestartswith = $page.isPropertyTrue('usestartswith'))
+#set( $hits = $orderidlist )
+	<table name="nav1" id="tableNav1" summary="nav1" border="0"
+		cellpadding="0" cellspacing="0" width="60%">
+		<tr>
+			
+				#foreach( $searchItem in $fields)
+				#if ($velocityCount % 5 == 0)
+					</tr>
+					<tr>
+				#end
+				<td align="left" valign="middle" nowrap>
+					#set( $inputed = "$!hits.getInput($searchItem.getId())")
+
+				<div class="searchlabel">
+					#if($searchItem.getId() == "customer")
+					#else
+					${searchItem.getText()} 
+					<input name="field" value="${searchItem.getText()}" type="hidden">
+					<input name="fieldid" value="${searchItem.getId()}" type="hidden">
+					
+					#if($searchItem.getId() == "availablity")
+					 
+						<input name="operation" type="hidden" value="matches" />
+						<select name="availability.value">
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+						</select>
+					
+					#elseif($searchItem.getId() == "born")
+					   
+						<input name="operation" type="hidden" value="betweenages" />
+						<input name="type" type="hidden" value="age" />
+						<input name="born.value" type="hidden" value="between" />
+						<input name="${searchItem.getId()}.after" id="datevalue${searchItem.id}" value="$!hits.getInput("born.after")"
+						size="3" type="text"> 
+					
+					 and <input name="${searchItem.getId()}.before" id="aftervalue${searchItem.id}" value="$!hits.getInput("born.before")"
+						size="3" type="text">
+					
+					#elseif( $searchItem.isList() )
+						#if ($searchItem.getId() == "orderstatus" )
+							#set ($types = $store.getOrderArchive().getOrderStates($store))
+							#set( $listing = $types.keySet() )
+						#else
+							#set( $types = $store.getProperties(${searchItem.getId()}) ) 
+							#set( $listing = $types.keys() )
+						#end
+						<input name="operation" type="hidden" value="matches" />
+						<select name="${searchItem.getId()}.value">
+							<option value=""></option>
+							#foreach( $key in $listing )
+							<option value="$key" #if( $inputed && $key == $inputed ) selected #end>
+								$types.get($key)
+							</option>
+							#end
+						</select>
+					#elseif ($searchItem.isFilter())
+					
+						#set( $types = $store.getProperties(${searchItem.getId()}) ) 
+						<input name="operation" type="hidden" value="filter" />
+						<input type="hidden" name="${searchItem.getId()}.value" value="array"/>
+							#foreach( $key in $types.keys() )
+						<input type="checkbox" value="$key" name="${searchItem.getId()}.value" #if( $inputed && $key == $inputed ) checked #end />
+								$types.get($key)
+							#end
+						</select>
+						
+					#elseif ($searchItem.isDate())
+					<select name="operation">
+						<option value="after">After</option>
+						<option value="before">Before</option>
+					</select>
+				
+					<input name="${searchItem.getId()}.value" id="datevalue${searchItem.id}" value="$!inputed"
+						size="8" type="text">
+					<a style="padding-right: 5px;"	href="javascript:NewCal('datevalue${searchItem.id}','mmddyyyy',false,24)"><img	src="$home$apphome/layout/media/cal.gif" width="16"	height="16" border="0" alt="Pick a date"></a>					
+					#else
+					#if( $usestartswith)
+					<input name="operation" value="startswith" type="hidden">						
+					#else
+					<input name="operation" value="matches" type="hidden">
+					#end
+					<input name="${searchItem.getId()}.value" value="$!hits.getInput($searchItem.getId())"
+						size="15" type="text">
+					 
+					#end
+				#end
+				</div>
+				
+				#end
+				#if( $page.showCategory != "false")
+				<div class="searchlabel">
+				
+				#set( $pickedcategory = $!hits.getInput("department" ) )
+				#if(!$pickedcategory )
+						
+						#set ($pickedcategory = $cart.lastVisitedCatalog.id )
+				#end
+					
+					Category  <select name="department">
+						<option value="">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</option>
+						
+						#set ( $catalog = $cart.lastVisitedCatalog ) 
+						#if($content.toplevelcategory ) #set( $topLevel =$catalogTree.getModel().getChildById("$content.toplevelcategory")) 
+						#else #set( $topLevel = $catalogTree.getModel().getRoot() )
+						#end
+						#foreach( $rootCatalog in $catalogTree.getModel().getChildren($topLevel) )
+						<option #if( $pickedcategory && $pickedcategory==$rootCatalog.id ) selected #end value="$rootCatalog.id">$!rootCatalog.name</option>
+						#end 
+						#if ( $catalog ) 
+							#foreach ( $parent in $catalog.listAncestorsAndSelf( 1 ) )
+							#if( $parent.parentCatalog.parentCatalog )
+								<option value="$parent.id"	#if( $pickedcategory && $pickedcategory==$parent.id ) selected #end>$!parent.name</option>
+							#end
+							#end
+						#end
+					</select>
+					</td>
+				#end
+				##set( $includefilter = $context.getRequestParameter("includefilter") )				
+				##if( $includefilter && $user.hasPermission("archive.filter"))
+				<!-- <div class="searchlabel">
+			<input type="checkbox" value="true" name="search.includefilter"  -->
+			##if( $hits.getInput("search.includefilter") ) checked ##end /> 							<!-- $context.getPageProperty("text.filterlabel") </div> -->
+				##end				
+	
+				#if($pages.doesExist("$apphome/search/customsearch.html"))
+					$pages.include("$apphome/search/customsearch.html")
+				#end
+				<td>
+				<input type="submit" value="Go" />
+				</td>
+				</div>
+				<div class="searchlabel">
+					
+				</div>
+			
+		</tr>
+	</table>

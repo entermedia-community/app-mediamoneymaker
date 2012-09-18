@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/system/logs</property>
+  <property name="title">
+    <value>Reports</value>
+    <value locale="es">Informes</value>
+  </property>
+  <property name="baselogdir">/${applicationid}/admin/reports/logs</property>
+  <property name="encoding">UTF-8</property>
+  <inner-layout>/${applicationid}/admin/reports/logs/layout/logsinnerlayout.html</inner-layout>
+</page>
