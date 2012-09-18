@@ -230,6 +230,9 @@ public class Cart
 		return cost;
 	}
 
+	
+	
+	
 	public Money getTotalTax()
 	{
 		Money totalTax = Money.ZERO;
@@ -472,6 +475,7 @@ public class Cart
 		for (Iterator iter = getItems().iterator(); iter.hasNext();)
 		{
 			CartItem item = (CartItem) iter.next();
+			
 			if (item.getInventoryItem() != null && item.getInventoryItem().getSku().equals(inInventoryItem.getSku()))
 			{
 				return item;

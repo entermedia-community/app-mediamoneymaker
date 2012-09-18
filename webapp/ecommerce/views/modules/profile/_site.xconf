@@ -2,5 +2,5 @@
 
 <page>
   <property name="fallbackdirectory">/ecommerce/views/modules/default</property>
-  <property name="module">order</property>
+  <property name="module">profile</property>
 </page>

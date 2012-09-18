@@ -62,7 +62,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			// search.putInput("orderstatus", "accepted");
 		}
 		addActionFilters(inReq, search);
-		return search(inReq, search);
+		return cachedSearch(inReq, search);
 	}
 
 	public HitTracker fieldSearchForUser(WebPageRequest inReq, User inUser)
@@ -74,7 +74,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		addActionFilters(inReq, search);
 		search.addMatches("customer", inUser.getUserName());
 		search.setSortBy(inReq.findValue("ordersort"));
-		return search(inReq, search);
+		return cachedSearch(inReq, search);
 	}
 
 	private void buildIndex(IndexWriter inWriter, List inList) throws Exception {
@@ -307,8 +307,8 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	public Object searchById(String inId)
 	{
 		Data orderinfo = (Data) super.searchById(inId);
-		
-		return orderinfo;
+		return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("username"), inId);
+		//return orderinfo;
 		
 	}
 	

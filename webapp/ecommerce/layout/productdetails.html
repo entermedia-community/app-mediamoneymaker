@@ -62,32 +62,53 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 <div style="clear:both;">
 
 
-<div class="ui-widget-header">Rogers Order Details</div>
+<div class="ui-widget-header">Product Order Details</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
-	                 #set($storesearcher = $searcherManager.getSearcher($catalogid, "store" ))
+	                 #set($storesearcher = $searcherManager.getSearcher($catalogid, "profile_address_list" ))
+	                 #set($rogers = $user.isInGroup("rogers"))
 	                  <!-- 
 	                 #set($query = $storesearcher.createSearchQuery())
-	                 $query.addMatches("id", "*")
+	                 $query.addMatches("profileid", "$user.id")
 	                 $query.setSortBy("level")
 	                 #set($stores = $storesearcher.search($query) )
 	                  -->
-	         <form action="updaterogersorders.html">   
+	         <form action="$home$apphome/shoppingbag.html" method="post">   
+     	                 	                              <input type="hidden" name="forcenew" value="true"/>
      
 	                 <table id="store-table">
 	                 <tr class="tableheader">
 	                 <td><b>Store</b></td>
+	                 #if($rogers)
 	                 <td><b>Store Level</b></td>
+	                 #end
 	                 <td><b>Quantity</b></td>
 	                 </tr>
+	                 	                              <input type="hidden" name="field" value="store"/>
+	                 
 	                 #foreach($store in $stores)
 	                 <tr>
-	                              <td>$store </td>
-	                              <td>$store.level</td>
-	                              <td><input type="text" value="" name="quantity" size=4></td>
-	                              
+
+
+	                   <td>$store<br/>
+	                   $store.address1<br/>
+	                   $!store.address2<br/>
+	                   $store.city<br/>
+	                   $store.province<br/>
+	                   
+	                    </td>
+				     #if($rogers)
+				       <td>$!store.level</td>
+				       #end
+	                   				<input type="hidden" name="productid.$velocityCount" value="$product.id"/>
+	                              <td><input type="text" class="quantity"  value="" name="quantity.$velocityCount" size=4>
+	                              <br/><a style="display: none;" class="applytoall" href="#">Apply to All</a>
+	                              </td>
+	                              <input type="hidden" name="store.value.$velocityCount" value="$store.id"/>
 	                 </tr>
 	                 
 	                 #end
+	                 <tr><td></td>#if($rogers)<td></td>#end<td><input type="submit" value="[[Add to Order]]"/></td></tr>
+	                 <input type="hidden" name="orderid" value="current"/>
 	                 </table>
 
  
@@ -98,3 +119,28 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 
 </div>
 
+<script type="text/javascript">
+
+jQuery(".applytoall").click(function () {
+	
+	
+	var amount = jQuery(this).siblings("input[type='text']").val();
+	jQuery(".quantity").val(amount);
+	
+	return false;
+	
+	
+});
+
+jQuery(".quantity").change(function () {
+	var amount = jQuery(this).val();
+	jQuery(".applytoall").hide();
+	if(amount){
+		
+		jQuery(this).siblings(".applytoall").fadeIn();
+	}
+});
+
+
+
+</script>

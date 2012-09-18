@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.openedit.money.Money;
+import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PaymentMethod;
@@ -52,11 +53,32 @@ public class Order implements Comparable
 	protected OrderState fieldOrderState;
 	protected Map fieldProperties;
 	
+	protected Cart fieldCart;
 	
 	
 	
 	
 	
+	public Cart getCart()
+	{
+	if (fieldCart == null)
+	{
+		fieldCart = new Cart();
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+		{
+			CartItem item = (CartItem) iterator.next();
+			fieldCart.addItem(item);
+			
+		}
+		
+	}
+
+	return fieldCart;
+	}
+	public void setCart(Cart inCart)
+	{
+		fieldCart = inCart;
+	}
 	public List getAdjustments() {
 		return fieldAdjustments;
 	}

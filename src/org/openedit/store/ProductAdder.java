@@ -21,56 +21,57 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.users.User;
 
-public class ProductAdder {
+public class ProductAdder
+{
 	private static final Log log = LogFactory.getLog(ProductAdder.class);
 
 	protected static final String PRODUCTID = "productid";
 
-	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload)
-			throws StoreException {
+	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload) throws StoreException
+	{
 		// Get item info from request parameters
 		List olditems = new ArrayList(inCart.getItems());
-		if (inReload) {
+		if (inReload)
+		{
 			inCart.removeAllItems();
 		}
 		int productCount = computeProductCount(inReq);
 		Map params = inReq.getParameterMap();
-		for (int i = 0; i < productCount + 2; i++) {
+		for (int i = 0; i < productCount + 2; i++)
+		{
 			String counter = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				counter = "";
-			} else {
+			}
+			else
+			{
 				counter = "." + i;
 			}
 			String productId = (String) params.get("productid" + counter);
-			if (productId == null) {
+			if (productId == null)
+			{
 				continue;
 			}
 			String checked = inReq.getRequestParameter("remove" + counter);
-			if (checked != null) {
+			if (checked != null)
+			{
 				continue;
 			}
 
 			Product product = inCart.getStore().getProduct(productId);
 
-			String makecopy = (String) params.get("copyproduct" + counter);
-			boolean copyproduct = Boolean.parseBoolean(makecopy);
-			if (copyproduct) {
-				product = createProductFromTemplate(inReq.getUser(), inCart
-						.getStore(), product);
-				inReq.setRequestParameter("productid" + counter, product
-						.getId());
-				params.put("productid" + counter, product.getId());
-			}
-
-			if (product == null) {
+			if (product == null)
+			{
 				// log
 				product = findProduct(productId, olditems);
-				if (product == null) {
+				if (product == null)
+				{
 					continue;
 				}
 			}
-			if (checked != null) {
+			if (checked != null)
+			{
 				inCart.removeProduct(product);
 			}
 
@@ -78,16 +79,19 @@ public class ProductAdder {
 			int quantity = 1;
 			boolean quantityspecified = false;
 			// Quantity
-			if (quantityStr != null && !quantityStr.equals("quantity")
-					&& quantityStr.length() != 0) {
+			if (quantityStr != null && !quantityStr.equals("quantity") && quantityStr.length() != 0)
+			{
 				quantity = Integer.parseInt(quantityStr);
 				quantityspecified = true;
-			} else if (quantityStr != null && quantityStr.length() == 0) {
+			}
+			else if (quantityStr != null && quantityStr.length() == 0)
+			{
 				quantity = 0;
 			}
 
-			if (quantity == 0) {
-				inCart.removeProduct(product);
+			if (quantity == 0)
+			{
+				//inCart.removeProduct(product);
 				continue;
 			}
 			// Look for any options being passed to us. Option can be a size,
@@ -96,51 +100,57 @@ public class ProductAdder {
 			Map properties = readProperties(counter, params, product);
 			// legacy way
 			String size = (String) params.get("size" + counter);
-			if (size != null) {
+			if (size != null)
+			{
 				Option option = makeOption(product, "size", size);
 				options.add(option);
 			}
 			String color = (String) params.get("color" + counter);
-			if (color != null && color.length() > 0) {
+			if (color != null && color.length() > 0)
+			{
 				Option option = makeOption(product, "color", color);
 				options.add(option);
 			}
-			if (copyproduct) {
-				product.setOptions(new ArrayList(options));
-				inCart.getStore().saveProduct(product);
-			}
 
-			InventoryItem inventory = product
-					.getInventoryItemByOptions(options);
-			if (inventory == null) {
+			InventoryItem inventory = product.getInventoryItemByOptions(options);
+			if (inventory == null)
+			{
 				inventory = product.getCloseInventoryItemByOptions(options);
 			}
-			if (inventory == null && product.getInventoryItemCount() == 0) {
+			if (inventory == null && product.getInventoryItemCount() == 0)
+			{
 				inventory = new InventoryItem();
 				String sku = product.getId() + "-1";
 				inventory.setSku(sku);
 				inventory.setProduct(product);
 			}
-			if (copyproduct) {
-				inventory.setSku(product.getId() + "-1");
+			boolean alwaysadd = false;
+			String forcenew = inReq.getRequestParameter("forcenew");
+			if (forcenew != null)
+			{
+				alwaysadd = Boolean.parseBoolean(forcenew);
 			}
-			// Who put this here? why?
-			// if(counter != ""){
-			// cartItem = new CartItem();
-			// }
-			// if(cartItem == null){
-			CartItem cartItem = inCart.findCartItemWith(inventory);
-			// }
-			if (cartItem == null) {
+			CartItem cartItem = null;
+			CartItem existing = inCart.findCartItemWith(inventory);
+			if (!alwaysadd)
+			{
+				cartItem = inCart.findCartItemWith(inventory);
+			}
+
+			if (cartItem == null)
+			{
 				cartItem = new CartItem();
-				quantityspecified=true;
+				quantityspecified = true;
 			}
 			cartItem.setInventoryItem(inventory);
 			int oldquantity = cartItem.getQuantity();
-			if(quantityspecified){
+			if (quantityspecified)
+			{
 				cartItem.setQuantity(quantity);
-			}else{
-				cartItem.setQuantity(quantity + oldquantity);	
+			}
+			else
+			{
+				cartItem.setQuantity(quantity + oldquantity);
 			}
 			cartItem.setOptions(options);
 			cartItem.setProperties(properties);
@@ -150,37 +160,45 @@ public class ProductAdder {
 
 			// Setup shipping options for each item
 			String address = inReq.getRequestParameter("address" + counter);
-			if (address != null) {
+			if (address != null)
+			{
 				cartItem.setShippingPrefix(address);
 			}
 			inCart.addItem(cartItem);
 
 			// Adds any other required options
 			List all = cartItem.getInventoryItem().getAllOptions();
-			for (Iterator iter = all.iterator(); iter.hasNext();) {
+			for (Iterator iter = all.iterator(); iter.hasNext();)
+			{
 				Option remaining = (Option) iter.next();
-				if (remaining.isRequired()) {
-					if (!cartItem.hasOption(remaining.getId())) {
+				if (remaining.isRequired())
+				{
+					if (!cartItem.hasOption(remaining.getId()))
+					{
 						cartItem.addOption(remaining);
 					}
 				}
 			}
-			
-			String []fields = inReq.getRequestParameters("field");
-		if(fields != null){
-			for (int j = 0; j < fields.length; j++)
-		{
-			String field = fields[j];
-			String val = inReq.getRequestParameter(field + ".value" + counter );
-			if(val != null){
-				cartItem.setProperty(field, val);
+
+			String[] fields = inReq.getRequestParameters("field");
+			if (fields != null)
+			{
+				for (int j = 0; j < fields.length; j++)
+				{
+					String field = fields[j];
+					String val = inReq.getRequestParameter(field + ".value" + counter);
+					if (val != null)
+					{
+						cartItem.setProperty(field, val);
+					}
+				}
 			}
-		}
-		}
 			// If product supports custom price, then get price from user
-			if (product.isCustomPrice()) {
+			if (product.isCustomPrice())
+			{
 				String priceStr = (String) params.get("price" + counter);
-				if (priceStr != null) {
+				if (priceStr != null)
+				{
 					priceStr = priceStr.trim();
 					cartItem.setYourPrice(new Money(priceStr));
 				}
@@ -188,41 +206,50 @@ public class ProductAdder {
 		}
 	}
 
-	private Product findProduct(String inProductId, List inOlditems) {
-		for (Iterator iterator = inOlditems.iterator(); iterator.hasNext();) {
+	private Product findProduct(String inProductId, List inOlditems)
+	{
+		for (Iterator iterator = inOlditems.iterator(); iterator.hasNext();)
+		{
 			CartItem item = (CartItem) iterator.next();
-			if (item.getProduct() != null && item.getProduct().getId() != null
-					&& item.getProduct().getId().equals(inProductId)) {
+			if (item.getProduct() != null && item.getProduct().getId() != null && item.getProduct().getId().equals(inProductId))
+			{
 				return item.getProduct();
 			}
 		}
 		return null;
 	}
 
-	protected Set readOptions(String code, Map params, Product product) {
+	protected Set readOptions(String code, Map params, Product product)
+	{
 		Set options = new HashSet();
-		for (Iterator iter = params.keySet().iterator(); iter.hasNext();) {
+		for (Iterator iter = params.keySet().iterator(); iter.hasNext();)
+		{
 			String paramid = (String) iter.next();
 			String oid = null;
 			String start = "option" + code + ".";
-			if (paramid.startsWith(start)) {
+			if (paramid.startsWith(start))
+			{
 				oid = paramid.substring(start.length());
 				String userinput = (String) params.get(paramid);
-				if (userinput != null && userinput.trim().length() == 0) {
+				if (userinput != null && userinput.trim().length() == 0)
+				{
 					userinput = null;
 				}
 				Option option = makeOption(product, oid, userinput);
-				if (option.isRequired() || userinput != null) {
+				if (option.isRequired() || userinput != null)
+				{
 					options.add(option);
 				}
 			}
 		}
 
-		for (Iterator iter = params.keySet().iterator(); iter.hasNext();) {
+		for (Iterator iter = params.keySet().iterator(); iter.hasNext();)
+		{
 			String paramid = (String) iter.next();
 			String start = "optiongroup" + code; // the values are the option
 			// ID's
-			if (paramid.startsWith(start)) {
+			if (paramid.startsWith(start))
+			{
 				String optionid = (String) params.get(paramid);
 				Option option = makeOption(product, optionid, null);
 				options.add(option);
@@ -232,13 +259,15 @@ public class ProductAdder {
 		return options;
 	}
 
-	private Option makeOption(Product product, String oid, String value) {
+	private Option makeOption(Product product, String oid, String value)
+	{
 		Option option = new Option();
 		option.setId(oid);
 		option.setName(oid);
 		option.setValue(value);
 		Option realoption = product.getOption(oid);
-		if (realoption != null) {
+		if (realoption != null)
+		{
 			option.setName(realoption.getName());
 			option.setPriceSupport(realoption.getPriceSupport());
 			option.setRequired(realoption.isRequired());
@@ -247,34 +276,44 @@ public class ProductAdder {
 		return option;
 	}
 
-	public boolean isMultiProductMode(WebPageRequest inReq) throws Exception {
+	public boolean isMultiProductMode(WebPageRequest inReq) throws Exception
+	{
 		String productId = inReq.getRequestParameter(PRODUCTID);
-		if (productId != null) {
+		if (productId != null)
+		{
 			return false;
-		} else {
+		}
+		else
+		{
 			productId = inReq.getRequestParameter("productid.1");
-			if (productId != null) {
+			if (productId != null)
+			{
 				return true;
-			} else {
+			}
+			else
+			{
 				throw new Exception("Product ID not found.");
 			}
 		}
 	}
 
-	public int computeProductCount(WebPageRequest inReq) throws StoreException {
+	public int computeProductCount(WebPageRequest inReq) throws StoreException
+	{
 		// One product
 		String productId = inReq.getRequestParameter(PRODUCTID);
-		if (productId != null) {
+		if (productId != null)
+		{
 			return 1;
-		} else {
+		}
+		else
+		{
 			// Multiple products
 			int count = 0;
-			String productId1 = inReq.getRequestParameter("productid."
-					+ (count + 1));
-			while (productId1 != null) {
+			String productId1 = inReq.getRequestParameter("productid." + (count + 1));
+			while (productId1 != null)
+			{
 				count++;
-				productId1 = inReq.getRequestParameter("productid."
-						+ (count + 1));
+				productId1 = inReq.getRequestParameter("productid." + (count + 1));
 			}
 			return count;
 		}
@@ -287,9 +326,10 @@ public class ProductAdder {
 	 * @param inColor
 	 * @return
 	 */
-	public void setInventoryItem(CartItem inItem, Product inProduct)
-			throws StoreException {
-		if (inProduct.getInventoryItemCount() == 0) {
+	public void setInventoryItem(CartItem inItem, Product inProduct) throws StoreException
+	{
+		if (inProduct.getInventoryItemCount() == 0)
+		{
 			// This item is very simple
 			CartItem item = new CartItem();
 			InventoryItem inven = new InventoryItem();
@@ -303,19 +343,21 @@ public class ProductAdder {
 		// cartItem.setQuantity(inQuantity);
 
 		// try for exact match of what they ordered
-		for (Iterator iter = inProduct.getInventoryItems().iterator(); iter
-				.hasNext();) {
+		for (Iterator iter = inProduct.getInventoryItems().iterator(); iter.hasNext();)
+		{
 			InventoryItem inventoryItem = (InventoryItem) iter.next();
-			if (inventoryItem.isExactMatch(inItem.getOptions())) {
+			if (inventoryItem.isExactMatch(inItem.getOptions()))
+			{
 				inItem.setInventoryItem(inventoryItem);
 				return;
 			}
 		}
 		// try just the same size
-		for (Iterator iter = inProduct.getInventoryItems().iterator(); iter
-				.hasNext();) {
+		for (Iterator iter = inProduct.getInventoryItems().iterator(); iter.hasNext();)
+		{
 			InventoryItem inventoryItem = (InventoryItem) iter.next();
-			if (inventoryItem.isCloseMatch(inItem.getOptions())) {
+			if (inventoryItem.isCloseMatch(inItem.getOptions()))
+			{
 				inItem.setInventoryItem(inventoryItem);
 				return;
 			}
@@ -323,102 +365,112 @@ public class ProductAdder {
 
 		// take anything on the list. this should not happen
 		// log.error("Not hits on item");
-		InventoryItem item = (InventoryItem) inProduct.getInventoryItems().get(
-				0);
+		InventoryItem item = (InventoryItem) inProduct.getInventoryItems().get(0);
 		inItem.setInventoryItem(item);
 		return;
 	}
 
-	public void updateCart(WebPageRequest inReq, Cart inCart)
-			throws StoreException {
+	public void updateCart(WebPageRequest inReq, Cart inCart) throws StoreException
+	{
 		String reload = inReq.getRequestParameter("reloadcart");
-		if (Boolean.parseBoolean(reload)) {
+		if (Boolean.parseBoolean(reload))
+		{
 			addItem(inReq, inCart, true);
-		} else {
+		}
+		else
+		{
 			addItem(inReq, inCart, false);
 		}
 	}
 
-	public void addCoupon(WebPageRequest inReq, Cart inCart) throws Exception {
+	public void addCoupon(WebPageRequest inReq, Cart inCart) throws Exception
+	{
 		String coupon = inReq.getRequestParameter("couponcode");
-		if (coupon != null && coupon.length() > 0) {
+		if (coupon != null && coupon.length() > 0)
+		{
 			// make sure there is no negative product in there already then add
 			// the product ID in there
 			// we might have to look up the producinCartt ID up since W@W needs
 			// that
 			// use Lucene to search
 			Store store = inCart.getStore();
-			HitTracker hits = store.getProductSearcher().fieldSearch("items",
-					coupon);
-			if (hits.getTotal() > 0) {
-				Data hit = (Data)hits.get(0);
+			HitTracker hits = store.getProductSearcher().fieldSearch("items", coupon);
+			if (hits.getTotal() > 0)
+			{
+				Data hit = (Data) hits.get(0);
 				String productId = hit.get("id");
 				Product product = store.getProduct(productId);
-				if (product != null) {
+				if (product != null)
+				{
 					// Check the rules. This might have a dollar amount in it
 					String min = product.getProperty("fldDesc3");
-					if (min != null) {
+					if (min != null)
+					{
 						// do a check
 						double val = inCart.getSubTotal().doubleValue();
 						Money minmoney = new Money(min);
-						if (val < minmoney.doubleValue()) {
-							inReq.putPageValue("errorMessage",
-									"That coupon can only be used on orders of "
-											+ minmoney.toString() + " or more");
+						if (val < minmoney.doubleValue())
+						{
+							inReq.putPageValue("errorMessage", "That coupon can only be used on orders of " + minmoney.toString() + " or more");
 							return;
 						}
 					}
 
-					InventoryItem inventoryItem = product
-							.getInventoryItemBySku(coupon);
-					if(inventoryItem == null || !inventoryItem.isInStock()){
+					InventoryItem inventoryItem = product.getInventoryItemBySku(coupon);
+					if (inventoryItem == null || !inventoryItem.isInStock())
+					{
 						inReq.putPageValue("couponerror", true);
 						return;
 					}
-					if (inventoryItem != null && inventoryItem.isInStock()) {
-						String percentage = inventoryItem
-								.getProperty("percentage");
-					
+					if (inventoryItem != null && inventoryItem.isInStock())
+					{
+						String percentage = inventoryItem.getProperty("percentage");
 
-						if (percentage != null) {
-							if(inCart.getAdjustments().size()== 0){
-							Double percent = Double.parseDouble(percentage);
-							
-							SaleAdjustment adjustment = new SaleAdjustment();
-							adjustment.setPercentDiscount(percent);
-							
-							inCart.addAdjustment(adjustment);
-							CartItem cartItem = new CartItem();
-							cartItem.setInventoryItem(inventoryItem);
-							inCart.addItem(cartItem);
+						if (percentage != null)
+						{
+							if (inCart.getAdjustments().size() == 0)
+							{
+								Double percent = Double.parseDouble(percentage);
+
+								SaleAdjustment adjustment = new SaleAdjustment();
+								adjustment.setPercentDiscount(percent);
+
+								inCart.addAdjustment(adjustment);
+								CartItem cartItem = new CartItem();
+								cartItem.setInventoryItem(inventoryItem);
+								inCart.addItem(cartItem);
 							}
-						} else {
+						}
+						else
+						{
 							CartItem cartItem = new CartItem();
 							cartItem.setInventoryItem(inventoryItem);
 							// remove any other coupons
-							for (Iterator iter = inCart.getItems().iterator(); iter
-									.hasNext();) {
+							for (Iterator iter = inCart.getItems().iterator(); iter.hasNext();)
+							{
 								CartItem olditem = (CartItem) iter.next();
-								if (olditem.getYourPrice().isNegative()) {
+								if (olditem.getYourPrice().isNegative())
+								{
 									inCart.removeItem(olditem);
 									break;
 								}
 							}
 							inCart.addItem(cartItem);
-					/*		//I need more than 50% :)
-							if (cartItem.getYourPrice().doubleValue() * 2 < inCart
-									.getSubTotal().doubleValue()) {
-								inCart.addItem(cartItem);
-							} else {
-								inReq
-										.putPageValue("errorMessage",
-												"Coupons may not be more than 50% off the total price");
-							}
-							*/
+							/*
+							 * //I need more than 50% :) if
+							 * (cartItem.getYourPrice().doubleValue() * 2 <
+							 * inCart .getSubTotal().doubleValue()) {
+							 * inCart.addItem(cartItem); } else { inReq
+							 * .putPageValue("errorMessage",
+							 * "Coupons may not be more than 50% off the total price"
+							 * ); }
+							 */
 						}
 					}
 				}
-			} else {
+			}
+			else
+			{
 				// no such coupon code
 				inReq.putPageValue("errorMessage", "No such product");
 			}
@@ -428,13 +480,14 @@ public class ProductAdder {
 		}
 	}
 
-	public Product createProductFromTemplate(User inUser, Store inStore,
-			Product inTemplate) throws StoreException {
+	public Product createProductFromTemplate(User inUser, Store inStore, Product inTemplate) throws StoreException
+	{
 		String newId = inStore.getProductArchive().nextProductNumber();
 		Product product = inTemplate.copy(newId);
 		// product.setInventoryItems(null);
 
-		if (inUser != null) {
+		if (inUser != null)
+		{
 			product.setProperty("user", inUser.getUserName());
 
 		}
@@ -442,23 +495,28 @@ public class ProductAdder {
 		return product;
 	}
 
-	protected Map readProperties(String code, Map params, Product product) {
+	protected Map readProperties(String code, Map params, Product product)
+	{
 		Map properties = new Hashtable();
 		String start = "property" + code + ".";
 
-		for (Iterator iter = params.keySet().iterator(); iter.hasNext();) {
+		for (Iterator iter = params.keySet().iterator(); iter.hasNext();)
+		{
 			String paramid = (String) iter.next();
 			String pid = null;
 
-			if (paramid.startsWith(start)) {
+			if (paramid.startsWith(start))
+			{
 				pid = paramid.substring(start.length());
 				String userinput = (String) params.get(paramid);
-				if (userinput != null && userinput.trim().length() == 0) {
+				if (userinput != null && userinput.trim().length() == 0)
+				{
 					userinput = null;
 				}
 				// Option option = makeOption(product, oid, userinput);
 
-				if (userinput != null) {
+				if (userinput != null)
+				{
 					properties.put(pid, userinput);
 				}
 			}

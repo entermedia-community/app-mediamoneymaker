@@ -1,0 +1,15 @@
+<li><a>Selections</a>
+	<ul>
+	 <li><a href="$home${content.searchhome}/edit/batchedit.html?hitssessionid=$hits.sessionId">Batch Edit</a></li>
+				<li><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">[[Export results]]</a></li>
+				<li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=true">[[Export results (friendly)]]</a></li>
+				<li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=true">[[Export results (friendly)]]</a></li>
+				<li ><a href="$home${content.searchhome}/export/exportcesium.csv?hitssessionid=$hits.sessionId&friendly=true">[[Create Cesium Order CSV]]</a></li>
+				<li ><a href="$home${content.searchhome}/export/exportcesiumdetail.csv?hitssessionid=$hits.sessionId&friendly=true">[[Create Cesium Detail CSV]]</a></li>
+				
+				#if($candelete)
+					 <li><a href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId">[[Delete Selected Items]]</a></li>
+				#end
+	</ul>
+	
+	</li>
