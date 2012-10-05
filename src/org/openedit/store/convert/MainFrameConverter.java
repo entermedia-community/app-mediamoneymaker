@@ -330,12 +330,12 @@ public class MainFrameConverter extends CatalogConverter
 						//log.info("Order " + orderid + " has missing product " + prodid);
 						//inErrorLog.add("Order " + orderid + " has missing product " + prodid + " skipping order");
 						//continue;
-					item.putProperty("duedate", duedate);
-					item.putProperty("shiptoname", shipto);
+					item.setProperty("duedate", duedate);
+					item.setProperty("shiptoname", shipto);
 					item.setShippingPrefix(shipto);
-					item.putProperty("shipquantity", shipquantity);
+					item.setProperty("shipquantity", shipquantity);
 					item.setQuantity(Integer.parseInt(orderquantity));
-					item.putProperty("status", "closed");
+					item.setProperty("status", "closed");
 					
 					order.addItem(item);
 					String status = "closed";
@@ -402,10 +402,10 @@ public class MainFrameConverter extends CatalogConverter
 						order.setDate(format.parse(orderdate)); //first one wins
 					}
 					CartItem item = new CartItem();
-					item.putProperty("orderdate", orderdate);
+					item.setProperty("orderdate", orderdate);
 
 					String customerpartnum = line.substring(16, 36).trim(); //Customer Part#
-					item.putProperty("customerpartnum", customerpartnum);
+					item.setProperty("customerpartnum", customerpartnum);
 
 					String quantity = line.substring(52,62).trim();
 					
@@ -427,11 +427,11 @@ public class MainFrameConverter extends CatalogConverter
 					item.setQuantity(Integer.parseInt(quantity));
 					
 					String status = line.substring(62, 71).trim();
-					item.putProperty("status", status);
+					item.setProperty("status", status);
 					String duedate = line.substring(96, 104).trim();
-					item.putProperty("duedate", duedate);
+					item.setProperty("duedate", duedate);
 					String shiptoname = line.substring(104).trim();
-					item.putProperty("shiptoname", shiptoname);
+					item.setProperty("shiptoname", shiptoname);
 					item.setShippingPrefix(shiptoname);
 					
 					order.addItem(item);

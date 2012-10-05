@@ -139,7 +139,7 @@
         
         <td>
         <input type="hidden" name="field" value="store">
-        <select name= "store.value.$productcounter" style="width:100px">
+        <select name= "store.value.$productcounter" style="width:100px"> $item.store
     	   #set($storesearcher = $searcherManager.getSearcher($catalogid, "profile_address_list" ))
 	                 #set($rogers = $user.isInGroup("rogers"))
 	                  <!-- 

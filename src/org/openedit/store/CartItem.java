@@ -330,31 +330,10 @@ public class CartItem extends BaseData
 		fieldBackOrdered = new Boolean(inBackOrdered);
 	}
 
-	public Map getProperties()
-	{
-		return fieldProperties;
-	}
+	
 
-	public void setProperties(Map inProperties)
-	{
-		fieldProperties = inProperties;
-	}
 
-	public void putProperty(String inKey, String inValue)
-	{
-		if (fieldProperties == null)
-		{
-			fieldProperties = new HashMap();
-		}
-		if( inValue == null || inValue.length() == 0)
-		{
-			getProperties().remove(inKey);
-		}
-		else
-		{
-			getProperties().put(inKey, inValue);
-		}
-	}
+	
 
 	public double getWeight()
 	{

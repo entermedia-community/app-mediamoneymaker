@@ -51,6 +51,12 @@
       <group id="distributors"/>
     </or>
   </permission>
+  <permission name="viewrogerstools">
+    <or>
+      <group id="administrators"/>
+      <group id="rogers"/>
+    </or>
+  </permission>
   
    <permission name="vieweol">
     <or>

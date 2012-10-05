@@ -610,7 +610,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			Element extraInfoElem = (Element) it.next();
 			String key = extraInfoElem.attributeValue("name");
 			String value = extraInfoElem.getText();
-			item.putProperty(key, value);
+			item.setProperty(key, value);
 		}
 		String productId = inItemElem.attributeValue("product_id");
 		Product product = inStore.getProduct(productId);
