@@ -1,0 +1,17 @@
+<div class="ui-widget uipanel">
+			<div class="ui-widget-header">Upload Section</div>
+			<div class="ui-widget-content">
+			 
+			<p><strong>Upload Complete</strong></p>
+			<p>Please click the Cart Button to view your cart</p>
+			</div> 
+			#if($badlist)
+				<p>The following rows of the imported file could not be processed.</p>
+				<p>Listing of Bad Rows from File<br/>
+				#foreach($item in $badlist)
+					$item<br/>
+				#end
+			#end
+		</div>
+
+
