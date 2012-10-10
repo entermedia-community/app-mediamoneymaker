@@ -4,6 +4,7 @@
 package org.openedit.store.modules;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -120,7 +121,7 @@ public class OrderModule extends BaseModule
 		if (pagenum == null)
 		{
 			HitTracker orders = store.getOrderSearcher().fieldSearchForUser(inReq, inReq.getUser());
-			inReq.putPageValue(ORDERIDLIST, orders);
+			inReq.putPageValue("orderlist", orders);
 			return orders;
 		} else
 		{
@@ -231,14 +232,12 @@ public class OrderModule extends BaseModule
 		}
 		if (path.endsWith( extension ))
 		{
-			List orderIdList = (List) inRequest.getPageValue("orderlist");
-			if (orderIdList == null)
-			{
-				orderIdList = getOrderIdList(inRequest);
-			}
+			
 			String orderNumber = path.substring(path.lastIndexOf("/") + 1, path
 					.lastIndexOf( extension ));
-			SubmittedOrder order = getOrderFromNumber(inRequest, orderIdList, orderNumber);
+			Store store = getStore(inRequest);
+			
+			Order order = (Order) store.getOrderSearcher().searchById(orderNumber);
 			inRequest.putPageValue("order", order);
 			return order;
 		}

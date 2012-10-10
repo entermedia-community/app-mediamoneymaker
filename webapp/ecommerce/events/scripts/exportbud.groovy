@@ -7,12 +7,12 @@ import com.openedit.hittracker.SearchQuery
 	
 public void init(){
 searcherManager = context.getPageValue("searcherManager");
-searcher = searcherManager.getSearcher(catalogid, "corporateorder");
-itemsearcher = searcherManager.getSearcher(catalogid, "corporateorderitems");
+searcher = searcherManager.getSearcher(catalogid, "rogers_order");
+itemsearcher = searcherManager.getSearcher(catalogid, "rogers_order_item");
 storesearcher = searcherManager.getSearcher(catalogid, "store");
 orderid = context.getRequestParameter("orderid")
 order = searcher.searchById(orderid);
-HitTracker orderitems = itemsearcher.fieldSearch("corporateorderid", orderid);
+HitTracker orderitems = itemsearcher.fieldSearch("rogers_order", orderid);
 
 
 StringWriter output  = new StringWriter();
@@ -23,7 +23,7 @@ headers = new String[orderitems.size()+1];
 for (Iterator iterator = orderitems.iterator(); iterator.hasNext();)
 {
 	data = iterator.next();
-	headers[count+1] = data.id;
+	headers[count+1] = data.as400id;
 	count++;
 }
 
@@ -40,9 +40,9 @@ for (Iterator iterator = storesearcher.getAllHits().iterator(); iterator.hasNext
 	for (Iterator iterator2 = orderitems.iterator(); iterator2.hasNext();){
 		product = iterator2.next();
 		SearchQuery query = itemsearcher.createSearchQuery()
-		query.addMatches("store", hit.get("id"));
-		query.addMatches("corporateorderid", orderid);
-		query.addMatches("product", product.product);
+		query.addMatches("store", hit.store);
+		query.addMatches("rogers_order", orderid);
+		query.addMatches("as400id", product.as400id);
 		hits = itemsearcher.search(query);
 		if(hits.size() > 0){
 			first = hits.get(0);

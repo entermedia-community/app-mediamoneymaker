@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -18,6 +19,7 @@ import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.customer.Customer;
+import org.openedit.util.DateStorageUtil;
 
 /**
  * An order for a number of products contained in a shopping cart at a certain
@@ -25,7 +27,7 @@ import org.openedit.store.customer.Customer;
  * 
  * @author Eric Galluzzo, egalluzzo@einnovation.com
  */
-public class Order implements Comparable
+public class Order extends BaseData implements Comparable 
 {
 	public final static String ACCEPTED = "accepted";
 	public final static String AUTHORIZED = "authorized";
@@ -309,6 +311,19 @@ public class Order implements Comparable
 	}
 	public String get(String inId)
 	{
+		if("id".equals(inId)){
+			return getId();
+		}
+		if("orderdate".equals(inId)){
+			return DateStorageUtil.getStorageUtil().formatForStorage(getDate());
+		}
+		if("customer".equals(inId)){
+			return getCustomer().getId();
+		}
+		if("orderstatus".equals(inId)){
+			return getOrderStatus().getId();
+		}
+			
 		return (String)getProperties().get(inId);
 	}
 	public Map getProperties()

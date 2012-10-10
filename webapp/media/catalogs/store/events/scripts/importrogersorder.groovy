@@ -53,8 +53,6 @@ public void handleSubmission(){
 	def int columnRogersID = 33;
 	def int columnRogersOtherID = 0;
 
-	//Create as400list Searcher
-	Searcher as400list = manager.getSearcher(archive.getCatalogId(), "as400");
 
 	Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order");
 	Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
@@ -78,16 +76,17 @@ public void handleSubmission(){
 		Data order = ordersearcher.createNewData();
 		order.setId(ordersearcher.nextId());
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		order.setProperty("orderstatus", "new");
+		order.setProperty("rogersorderstatus", "new");
+		order.setName(order.getId());
 		
 		String[] orderLine;
 		while ((orderLine = read.readNext()) != null)
 		{
 			def storeNum = orderLine[columnStore].trim();
-			def manufacturerID = 
+			 
 
 			//Create as400list Searcher
-			Searcher storeList = manager.getSearcher(archive.getCatalogId(), "userprofile_address");
+			Searcher storeList = manager.getSearcher(archive.getCatalogId(), "profile_address_list");
 			Data targetStore = storeList.searchByField("store", storeNum);
 			if(targetStore == null){
 				targetStore = storeList.createNewData();
@@ -95,9 +94,10 @@ public void handleSubmission(){
 				targetStore.setProperty("store", storeNum);
 				//pull out address details etc from spreadsheet
 				targetStore.setProperty("name", orderLine[columnStoreName]);
-				targetStore.setProperty("level", orderLine[columnStoreRank]);
+				targetStore.setProperty("level", orderLine[columnStoreRank].replace(" ", ""));
 				targetStore.setSourcePath("rogers");
 				storeList.saveData(targetStore, context.getUser());
+				
 			}
 
 			//Get Product Info
@@ -127,16 +127,17 @@ public void handleSubmission(){
 				orderitem.setProperty("rogers_order", order.getId());//foriegn key
 				orderitem.setProperty("product", targetProduct.getId());
 				orderitem.setProperty("productname", targetProduct.getName());
-				orderitem.setProperty("quantity", qty);
-				orderitem.setProperty("store", targetStore.getId());
-				orderitem.setProperty("storelevel", targetStore.level);
+				orderitem.setProperty("quantity", orderLine[columnQuantity]);
+				orderitem.setProperty("store", storeNum);
+				orderitem.setProperty("storelevel", targetStore.level.replace(" ", ""));
 				orderitem.setProperty("storename", targetStore.name);
 				orderitem.setProperty("distributor", orderLine[columnManfactName]);
+				orderitem.setProperty("as400id", orderLine[columnAS400id]);
 				
 				itemsearcher.saveData(orderitem, context.getUser());
 
-				log.info("CartItem Created: " + cartItem.getProduct().name
-						+ ":" + cartItem.getQuantity() + ":" + targetStore.store);
+//				log.info("CartItem Created: " + cartItem.getProduct().name
+//						+ ":" + cartItem.getQuantity() + ":" + targetStore.store);
 
 			} else {
 
@@ -151,6 +152,8 @@ public void handleSubmission(){
 		if (badProductList.size() > 0) {
 			context.putPageValue("badlist", badProductList);
 		}
+		ordersearcher.saveData(order, context.getUser());
+		context.putPageValue("order", order);
 	}
 	finally
 	{
