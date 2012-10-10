@@ -1,3 +1,10 @@
 <page>
 <inner-layout>/${applicationid}/rogers/innerlayout.html</inner-layout>
+
+<permission name="view">
+	<or>
+		<group id="administrators"/>
+		<group id="rogersadmin"/>	
+	</or>
+</permission>
 </page>

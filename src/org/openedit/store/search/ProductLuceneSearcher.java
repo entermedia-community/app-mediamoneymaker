@@ -13,9 +13,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
@@ -364,15 +367,32 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
-			composite.setAnalyzer("id", new NullAnalyzer());
-			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+//			CompositeAnalyzer composite = new CompositeAnalyzer();
+//			composite.setAnalyzer("description", new StemmerAnalyzer());
+//			composite.setAnalyzer("id", new NullAnalyzer());
+//			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+//			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
+//			record.setUseTokens(false);
+//			composite.setAnalyzer("cumulusid", record);
+//			composite.setAnalyzer("name_sortable", record);
+//			fieldAnalyzer = composite;
+			
+			Map analyzermap = new HashMap();
+			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
+			//composite.setAnalyzer("description", new StemmerAnalyzer());
+			
+			analyzermap.put("id", new NullAnalyzer());
+			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			analyzermap.put("sourcepath", new NullAnalyzer());
 			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
 			record.setUseTokens(false);
-			composite.setAnalyzer("cumulusid", record);
-			composite.setAnalyzer("name_sortable", record);
+			analyzermap.put("cumulusid", record);
+			analyzermap.put("name_sortable", record);
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
+
 			fieldAnalyzer = composite;
+			
+			
 		}
 		return fieldAnalyzer;
 	}
