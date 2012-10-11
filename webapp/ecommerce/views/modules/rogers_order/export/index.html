@@ -1,23 +1,21 @@
 
 <table class="emdata" id="main-results-table">
-
-<thead>
-<tr id="tableheader">
-		<th>
-					
-			 
-					Download								
-		 </th>  
-	
-		<th></th>
-	
-</tr>
-<tr><td>Bud Title</td><td><a href="BUDDTL.csv?orderid=$context.getRequestParameter('id')" class="btn">Download</a></td></tr>
-
-<tr><td>Bud Header</td><td><a href="BUDHDR.csv" class="btn">Download</a></td></tr>
-
-</tr>
-</tbody>
+	<thead>
+		<tr id="tableheader">
+			<th>
+				Download								
+			</th>  
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Bud Title</td><td><a href="BUDDTL.csv?orderid=$context.getRequestParameter('id')" class="btn">Download</a></td>
+		</tr>
+		<tr>
+			<td>Bud Header</td><td><a href="BUDHDR.csv?orderid=$context.getRequestParameter('id')" class="btn">Download</a></td>
+		</tr>
+	</tbody>
 </table>
 
 
