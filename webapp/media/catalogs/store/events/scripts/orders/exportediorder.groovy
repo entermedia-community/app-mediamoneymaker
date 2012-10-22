@@ -1,6 +1,16 @@
+package orders;
+
 import groovy.xml.MarkupBuilder
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat
+
+import javax.swing.text.DefaultEditorKit.PreviousWordAction;
+import javax.xml.XMLConstants
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.SchemaFactory
 
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -14,6 +24,8 @@ import com.openedit.OpenEditException
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
+import com.openedit.util.FileUtils;
+import com.openedit.util.OutputFiller;
 
 public void init() {
 
@@ -33,7 +45,8 @@ public void init() {
 	//Read orderid from the URL
 	def orderid = inReq.getRequestParameter("orderid");
 	Data order = ordersearcher.searchById(orderid);
-	//Create the XML Writer object
+	
+	def String ediID = inReq.getRequestParameter("ediid");
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	HitTracker distributorList = distributorsearcher.getAllHits();
@@ -52,8 +65,9 @@ public void init() {
 
 		if (numDistributors.size() > 0 )
 		{
-
 			//Iterate through each distributor
+			
+			//Create the XML Writer object
 			def writer = new StringWriter();
 			def xml = new MarkupBuilder(writer);
 			xml.'PurchaseOrder'()
@@ -61,18 +75,42 @@ public void init() {
 				Attributes()
 				populateGroup(xml, storesearcher, itemsearcher, orderid, distributor, log, order, productsearcher)
 			}
-			// xml generation
-			String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
-			Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
-			StringItem item = new StringItem(page.getPath(), writer.toString(), "UTF-8");
-			page.setContentItem(item);
-			pageManager.putPage(page);
-			generatedfiles.add(fileName + " created successfully.");
+			
+			if (validateXML(writer))
+			{
+				// xml generation
+				String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
+				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
+
+				//Get the FTP Info
+				Data ftpInfo = getFtpInfo(context, catalogid, ediID);
+				if (ftpInfo == null) {
+					
+					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
+					
+				}
+
+				//Generate EDI Header
+				String ediHeader = generateEDIHeader(production, ftpInfo);
+				
+				//Create the output of the XML file
+				StringBuffer bufferOut = new StringBuffer();
+				bufferOut.append(ediHeader)
+				bufferOut.append(writer);
+				page.setContentItem(new StringItem(page.getPath(), bufferOut.toString(), "UTF-8"));
+				
+				//Write out the XML page.
+				pageManager.putPage(page);
+				generatedfiles.add(fileName + " has been validated and created successfully.");
+			} else {
+				throw new OpenEditException("The XML did not validate.");
+			}
 		} else {
 			log.info("Distributor (${distributor.name}) not found for this order (${orderid})");
 		} // end if numDistributors
 	} // end distribIterator LOOP
 	context.putPageValue("filelist", generatedfiles);
+	context.putPageValue("id", orderid)
 }
 
 private void populateGroup(xml, Searcher storesearcher, Searcher itemsearcher, String orderid, Data distributor, log, Data order, Searcher productsearcher) {
@@ -235,10 +273,110 @@ private void populateDetail(xml, int orderCount, Data orderItem, Searcher produc
 
 			UnitPrice(money.toShortString())
 			UnitOfMeasure("EA")
-			Description(targetProduct.name)
+			//Description(targetProduct.name)
 			StoreNbr(storeNumber)
+			Attributes()
+			{
+				TblReferenceNbr()
+				{
+					Qualifier("UP")
+					ReferenceNbr(targetProduct.upc)
+				}
+			}
 		}
 	}
+}
+
+private boolean validateXML( StringWriter xml ) {
+	boolean result = false;
+	
+	String xmlString = xml.toString();
+	
+	def String xsdFilename = "/${catalogid}/configuration/xsdfiles/EZL_XMLPO_02_20_12.xsd";
+	log.info("xsdFilename: ${xsdFilename}");
+	Page page = pageManager.getPage(xsdFilename);
+	if (page.exists()) {
+			
+		def factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		def schema = factory.newSchema(new StreamSource(page.getReader()));
+		def validator = schema.newValidator();
+		validator.validate(new StreamSource(new StringReader(xmlString)));
+		result = true;
+		
+	} else {
+	
+		throw new OpenEditException("XSD File does not exist (${xsdFilename}.");
+		
+	}
+	
+	return result;
+}
+
+private Data getFtpInfo(context, catalogid, String ftpID) {
+	BaseWebPageRequest inReq = context;
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	SearcherManager manager = archive.getSearcherManager();
+	Searcher ftpsearcher = manager.getSearcher(catalogid, "ftpinfo");
+	Data ftpInfo = ftpsearcher.searchById(ftpID)
+	return ftpInfo
+}
+
+private String generateEDIHeader ( boolean production, Data ftpInfo ){
+	
+	String output  = new String();
+	output = ftpInfo.headericc;
+	output += ftpInfo.headerfiletype;
+	output += ftpInfo.headerdoctype.padRight(5);
+	output += getSenderMailbox(production, "ZZ:").padRight(18);
+	output += getReceiverMailbox(production, "ZZ:").padRight(18);
+	output += generateDate();
+	output += generateTime();
+	output += ftpInfo.headerversion;
+	output += "".padRight(14);
+	output += "\n";
+	if (output.length() != 81 ) {
+		throw new OpenEditException("EDI Header is not the correct length (${output.length().toString()})");
+	}
+	
+	log.info("EDI Header: " + output + ":Length:" + output.length());
+			
+	return output;
+}
+
+private String getSenderMailbox( boolean production, String preValue ) {
+
+	if(production) {
+		return preValue + "AREACOMM";
+	} else{
+		return preValue + "AREACOMMT";
+	}
+}
+private String getReceiverMailbox( boolean production, String preValue ) {
+	
+	if(production) {
+		return preValue + "MICROCELLACC";
+	} else{
+		return preValue + "MICROCELLACC";
+	}
+}
+
+private String generateDate() {
+	
+	Date now = new Date();
+	SimpleDateFormat tableFormat = new SimpleDateFormat("yyyyMMdd");
+	String outDate = tableFormat.format(now);
+	now = null;
+	return outDate;
+
+}
+private String generateTime() {
+	
+	Date now = new Date();
+	SimpleDateFormat tableFormat = new SimpleDateFormat("hhmmss");
+	String outDate = tableFormat.format(now);
+	now = null;
+	return outDate;
+
 }
 
 init();
