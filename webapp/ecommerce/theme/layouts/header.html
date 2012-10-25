@@ -29,5 +29,9 @@
 |	<a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>Settings</a>
 |	<a href="$home/manager/index.html">Manager</a>
 #end
+$context.findValue("productionmode")
+#if($context.findValue("productionmode") == "false")
+(TESTING MODE)
+#end
  			
         </span>

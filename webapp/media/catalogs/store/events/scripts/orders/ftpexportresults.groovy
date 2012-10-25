@@ -3,6 +3,7 @@ package orders;
 import java.text.SimpleDateFormat
 
 import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -52,6 +53,9 @@ public void init() {
 
 		//Get all of the hits and data for searching
 		Data distributor = distribIterator.next();
+		if (!Boolean.parseBoolean(distributor.useedi)) {
+			continue;
+		}
 
 		SearchQuery distribQuery = itemsearcher.createSearchQuery();
 		distribQuery.addExact("rogers_order",orderid);
@@ -65,8 +69,8 @@ public void init() {
 			Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
 
 			String realpath = page.getContentItem().getAbsolutePath();
-			File csvFile = new File(realpath);
-			if (csvFile.exists()) {
+			File xmlFIle = new File(realpath);
+			if (xmlFIle.exists()) {
 				log.info("CSV File exists: ${realpath}");
 				//FTP the files to the server
 				
@@ -115,7 +119,7 @@ private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Pa
 	Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
 
 	//Get Server Info
-	String serverName = ftpInfo.host_address_ip;
+	String serverName = ftpInfo.host_address;
 
 	//Create the FTP Client
 	FTPClient ftp = new FTPClient();
@@ -143,9 +147,11 @@ private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Pa
 		ftp.disconnect();
 		return result;
 	}
-
+	log.info("FTP: Attempting to connect as user: ${username}");
+	
 	String ftpPassword = userManager.decryptPassword(user);
-
+	log.info("FTP: ${ftpPassword}");
+	
 	ftp.login(username, ftpPassword);
 	reply = ftp.getReplyCode();
 	if(FTPReply.isPositiveCompletion(reply))
@@ -154,7 +160,7 @@ private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Pa
 	} 
 	else {
 	
-		result.setErrorMessage("Unable to login to ${servername}, error code: ${reply}");
+		result.setErrorMessage("Unable to login to ${serverName}, error code: ${reply}");
 		ftp.disconnect();
 		return result;
 		
