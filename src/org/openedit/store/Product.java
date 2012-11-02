@@ -6,6 +6,7 @@ package org.openedit.store;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1195,6 +1196,34 @@ public class Product implements Data
 	}
 
 	
+	//TODO: Add these methods to the Data interface
+		public Collection getValues(String inPreference)
+		{
+			String val = get(inPreference);
+			
+			if (val == null)
+				return null;
+			
+			String[] vals = val.split("\\s+");
 
+			Collection collection = Arrays.asList(vals);
+			//if null check parent
+			return collection;
+		}
+		
+		public void setValues(String inKey, Collection<String> inValues)
+		{
+			StringBuffer values = new StringBuffer();
+			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+			{
+				String detail = (String) iterator.next();
+				values.append(detail);
+				if( iterator.hasNext())
+				{
+					values.append(" ");
+				}
+			}
+			setProperty(inKey,values.toString());
+		}
 	
 }

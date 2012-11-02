@@ -385,6 +385,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		{
 			// TODO: Speed check this section
 			// TODO: Force users to set the sourcePath if it is not set
+			log.info(inProduct);
 			String url = buildItemUrl(inProduct);
 			String path = getPageManager().getPageSettingsManager().toXconfPath(url);
 			Document document = null;
