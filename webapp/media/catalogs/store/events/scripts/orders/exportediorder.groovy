@@ -248,7 +248,7 @@ private void populateHeader(xml, String storeNumber, Data distributor, Data roge
 			TblReferenceNbr()
 			{
 				Qualifier("PO")
-				ReferenceNbr(order.getId()+"-"+storeNumber)
+				ReferenceNbr(order.getId()+"-"+order.as400po)
 			}
 
 		} // end Attributes
@@ -333,12 +333,13 @@ private Data getFtpInfo(context, catalogid, String ftpID) {
 
 private String generateEDIHeader ( boolean production, Data ftpInfo, Data distributor ){
 
+	
 	String output  = new String();
 	output = ftpInfo.headericc;
 	output += ftpInfo.headerfiletype;
 	output += ftpInfo.headerdoctype.padRight(5);
-	output += getSenderMailbox(production, "ZZ:").padRight(18);
-	output += ("ZZ:" + distributor.headermailbox.trim()).padRight(18);
+	output += getSenderMailbox(production).padRight(18);
+	output += getReceiverMailbox(distributor, production).padRight(18);
 	output += generateDate();
 	output += generateTime();
 	output += ftpInfo.headerversion;
@@ -353,13 +354,27 @@ private String generateEDIHeader ( boolean production, Data ftpInfo, Data distri
 	return output;
 }
 
-private String getSenderMailbox( boolean production, String preValue ) {
+private String getSenderMailbox( boolean production) {
 
+	String out = "ZZ:";
 	if(production) {
-		return preValue + "AREACOMM";
+		out += "AREACOMM";
 	} else{
-		return preValue + "AREACOMMT";
+		out += "AREACOMMT";
 	}
+	return out;
+}
+
+private String getReceiverMailbox( Data distributor, boolean production) {
+
+	String out = distributor.headerprefix + ":";
+	if(production) {
+		out += distributor.headermailboxprod;
+	} else{
+		out += distributor.headermailboxtest;
+	}
+	return out;
+
 }
 
 private String generateDate() {

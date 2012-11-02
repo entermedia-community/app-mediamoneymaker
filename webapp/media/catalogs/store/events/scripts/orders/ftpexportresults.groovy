@@ -40,7 +40,7 @@ public void init() {
 	//Read orderid from the URL
 	def String orderid = inReq.getRequestParameter("orderid");
 	Data order = ordersearcher.searchById(orderid);
-	
+
 	//Get proper FTP info from Parameter
 	def String ediID = inReq.getRequestParameter("ediid");
 	//Create the XML Writer object
@@ -73,26 +73,26 @@ public void init() {
 			if (xmlFIle.exists()) {
 				log.info("CSV File exists: ${realpath}");
 				//FTP the files to the server
-				
+
 				//Get the FTP Info
 				Data ftpInfo = getFtpInfo(context, catalogid, ediID);
 				if (ftpInfo == null) {
-					
+
 					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
-					
+
 				} else {
 
 					PublishResult result = ftpFiles(manager, archive, page, ediID);
 					if (result.isComplete())
 					{
 						ftpTransferedFiles.add(fileName + " has been sent by FTP to " + ftpInfo.name);
-	
+
 					} else {
-	
+
 						log.info(result.getErrorMessage());
-	
+
 						throw new OpenEditException("FTP transfer did not complete. (${result.getErrorMessage()})");
-	
+
 					}
 				}
 			} else {
@@ -132,7 +132,7 @@ private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Pa
 	if(FTPReply.isPositiveCompletion(reply))
 	{
 		log.info("FTP: Connected to ${serverName}");
-	} 
+	}
 	else {
 		result.setErrorMessage("Unable to connect to ${serverName}, error code: ${reply}")
 		ftp.disconnect();
@@ -148,41 +148,63 @@ private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Pa
 		return result;
 	}
 	log.info("FTP: Attempting to connect as user: ${username}");
-	
+
 	String ftpPassword = userManager.decryptPassword(user);
 	log.info("FTP: ${ftpPassword}");
-	
+
 	ftp.login(username, ftpPassword);
 	reply = ftp.getReplyCode();
 	if(FTPReply.isPositiveCompletion(reply))
 	{
 		log.info("FTP: User(${username} successfully logged in.");
-	} 
+	}
 	else {
-	
+
 		result.setErrorMessage("Unable to login to ${serverName}, error code: ${reply}");
 		ftp.disconnect();
 		return result;
-		
+
 	}
 
-	ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
+	ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+	//ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
+	reply = ftp.getReplyCode();
+	if(FTPReply.isPositiveCompletion(reply)) {
+		log.info("FTP: Filetype set to BINARY.");
+	}
+	else {
+		result.setErrorMessage("FTP: Unable to set Filetype set to BINARY, error code: ${reply}");
+		ftp.disconnect();
+		return result;
+	}
 
-	String url = ftpInfo.download_folder;
+	ftp.enterLocalPassiveMode();
+	reply = ftp.getReplyCode();
+	if(FTPReply.isPositiveCompletion(reply)) {
+		log.info("FTP: Local Passive Mode is now PASSIVE.");
+	}
+	else {
+		result.setErrorMessage("FTP: Unable to set Local Passive Mode to PASSIVE, error code: ${reply}");
+		ftp.disconnect();
+		return result;
+	}
+
+	String url = ftpInfo.upload_folder;
 
 	//change paths if necessary
-	if(url != null && url.length() > 0)
-	{
+	if(url != null && url.length() > 0) {
 		ftp.changeWorkingDirectory(url);
 		reply = ftp.getReplyCode();
-		if(!FTPReply.isPositiveCompletion(reply))
-		{
+		if(!FTPReply.isPositiveCompletion(reply)) {
 			result.setErrorMessage("Unable to to cd to ${url}, error code: ${reply}");
 			ftp.disconnect();
 			return result;
+		} else {
+			String replyString = ftp.getReplyString();
+			log.info("Reply: " + replyString);
 		}
 	}
-
+	
 	//Get the real path to the CSV file.
 	String realpath = page.getContentItem().getAbsolutePath();
 	FileInputStream fis = new FileInputStream(new File(realpath));
@@ -222,7 +244,7 @@ private Data getFtpInfo(context, catalogid, String ftpID) {
 }
 
 private String generateEDIHeader ( boolean production, Data ftpInfo ){
-	
+
 	String output  = new String();
 	output = ftpInfo.headericc;
 	output += ftpInfo.headerfiletype;
@@ -237,9 +259,9 @@ private String generateEDIHeader ( boolean production, Data ftpInfo ){
 	if (output.length() != 81 ) {
 		throw new OpenEditException("EDI Header is not the correct length (${output.length().toString()})");
 	}
-	
+
 	log.info("EDI Header: " + output + ":Length:" + output.length());
-			
+
 	return output;
 }
 
@@ -252,7 +274,7 @@ private String getSenderMailbox( production ) {
 	}
 }
 private String getReceiverMailbox( production ) {
-	
+
 	if(production) {
 		return "ZZ:MICROCELLACC";
 	} else{
@@ -261,7 +283,7 @@ private String getReceiverMailbox( production ) {
 }
 
 private String generateDate() {
-	
+
 	Date now = new Date();
 	SimpleDateFormat tableFormat = new SimpleDateFormat("yyyyMMdd");
 	String outDate = tableFormat.format(now);
@@ -270,7 +292,7 @@ private String generateDate() {
 
 }
 private String generateTime() {
-	
+
 	Date now = new Date();
 	SimpleDateFormat tableFormat = new SimpleDateFormat("hhmmss");
 	String outDate = tableFormat.format(now);
