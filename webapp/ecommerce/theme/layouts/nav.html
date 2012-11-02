@@ -34,9 +34,9 @@
 
 	#set( $urlbase = "$home$apphome/views/modules" )
 	#set ( $modules = $searcherManager.getList($catalogid, "module") )
-<!--
+
 #if( $modules.size() > 1)
-<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) Admin #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+<li style="border-right: 1px solid #CCCCCC;"><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) Admin #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		
 		#foreach ( $module in $modules )
@@ -44,7 +44,7 @@
 		#end
 	</ul>
 </li>
--->
+
 #elseif( $canviewhomelink )
 
 <li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
@@ -65,7 +65,7 @@
  	  <a href="$apphome/shoppingbag.html">View Cart</a>
  </li>
 
-<li style="float: right;">
+<li style="float: right; border:0px;  padding-right: 132px; padding-top: 3px;">
 	<div id="searchform" class="">
 		<form target="_parent" name="qsearch" action="$home$apphome/search/results.html">
 #if( $hits.userQuery.length() > 0 && !$hits.userQuery.contains("[") )

@@ -3,5 +3,5 @@
 <page>  
    
 	<property name="sectiontitle">Home</property>
-	 <inner-layout>${themeprefix}/layouts/largearea.html</inner-layout>
+	 <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 </page>

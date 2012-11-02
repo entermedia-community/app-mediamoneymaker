@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<mounts>
+  <mount path="/matt/catalogs/advertising/data/assets/imports" externalpath="\\sfmls.opr.statefarm.org\MAM_6\MATT_Upload\advertising"/>
+ 
+  <mount path="/matt/catalogs/directmail" filter="/matt/catalogs/*" externalpath="\\nas7311.opr.statefarm.org\creative-services-eml\cumulus_mam_5\matt\catalogs\directmail"/>
+  <mount path="/matt/catalogs/salesmaterials" filter="/matt/catalogs/*" externalpath="\\nas7311.opr.statefarm.org\creative-services-eml\cumulus_mam_5\matt\catalogs\salesmaterials"/>
+  <mount path="/matt/catalogs/supportandsponsorship" filter="/matt/catalogs/*" externalpath="\\nas7311.opr.statefarm.org\creative-services-eml\cumulus_mam_5\matt\catalogs\supportandsponsorship"/>
+ 
+  <mount path="/matt/catalogs/advertising/products" filter="/matt/catalogs/*" externalpath="X:\matt\catalogs\advertising\products"/>
+  <mount path="/matt/catalogs/directmail/products" filter="/matt/catalogs/*" externalpath="X:\matt\catalogs\directmail\products"/>
+  <mount path="/matt/catalogs/salesmaterials/products" filter="/matt/catalogs/*" externalpath="X:\matt\catalogs\salesmaterials\products"/>
+  <mount path="/matt/catalogs/supportandsponsorship/products" filter="/matt/catalogs/*" externalpath="X:\matt\catalogs\supportandsponsorship\products"/>
+ 
+  <mount path="/" filter="*.pdf"/> 
+  <mount path="/" filter="*.zip"/> 
+  <mount path="/" filter="/WEB-INF/*"/>
+</mounts>

@@ -57,7 +57,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 				// protected static final short SUB_CATALOG_ID1 = (short) 13;
 				// protected static final short CATALOG_DESC = (short) 6;
 				short PRICE_CELL = (short) 13;
-				short COST_CELL = (short) 8;
+				
 				short WEIGHT_CELL = (short) 14;
 				short QUANTITY_CELL = (short) 29;
 				PageManager fieldPageManager;
@@ -458,7 +458,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 			// protected static final short SUB_CATALOG_ID1 = (short) 13;
 			// protected static final short CATALOG_DESC = (short) 6;
 			short PRICE_CELL = (short) 13;
-			short COST_CELL = (short) 8;
+			
 			short WEIGHT_CELL = (short) 14;
 			short QUANTITY_CELL = (short) 29;
 			PageManager fieldPageManager;
@@ -471,7 +471,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 		// String colorCell = inTabs[COLOR_CELL];
 		// inventoryItem.setColor(colorCell);
 		//
-		String cost = inTabs[COST_CELL];
+		String cost = inTabs[13];
 		if (cost == null || cost.equals("")) {
 			// log.info("product without cost found");
 			return null;
