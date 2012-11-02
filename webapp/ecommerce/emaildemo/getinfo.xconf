@@ -1,0 +1,6 @@
+<page>
+	<path-action name="CartModule.getCart"/>
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/countvalues.groovy</script>
+	</path-action>
+</page>
