@@ -27,7 +27,6 @@ import org.openedit.data.lucene.CompositeAnalyzer;
 import org.openedit.data.lucene.LuceneSearchQuery;
 import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
-import org.openedit.data.lucene.StemmerAnalyzer;
 import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
