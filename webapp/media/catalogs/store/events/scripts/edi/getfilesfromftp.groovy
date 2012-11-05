@@ -163,7 +163,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		
 		String replyString = "";
 		String strMsg = "<p>The following files have been uploaded.</p>";\
-		String downloadFolder = "/WEB-INF/data/${catalogid}/" + this.localUploadFolder + "/";
+		String downloadFolder = "/WEB-INF/data/media/catalogs/store/" + this.localUploadFolder + "/";
 		
 		FTPFile[] files = ftp.listFiles();
 		log.info("length: " + files.length);
