@@ -62,7 +62,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		setUsername(ftpInfo.username);
 		setPassword(ftpInfo.password);
 		setHost(ftpInfo.host_address);
-		setWorkingDirectory(ftpInfo.download_folder);
+		setWorkingDirectory(ftpInfo.upload_folder);
 		setLocalUploadFolder(ftpInfo.localuploadfolder);
 		setFileExtension("xml");
 		
@@ -260,19 +260,23 @@ try {
 	String ftpIDTest = context.findValue('ftpidtest');
 	if (production) {
 		ftpID = ftpIDProd;
-		if (ftpID.isEmpty()) {
+		if (ftpID == null) {
 			ftpID = "104";
-		}		
+		} else if (ftpID.isEmpty()) {
+			ftpID = "104";
+		}
 	} else {
 		ftpID = ftpIDTest;
-		if ((ftp == null) || (ftpID.isEmpty())) {
+		if (ftpID == null) {
+			ftpID = "103";
+		} else if (ftpID.isEmpty()) {
 			ftpID = "103";
 		}
 	}
 	///////////////////////
 	// FTPID OVERRIDE FOR TESTING
 	///////////////////////
-	ftpID = "104";
+	//ftpID = "104";
 	///////////////////////
 	
 	//Get the FTP Info

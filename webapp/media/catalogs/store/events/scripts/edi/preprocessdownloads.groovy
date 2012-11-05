@@ -16,6 +16,21 @@ public class PreprocessDownloads extends EnterMediaObject {
 	//check all download files, identify type, copy to invoice, ASN, etc.
 	//if we found any, fire "processdownloads"
 
+	private enum XMLFileType {
+		ASN("ASN"),
+		INVOICE("Invoice"),
+		INVENTORY("InventoryInquiryAdvice");
+
+		private String type;
+		private XMLFileType(String t) {
+			type = t;
+		}
+		@Override public String toString() {
+			// TODO Auto-generated method stub
+			return type.toString();
+		}
+	}
+
 	public PublishResult processFiles() {
 
 		PublishResult result = new PublishResult();
@@ -27,12 +42,13 @@ public class PreprocessDownloads extends EnterMediaObject {
 		String downloadFolder = "/WEB-INF/data/${catalogid}/uploads/";
 		String invoiceFolder = "/WEB-INF/data/${catalogid}/incoming/invoices/";
 		String asnFolder = "/WEB-INF/data/${catalogid}/incoming/asn/";
+		String inventoryFolder = "/WEB-INF/data/${catalogid}/incoming/inventory/";
 
 		PageManager pageManager = archive.getPageManager();
-		
+
 		List dirList = pageManager.getChildrenPaths(downloadFolder);
 		log.info("Initial directory size: " + dirList.size().toString());
-		
+
 		def int iterCounter = 0;
 		for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
 			Page xmlFile = pageManager.getPage(iterator.next());
@@ -41,37 +57,66 @@ public class PreprocessDownloads extends EnterMediaObject {
 
 				//Create the XMLSlurper Object
 				try{
-					
-					def xmlType = new XmlSlurper().parse(xmlFile.getReader());
-
-					//Get the INVOICENUMBER details
-					def String invoiceFileType = xmlType.InvoiceGroup.InvoiceHeader.InvoiceNumber.text();
-					if (!invoiceFileType.isEmpty()) {
-						//THIS IS AN INVOICE - Copy to invoice folder
-						log.info("Valid Invoice file detected: ${xmlFile.getName()}");
-						String invoiceFile = invoiceFolder + xmlFile.getName()
-						Page destination = pageManager.getPage(invoiceFile);
-						pageManager.movePage(xmlFile, destination);
-						iterCounter++;
-						continue;
+					String xmlFileContent = xmlFile.getContent();
+					if (!isValidXMLFile(xmlFileContent)) {
+						throw new Exception("invalid XML file detected: ${xmlFile.getName()}");
 					}
-					
-					def String asnFileType = xmlType.ASNGroup.ASNHeader.Attributes.TblAddress.find {it.AddressType == "ST"}.AddressName1.text();
-					if (!asnFileType.isEmpty()) {
-						//THIS IS AN ASN - Copy to ASN folder
-						log.info("Valid ASN file detected: ${xmlFile.getName()}");
-						String asnFile = asnFolder + xmlFile.getName()
-						Page destination = pageManager.getPage(asnFile);
-						pageManager.movePage(xmlFile, destination);
-						iterCounter++;
-						continue;
+
+					def xmlType = new XmlSlurper().parse(xmlFile.getReader());
+					def Enum fileType = getXmlFileType(xmlFileContent);
+
+					switch (fileType) {
+						case XMLFileType.INVOICE:
+						//Get the INVOICENUMBER details
+							def String invoiceFileType = xmlType.InvoiceGroup.InvoiceHeader.InvoiceNumber.text();
+							if (!invoiceFileType.isEmpty()) {
+								//THIS IS AN INVOICE - Copy to invoice folder
+								log.info("Valid Invoice file detected: ${xmlFile.getName()}");
+								String invoiceFile = invoiceFolder + xmlFile.getName()
+								Page destination = pageManager.getPage(invoiceFile);
+								pageManager.movePage(xmlFile, destination);
+								iterCounter++;
+							} else {
+								throw new Exception("Invalid Invoice XML File");
+							}
+							break;
+						case XMLFileType.ASN:
+							def String asnFileType = xmlType.ASNGroup.ASNHeader.Attributes.TblAddress.find {it.AddressType == "ST"}.AddressName1.text();
+							if (!asnFileType.isEmpty()) {
+								//THIS IS AN ASN - Copy to ASN folder
+								log.info("Valid ASN file detected: ${xmlFile.getName()}");
+								String asnFile = asnFolder + xmlFile.getName()
+								Page destination = pageManager.getPage(asnFile);
+								pageManager.movePage(xmlFile, destination);
+								iterCounter++;
+								continue;
+							} else {
+								throw new Exception("Invalid ASN XML File");
+							}
+							break;
+						case XMLFileType.INVENTORY:
+							def String invFileType = xmlType.INQGroup.INQHeader.ReportTypeCode.text();
+							if (!invFileType.isEmpty()) {
+								//THIS IS AN ASN - Copy to ASN folder
+								log.info("Valid Inventory file detected: ${xmlFile.getName()}");
+								String asnFile = inventoryFolder + xmlFile.getName()
+								Page destination = pageManager.getPage(asnFile);
+								pageManager.movePage(xmlFile, destination);
+								iterCounter++;
+								continue;
+							} else {
+								throw new Exception("Invalid Inventory XML File");
+							}
+							break;
+						default:
+							throw new Exception("Invalid XML File");
 					}
 
 				} catch (Exception e) {
-					log.info("invalid XML file detected: ${xmlFile.getName()}");
+					log.info(e.getMessage());
 					Page target = pageManager.getPage("/WEB-INF/data/${catalogid}/incoming/invalid/${xmlFile.getName()}");
 					pageManager.movePage(xmlFile, target);
-					
+
 					//Create web event to send an email.
 					WebEvent event = new WebEvent();
 					event.setSearchType("order");
@@ -86,6 +131,7 @@ public class PreprocessDownloads extends EnterMediaObject {
 			dirList = pageManager.getChildrenPaths(downloadFolder);
 			log.info("New updated directory size: " + dirList.size().toString());
 			if (dirList.size() == 0) {
+				log.info("Upload processing is complete!");
 				result.setCompleteMessage("Upload processing is complete!");
 				result.setComplete(true);
 			} else {
@@ -101,6 +147,24 @@ public class PreprocessDownloads extends EnterMediaObject {
 		}
 
 		return result;
+	}
+
+	private boolean isValidXMLFile(String checkString) {
+		boolean returnValue = false;
+		for (XMLFileType t : XMLFileType.values()) {
+			if (checkString.contains("<" + t.toString() + ">"))  {
+				return true;
+			}
+		}
+		return returnValue;
+	}
+	private Enum getXmlFileType(String checkString) {
+		for (XMLFileType t : XMLFileType.values()) {
+			if (checkString.contains("<" + t.toString() + ">"))  {
+				return t;
+			}
+		}
+		return null;
 	}
 }
 

@@ -42,9 +42,30 @@ public void init() {
 	Data order = ordersearcher.searchById(orderid);
 
 	//Get proper FTP info from Parameter
-	def String ediID = inReq.getRequestParameter("ediid");
-	//Create the XML Writer object
-
+	String ftpID = "";
+	String ftpIDProd = context.findValue('ftpidprod');
+	String ftpIDTest = context.findValue('ftpidtest');
+	if (production) {
+		ftpID = ftpIDProd;
+		if (ftpID == null) {
+			ftpID = "104";
+		} else if (ftpID.isEmpty()) {
+			ftpID = "104";
+		}
+	} else {
+		ftpID = ftpIDTest;
+		if (ftpID == null) {
+			ftpID = "103";
+		} else if (ftpID.isEmpty()) {
+			ftpID = "103";
+		}
+	}
+	///////////////////////
+	// FTPID OVERRIDE FOR TESTING
+	///////////////////////
+	ftpID = "104";
+	///////////////////////
+	
 	HitTracker distributorList = distributorsearcher.getAllHits();
 	List ftpTransferedFiles = new ArrayList();
 	//Search through each distributor
@@ -71,18 +92,18 @@ public void init() {
 			String realpath = page.getContentItem().getAbsolutePath();
 			File xmlFIle = new File(realpath);
 			if (xmlFIle.exists()) {
-				log.info("CSV File exists: ${realpath}");
+				log.info("XML File exists: ${realpath}");
 				//FTP the files to the server
 
 				//Get the FTP Info
-				Data ftpInfo = getFtpInfo(context, catalogid, ediID);
+				Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
 				if (ftpInfo == null) {
 
 					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
 
 				} else {
 
-					PublishResult result = ftpFiles(manager, archive, page, ediID);
+					PublishResult result = ftpFiles(manager, archive, page, ftpID);
 					if (result.isComplete())
 					{
 						ftpTransferedFiles.add(fileName + " has been sent by FTP to " + ftpInfo.name);
@@ -250,7 +271,7 @@ private String generateEDIHeader ( boolean production, Data ftpInfo ){
 	output += ftpInfo.headerfiletype;
 	output += ftpInfo.headerdoctype.padRight(5);
 	output += "ZZ:" + getSenderMailbox(production).padRight(18);
-	output += "ZZ:" + getReceiverMailbox(production).padRight(18);
+	output += "ZZ:" + getReceiverMailbox(ftpInfo, production).padRight(18);
 	output += generateDate();
 	output += generateTime();
 	output += ftpInfo.headerversion;
@@ -273,12 +294,12 @@ private String getSenderMailbox( production ) {
 		return "AREACOMMT";
 	}
 }
-private String getReceiverMailbox( production ) {
+private String getReceiverMailbox( Data ftpInfo, boolean production ) {
 
 	if(production) {
-		return "ZZ:MICROCELLACC";
+		return ftpInfo.prodsendermailbox;
 	} else{
-		return "ZZ:MICROCELLACC";
+		return ftpInfo.testsendermailbox;
 	}
 }
 
