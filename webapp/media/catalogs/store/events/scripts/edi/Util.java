@@ -47,7 +47,13 @@ public class Util {
 	}
 	public String appendOutMessage( String inValue )
 	{
-		String out = "<tr><td colspan=3>" + inValue + "</td></tr>\n";
+		String out = "<tr><td colspan=3>\n";
+		out += "  <table border=1 cellpadding=3 cellspacing=3 width=100%>\n";
+		out += "   <tr>\n";
+		out += "     <td align=center><strong>" + inValue + "</strong></td>";
+		out += "   </tr>\n";
+		out += "  </table>";
+		out += "</td></tr>\n";
 		return out;
 	}
 

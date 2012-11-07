@@ -20,24 +20,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 	private static final String LOG_HEADER = " - RECORDS - ";
 	private static final String ADDED = "Added";
 	private static String strMsg = "";
-	private static final String ATTRIBUTES = "Attributes";
-	private static final String TBLREFERENCENBR = "TblReferenceNbr";
-	private static final String REFERENCENBR = "ReferenceNbr";
-	private static final String QUALIFIER = "Qualifier";
-	private static final String ASNGROUP = "ASNGroup";
-	private static final String ASNHEADER= "ASNHeader";
-	private static final String TBLADDRESS = "TblAddress";
-
-	private static final String TBLDATE = "TblDate";
-	private static final String DATEVALUE = "DateValue";
-
-	private static final String ADDRESSTYPE = "AddressType";
-	private static final String ADDRESSNAME1 = "AddressName1";
-
-	private static final String INVOICEGROUP = "InvoiceGroup";
-	private static final String INVOICEHEADER = "InvoiceHeader";
-	private static final String INVOICENUMBER = "InvoiceNumber";
-	private static final String INVOICEAMOUNT = "InvoiceAmount";
 
 	public PublishResult importEdiXml() {
 
@@ -78,7 +60,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			def INVOICE = new XmlSlurper().parse(page.getReader());
 
 			//Get the INVOICENUMBER details
-			def String invoiceNumber = INVOICE."${INVOICEGROUP}"."${INVOICEHEADER}"."${INVOICENUMBER}".text();
+			def String invoiceNumber = INVOICE.InvoiceGroup.InvoiceHeader.InvoiceNumber.text();
 			if (!invoiceNumber.isEmpty()) {
 				newInvoice.setProperty("invoicenumber", invoiceNumber);
 				strMsg += output.appendOutMessage(INVOICENUMBER, invoiceNumber, ADDED);
@@ -87,7 +69,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			}
 
 			//Get the INVOICEAMOUNT details
-			def String invoiceTotal = INVOICE."${INVOICEGROUP}"."${INVOICEHEADER}"."${INVOICEAMOUNT}".text();
+			def String invoiceTotal = INVOICE.InvoiceGroup.InvoiceHeader.InvoiceAmount.text();
 			if (!invoiceTotal.isEmpty()) {
 				newInvoice.setProperty("invoicetotal", invoiceTotal);
 				strMsg += output.appendOutMessage(INVOICEAMOUNT, invoiceTotal, ADDED);
@@ -96,7 +78,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			}
 
 			//Get the PO details
-			def String PO = INVOICE."${INVOICEGROUP}"."${INVOICEHEADER}"."${ATTRIBUTES}"."${TBLREFERENCENBR}".find {it."${QUALIFIER}" == "PO"}."${REFERENCENBR}".text();
+			def String PO = INVOICE.InvoiceGroup.InvoiceHeader.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
 			if (!PO.isEmpty()) {
 				strMsg += output.appendOutMessage("PO Section", PO, "Found");
 			} else {
@@ -119,7 +101,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			}
 
 			/* This works - This gets the first level store info */
-			def String storeInfo = INVOICE."${INVOICEGROUP}"."${INVOICEHEADER}"."${ATTRIBUTES}"."${TBLADDRESS}".find {it."${ADDRESSTYPE}" == "ST"}."${ADDRESSNAME1}".text();
+			def String storeInfo = INVOICE.InvoiceGroup.InvoiceHeader.Attributes.TblAddress.find {it.AddressType == "ST"}.AddressName1.text();
 			def String[] storeValue = storeInfo.split("-");
 			Data store = searchForStore(manager, archive, storeValue[0]);
 			if (store != null) {
@@ -130,7 +112,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			}
 
 			/* This works - This gets the first level store info */
-			def String invoiceDate = INVOICE."${INVOICEGROUP}"."${INVOICEHEADER}"."${ATTRIBUTES}"."${TBLDATE}".find {it."${QUALIFIER}" == "003"}."${DATEVALUE}".text();
+			def String invoiceDate = INVOICE.InvoiceGroup.InvoiceHeader.Attributes.TblDate.find {it.Qualifier == "003"}.DateValue.text();
 			Date newDate = parseDate(invoiceDate);
 			newInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 			strMsg += output.appendOutMessage("Date", newInvoice.get("date"), ADDED);
