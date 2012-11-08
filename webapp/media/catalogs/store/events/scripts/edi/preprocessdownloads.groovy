@@ -67,47 +67,89 @@ public class PreprocessDownloads extends EnterMediaObject {
 
 					switch (fileType) {
 						case XMLFileType.INVOICE:
-						//Get the INVOICENUMBER details
-							def String invoiceFileType = xmlType.InvoiceGroup.InvoiceHeader.InvoiceNumber.text();
-							if (!invoiceFileType.isEmpty()) {
-								//THIS IS AN INVOICE - Copy to invoice folder
-								log.info("Valid Invoice file detected: ${xmlFile.getName()}");
-								String invoiceFile = invoiceFolder + xmlFile.getName()
-								Page destination = pageManager.getPage(invoiceFile);
-								pageManager.movePage(xmlFile, destination);
-								iterCounter++;
+						
+							def INVOICEHEADER = xmlType.InvoiceGroup.depthFirst().grep{
+								it.name() == 'InvoiceHeader';
+							}
+							log.info("INVOICE Headers found: " + INVOICEHEADER.size().toString());
+							def boolean found = false;
+							
+							INVOICEHEADER.each {
+								if (!found) {
+									//Get the INVOICENUMBER details
+									def String invoiceFileType = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
+									if (!invoiceFileType.isEmpty()) {
+										//THIS IS AN INVOICE - Copy to invoice folder
+										log.info("Valid Invoice file detected: ${xmlFile.getName()}");
+										String invoiceFile = invoiceFolder + xmlFile.getName()
+										Page destination = pageManager.getPage(invoiceFile);
+										pageManager.movePage(xmlFile, destination);
+										iterCounter++;
+										found = true;
+									}
+								}
+							}
+							if (found) {
+								break;
 							} else {
 								throw new Exception("Invalid Invoice XML File");
 							}
-							break;
+							
 						case XMLFileType.ASN:
-							def String asnFileType = xmlType.ASNGroup.ASNHeader.Attributes.TblAddress.find {it.AddressType == "ST"}.AddressName1.text();
-							if (!asnFileType.isEmpty()) {
-								//THIS IS AN ASN - Copy to ASN folder
-								log.info("Valid ASN file detected: ${xmlFile.getName()}");
-								String asnFile = asnFolder + xmlFile.getName()
-								Page destination = pageManager.getPage(asnFile);
-								pageManager.movePage(xmlFile, destination);
-								iterCounter++;
-								continue;
+						
+							def ASNHEADER = xmlType.ASNGroup.depthFirst().grep{
+								it.name() == 'ASNHeader';
+							}
+							log.info("ASN Headers found: " + ASNHEADER.size().toString());
+							def boolean found = false;
+		
+							ASNHEADER.each {
+								if (!found) {
+									def String asnFileType = it.Attributes.TblAddress.find {it.AddressType == "ST"}.AddressName1.text();
+									if (!asnFileType.isEmpty()) {
+										//THIS IS AN ASN - Copy to ASN folder
+										log.info("Valid ASN file detected: ${xmlFile.getName()}");
+										String asnFile = asnFolder + xmlFile.getName()
+										Page destination = pageManager.getPage(asnFile);
+										pageManager.movePage(xmlFile, destination);
+										iterCounter++;
+										found = true;
+									}
+								}
+							}
+							if (found) {
+								break;
 							} else {
 								throw new Exception("Invalid ASN XML File");
 							}
-							break;
+							
 						case XMLFileType.INVENTORY:
-							def String invFileType = xmlType.INQGroup.INQHeader.ReportTypeCode.text();
-							if (!invFileType.isEmpty()) {
-								//THIS IS AN ASN - Copy to ASN folder
-								log.info("Valid Inventory file detected: ${xmlFile.getName()}");
-								String asnFile = inventoryFolder + xmlFile.getName()
-								Page destination = pageManager.getPage(asnFile);
-								pageManager.movePage(xmlFile, destination);
-								iterCounter++;
-								continue;
+						
+							def INVENTORYHEADERS = xmlType.INQGroup.depthFirst().grep{
+								it.name() == 'INQHeader';
+							}
+							log.info("INVENTORY Headers found: " + INVENTORYHEADERS.size().toString());
+							def boolean found = false;
+		
+							INVENTORYHEADERS.each {
+								if (!found) {
+									def String invFileType = it.ReportTypeCode.text();
+									if (!invFileType.isEmpty()) {
+										//THIS IS AN ASN - Copy to ASN folder
+										log.info("Valid Inventory file detected: ${xmlFile.getName()}");
+										String asnFile = inventoryFolder + xmlFile.getName()
+										Page destination = pageManager.getPage(asnFile);
+										pageManager.movePage(xmlFile, destination);
+										iterCounter++;
+										found = true;
+									}
+								}
+							}
+							if (found) {
+								break;
 							} else {
 								throw new Exception("Invalid Inventory XML File");
 							}
-							break;
 						default:
 							throw new Exception("Invalid XML File");
 					}
@@ -189,6 +231,10 @@ try {
 		//ERROR: Throw exception
 		context.putPageValue("errorout", result.getErrorMessage());
 	}
+	MediaArchive archive = context.getPageValue("mediaarchive");
+	archive.fireSharedMediaEvent("processinvoices");
+	archive.fireSharedMediaEvent("processasns");
+	
 }
 finally {
 	logs.stopCapture();

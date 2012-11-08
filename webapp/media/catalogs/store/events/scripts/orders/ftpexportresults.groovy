@@ -80,7 +80,7 @@ public void init() {
 
 		SearchQuery distribQuery = itemsearcher.createSearchQuery();
 		distribQuery.addExact("rogers_order",orderid);
-		distribQuery.addExact("distributor", distributor.name);
+		distribQuery.addExact("distributor", distributor.id);
 		HitTracker numDistributors = itemsearcher.search(distribQuery);//Load all of the line items for store X
 
 		if (numDistributors.size() > 0 )
