@@ -3,5 +3,6 @@
 <page>
    <path-action name="CartModule.saveCreditPaymentMethodData" />
   <path-action name="CartModule.processOrder" />
+		 <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 	
 </page>
