@@ -276,7 +276,7 @@ try {
 	///////////////////////
 	// FTPID OVERRIDE FOR TESTING
 	///////////////////////
-	//ftpID = "104";
+	ftpID = "104";
 	///////////////////////
 	
 	//Get the FTP Info
