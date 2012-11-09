@@ -1,0 +1,31 @@
+#set ( $customer = $cart.getCustomer() )
+#set ( $paymentMethod = $customer.getPaymentMethod() )
+                                                                                                                                                                        
+
+<table border=0 cellpadding=0 cellspacing=0 width=500>
+<tr>
+<td valign=top class=body2>
+<hr size=1 color="#C6DEF4">
+<br/><br/><p>
+#set( $method = $cart.getShippingMethod() )
+<table cellspacing="10">
+<tr><td align="right" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td></tr>
+<tr><td align="right" class=body2><nobr>$!method.getDescription():</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td></tr>
+#if ( $cart.isAdditionalShippingCosts() )
+<tr><td colspan=2 >
+<font color="#ff0000"><b>Additional shipping costs will be added.</b></font>
+</td></tr>
+#end
+#if($customer.getTaxRates().size() >0)
+				#foreach( $taxrate in $customer.getTaxRates())
+				<tr>
+					<td align="right" class=body2>$taxrate.name</td><td align="right" class=body2> $cart.getTotalTax($taxrate)</td>
+				</tr>
+				#end
+			#else
+			<tr>
+				<td align="right" class=body2>Sales Tax:</td><td align="right" class=body2> $cart.getTotalTax()</td>
+			</tr>
+			#end
+<tr><td align="right" class=body2><b>Total:</b></td><td align="right" class=body2><b>$cart.getTotalPrice()</b></td></tr>
+</table>

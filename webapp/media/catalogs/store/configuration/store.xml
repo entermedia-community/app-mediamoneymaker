@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <store>
-	<name>OpenEdit Store</name>
+	<name>Wireless Area</name>
   <credit-card-type name="Master Card" id="MCARD"/>
   <credit-card-type name="Visa" id="VISA"/>
-  <credit-card-type name="American Express" id="AMEX"/>
-  <credit-card-type name="Discover" id="DISCOVER"/>
-  <credit-card-type name="GE Finance" id="GEFINANCE"/>
-  <tax statecode="OH" rate=".07"/>
+ 
   <tax statecode="ON" name="GST" applytoshipping="true" rate=".05"/>
  	<tax statecode="ON" name="PST" rate=".08"/>
  
@@ -15,9 +12,9 @@
   <coupons enabled="true" />
   <to-address>cburkey@openedit.org</to-address>
   <from-address>store@einnovation.com</from-address>
-  <email-layout>/store/thanksemail.html</email-layout>
-  <order-layout>/store/orderemail.html</order-layout>
-   <status-email-layout>/store/orders/statusemail.html</status-email-layout>
+  <email-layout>/ecommerce/thanksemail.html</email-layout>
+  <order-layout>/ecommerce/orderemail.html</order-layout>
+   <status-email-layout>/ecommerce/orders/statusemail.html</status-email-layout>
   <assign-shipping-method>false</assign-shipping-method>
   <price-shipping-method id="1" costs="6" description="Standard Delivery" upperThreshold="199.99">
 	<handling-charge level="A" costs="15" />
