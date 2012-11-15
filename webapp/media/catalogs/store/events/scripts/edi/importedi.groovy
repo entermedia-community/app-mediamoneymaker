@@ -5,7 +5,6 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.store.Product;
 
 import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -39,7 +38,7 @@ public class ImportEDI extends EnterMediaObject {
 		
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
-		Util output = new Util();
+		OutputUtilities output = new OutputUtilities();
 		
 		// Get XML File
 		//String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";

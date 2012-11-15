@@ -246,9 +246,13 @@ logs.startCapture();
 
 try {
 	
+	MediaUtilities media = new MediaUtilities();
+	media.setContext(context);
+	media.setSearchers();
+	
 	GetFilesFromFTP ftpInvoice = new GetFilesFromFTP();
 	ftpInvoice.setLog(logs);
-	ftpInvoice.setContext(context);
+	ftpInvoice.setContext(media.getContext());
 	ftpInvoice.setModuleManager(moduleManager);
 	ftpInvoice.setPageManager(pageManager);
 	
@@ -256,8 +260,8 @@ try {
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 	
 	String ftpID = "";
-	String ftpIDProd = context.findValue('ftpidprod');
-	String ftpIDTest = context.findValue('ftpidtest');
+	String ftpIDProd = media.getContext().findValue('ftpidprod');
+	String ftpIDTest = media.getContext().findValue('ftpidtest');
 	if (production) {
 		ftpID = ftpIDProd;
 		if (ftpID == null) {
@@ -280,21 +284,20 @@ try {
 	///////////////////////
 	
 	//Get the FTP Info
-	Data ftpInfo = ftpInvoice.getFtpInfo(catalogid, ftpID);
+	Data ftpInfo = ftpInvoice.getFtpInfo(media.getCatalogid(), ftpID);
 	ftpInvoice.setInfo(ftpInfo);
 	ftpInvoice.setFileExtension("xml");
 
 	result = ftpInvoice.getFiles();
 	if (result.isComplete()) {
 		//Output value to CSV file!
-		context.putPageValue("export", result.getCompleteMessage());
+		media.getContext().putPageValue("export", result.getCompleteMessage());
 		
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
-		MediaArchive archive = context.getPageValue("mediaarchive");
-		archive.fireSharedMediaEvent("edidownloaded");
+		media.getArchive().fireSharedMediaEvent("edidownloaded");
 	} else {
 		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
+		media.getContext().putPageValue("errorout", result.getErrorMessage());
 	}
 }
 finally {

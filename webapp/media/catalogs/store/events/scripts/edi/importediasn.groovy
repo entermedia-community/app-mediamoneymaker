@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.CatalogConverter;
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.event.WebEvent
@@ -36,96 +35,23 @@ public class ImportEDIASN extends EnterMediaObject {
 	private String productID;
 	private Date dateShipped;
 
-	private void setOrderID(String inOrderID) {
-		orderID = inOrderID;
-	}
-
-	private String getOrderID() {
-		return orderID;
-	}
-
-	private void setPurchaseOrder(String inPurchaseOrder) {
-		purchaseOrder = inPurchaseOrder;
-	}
-
-	private String getPurchaseOrder() {
-		return purchaseOrder;
-	}
-
-	private void setDistributorID(String inDistributorID) {
-		distributorID = inDistributorID;
-	}
-
-	private String getDistributorID() {
-		return distributorID;
-	}
-
-	private void setStoreID(String inStore) {
-		storeID = inStore;
-	}
-
-	private String getStoreID() {
-		return storeID;
-	}
-
-	private void setCarrier(String inCarrier) {
-		carrier = inCarrier;
-	}
-
-	private String getCarrier() {
-		return carrier;
-	}
-
-	private void setWaybill(String inWaybill) {
-		waybill = inWaybill;
-	}
-
-	private String getWaybill() {
-		return waybill;
-	}
-
-	private void setQuantityShipped(String inQuantityShipped) {
-		quantityShipped = inQuantityShipped;
-	}
-
-	private String getQuantityShipped() {
-		return quantityShipped;
-	}
-
-	private void setProductID(String inProductID) {
-		productID = inProductID;
-	}
-
-	private String getProductID() {
-		return productID;
-	}
-
-	private void setDateShipped(Date inDate) {
-		dateShipped = inDate;
-	}
-
-	private Date getDateShipped() {
-		return dateShipped;
-	}
-
 	public PublishResult importEdiXml() {
 
 		PublishResult result = new PublishResult();
 		result.setErrorMessage("");
 		String foundErrors = "";
-
 		result.setComplete(false);
-		Util output = new Util();
 
-		String catalogid = getMediaArchive().getCatalogId();
-		MediaArchive archive = context.getPageValue("mediaarchive");
+		OutputUtilities output = new OutputUtilities();
+		
+		MediaUtilities media = new MediaUtilities();
+		media.setContext(context);
+		media.setSearchers();
 
-		SearcherManager manager = archive.getSearcherManager();
-		PageManager pageManager = archive.getPageManager();
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
-		String asnFolder = "/WEB-INF/data/${catalogid}/incoming/asn/";
-
+		String asnFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/asn/";
+		PageManager pageManager = media.getArchive().getPageManager();
 		List dirList = pageManager.getChildrenPaths(asnFolder);
 		log.info("Initial directory size: " + dirList.size().toString());
 
@@ -134,6 +60,7 @@ public class ImportEDIASN extends EnterMediaObject {
 		if (dirList.size() > 0) {
 			def int iterCounter = 0;
 			for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
+				
 				Page page = pageManager.getPage(iterator.next());
 				log.info("Processing " + page.getName());
 
@@ -141,6 +68,17 @@ public class ImportEDIASN extends EnterMediaObject {
 
 				File xmlFIle = new File(realpath);
 				if (xmlFIle.exists()) {
+					
+					String orderID = "";
+					String purchaseOrder = "";
+					String distributorID = "";
+					String storeNumber = "";
+					String carrier = "";
+					String waybill = "";
+					String quantityShipped = "";
+					String productID = "";
+					Date dateShipped = null;
+				
 					strMsg += output.appendOutMessage("<b>" + page.getName() + "</b>");
 
 					//Create the XMLSlurper Object
@@ -152,14 +90,14 @@ public class ImportEDIASN extends EnterMediaObject {
 					log.info("Found ASNGRoups: " + ASNGROUPS.size().toString());
 
 					ASNGROUPS.each {
-						
+
 						//Get the distributor
 						def String GSSND = ASN.Attributes.TblReferenceNbr.find {it.Qualifier == "GSSND"}.ReferenceNbr.text();
 						strMsg += output.appendOutMessage("GSSND", GSSND, FOUND);
-						Data distributor = searchForDistributor(manager, archive, GSSND, production);
+						Data distributor = media.searchForDistributor(GSSND, production);
 						if (distributor != null) {
 							strMsg += output.appendOutMessage("Distributor", distributor.name, FOUND);
-							setDistributorID(distributor.getId());
+							distributorID = distributor.getId();
 						} else {
 							throw new OpenEditException("ERROR: Distributor value is blank in ASN.");
 						}
@@ -174,13 +112,14 @@ public class ImportEDIASN extends EnterMediaObject {
 
 						ASNHEADERS.each {
 							//PO
-							def String purchaseOrder = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
-							if (!purchaseOrder.isEmpty()) {
-								String[] orderInfo = purchaseOrder.split("-");
-								Data order = searchForOrder(manager, archive, orderInfo[0]);
+							def String PO = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
+							log.info("PO: " + PO);
+							if (!PO.isEmpty()) {
+								String[] orderInfo = PO.split("-");
+								Data order = media.searchForOrder(orderInfo[0]);
 								foundFlag = true;
 								if (order != null) {
-									setOrderID(orderInfo[0]);
+									orderID = orderInfo[0];
 									strMsg += output.appendOutMessage("Rogers Order ", orderInfo[0], FOUND);
 								} else {
 									log.info("ERROR: Order(" + orderInfo[0] + ") was not found from ASN.");
@@ -189,15 +128,15 @@ public class ImportEDIASN extends EnterMediaObject {
 									String inMsg = "Order(" + orderInfo[0] + ") was not found from ASN.";
 									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 								}
-								HitTracker foundStore = searchForStoreInOrder(manager, archive, order.id, orderInfo[1]);
+								HitTracker foundStore = media.searchForStoreInOrder(orderID, orderInfo[1]);
 								if (foundStore != null) {
-									setPurchaseOrder(purchaseOrder);
-									setStoreID(orderInfo[1]);
+									purchaseOrder = PO;
+									storeNumber = orderInfo[1];
 									strMsg += output.appendOutMessage("Purchase Order ", purchaseOrder, FOUND);
-									strMsg += output.appendOutMessage("Store ", orderInfo[1], FOUND);
+									strMsg += output.appendOutMessage("Store ", storeNumber, FOUND);
 								} else {
 									log.info("ERROR: Store(" + orderInfo[1] + ") was not found from ASN.");
-									log.info("ERROR: PurchaseOrder: " + purchaseOrder);
+									log.info("ERROR: PurchaseOrder: " + PO);
 									//Create web event to send an email.
 									strMsg += output.appendOutMessage("Purchase Order ", orderInfo[1], NOT_FOUND);
 									String inMsg = "Purchase Order(" + orderInfo[1] + ") was not found from ASN.";
@@ -212,7 +151,7 @@ public class ImportEDIASN extends EnterMediaObject {
 										if (!courier.isEmpty()) {
 											foundFlag = true;
 											strMsg += output.appendOutMessage("Courier", courier, FOUND);
-											setCarrier(courier);
+											carrier = courier;
 										}
 									}
 								}
@@ -227,11 +166,11 @@ public class ImportEDIASN extends EnterMediaObject {
 								ASNHEADERS.each {
 									if (!foundFlag) {
 										//_PRO
-										def String waybill = it.Attributes.TblReferenceNbr.find {it.Qualifier == "_PRO"}.ReferenceNbr.text();
-										if (!waybill.isEmpty()) {
+										def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "_PRO"}.ReferenceNbr.text();
+										if (!WB.isEmpty()) {
 											foundFlag = true;
-											strMsg += output.appendOutMessage("Waybill", waybill, FOUND);
-											setWaybill(waybill);
+											strMsg += output.appendOutMessage("Waybill", WB, FOUND);
+											waybill = WB;
 										}
 									}
 								}
@@ -252,11 +191,11 @@ public class ImportEDIASN extends EnterMediaObject {
 									SUBHEADERS.each {
 										if (!foundFlag) {
 											//QS
-											def String quantityShipped = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
-											if (!quantityShipped.isEmpty()) {
+											def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
+											if (!QS.isEmpty()) {
 												foundFlag = true;
-												strMsg += output.appendOutMessage("Quantity Shipped", quantityShipped, FOUND);
-												setQuantityShipped(quantityShipped);
+												strMsg += output.appendOutMessage("Quantity Shipped", QS, FOUND);
+												quantityShipped = QS;
 											}
 										}
 									}
@@ -271,12 +210,12 @@ public class ImportEDIASN extends EnterMediaObject {
 									SUBHEADERS.each {
 										if (!foundFlag) {
 											//QS
-											def String dateShipped = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
-											if (!dateShipped.isEmpty()) {
+											def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
+											if (!DS.isEmpty()) {
 												foundFlag = true;
-												def newDate = parseDate(dateShipped);
-												strMsg += output.appendOutMessage("Date Shipped", dateShipped, FOUND);
-												setDateShipped(newDate);
+												def newDate = parseDate(DS);
+												strMsg += output.appendOutMessage("Date Shipped", DS, FOUND);
+												dateShipped = newDate;
 											}
 										}
 									}
@@ -290,20 +229,20 @@ public class ImportEDIASN extends EnterMediaObject {
 									foundFlag = false;
 									SUBHEADERS.each {
 										if (!foundFlag) {
-											//_PRO
-											def String UPC = it.Attributes.TblReferenceNbr.find {it.Qualifier == "UP"}.ReferenceNbr.text();
-											if (!UPC.isEmpty()) {
+											//VN
+											def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+											if (!vendorCode.isEmpty()) {
 												foundFlag = true;
-												Data product = searchForProduct(manager, archive, UPC);
+												Data product = media.searchForProductbyRogersSKU(vendorCode);
 												if (product != null) {
 													foundFlag = true;
 													strMsg += output.appendOutMessage("Product", product.name, FOUND);
-													setProductID(product.getId());
+													productID = product.getId();
 												} else {
-													log.info("Product(" + UPC + ") was not found from ASN.");
+													log.info("Product(" + vendorCode + ") was not found from ASN.");
 													//Create web event to send an email.
-													strMsg += output.appendOutMessage("Product ", UPC, NOT_FOUND);
-													String inMsg = "Product(" + UPC + ") was not found from ASN.";
+													strMsg += output.appendOutMessage("Product ", vendorCode, NOT_FOUND);
+													String inMsg = "Product(" + vendorCode + ") was not found from ASN.";
 													result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 												}
 											}
@@ -321,38 +260,33 @@ public class ImportEDIASN extends EnterMediaObject {
 										errMsg = result.getErrorMessage();
 									}
 									if ((foundFlag) && (errMsg.length() == 0)) {
-										Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
-										SearchQuery itemQuery = itemsearcher.createSearchQuery();
-										itemQuery.addExact("store", getStoreID());
-										itemQuery.addExact("rogers_order", getOrderID());
-										itemQuery.addExact("product", getProductID());
-										HitTracker orderitems = itemsearcher.search(itemQuery);
+										SearchQuery itemQuery = media.getItemSearcher().createSearchQuery();
+										itemQuery.addExact("store", storeNumber);
+										itemQuery.addExact("rogers_order", orderID);
+										itemQuery.addExact("product", productID);
+										HitTracker orderitems = media.getItemSearcher().search(itemQuery);
 										if (orderitems.size() > 0 ) {
-											Data orderitem = itemsearcher.createNewData();
-											orderitem.setProperty("rogers_order", getOrderID());//foriegn key
-											orderitem.setProperty("store", getStoreID());
-											orderitem.setProperty("distributor", getDistributorID());
-											orderitem.setProperty("product", getProductID());
-											orderitem.setProperty("carrier", getCarrier());
-											orderitem.setProperty("waybill", getWaybill());
+											Data orderitem = media.getItemSearcher().searchById(orderitems.get(0).getId());
+											orderitem.setProperty("carrier", carrier);
+											orderitem.setProperty("waybill", waybill);
 											orderitem.setProperty("orderstatus", "shipped");
-											orderitem.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(getDateShipped()));
-											itemsearcher.saveData(orderitem, context.getUser());
-											strMsg += output.appendOutMessage("ITEM UPDATED(" + getPurchaseOrder() + ") AND SAVED");
+											orderitem.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+											media.getItemSearcher().saveData(orderitem, context.getUser());
+											strMsg += output.appendOutMessage("ITEM UPDATED(" + purchaseOrder + ") AND SAVED");
 										} else {
-											strMsg += output.appendOutMessage("ERROR ORDER(" + getPurchaseOrder() + ") " + NOT_FOUND);
-											String inMsg = "Order cannot be found(" + getOrderID() + ")";
+											strMsg += output.appendOutMessage("ERROR ORDER(" + purchaseOrder + ") " + NOT_FOUND);
+											String inMsg = "Order cannot be found(" + orderID + ")";
 											result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 										} // end if orderitems
 									} else {
-										strMsg += output.appendOutMessage("ERROR ORDER(" + getPurchaseOrder() + ") NOT SAVED");
+										strMsg += output.appendOutMessage("ERROR ORDER(" + purchaseOrder + ") NOT SAVED");
 									}
 								} else {
 									strMsg += output.appendOutMessage("ERROR PURCHASE ORDER NOT FOUND IN ASN (" + page.getName() + ")");
 									String inMsg = "Purchase Order cannot be found in ASN XML File(" + page.getName() + ")";
 									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 								}
-							}
+							} 
 							if (result.getErrorMessage() != null) {
 								foundErrors += result.getErrorMessage();
 								result.setErrorMessage("");
@@ -360,15 +294,15 @@ public class ImportEDIASN extends EnterMediaObject {
 						}
 					}
 					if (foundErrors.isEmpty()) {
-						result = movePageToProcessed(pageManager, page, catalogid, true);
+						result = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
 						if (result.complete) {
 							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") MOVED");
 						} else {
 							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") FAILED MOVE");
 						}
 					} else {
-						strMsg += output.appendOutMessage("ERROR ORDER(" + getOrderID() + ") NOT SAVED");
-						result = movePageToProcessed(pageManager, page, catalogid, false);
+						strMsg += output.appendOutMessage("ERROR ORDER(" + orderID + ") NOT SAVED");
+						result = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 						if (result.complete) {
 							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") MOVED TO ERROR");
 						} else {
@@ -390,87 +324,15 @@ public class ImportEDIASN extends EnterMediaObject {
 				//Create web event to send an email.
 				WebEvent event = new WebEvent();
 				event.setSearchType("asn_processing");
-				event.setCatalogId(catalogid);
+				event.setCatalogId(media.getCatalogid());
 				event.setProperty("error", result.getErrorMessage());
-				archive.getMediaEventHandler().eventFired(event);
+				media.getArchive().getMediaEventHandler().eventFired(event);
 			}
 		} else {
 			result.setCompleteMessage("There are no files to process at this time.");
 			result.setComplete(true);
 		}
 		return result;
-	}
-
-	private HitTracker searchForItem( SearcherManager manager,
-	MediaArchive archive, String orderID, String store, String distributor) {
-
-		Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
-		SearchQuery itemQuery = itemsearcher.createSearchQuery();
-		itemQuery.addExact("store", storeID);
-		itemQuery.addExact("rogers_order", orderid);
-		itemQuery.addExact("distributor", distributor.name);
-		HitTracker orderitems = itemsearcher.search(itemQuery);
-
-		return orderitems;
-
-	}
-	private Data searchForOrder( SearcherManager manager,
-	MediaArchive archive, String searchForName ) {
-
-		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order");
-		Data rogersOrder = ordersearcher.searchById(searchForName);
-		return rogersOrder;
-
-	}
-
-	private Data searchForDistributor( SearcherManager manager,
-	MediaArchive archive, String searchForName, Boolean production ) {
-
-		String SEARCH_FIELD = "";
-		if (production == true){
-			SEARCH_FIELD = "headermailboxprod";
-		} else {
-			SEARCH_FIELD = "headermailboxtest";
-		}
-		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
-		Data targetDistributor = distributorsearcher.searchByField(SEARCH_FIELD, searchForName);
-
-		return targetDistributor;
-	}
-
-	private Data searchForStore( SearcherManager manager,
-	MediaArchive archive, String searchForName ) {
-
-		String SEARCH_FIELD = "store";
-		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
-		Data rogersStore = storesearcher.searchByField(SEARCH_FIELD, searchForName);
-
-		return rogersStore;
-
-	}
-
-	private HitTracker searchForStoreInOrder( SearcherManager manager,
-	MediaArchive archive, String orderid, String store_number ) {
-
-		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
-		SearchQuery itemQuery = storesearcher.createSearchQuery();
-		itemQuery.addExact("store", store_number);
-		itemQuery.addExact("rogers_order", orderid);
-		HitTracker orderitems = storesearcher.search(itemQuery);
-
-		return orderitems;
-
-	}
-
-	private Data searchForProduct( SearcherManager manager,
-	MediaArchive archive, String searchForName ) {
-
-		String SEARCH_FIELD = "upc";
-		Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
-		Data product = productsearcher.searchByField(SEARCH_FIELD, searchForName);
-
-		return product;
-
 	}
 
 	private Date parseDate(String date)
