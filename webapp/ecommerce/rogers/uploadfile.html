@@ -1,20 +1,19 @@
 <div class="ui-widget uipanel">
-			<div class="ui-widget-header">Upload Section</div>
-			<div class="ui-widget-content">
-			 
-			#if( $badlist )
-				<p>The following rows of the imported file could not be processed.</p>
-				<p>Listing of Bad Rows from File<br/>
-				#foreach($item in $badlist)
-					$item<br/>
-				#end
-			#elseif( $errorout )
-				$errorout
-			#else
-				<p><strong>Upload Complete</strong></p>
-				<p>Please click the Cart Button to view your cart</p>
-				</div> 
+	<div class="ui-widget-header">Upload Section</div>
+	<div class="ui-widget-content">
+		#if( $badlist )
+			<p>The following rows of the imported file could not be processed.</p>
+			<p>Listing of Bad Rows from File<br/>
+			#foreach($item in $badlist)
+				$item<br/>
 			#end
-		</div>
+		#elseif( $errorout )
+			$errorout
+		#else
+			<p><strong>Upload Complete</strong></p>
+			<p>Please click <a href="/ecommerce/views/modules/rogers_order/index.html?field=last_selected_module&last_selected_module.value=rogers_order">"Orders"</a> from the Rogers Menu (on the left) to view your new Order.</p>
+		#end
+	</div> 
+</div>
 
 

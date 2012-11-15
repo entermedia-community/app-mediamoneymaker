@@ -2,12 +2,12 @@
 	<div class="ui-widget-header">Upload Section</div>
 	<div class="ui-widget-content">
 		#if ($export)
-			<p>$export</p>.
-		</div>
-		#else if ($errorout)
-			<p>$errorout</p>
-		</div>
+			<p>$export</p>
 		#end
+		#if ($errorout)
+			<p>$errorout</p>
+		#end
+	</div>
 </div>
 
 
