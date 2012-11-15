@@ -6,10 +6,6 @@ package import_tools
  */
 
 //Import List
-import java.sql.ResultSet;
-
-import javax.swing.ToolTipManager.outsideTimerAction;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -19,12 +15,14 @@ import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Store
 
 import com.openedit.BaseWebPageRequest
+import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
-import edi.Util
+import edi.MediaUtilities
+import edi.OutputUtilities
 
 public class ImportCesiumProducts extends EnterMediaObject {
 
@@ -43,17 +41,15 @@ public class ImportCesiumProducts extends EnterMediaObject {
 		result.setCompleteMessage("");
 		result.setErrorMessage("");
 		
+		MediaUtilities media = new MediaUtilities();
+		media.setContext(context);
+		media.setSearchers();
+
 		def String distributorID = "105";
 
 		BaseWebPageRequest inReq = context;
 
 		Store store = inReq.getPageValue("store");
-		MediaArchive archive = inReq.getPageValue("mediaarchive");
-
-		//Create Searcher Object
-		Searcher productsearcher = store.getProductSearcher();
-		String catalogid = getMediaArchive().getCatalogId();
-		SearcherManager manager = archive.getSearcherManager();
 
 		//Define columns from spreadsheet
 		def int columnItemNumber = 0;
@@ -63,13 +59,12 @@ public class ImportCesiumProducts extends EnterMediaObject {
 		def int columnDescription = 2;
 		def String columnHeadDescription = "Description";
 
-		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
-
-		Util output = new Util();
+		OutputUtilities output = new OutputUtilities();
 		String strMsg = output.createTable(columnHeadCesiumItemNum, columnHeadCesiumSKU, "Status");
 		String errorOut = "";
 
-		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/cesium.csv");
+		String pageName = "/" + media.getCatalogid() + "/temp/upload/cesium.csv";
+		Page upload = media.getArchive().getPageManager().getPage(pageName);
 		Reader reader = upload.getReader();
 		try
 		{
@@ -116,35 +111,46 @@ public class ImportCesiumProducts extends EnterMediaObject {
 					String rogerssku = orderLine[columnCesiumSKU];
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
+						targetProduct = store.getProduct(targetProduct.getId());
+					}
+					if(targetProduct == null){
+						
+						//Product does not exist - Create blank data
+						targetProduct = media.getProductsearcher().createNewData();
+						targetProduct.setProperty("name",orderLine[columnDescription]);
+						targetProduct.setProperty("accessoryname",orderLine[columnDescription]);
+						targetProduct.setProperty("rogerssku",orderLine[columnCesiumSKU]);
+						targetProduct.setProperty("manufacturersku",orderLine[columnCesiumSKU]);
+						targetProduct.setProperty("validitem", "false");
+						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+						
+						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+						if (targetProduct != null) {
+							targetProduct = store.getProduct(targetProduct.getId());
+						} else {
+							throw new OpenEditException("Invalid Product: " + rogerssku);
+						}
+						strMsg += output.appendOutMessage(orderLine[columnCesiumSKU], rogerssku, INVALID);
+						
+					} else {
 
 						//productsearcher.saveData(real, context.getUser());
 						log.info("ProductID Found: " + targetProduct.getId() + ":" + rogerssku);
 
 						def String outType = "";
-						def String validItem = ""
 						if (targetProduct.upc != null) {
-							outType = UPDATED;
-							validItem = "true";
+							targetProduct.setProperty("validitem", "true");
 						} else {
-							outType = INVALID_SKU;
-							validItem = "false";
+							targetProduct.setProperty("validitem", "false");
+							strMsg += output.appendOutMessage(orderLine[columnCesiumSKU], rogerssku, INVALID_SKU);
 						}
-						strMsg += output.appendOutMessage(orderLine[columnCesiumSKU], rogerssku, outType);
 						
 						//Everything is good... Update the Product
-						Data product = productsearcher.createNewData();
-						product.setProperty("product", targetProduct.getId());
-						product.setProperty("manufacturersku", orderLine[columnCesiumSKU]);
-						product.setProperty("distributor", distributorID);
-						product.setProperty("validitem", validItem);
-						productsearcher.saveData(product, context.getUser());
-
-					} else {
-						//ID Does not exist!!! Add to badProductIDList
-						badProductCount++;
-						errorOut += "<li>" + orderLine[columnCesiumSKU] + "</li>";
+						targetProduct.setProperty("manufacturersku", orderLine[columnCesiumSKU]);
+						targetProduct.setProperty("distributor", distributorID);
+						media.getProductsearcher().saveData(targetProduct, context.getUser());
 					}
 				}
 			} else {

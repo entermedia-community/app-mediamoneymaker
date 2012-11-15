@@ -24,7 +24,7 @@ import com.openedit.util.FileUtils
 import edi.MediaUtilities
 import edi.OutputUtilities
 
-public class ImportAvocaProducts extends EnterMediaObject {
+public class ImportMicrocelProducts extends EnterMediaObject {
 
 	private static final String UPDATED = "UPDATED";
 	private static final String ERROR = "ERROR";
@@ -32,8 +32,7 @@ public class ImportAvocaProducts extends EnterMediaObject {
 	private static final String VALID = "VALID";
 	private static final String NOT_FOUND = "NOT FOUND";
 	private static final String ADDED = "ADDED";
-	private static final String INVALID_SKU = "<strong>INVALID_SKU</strong>"
-	
+
 	public PublishResult doImport(){
 		//Create Store, MediaArchive Object
 
@@ -50,28 +49,37 @@ public class ImportAvocaProducts extends EnterMediaObject {
 
 		Store store = inReq.getPageValue("store");
 
+		//Create Searcher Object
 		//Define columns from spreadsheet
-		def int columnAvocaProductName = 0;
-		def String columnHeadAvocaProductName = "Avoca Product Name";
-		def int columnRogersSKU = 1;
-		def String columnHeadRogersSKU = "Rogers Product Code";
-		def int columnDescription = 2;
-		def String columnHeadDescription = "Description";
-		def int columnCategory = 3;
-		def String columnHeadCategory = "Category"
-		def int columnManfactName = 4;
-		def String columnHeadManfactName = "Brand";
+		/*
+		 * AccessoryID	AccessoryName	UPC	ManufacturerID	RogersSKU	ManufacturerSKU	ParticipantID
+		 */
+		def int columnMicrocelAccessoryID = 0;
+		def String columnHeadMicrocelAccessoryID = "AccessoryID";
+		def int columnMicrocelAccessoryName = 1;
+		def String columnHeadMicrocelAccessoryName = "AccessoryName";
+		def int columnMicrocelAccessoryNameFR = 2;
+		def String columnHeadMicrocelAccessoryNameFR = "AccessoryNameFR";
+		def int columnMicrocelUPC = 3;
+		def String columnHeadMicrocelUPC = "UPC";
+		def int columnMicrocelManufacturerID = 4;
+		def String columnHeadMicrocelManufacturerID = "ManufacturerID";
+		def int columnMicrocelRogersSKU = 5;
+		def String columnHeadMicrocelRogersSKU = "RogersSKU";
+		def int columnMicrocelManufacturerSKU = 6;
+		def String columnHeadMicrocelManufacturerSKU = "ManufacturerSKU";
+
+		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
 		OutputUtilities output = new OutputUtilities();
-		String strMsg = output.createTable(columnHeadAvocaProductName, columnHeadRogersSKU, "Status");
+		String strMsg = output.createTable(columnHeadMicrocelManufacturerID, columnHeadMicrocelRogersSKU, "Status");
 		String errorOut = "";
 
-		String pageName = "/" + media.getCatalogid() + "/temp/upload/avoca.csv";
+		String pageName = "/" + media.getCatalogid() + "/temp/upload/microcel.csv";
 		Page upload = media.getArchive().getPageManager().getPage(pageName);
 		Reader reader = upload.getReader();
 		try
 		{
-			def SEARCH_FIELD = "rogerssku";
 			boolean done = false;
 
 			//Create CSV reader
@@ -83,18 +91,20 @@ public class ImportAvocaProducts extends EnterMediaObject {
 			boolean errorFields = false;
 
 			def List columnNumbers = new ArrayList();
-			columnNumbers.add(columnAvocaProductName);
-			columnNumbers.add(columnRogersSKU);
-			columnNumbers.add(columnDescription);
-			columnNumbers.add(columnCategory);
-			columnNumbers.add(columnManfactName);
+			columnNumbers.add(columnMicrocelAccessoryID);
+			columnNumbers.add(columnMicrocelAccessoryName);
+			columnNumbers.add(columnMicrocelUPC);
+			columnNumbers.add(columnMicrocelManufacturerID);
+			columnNumbers.add(columnMicrocelRogersSKU);
+			columnNumbers.add(columnMicrocelManufacturerSKU);
 
 			def List columnNames = new ArrayList();
-			columnNames.add(columnHeadAvocaProductName);
-			columnNames.add(columnHeadRogersSKU);
-			columnNames.add(columnHeadDescription);
-			columnNames.add(columnHeadCategory);
-			columnNames.add(columnHeadManfactName);
+			columnNames.add(columnHeadMicrocelAccessoryID);
+			columnNames.add(columnHeadMicrocelAccessoryName);
+			columnNames.add(columnHeadMicrocelUPC);
+			columnNames.add(columnHeadMicrocelManufacturerID);
+			columnNames.add(columnHeadMicrocelRogersSKU);
+			columnNames.add(columnHeadMicrocelManufacturerSKU);
 
 			for ( int index=0; index < columnNumbers.size(); index++ ) {
 				String compare1 = headers[columnNumbers.get(index)].toString().toUpperCase();
@@ -115,66 +125,71 @@ public class ImportAvocaProducts extends EnterMediaObject {
 				{
 					//Create as400list Searcher
 					//Read the oraclesku from the as400 table
-					String rogerssku = orderLine[columnRogersSKU];
+					def SEARCH_FIELD = "upc";
+					String searchUPC = orderLine[columnMicrocelUPC];
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, searchUPC);
 					if (targetProduct != null) {
 						targetProduct = store.getProduct(targetProduct.getId());
 					}
-					if(targetProduct == null){
+					if (targetProduct == null) {
+						SEARCH_FIELD = "rogerssku";
+						String rogerssku = orderLine[columnMicrocelRogersSKU];
 						
-						//Product does not exist - Create blank data
-						targetProduct = media.getProductsearcher().createNewData();
-						targetProduct.setProperty("name",orderLine[columnDescription]);
-						targetProduct.setProperty("accessoryname",orderLine[columnDescription]);
-						targetProduct.setProperty("manufacturerid",media.getManufacturerID(orderLine[columnManfactName]));
-						targetProduct.setProperty("rogerssku",orderLine[columnRogersSKU]);
-						targetProduct.setProperty("manufacturersku",orderLine[columnAvocaProductName]);
-						targetProduct.setProperty("validitem", "false");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
-						
-						strMsg += output.appendOutMessage(orderLine[columnAvocaProductName], rogerssku, INVALID);
-						
+						//Search the product for the UPC)
 						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
 						if (targetProduct != null) {
 							targetProduct = store.getProduct(targetProduct.getId());
-						} else {
-							throw new OpenEditException("Invalid Product: " + rogerssku);
 						}
-					} else {
-
-						//productsearcher.saveData(real, context.getUser());
-						log.info("ProductID Found: " + targetProduct.getId() + ":" + rogerssku);
-
-						def String outType = "";
-						if (targetProduct.upc != null) {
-							targetProduct.setProperty("validitem", "true");
-						} else {
+						if (targetProduct == null) {
+							//Product does not exist - Create blank data
+							targetProduct = media.getProductsearcher().createNewData();
+							targetProduct.setProperty("name",orderLine[columnMicrocelAccessoryName]);
+							targetProduct.setProperty("accessoryid", orderLine[columnMicrocelAccessoryID]);
+							targetProduct.setProperty("accessoryname",orderLine[columnMicrocelAccessoryName]);
+							targetProduct.setProperty("accessorynamefr",orderLine[columnMicrocelAccessoryNameFR]);
+							targetProduct.setProperty("upc",orderLine[columnMicrocelUPC]);
+							targetProduct.setProperty("manufacturerid",media.getManufacturerID(orderLine[columnMicrocelManufacturerID]));
+							targetProduct.setProperty("rogerssku",orderLine[columnMicrocelRogersSKU]);
+							targetProduct.setProperty("manufacturersku",orderLine[columnMicrocelManufacturerSKU]);
 							targetProduct.setProperty("validitem", "false");
-							strMsg += output.appendOutMessage(orderLine[columnAvocaProductName], rogerssku, INVALID_SKU);
-						}
-						
-						//Lookup Manufacturer
-						def boolean validManufacturer = true;
-						Data manufacturer = media.getManufacturerSearcher().searchByField("name", orderLine[columnManfactName]);
-						if (manufacturer == null) {
-							//Add new Manufacturer
-							manufacturer = media.addManufacturer(orderLine[columnManfactName]);
-							if (manufacturer == null) {
-								strMsg += output.appendOutMessage("Manufacturer", orderLine[columnManfactName], INVALID);
+							media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+
+							strMsg += output.appendOutMessage(orderLine[columnMicrocelManufacturerSKU], rogerssku, INVALID);
+							targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+							if (targetProduct != null) {
+								targetProduct = store.getProduct(targetProduct.getId());
 							} else {
-								targetProduct.setProperty("manufacturerid", manufacturer.id);
+								throw new OpenEditException("Invalid Product: " + rogerssku);
 							}
+							continue;
+						}
+					}
+					log.info("ProductID Found: " + targetProduct.getId());
+					targetProduct.setProperty("manufacturersku", orderLine[columnMicrocelManufacturerSKU]);
+					targetProduct.setProperty("rogerssku",orderLine[columnMicrocelRogersSKU]);
+					targetProduct.setProperty("upc", orderLine[columnMicrocelUPC]);
+					targetProduct.setProperty("validitem", "true");
+					
+					//Lookup Manufacturer
+					Data manufacturer = media.getManufacturerSearcher().searchByField("name", orderLine[columnMicrocelManufacturerID]);
+					if (manufacturer == null) {
+						//Add new Manufacturer
+						manufacturer = media.addManufacturer(orderLine[columnMicrocelManufacturerID]);
+						if (manufacturer == null) {
+							strMsg += output.appendOutMessage("Manufacturer", orderLine[columnMicrocelManufacturerID], INVALID);
 						} else {
+							strMsg += output.appendOutMessage("Manufacturer", orderLine[columnMicrocelManufacturerID], ADDED);
 							targetProduct.setProperty("manufacturerid", manufacturer.id);
 						}
-
-						//Everything is good... Update the Product
-						targetProduct.setProperty("distributor", "106");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
-
+					} else {
+						targetProduct.setProperty("manufacturerid", manufacturer.id);
 					}
+
+					//Everything is good... Update the Product Distributor
+					targetProduct.setProperty("distributor", "104");
+					media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
 				}
 			} else {
 				result.setErrorMessage("<p>The following fields in the input file are invalid:<ul>" + errorOut + "</ul></p>");
@@ -221,7 +236,7 @@ logs.startCapture();
 
 try {
 
-	ImportAvocaProducts importProducts = new ImportAvocaProducts();
+	ImportMicrocelProducts importProducts = new ImportMicrocelProducts();
 	importProducts.setLog(logs);
 	importProducts.setContext(context);
 	importProducts.setModuleManager(moduleManager);

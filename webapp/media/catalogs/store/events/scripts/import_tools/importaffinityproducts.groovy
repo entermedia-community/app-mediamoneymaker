@@ -6,10 +6,6 @@ package import_tools
  */
 
 //Import List
-import java.sql.ResultSet;
-
-import javax.swing.ToolTipManager.outsideTimerAction;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -19,12 +15,14 @@ import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Store
 
 import com.openedit.BaseWebPageRequest
+import com.openedit.OpenEditException;
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
-import edi.Util
+import edi.MediaUtilities
+import edi.OutputUtilities
 
 public class ImportAffinityProducts extends EnterMediaObject {
 
@@ -42,18 +40,17 @@ public class ImportAffinityProducts extends EnterMediaObject {
 		result.setComplete(false);
 		result.setCompleteMessage("");
 		result.setErrorMessage("");
-		
-		def String distributorID = "102";
 
+		MediaUtilities media = new MediaUtilities();
+		media.setContext(context);
+		media.setSearchers();
+
+		def String distributorID = "102";
+		boolean errorFields = false;
+		
 		BaseWebPageRequest inReq = context;
 
 		Store store = inReq.getPageValue("store");
-		MediaArchive archive = inReq.getPageValue("mediaarchive");
-
-		//Create Searcher Object
-		Searcher productsearcher = store.getProductSearcher();
-		String catalogid = getMediaArchive().getCatalogId();
-		SearcherManager manager = archive.getSearcherManager();
 
 		//Define columns from spreadsheet
 		def int columnAffinitySKU = 0;
@@ -61,13 +58,12 @@ public class ImportAffinityProducts extends EnterMediaObject {
 		def int columnAffinityDescription = 1;
 		def String columnHeadAffinityDescription = "Description";
 
-		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
-
-		Util output = new Util();
+		OutputUtilities output = new OutputUtilities();
 		String strMsg = output.createTable(columnHeadAffinitySKU, "Rogers SKU", "Status");
 		String errorOut = "";
 
-		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/affinity.csv");
+		String pageName = "/" + media.getCatalogid() + "/temp/upload/affinity.csv";
+		Page upload = media.getArchive().getPageManager().getPage(pageName);
 		Reader reader = upload.getReader();
 		try
 		{
@@ -80,7 +76,6 @@ public class ImportAffinityProducts extends EnterMediaObject {
 
 			//Read 1 line of header
 			String[] headers = read.readNext();
-			boolean errorFields = false;
 
 			def List columnNumbers = new ArrayList();
 			columnNumbers.add(columnAffinitySKU);
@@ -108,35 +103,43 @@ public class ImportAffinityProducts extends EnterMediaObject {
 				while ((orderLine = read.readNext()) != null)
 				{
 					String rogerssku = orderLine[columnAffinitySKU];
-					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
+						targetProduct = store.getProduct(targetProduct.getId());
+					}
+					if (targetProduct == null) {
 
+						//Product does not exist - Create blank data
+						targetProduct = media.getProductsearcher().createNewData();
+						targetProduct.setProperty("name",orderLine[columnAffinityDescription]);
+						targetProduct.setProperty("accessoryname",orderLine[columnAffinityDescription]);
+						targetProduct.setProperty("rogerssku",orderLine[columnAffinitySKU]);
+						targetProduct.setProperty("manufacturersku",orderLine[columnAffinitySKU]);
+						targetProduct.setProperty("validitem", "false");
+						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+
+						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+						if (targetProduct != null) {
+							targetProduct = store.getProduct(targetProduct.getId());
+						} else {
+							throw new OpenEditException("Invalid Product: " + rogerssku);
+						}
+					} else {
 						//productsearcher.saveData(real, context.getUser());
 						log.info("ProductID Found: " + targetProduct.getId() + ":" + rogerssku);
 
-						def String outType = "";
-						def String validItem = ""
-						if (targetProduct.upc != null) {
-							outType = UPDATED;
-							validItem = "true";
+						if (targetProduct.get("upc") == null) {
+							strMsg += output.appendOutMessage(orderLine[columnAffinitySKU], rogerssku, INVALID_SKU);
+							targetProduct.setProperty("validitem", "false");
+							log.info(" - Invalid SKU");
 						} else {
-							outType = INVALID_SKU;
-							validItem = "false";
+							targetProduct.setProperty("validitem", "true");
 						}
-						strMsg += output.appendOutMessage(orderLine[columnAffinitySKU], rogerssku, outType);
-						
-						//Everything is good... Update the Product
-						Data product = productsearcher.createNewData();
-						product.setProperty("product", targetProduct.getId());
-						product.setProperty("manufacturersku", orderLine[columnAffinitySKU]);
-						product.setProperty("distributor", distributorID);
-						product.setProperty("validitem", validItem);
-						productsearcher.saveData(product, context.getUser());
 
-					} else {
-						//ID Does not exist!!! Add to badProductIDList
-						badProductCount++;
-						errorOut += "<li>" + orderLine[columnAffinitySKU] + "</li>";
+						//Everything is good... Update the Product
+						targetProduct.setProperty("manufacturersku", orderLine[columnAffinitySKU]);
+						targetProduct.setProperty("distributor", distributorID);
+						media.getProductsearcher().saveData(targetProduct, context.getUser());
 					}
 				}
 			} else {
@@ -148,19 +151,14 @@ public class ImportAffinityProducts extends EnterMediaObject {
 		{
 			FileUtils.safeClose(reader);
 		}
-
-		if (errorOut != null) {
-			result.setErrorMessage(errorOut)
+		
+		if (errorFields) {
+			result.setErrorMessage(errorOut);
+			result.setComplete(false);
 		} else {
-			result.setErrorMessage("");
+			result.setCompleteMessage(strMsg);
+			result.setComplete(true);
 		}
-		if (strMsg != null) {
-			result.setCompleteMessage(strMsg)
-		} else {
-			result.setCompleteMessage("");
-		}
-		result.setCompleteMessage(strMsg);
-		result.setComplete(true);
 		return result;
 	}
 
@@ -197,15 +195,10 @@ try {
 	String output = "";
 	if (result.isComplete()) {
 		context.putPageValue("export", result.getCompleteMessage());
-		if (result.getErrorMessage() != null) {
-			String errorHeader = "<p><strong>The following are invalid codes</strong></p>";
-			errMsg = errorHeader + result.getErrorMessage();
-			context.putPageValue("errorout", errMsg);
-		} else {
-			context.putPageValue("errorout", "");
-		}
 	} else {
-		context.putPageValue("export", result.getErrorMessage());
+		String errorHeader = "<p><strong>The following are invalid codes</strong></p>";
+		errMsg = errorHeader + result.getErrorMessage();
+		context.putPageValue("errorout", errMsg);
 	}
 }
 finally {
