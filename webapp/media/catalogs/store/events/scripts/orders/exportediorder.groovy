@@ -110,8 +110,6 @@ public void init() {
 			} else {
 				log.info("ERROR: This order is invalid!" + orderid + ":" + result.getErrorMessage());
 			}
-		} else {
-			log.info("Distributor (${distributor.name}) not found for this order (${orderid})");
 		} // end if numDistributors
 	} // end distribIterator LOOP
 	context.putPageValue("filelist", generatedfiles);
@@ -140,7 +138,6 @@ private PublishResult populateGroup(xml, Searcher storesearcher, Searcher itemse
 
 			if (foundStore.size() > 0 )
 			{
-
 				SearchQuery itemQuery = itemsearcher.createSearchQuery();
 				itemQuery.addExact("store", storeNumber);
 				itemQuery.addExact("rogers_order", orderid);
@@ -162,8 +159,6 @@ private PublishResult populateGroup(xml, Searcher storesearcher, Searcher itemse
 				} else {
 					log.info("No items found for this store (${storeNumber}) for this order (${orderid}) for this Distributor (${distributor.name}) ");
 				} // end if orderitems
-			} else {
-				log.info("Store (${storeNumber}) not found for this order ${orderid}.");
 			} // end if foundStore
 		} //END eachstore LOOP
 	} // end POGroup
@@ -296,6 +291,8 @@ private PublishResult populateDetail(xml, int orderCount, Data orderItem, Search
 			def boolean valid = Boolean.parseBoolean(orderItem.validitem);
 			if (valid) {
 				validCtr++;
+				log.info(" - Valid Product Found: " + targetProduct.getId());
+				log.info(" - Manufacturer's SKU : " + targetProduct.manufacturersku);
 				Money money = new Money(targetProduct.rogersprice);
 				UnitPrice(money.toShortString())
 				UnitOfMeasure("EA")
@@ -303,6 +300,11 @@ private PublishResult populateDetail(xml, int orderCount, Data orderItem, Search
 				StoreNbr(orderItem.store)
 				Attributes()
 				{
+					TblReferenceNbr()
+					{
+						Qualifier("VN")
+						ReferenceNbr(targetProduct.manufacturersku)
+					}
 					TblReferenceNbr()
 					{
 						Qualifier("UP")
