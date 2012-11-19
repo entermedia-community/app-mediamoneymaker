@@ -32,7 +32,9 @@ public class PreprocessDownloads extends EnterMediaObject {
 	}
 
 	public PublishResult processFiles() {
-
+		
+		log.info("---- START Preprocess Downloaded Files ----");
+		
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
 
@@ -233,7 +235,7 @@ try {
 	}
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	archive.fireSharedMediaEvent("processinvoices");
-	archive.fireSharedMediaEvent("processasns");
+//	archive.fireSharedMediaEvent("importediasn");
 	
 }
 finally {

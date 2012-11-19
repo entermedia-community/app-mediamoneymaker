@@ -25,4 +25,7 @@
 	<property name="allowguestregistration">true</property>
 
  <layout>/layout.html</layout>     
+ <property name="productionmode">false</property>
+ <property name="ftpidprod">104</property>
+ <property name="ftpidtest">103</property>
 </page>

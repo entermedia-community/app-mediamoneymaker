@@ -147,7 +147,6 @@ public class ImportRogersOrder extends EnterMediaObject {
 				{
 					def storeNum = orderLine[columnStore].trim();
 
-
 					//Create as400list Searcher
 					Searcher storeList = manager.getSearcher(archive.getCatalogId(), "profile_address_list");
 					Data targetStore = storeList.searchByField("store", storeNum);
@@ -160,11 +159,9 @@ public class ImportRogersOrder extends EnterMediaObject {
 						targetStore.setProperty("level", orderLine[columnStoreRank].replace(" ", ""));
 						targetStore.setSourcePath("rogers");
 						storeList.saveData(targetStore, context.getUser());
-
 					}
 
 					//Get Product Info
-
 					//Read the oraclesku from the as400 table
 					String rogerssku = orderLine[columnRogersID];
 
@@ -183,32 +180,30 @@ public class ImportRogersOrder extends EnterMediaObject {
 							log.info(" - ProductID: " + targetProduct.getId());
 							break;
 						}
-						def String validItem = "false";;
-						if (targetProduct.upc != null) {
-							log.info(" - UPC Found: " + targetProduct.upc);
-							validItem = "true";
+						def boolean validCheck = Boolean.parseBoolean(targetProduct.get("validitem"));
+						if (validCheck) {
+							log.info(" - Item is valid!");
+							//Everything is good... Create the cart item!
+							Data orderitem = itemsearcher.createNewData();
+							orderitem.setProperty("rogers_order", order.getId());//foriegn key
+							orderitem.setProperty("product", targetProduct.getId());
+							orderitem.setProperty("productname", targetProduct.getName());
+							orderitem.setProperty("quantity", orderLine[columnQuantity]);
+							orderitem.setProperty("store", storeNum);
+							orderitem.setProperty("storelevel", targetStore.level.replace(" ", ""));
+							orderitem.setProperty("storename", targetStore.name);
+							Data distributor = searchForDistributor(manager, archive, orderLine[columnManfactName]);
+							orderitem.setProperty("distributor", distributor.id);
+							orderitem.setProperty("validitem", "true");
+							orderitem.setProperty("as400id", orderLine[columnAS400id]);
+	
+							itemsearcher.saveData(orderitem, context.getUser());
+						} else {
+							badProductCount++;
+							log.info(" - Item is INVALID!");
+							String errMsg = "INVALID Product ID: " + targetProduct.getId();
+							badProductList.add(errMsg);
 						}
-
-						//Everything is good... Craete the cart!
-
-						Data orderitem = itemsearcher.createNewData();
-						orderitem.setProperty("rogers_order", order.getId());//foriegn key
-						orderitem.setProperty("product", targetProduct.getId());
-						orderitem.setProperty("productname", targetProduct.getName());
-						orderitem.setProperty("quantity", orderLine[columnQuantity]);
-						orderitem.setProperty("store", storeNum);
-						orderitem.setProperty("storelevel", targetStore.level.replace(" ", ""));
-						orderitem.setProperty("storename", targetStore.name);
-						Data distributor = searchForDistributor(manager, archive, orderLine[columnManfactName]);
-						orderitem.setProperty("distributor", distributor.id);
-						orderitem.setProperty("validitem", validItem);
-						orderitem.setProperty("as400id", orderLine[columnAS400id]);
-
-						itemsearcher.saveData(orderitem, context.getUser());
-
-						//				log.info("CartItem Created: " + cartItem.getProduct().name
-						//						+ ":" + cartItem.getQuantity() + ":" + targetStore.store);
-
 					} else {
 
 						//ID Does not exist!!! Add to badProductIDList

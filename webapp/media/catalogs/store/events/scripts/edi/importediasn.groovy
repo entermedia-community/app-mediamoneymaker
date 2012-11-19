@@ -3,11 +3,10 @@ package edi;
 import java.text.SimpleDateFormat
 
 import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.event.WebEvent
+import org.openedit.store.InventoryItem
+import org.openedit.store.Product
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
@@ -48,6 +47,8 @@ public class ImportEDIASN extends EnterMediaObject {
 		media.setContext(context);
 		media.setSearchers();
 
+		log.info("---- START Import EDI ASN ----");
+		
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 		String asnFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/asn/";
@@ -260,6 +261,12 @@ public class ImportEDIASN extends EnterMediaObject {
 										errMsg = result.getErrorMessage();
 									}
 									if ((foundFlag) && (errMsg.length() == 0)) {
+										
+										Product product = media.getProductSearcher().searchById(productID);
+										InventoryItem productInventory = product.getInventoryItem(0);
+										productInventory.setQuantityInStock(Integer.parseInt(quantityShipped));
+										media.getProductSearcher().saveData(product, context.getUser());
+																				
 										SearchQuery itemQuery = media.getItemSearcher().createSearchQuery();
 										itemQuery.addExact("store", storeNumber);
 										itemQuery.addExact("rogers_order", orderID);
@@ -267,9 +274,17 @@ public class ImportEDIASN extends EnterMediaObject {
 										HitTracker orderitems = media.getItemSearcher().search(itemQuery);
 										if (orderitems.size() > 0 ) {
 											Data orderitem = media.getItemSearcher().searchById(orderitems.get(0).getId());
+											orderitem.setProperty("quantityshipped", quantityShipped);
+											boolean check = checkQuantities(orderitem.get("quantity"), quantityShipped);
+											if (check) {
+												orderitem.setProperty("orderstatus", "completed");
+												orderitem.setProperty("deliverystatus", "shipped");
+											} else {
+												orderitem.setProperty("orderstatus", "pending");
+												orderitem.setProperty("deliverystatus", "partialshipped");
+											}
 											orderitem.setProperty("carrier", carrier);
 											orderitem.setProperty("waybill", waybill);
-											orderitem.setProperty("orderstatus", "shipped");
 											orderitem.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
 											media.getItemSearcher().saveData(orderitem, context.getUser());
 											strMsg += output.appendOutMessage("ITEM UPDATED(" + purchaseOrder + ") AND SAVED");
@@ -366,6 +381,17 @@ public class ImportEDIASN extends EnterMediaObject {
 			move.setErrorMessage(page.getName() + " could not be moved.");
 		}
 		return move;
+	}
+	
+	private boolean checkQuantities(String inQuantity, String inQuantityShipped) {
+		boolean equal = false;
+		
+		int quantity = Integer.parseInt(inQuantity);
+		int quantityShipped = Integer.parseInt(inQuantityShipped);
+		if (quantity == quantityShipped) {
+			equal = true;
+		}
+		return equal;
 	}
 }
 PublishResult result = new PublishResult();

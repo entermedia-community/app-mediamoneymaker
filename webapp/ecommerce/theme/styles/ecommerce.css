@@ -1,3 +1,13 @@
+p.error{
+    font-size: 16px;
+    font-weight: bold;
+    color: red;
+}
+p.success{
+    font-size: 16px;
+    font-weight: bold;
+    color: green;
+}
 
 /* RESULTS LISTING VIEW */
 
