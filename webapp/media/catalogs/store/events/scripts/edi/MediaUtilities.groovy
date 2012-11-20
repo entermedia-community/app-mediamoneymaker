@@ -5,7 +5,6 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 
-import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -28,6 +27,7 @@ public class MediaUtilities extends EnterMediaObject {
 	protected Searcher manufacturersearcher;
 	protected Searcher invoicesearcher;
 	protected Searcher invoiceitemssearcher;
+	protected Searcher errorsearcher;
 	
 	public MediaUtilities() {
 	}
@@ -44,12 +44,17 @@ public class MediaUtilities extends EnterMediaObject {
 		setManufacturerSearcher();
 		setInvoiceSearcher();
 		setInvoiceItemsSearcher();
+		setErrorSearcher();
 	}
 
-	public void setContext(BaseWebPageRequest inContext) {
+	////////////////////////////////////////////
+	// GETTERS AND SETTERS for Searchers
+	////////////////////////////////////////////
+	
+	public void setContext(WebPageRequest inContext) {
 		context = inContext;
 	}
-	public BaseWebPageRequest getContext() {
+	public WebPageRequest getContext() {
 		return context;
 	}
 	
@@ -130,6 +135,17 @@ public class MediaUtilities extends EnterMediaObject {
 		return invoiceitemssearcher;
 	}
 	
+	protected void setErrorSearcher() {
+		errorsearcher = manager.getSearcher(catalogid, "errormessage");
+	}
+	public Searcher getErrorSearcher() {
+		return errorsearcher;
+	}
+	
+	////////////////////////////////////////////
+	// OTHER PUBLIC METHODS
+	////////////////////////////////////////////
+
 	public Data searchForDistributor(String searchForName) {
 		String SEARCH_FIELD = "name";
 		Data targetDistributor = distributorsearcher.searchByField(SEARCH_FIELD, searchForName);

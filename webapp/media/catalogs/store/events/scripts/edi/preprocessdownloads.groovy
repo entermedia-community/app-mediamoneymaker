@@ -235,7 +235,8 @@ try {
 	}
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	archive.fireSharedMediaEvent("processinvoices");
-//	archive.fireSharedMediaEvent("importediasn");
+	archive.fireSharedMediaEvent("processasns");
+	archive.fireSharedMediaEvent("processinventory");
 	
 }
 finally {
