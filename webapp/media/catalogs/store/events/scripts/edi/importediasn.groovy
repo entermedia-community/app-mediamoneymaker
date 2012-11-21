@@ -262,10 +262,10 @@ public class ImportEDIASN extends EnterMediaObject {
 									}
 									if ((foundFlag) && (errMsg.length() == 0)) {
 										
-										Product product = media.getProductSearcher().searchById(productID);
-										InventoryItem productInventory = product.getInventoryItem(0);
-										productInventory.setQuantityInStock(Integer.parseInt(quantityShipped));
-										media.getProductSearcher().saveData(product, context.getUser());
+//										Product product = media.getProductSearcher().searchById(productID);
+//										InventoryItem productInventory = product.getInventoryItem(0);
+//										productInventory.setQuantityInStock(Integer.parseInt(quantityShipped));
+//										media.getProductSearcher().saveData(product, context.getUser());
 																				
 										SearchQuery itemQuery = media.getItemSearcher().createSearchQuery();
 										itemQuery.addExact("store", storeNumber);
