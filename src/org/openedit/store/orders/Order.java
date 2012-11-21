@@ -18,6 +18,7 @@ import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.ShippingMethod;
+import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
 
@@ -56,11 +57,25 @@ public class Order extends BaseData implements Comparable
 	protected Map fieldProperties;
 	
 	protected Cart fieldCart;
+	protected Address fieldShippingAddress;
+	protected Address fieldBillingAddress;
 	
 	
 	
 	
 	
+	public Address getShippingAddress() {
+		return fieldShippingAddress;
+	}
+	public void setShippingAddress(Address inShippingAddress) {
+		fieldShippingAddress = inShippingAddress;
+	}
+	public Address getBillingAddress() {
+		return fieldBillingAddress;
+	}
+	public void setBillingAddress(Address inBillingAddress) {
+		fieldBillingAddress = inBillingAddress;
+	}
 	public Cart getCart()
 	{
 	if (fieldCart == null)
@@ -344,5 +359,6 @@ public class Order extends BaseData implements Comparable
 	public void setTaxes(Map inTaxes) {
 		fieldTaxes = inTaxes;
 	}
+	
 
 }

@@ -707,12 +707,13 @@ public class CartModule extends BaseStoreModule
 		if(cart.getAdjustments() != null){
 			order.setAdjustments(cart.getAdjustments());
 		}
+		order.setShippingAddress(cart.getShippingAddress());
 		// Export order to XML
 		store.saveOrder(order);
 		// process the order with the varous processors
 		inPageRequest.putPageValue("order", order);
 		store.processOrder(inPageRequest, order);
-
+		
 		if (order.getOrderStatus().isOk())
 		{
 			// Remove items from stock

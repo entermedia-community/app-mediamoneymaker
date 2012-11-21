@@ -153,6 +153,42 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						.toShortString());
 			}
 
+			Address shipping = inOrder.getShippingAddress();
+			if(shipping != null){
+				Element shippingElem = orderElem.addElement("shipping-address");
+				
+				shippingElem.addAttribute("address1", shipping.getAddress1());
+				shippingElem.addAttribute("address2", shipping.getAddress2());
+				shippingElem.addAttribute("address1", shipping.getCity());
+				shippingElem.addAttribute("address1", shipping.getCountry());
+				shippingElem.addAttribute("address1", shipping.getState());
+				shippingElem.addAttribute("address1", shipping.getZipCode());
+				shippingElem.addAttribute("address1", shipping.getDescription());
+				
+				
+				
+				
+			}
+			
+			Address billing = inOrder.getBillingAddress();
+			if(billing != null){
+				Element shippingElem = orderElem.addElement("billing-address");
+				
+				shippingElem.addAttribute("address1", billing.getAddress1());
+				shippingElem.addAttribute("address2", billing.getAddress2());
+				shippingElem.addAttribute("address1", billing.getCity());
+				shippingElem.addAttribute("address1", billing.getCountry());
+				shippingElem.addAttribute("address1", billing.getState());
+				shippingElem.addAttribute("address1", billing.getZipCode());
+				shippingElem.addAttribute("address1", billing.getDescription());
+				
+				
+				
+				
+			}
+			
+			
+			
 			// add detailed tax information
 			Map taxes = inOrder.getTaxes();
 			if (taxes != null) {
@@ -315,7 +351,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		itemElem.addAttribute("product_id", inItem.getProduct().getId());
 		itemElem.addAttribute("quantity", String.valueOf(inItem.getQuantity()));
 		itemElem.addAttribute("price", inItem.getYourPrice().toShortString());
-		itemElem.addAttribute("shipto", inItem.getShippingPrefix());
+		//itemElem.addAttribute("shipto", inItem.getShippingPrefix());
 		itemElem.addAttribute("status", inItem.getStatus());
 
 		for (Iterator it = inItem.getOptions().iterator(); it.hasNext();) {
