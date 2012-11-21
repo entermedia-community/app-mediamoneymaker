@@ -241,4 +241,11 @@
   	<property name="moduleManager"><ref bean="moduleManager" /></property>
   </bean>
   
+  
+   <bean id="DistributorModule" class="org.openedit.store.modules.DistributorModule">
+  	<property name="searcherManager"><ref bean="searcherManager"/></property>  
+  </bean>
+  
+  
+  
 </beans>
