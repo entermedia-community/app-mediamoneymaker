@@ -263,6 +263,10 @@
 	</bean>
 	
 	
+	<bean id="address" class="org.openedit.store.customer.Address" singleton="false">
+		
+	
+	</bean>
 	
   
   

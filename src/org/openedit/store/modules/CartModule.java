@@ -186,6 +186,7 @@ public class CartModule extends BaseStoreModule
 	{
 		Cart cart = getCart(inPageRequest);
 		getProductAdder().updateCart(inPageRequest, cart);
+		
 	}
 
 	/**
@@ -352,7 +353,7 @@ public class CartModule extends BaseStoreModule
 			populateCustomerAddress(inPageRequest, customer
 					.getShippingAddress());
 		}
-
+		
 		List taxrates = cart.getStore().getTaxRatesFor(
 				customer.getShippingAddress().getState());
 		if(customer.getShippingAddress().getState() == null){
@@ -370,6 +371,9 @@ public class CartModule extends BaseStoreModule
 		log.debug("Setting cart customer to " + customer);
 		cart.setCustomer(customer);
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
+		cart.setShippingAddress(customer.getShippingAddress());
+		cart.setBillingAddress(customer.getBillingAddress());
+		
 		inPageRequest.putPageValue("customer", customer);
 	}
 
@@ -460,7 +464,6 @@ public class CartModule extends BaseStoreModule
 			{
 				String prefix = current[i];
 				Address address = new Address();
-				address.setPropertyContainer(user);
 				address.setPrefix(prefix);
 				address.setAddress1((String) user.getProperty(prefix
 						+ "Address1"));
@@ -490,7 +493,6 @@ public class CartModule extends BaseStoreModule
 		Cart cart = getCart(inPageRequest);
 		Customer customer = cart.getCustomer();
 		Address address = new Address();
-		address.setPropertyContainer(customer.getUser());
 		address.setPrefix(prefix);
 		populateCustomerAddress(inPageRequest, address);
 		customer.addAddress(address);

@@ -156,18 +156,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			Address shipping = inOrder.getShippingAddress();
 			if(shipping != null){
 				Element shippingElem = orderElem.addElement("shipping-address");
-				
 				shippingElem.addAttribute("address1", shipping.getAddress1());
 				shippingElem.addAttribute("address2", shipping.getAddress2());
-				shippingElem.addAttribute("address1", shipping.getCity());
-				shippingElem.addAttribute("address1", shipping.getCountry());
-				shippingElem.addAttribute("address1", shipping.getState());
-				shippingElem.addAttribute("address1", shipping.getZipCode());
-				shippingElem.addAttribute("address1", shipping.getDescription());
-				
-				
-				
-				
+				shippingElem.addAttribute("city", shipping.getCity());
+				shippingElem.addAttribute("country", shipping.getCountry());
+				shippingElem.addAttribute("state", shipping.getState());
+				shippingElem.addAttribute("zip", shipping.getZipCode());
+				shippingElem.addAttribute("description", shipping.getDescription());			
 			}
 			
 			Address billing = inOrder.getBillingAddress();
@@ -176,11 +171,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				
 				shippingElem.addAttribute("address1", billing.getAddress1());
 				shippingElem.addAttribute("address2", billing.getAddress2());
-				shippingElem.addAttribute("address1", billing.getCity());
-				shippingElem.addAttribute("address1", billing.getCountry());
-				shippingElem.addAttribute("address1", billing.getState());
-				shippingElem.addAttribute("address1", billing.getZipCode());
-				shippingElem.addAttribute("address1", billing.getDescription());
+				shippingElem.addAttribute("city", billing.getCity());
+				shippingElem.addAttribute("country", billing.getCountry());
+				shippingElem.addAttribute("state", billing.getState());
+				shippingElem.addAttribute("zip", billing.getZipCode());
+				shippingElem.addAttribute("description", billing.getDescription());			
 				
 				
 				
@@ -246,11 +241,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			if (user2 != null) {
 				customerElem.addAttribute("userfield2", user2);
 			}
-			for (Iterator iterator = customer.getAddressList().iterator(); iterator
-					.hasNext();) {
-				Address address = (Address) iterator.next();
-				appendAddress(customerElem, address);
-			}
+//			for (Iterator iterator = customer.getAddressList().iterator(); iterator
+//					.hasNext();) {
+//				Address address = (Address) iterator.next();
+//				appendAddress(customerElem, address);
+//			}
 			/*
 			 * if ( customer.getBillingAddress() != null &&
 			 * customer.getBillingAddress().getAddress1() != null ) {
@@ -583,12 +578,45 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		customer.setUserField2(customerElem.attributeValue("userfield2"));
 		customer.setEmail(customerElem.attributeValue("email"));
 		customer.setFax(customerElem.attributeValue("fax"));
-		for (Iterator it = customerElem.elementIterator("address"); it
-				.hasNext();) {
-			Element addressElem = (Element) it.next();
-			Address address = makeAddress(addressElem);
-			customer.addAddress(address);
+//		for (Iterator it = customerElem.elementIterator("address"); it
+//				.hasNext();) {
+//			Element addressElem = (Element) it.next();
+//			Address address = makeAddress(addressElem);
+//			customer.addAddress(address);
+//		}
+		
+		Element shippingaddress = inOrderElement.element("shipping-address");
+		if(shippingaddress != null){
+			Address shipping = new Address();
+			shipping.setAddress1(shippingaddress.attributeValue("address1"));
+			shipping.setAddress2(shippingaddress.attributeValue("address2"));
+			shipping.setCity(shippingaddress.attributeValue("city"));
+			shipping.setCountry(shippingaddress.attributeValue("country"));
+			shipping.setState(shippingaddress.attributeValue("state"));
+			shipping.setZipCode(shippingaddress.attributeValue("zip"));
+			shipping.setDescription(shippingaddress.attributeValue("description"));
+			
+			
 		}
+		
+
+		Element billingaddress = inOrderElement.element("billing-address");
+		if(billingaddress != null){
+			Address billing = new Address();
+			billing.setAddress1(shippingaddress.attributeValue("address1"));
+			billing.setAddress2(shippingaddress.attributeValue("address2"));
+			billing.setCity(shippingaddress.attributeValue("city"));
+			billing.setCountry(shippingaddress.attributeValue("country"));
+			billing.setState(shippingaddress.attributeValue("state"));
+			billing.setZipCode(shippingaddress.attributeValue("zip"));
+			billing.setDescription(shippingaddress.attributeValue("description"));
+			
+			
+		}
+
+		
+		
+		
 		List items = new ArrayList();
 		for (Iterator it = inOrderElement.elementIterator("item"); it.hasNext();) {
 			Element itemElement = (Element) it.next();

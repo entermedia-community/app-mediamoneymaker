@@ -35,7 +35,16 @@ public class Cart
 	protected Category fieldLastVisitedCatalog;
 	protected Category fieldLastLoadedCatalog;
 	protected Address fieldShippingAddress;
-	
+	public Address getBillingAddress() {
+		return fieldBillingAddress;
+	}
+
+	public void setBillingAddress(Address inBillingAddress) {
+		fieldBillingAddress = inBillingAddress;
+	}
+
+	protected Address fieldBillingAddress;
+
 
 	public Cart()
 	{

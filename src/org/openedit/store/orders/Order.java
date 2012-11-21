@@ -36,7 +36,6 @@ public class Order extends BaseData implements Comparable
 	public final static String COMPLETED = "completed";
 	public final static String REJECTED = "rejected";
 		
-	protected String fieldId;
 	protected Customer fieldCustomer;
 	protected List fieldItems;
 	protected List fieldAdjustments;

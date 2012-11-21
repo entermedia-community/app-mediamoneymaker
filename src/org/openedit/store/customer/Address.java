@@ -3,13 +3,15 @@
  */
 package org.openedit.store.customer;
 
+import org.openedit.data.BaseData;
+
 import com.openedit.users.PropertyContainer;
 
 /**
  * @author dbrown
  *
  */
-public class Address
+public class Address extends BaseData
 {
 	protected PropertyContainer fieldPropertyContainer;
 	protected String fieldPrefix;
@@ -26,20 +28,8 @@ public class Address
 	{
 	}
 
-	public Address(PropertyContainer inPropertyContainer)
-	{
-		setPropertyContainer(inPropertyContainer);
-	}
 
-	protected String getProperty(String inPropertyName)
-	{
-		return (String)getPropertyContainer().get(getPrefix() + inPropertyName);
-	}
-
-	protected void putProperty(String inPropertyName, String inValue)
-	{
-		getPropertyContainer().safePut(getPrefix() + inPropertyName, inValue);
-	}
+	
 
 	public String getPrefix()
 	{
@@ -56,51 +46,51 @@ public class Address
 
 	public String getAddress1()
 	{
-		return getProperty(ADDRESS1);
+		return get(ADDRESS1);
 	}
 	public void setAddress1(String inAddress1)
 	{
-		putProperty(ADDRESS1, inAddress1);
+		setProperty(ADDRESS1, inAddress1);
 	}
 	public String getAddress2()
 	{
-		return getProperty(ADDRESS2);
+		return get(ADDRESS2);
 	}
 	public void setAddress2(String inAddress2)
 	{
-		putProperty(ADDRESS2, inAddress2);
+		setProperty(ADDRESS2, inAddress2);
 	}
 	public String getCity()
 	{
-		return getProperty(CITY);
+		return get(CITY);
 	}
 	public void setCity(String inCity)
 	{
-		putProperty(CITY, inCity);
+		setProperty(CITY, inCity);
 	}
 	public String getCountry()
 	{
-		return getProperty(COUNTRY);
+		return get(COUNTRY);
 	}
 	public void setCountry(String inCountry)
 	{
-		putProperty(COUNTRY, inCountry);
+		setProperty(COUNTRY, inCountry);
 	}
 	public String getState()
 	{
-		return getProperty(STATE);
+		return get(STATE);
 	}
 	public void setState(String inState)
 	{
-		putProperty(STATE, inState);
+		setProperty(STATE, inState);
 	}
 	public String getZipCode()
 	{
-		return getProperty(ZIP);
+		return get(ZIP);
 	}
 	public String get5DigitZipCode()
 	{
-		String zip = getProperty(ZIP);
+		String zip = get(ZIP);
 		if (getCountry().equals("USA") && zip.length() > 5)
 		{
 			zip = zip.substring(0,5);
@@ -110,18 +100,10 @@ public class Address
 
 	public void setZipCode(String inZipCode)
 	{
-		putProperty(ZIP, inZipCode);
+		setProperty(ZIP, inZipCode);
 	}
 
-	public PropertyContainer getPropertyContainer()
-	{
-		return fieldPropertyContainer;
-	}
-	public void setPropertyContainer(PropertyContainer inPropertyContainer)
-	{
-		fieldPropertyContainer = inPropertyContainer;
-	}
-
+	
 	public void setCityState( String inCityState )
 	{
 		if ( inCityState != null && inCityState.indexOf(",") > -1)
@@ -137,11 +119,11 @@ public class Address
 	}
 	public String getDescription()
 	{
-		return getProperty(DESCRIPTION);
+		return get(DESCRIPTION);
 	}
 	public void setDescription(String inDescription)
 	{
-		putProperty(DESCRIPTION, inDescription);
+		setProperty(DESCRIPTION, inDescription);
 	}
 	
 	public String toString()
