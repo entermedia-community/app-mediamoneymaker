@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat
 
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
@@ -21,6 +21,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 	private static final String FOUND = "Found"
 	private static final String NOT_FOUND = "NOT FOUND!";
 	private static final String ADDED = "Added";
+	private static final String CESIUM_ID = "105";
 	private static String strMsg = "";
 
 	public PublishResult importEdiXml() {
@@ -68,8 +69,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 
 				String realpath = page.getContentItem().getAbsolutePath();
 
-				File xmlFIle = new File(realpath);
-				if (xmlFIle.exists()) {
+				File xmlFile = new File(realpath);
+				if (xmlFile.exists() && xmlFile.isFile()) {
 
 					//Create the XMLSlurper Object
 					def INVOICE = new XmlSlurper().parse(page.getReader());
@@ -83,6 +84,18 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							distributorID = DISTRIB.getId();
 							log.info("Distributor Found: " + distributor);
 							log.info("Distributor ID: " + distributorID);
+							if (distributorID.equals(CESIUM_ID)) {
+								result = movePageToCesium(pageManager, page, media.getCatalogid());
+								if (result.isComplete()) {
+									String inMsg = "Invoice File(" + page.getName() + ") has been moved to Cesium processing.";
+									strMsg += output.appendList(inMsg);
+									log.info(inMsg);
+								} else {
+									String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
+									result.appendErrorMessage(output.appendList(inMsg));
+								}
+								continue;
+							}
 						} else {
 							String inMsg = "ERROR: Distributor cannot be found.";
 							log.info(inMsg);
@@ -382,12 +395,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							}
 						}
 					}
-
-				} else {
-					String inMsg = realpath + " does not exist!";
-					log.info(inMsg);
-					result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
-					//throw new OpenEditException(inMsg);
 				}
 			}
 			result.setCompleteMessage(strMsg);
@@ -422,6 +429,23 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			processedFolder += "errors/";
 		}
 
+		String destinationFile = processedFolder + page.getName();
+		Page destination = pageManager.getPage(destinationFile);
+		pageManager.movePage(page, destination);
+		if (destination.exists()) {
+			move.setCompleteMessage(page.getName() + " has been moved to " + destinationFile);
+			move.setComplete(true);
+		} else {
+			move.setErrorMessage(page.getName() + " could not be moved.");
+		}
+		return move;
+	}
+	private PublishResult movePageToCesium(PageManager pageManager, Page page, String catalogid) {
+
+		PublishResult move = new PublishResult();
+		move.setComplete(false);
+
+		String processedFolder = "/WEB-INF/data/${catalogid}/incoming/invoices/cesium/";
 		String destinationFile = processedFolder + page.getName();
 		Page destination = pageManager.getPage(destinationFile);
 		pageManager.movePage(page, destination);

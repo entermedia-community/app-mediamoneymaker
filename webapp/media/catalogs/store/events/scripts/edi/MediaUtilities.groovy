@@ -181,48 +181,38 @@ public class MediaUtilities extends EnterMediaObject {
 
 	}
 	public Data searchForOrder( String searchForName ) {
-
 		Data rogersOrder = ordersearcher.searchById(searchForName);
 		return rogersOrder;
-
 	}
 
 	public Data searchForStore( String searchForName ) {
-
 		String SEARCH_FIELD = "store";
 		Data rogersStore = storesearcher.searchByField(SEARCH_FIELD, searchForName);
-
 		return rogersStore;
-
 	}
-
+	public Data searchForStoreByID( String storeID ) {
+		Data rogersStore = storesearcher.searchById(storeID);
+		return rogersStore;
+	}
+		
 	public HitTracker searchForStoreInOrder( String orderid, String store_number ) {
-
 		SearchQuery itemQuery = storesearcher.createSearchQuery();
 		itemQuery.addExact("store", store_number);
 		itemQuery.addExact("rogers_order", orderid);
 		HitTracker orderitems = storesearcher.search(itemQuery);
-
 		return orderitems;
-
 	}
 
 	public Data searchForProductbyUPC( String searchForName ) {
-
 		String SEARCH_FIELD = "upc";
 		Data product = productsearcher.searchByField(SEARCH_FIELD, searchForName);
-
 		return product;
-
 	}
 	
 	public Data searchForProductbyRogersSKU( String searchForName ) {
-
 		String SEARCH_FIELD = "rogerssku";
 		Data product = productsearcher.searchByField(SEARCH_FIELD, searchForName);
-
 		return product;
-
 	}
 	
 	public String getManufacturerID(String searchForName) {
@@ -235,7 +225,6 @@ public class MediaUtilities extends EnterMediaObject {
 
 	// ADD UTILITIES
 	public Data addManufacturer(String manufacturerName) {
-
 		Data manufacturer = manufacturersearcher.searchByField("name", manufacturerName);
 		if (manufacturer == null) {
 			manufacturer = manufacturersearcher.createNewData();
@@ -269,6 +258,7 @@ public class MediaUtilities extends EnterMediaObject {
 		Data storeInfo = storesearcher.searchById(storeID);
 		return storeInfo.getName();
 	}
+	
 	public String getProductName(String productID) {
 		Data productInfo = productsearcher.searchById(productID);
 		return productInfo.getName();
