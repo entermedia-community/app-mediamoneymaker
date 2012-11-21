@@ -7,11 +7,12 @@
 	               <ul id="settings-menu" class="sidebar-list">
   
           
-                #set($mans = $searcherManager.getList("media/catalogs/store", "categoryid"))
-               
+                ##set($mans = $searcherManager.getList("media/catalogs/store", "categoryid"))
+               	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "categoryid").fieldSearch("id", "*", "name"))
+               	
           	#foreach($man in $mans)
 			
-                	<li #if($velocityCount > 10) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=startswith">$man.name</a></li>
+                	<li #if($velocityCount > 10) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact">$man.name</a></li>
                 	
                 	#end
                 	#if($mans.size() > 10)
@@ -28,7 +29,7 @@
                 #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
                
           	#foreach($man in $mans)
-                	<li #if($velocityCount > 10)  class="hidden-item manu"  #end ><a href="$apphome/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=startswith">$man.name</a></li>
+                	<li #if($velocityCount > 10)  class="hidden-item manu"  #end ><a href="$apphome/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact">$man.name</a></li>
                
                 	
 			

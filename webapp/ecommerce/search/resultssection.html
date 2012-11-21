@@ -1,0 +1,36 @@
+<ul class="products-list">
+
+#foreach ( $cell in $hits.getPageOfHits() )
+
+			#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
+	#set ($sourcepath = $cell.sourcepath)
+	
+
+	#set( $tsize = "$home$cataloghome/downloads/preview/135crop/productimages/$cell.sourcepath/thumb.jpg")
+
+	
+	#set( $msize = "$home$cataloghome/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
+	<li class="product-listing">
+	    
+		<a href="$clink"><img src="$tsize" border="0" width="170" height="135" /></a>
+		
+		<div class="product-details">
+		    <div class="product-title">
+                <a href="$clink">$cell.name</a> 
+            </div>
+            <div class="product-cat">
+                <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer)</a> 
+            </div>
+            <div class="product-price">
+		        #if( $cell.regularprice ) 
+		        	Sale: $cell.yourprice
+		    		$cell.regularprice
+		        #else
+		        	$cell.yourprice
+		        #end
+            </div>
+        </div>
+    </li>
+#end
+
+</ul>

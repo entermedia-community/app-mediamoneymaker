@@ -1,21 +1,15 @@
+#set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true"))
+$featured.setHitsPerPage(4)
+$context.putPageValue("hits", $featured)
+<h1>Top Sellers</h1>
+$pages.include("$apphome/search/resultssection.html", $context)
 
-     <div id="right-col" class="">
-                        
-	   <h2 style="text-align:center; color:#dd1f38; font-weight: bold;">  Welcome to the Rogers Accessories  Portal</h2>
-<p>In an effort to recognize our Dealer partners continued support, Rogers is happy to announce Phase 1 of our New Accessories Catalogue Incentive Platform.
-At Rogers we are committed to ensuring that your voice is heard and your loyalty is rewarded.</p><p>  Our online accessories catalogue has been redesigned to help you place your orders more effectively.  Phase 1 will allow you to build your shopping cart with the accessories you need and be rewarded on your purchases.
-We have engaged our Manufacturer Partners to contribute to our new strategy and we are very pleased to announce that Samsung has taken the lead in this initiative (please click on the Samsung logo for more details regarding their current spiffs and promotions) and we anticipate that the other Manufacturers will be joining us soon.
-By clicking on the specific manufacturers’ microsite, you will find the most current promotions and the rules of each incentive so you can earn your rewards.  Once you view the promotions, fill up your shopping cart and check out, your order will then be emailed to you.  This step is important to prepare for Phase 2 and to have your orders counted for the quarterly payout.  Follow your regular process through DOAT to order your Accessories and enjoy your savings.
-</p>
-<i> - Your Rogers Accessories Team</i>
-</div>
-<div style="clear: both;">
-</div>
+<h1>Recently Added</h1>
 
+#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random"))
+$topsellers.setHitsPerPage(8)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
 
 
 
-	  
-	  
-	 
-     

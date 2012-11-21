@@ -1,5 +1,0 @@
-<page>
-	<property name="tab">myaccountuser</property>
-	<inner-layout>/${applicationid}/myaccount/user/layout.html</inner-layout>
-	<property name="virtual">true</property>
-</page>

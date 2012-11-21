@@ -17,9 +17,6 @@
              #if($page.isPropertyTrue("multipleaddress"))
             <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html"> Manage Addresses</a>)</td>
             #end
-             #if($canvieweol)
-            	<td class="prodhead" >Store</td>
-            #end
             
             #if($canvieweol)
             	<td class="prodhead" style="width: 200px;">EOL</td>
@@ -137,24 +134,7 @@
      	
      	#if($canvieweol)
         
-        <td>
-        <input type="hidden" name="field" value="store">
-        <select name= "store.value.$productcounter" style="width:100px"> $item.store
-    	   #set($storesearcher = $searcherManager.getSearcher($catalogid, "profile_address_list" ))
-	                 #set($rogers = $user.isInGroup("rogers"))
-	                  <!-- 
-	                 #set($query = $storesearcher.createSearchQuery())
-	                 $query.addMatches("profileid", "$user.id")
-	                 $query.setSortBy("level")
-	                 #set($stores = $storesearcher.search($query) )
-	                  -->
-    	  
-    	   #foreach ($store in $stores)
-    	   		
-            <option value="$store.id" #if($item.store == $store.id) SELECTED #end>$store.name</option>
-    		#end
-     	</select>
-        </td>
+      
         		
         		            	<td class="prodhead" style="width: 120px;">
         		 				

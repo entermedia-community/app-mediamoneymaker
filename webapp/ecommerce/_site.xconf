@@ -75,8 +75,5 @@
   
   	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable" allowduplicates="true" class="org.openedit.util.DateStorageUtil" />
     	<path-action bean="Date" name="PageValue.loadPageVariable" allowduplicates="true" class="java.util.Date" />
-  <path-action name="Script.run">
-  <script>/${catalogid}/events/scripts/profile/checkprofile.groovy</script>
-  
-  </path-action>
+
 </page>
