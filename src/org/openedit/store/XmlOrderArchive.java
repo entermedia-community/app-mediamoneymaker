@@ -772,7 +772,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 	}
 
 	protected Address makeAddress(Element inAddressElem) {
-		Address address = new Address(new MapPropertyContainer());
+		Address address = new Address();
 		address.setAddress1(inAddressElem.attributeValue("address1"));
 		address.setAddress2(inAddressElem.attributeValue("address2"));
 		address.setCity(inAddressElem.attributeValue("city"));
