@@ -44,7 +44,7 @@ public class Order extends BaseData implements Comparable
 	protected Money fieldTotalShipping;
 	
 	protected Map fieldTaxes;
-	
+	protected List fieldShipments;
 	
 	protected Money fieldTax;
 	protected Money fieldSubTotal;
@@ -58,10 +58,6 @@ public class Order extends BaseData implements Comparable
 	protected Cart fieldCart;
 	protected Address fieldShippingAddress;
 	protected Address fieldBillingAddress;
-	
-	
-	
-	
 	
 	public Address getShippingAddress() {
 		return fieldShippingAddress;
@@ -229,7 +225,7 @@ public class Order extends BaseData implements Comparable
 
 	public String toString()
 	{
-		return "Order " + getId() + " on " + getDate() + ":\n" 			+ getPaymentMethod();
+		return "Order: " + getId();
 	}
 	
 	/**
@@ -257,6 +253,9 @@ public class Order extends BaseData implements Comparable
 	}
 	public List getItems()
 	{
+		if (fieldItems == null) {
+			fieldItems = new ArrayList();
+		}
 		return fieldItems;
 	}
 	public void setItems(List inItems)
@@ -359,5 +358,50 @@ public class Order extends BaseData implements Comparable
 		fieldTaxes = inTaxes;
 	}
 	
-
+	// SHIPMENT INFO //
+	public void addShipment(Shipment inShipment) {
+		getShipments().add(inShipment);
+	}
+	public List getShipments() {
+		if (fieldShipments == null) {
+			fieldShipments = new ArrayList();
+		}
+		return fieldShipments;
+	}
+	public void setShipments(List inShipments) {
+		fieldShipments = inShipments;
+	}
+	
+	public boolean isFullyShipped(CartItem cartItem) {
+		boolean completed = false;
+		
+		int total = 0;
+		
+		for (Iterator iterator = getShipments().iterator(); iterator.hasNext();) {
+			Shipment shipment = (Shipment) iterator.next();
+			for (Iterator iterator2 = shipment.getShipmentEntries().iterator(); iterator2
+					.hasNext();) {
+				ShipmentEntry entry = (ShipmentEntry) iterator2.next();
+				if(entry.getItem().equals(cartItem)){
+					total += entry.getQuantity();
+				}
+			}
+		}
+		return total == cartItem.getQuantity();
+	}
+	public boolean isFullyShipped() {
+		boolean completed = false;
+		
+		List<CartItem> cartItems = getItems();
+		if (cartItems.size() > 0) {
+			for (int ctr=0; ctr < cartItems.size(); ctr ++) {
+				CartItem item = cartItems.get(ctr);
+				completed = isFullyShipped(item);
+				if (!completed) {
+					break;
+				}
+			}
+		}
+		return completed;
+	}
 }

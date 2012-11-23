@@ -7,9 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +32,8 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Shipment;
+import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.ElementData;
@@ -44,7 +43,6 @@ import com.openedit.OpenEditRuntimeException;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.filesystem.FileSystemUser;
-import com.openedit.users.filesystem.MapPropertyContainer;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.StringEncryption;
 import com.openedit.util.XmlUtil;
@@ -56,7 +54,7 @@ import com.openedit.util.XmlUtil;
 public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		OrderArchive {
 	private static final Log log = LogFactory.getLog(XmlOrderArchive.class);
-	
+
 	protected static final String ORDERS_FILENAME = "orders.xml";
 	protected PostMail postMail;
 	protected XmlUtil fieldXmlUtil;
@@ -82,7 +80,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				OrderState state = new OrderState();
 				state.setId(element.attributeValue("id"));
 				state.setDescription(element.getText());
-				
+
 				list.put(state.getId(), state);
 			}
 		} catch (OpenEditException e) {
@@ -94,12 +92,12 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		// state.setId(Order.ACCEPTED);
 		// state.setDescription("Accepted");
 		// list.put(state.getId(),state);
-		//		
+		//
 		// state = new OrderState();
 		// state.setId(Order.AUTHORIZED);
 		// state.setDescription("Authorized");
 		// list.put(state.getId(),state);
-		//		
+		//
 		//
 		// state = new OrderState();
 		// state.setId(Order.COMPLETED);
@@ -133,12 +131,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					"order");
 			// add node for order, with basic information about it
 			orderElem.addAttribute("order_number", inOrder.getId());
-			orderElem.addAttribute("date", DateStorageUtil.getStorageUtil().formatForStorage(inOrder.getDate()));
-			
+			orderElem.addAttribute("date", DateStorageUtil.getStorageUtil()
+					.formatForStorage(inOrder.getDate()));
+
 			ShippingMethod shippingMethod = inOrder.getShippingMethod();
 			if (shippingMethod != null) {
-				orderElem.addAttribute("shipping_method", shippingMethod
-						.getId());
+				orderElem.addAttribute("shipping_method",
+						shippingMethod.getId());
 			}
 			Money sub = inOrder.getSubTotal();
 			if (sub != null) {
@@ -146,15 +145,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				orderElem.addAttribute("tax", inOrder.getTax().toShortString());
 				Money shippingcost = inOrder.getTotalShipping();
 				if (shippingcost != null) {
-					orderElem.addAttribute("shipping_cost", shippingcost
-							.toShortString());
+					orderElem.addAttribute("shipping_cost",
+							shippingcost.toShortString());
 				}
 				orderElem.addAttribute("total", inOrder.getTotalPrice()
 						.toShortString());
 			}
 
 			Address shipping = inOrder.getShippingAddress();
-			if(shipping != null){
+			if (shipping != null) {
 				Element shippingElem = orderElem.addElement("shipping-address");
 				shippingElem.addAttribute("address1", shipping.getAddress1());
 				shippingElem.addAttribute("address2", shipping.getAddress2());
@@ -162,28 +161,24 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				shippingElem.addAttribute("country", shipping.getCountry());
 				shippingElem.addAttribute("state", shipping.getState());
 				shippingElem.addAttribute("zip", shipping.getZipCode());
-				shippingElem.addAttribute("description", shipping.getDescription());			
+				shippingElem.addAttribute("description",
+						shipping.getDescription());
 			}
-			
+
 			Address billing = inOrder.getBillingAddress();
-			if(billing != null){
+			if (billing != null) {
 				Element shippingElem = orderElem.addElement("billing-address");
-				
+
 				shippingElem.addAttribute("address1", billing.getAddress1());
 				shippingElem.addAttribute("address2", billing.getAddress2());
 				shippingElem.addAttribute("city", billing.getCity());
 				shippingElem.addAttribute("country", billing.getCountry());
 				shippingElem.addAttribute("state", billing.getState());
 				shippingElem.addAttribute("zip", billing.getZipCode());
-				shippingElem.addAttribute("description", billing.getDescription());			
-				
-				
-				
-				
+				shippingElem.addAttribute("description",
+						billing.getDescription());
 			}
-			
-			
-			
+
 			// add detailed tax information
 			Map taxes = inOrder.getTaxes();
 			if (taxes != null) {
@@ -194,24 +189,53 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					Element taxentry = orderElem.addElement("taxentry");
 					taxentry.addAttribute("name", rate.getName());
 					taxentry.addAttribute("state", rate.getState());
-					taxentry
-							.addAttribute("rate", rate.getFraction().toString());
+					taxentry.addAttribute("rate", rate.getFraction().toString());
 					taxentry.addAttribute("amount", money.toShortString());
-					taxentry.addAttribute("shipping", String.valueOf(rate
-							.isApplyToShipping()));
+					taxentry.addAttribute("shipping",
+							String.valueOf(rate.isApplyToShipping()));
 				}
 			}
 			List adjustments = inOrder.getAdjustments();
-			if(adjustments != null){
+			if (adjustments != null) {
 				for (Iterator iterator = adjustments.iterator(); iterator
 						.hasNext();) {
 					SaleAdjustment a = (SaleAdjustment) iterator.next();
 					Element adjustment = orderElem.addElement("adjustment");
 					String val = a.getPercentage().getFraction().toString();
 					adjustment.setText(val);
-				}		
+				}
 			}
 			// add customer information, including address
+			// add saveing code for entries
+
+			Element shippingdetails = orderElem.addElement("shipping");
+			for (Iterator iterator = inOrder.getShipments().iterator(); iterator
+					.hasNext();) {
+				Shipment shipment = (Shipment) iterator.next();
+				Element shipElem = orderElem.addElement("shipment");
+				for (Iterator iterator2 = shipment.getProperties().keySet()
+						.iterator(); iterator2.hasNext();) {
+					String key = (String) iterator2.next();
+					String value = shipment.get(key);
+					shipElem.addAttribute(key, value);
+				}
+				for (Iterator iterator3 = shipment.getShipmentEntries()
+						.iterator(); iterator3.hasNext();) {
+					ShipmentEntry entry = (ShipmentEntry) iterator3.next();
+					Element shipEntry = shipElem.addElement("shipping-entry");
+					shipEntry.addAttribute("productid", entry.getItem()
+							.getProduct().getId());
+					shipEntry.addAttribute("quantity",
+							String.valueOf(entry.getQuantity()));
+					for (Iterator iterator4 = entry.getProperties().keySet()
+							.iterator(); iterator4.hasNext();) {
+						String key2 = (String) iterator4.next();
+						String value2 = shipment.get(key2);
+						shipEntry.addAttribute(key2, value2);
+					}
+				}
+
+			}
 
 			Element customerElem = orderElem.addElement("customer");
 			customerElem.addAttribute("customerid", customer.getUserName());
@@ -241,11 +265,12 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			if (user2 != null) {
 				customerElem.addAttribute("userfield2", user2);
 			}
-//			for (Iterator iterator = customer.getAddressList().iterator(); iterator
-//					.hasNext();) {
-//				Address address = (Address) iterator.next();
-//				appendAddress(customerElem, address);
-//			}
+			// for (Iterator iterator = customer.getAddressList().iterator();
+			// iterator
+			// .hasNext();) {
+			// Address address = (Address) iterator.next();
+			// appendAddress(customerElem, address);
+			// }
 			/*
 			 * if ( customer.getBillingAddress() != null &&
 			 * customer.getBillingAddress().getAddress1() != null ) {
@@ -275,15 +300,14 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				}
 				paymentElem.addAttribute("card_type", paymentMethod
 						.getCreditCardType().getId());
-				paymentElem.addAttribute("card_number", encrypt(paymentMethod
-						.getCardNumber()));
-				/*THIS IS A HUGE NO NO!!!! */
-			//				paymentElem.addAttribute("card_verification_code",
-//						encrypt(paymentMethod.getCardVerificationCode()));
-				
-				
-				paymentElem.addAttribute("expiration_date", paymentMethod
-						.getExpirationDateString());
+				paymentElem.addAttribute("card_number",
+						encrypt(paymentMethod.getCardNumber()));
+				/* THIS IS A HUGE NO NO!!!! */
+				// paymentElem.addAttribute("card_verification_code",
+				// encrypt(paymentMethod.getCardVerificationCode()));
+
+				paymentElem.addAttribute("expiration_date",
+						paymentMethod.getExpirationDateString());
 				boolean bill = paymentMethod.getBillMeLater();
 				paymentElem.addAttribute("bill_me_later", String.valueOf(bill));
 				paymentElem.addAttribute("note", paymentMethod.getNote());
@@ -312,8 +336,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			}
 			writeXmlFile(orderElem, customerOrdersFile);
 		} catch (Exception e) {
-			log.error("Could not archive this order request:\n"
-					+ inOrder.getId(), e);
+			log.error(
+					"Could not archive this order request:\n" + inOrder.getId(),
+					e);
 			inOrder.getOrderStatus().setDescription(
 					"Order could not be sent: " + e.getMessage());
 			inOrder.getOrderStatus().setOk(false);
@@ -346,7 +371,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		itemElem.addAttribute("product_id", inItem.getProduct().getId());
 		itemElem.addAttribute("quantity", String.valueOf(inItem.getQuantity()));
 		itemElem.addAttribute("price", inItem.getYourPrice().toShortString());
-		//itemElem.addAttribute("shipto", inItem.getShippingPrefix());
+		// itemElem.addAttribute("shipto", inItem.getShippingPrefix());
 		itemElem.addAttribute("status", inItem.getStatus());
 
 		for (Iterator it = inItem.getOptions().iterator(); it.hasNext();) {
@@ -385,8 +410,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 	protected File getOrderFile(Store inStore, Order inOrder) {
 		return new File(getOrdersDirectory(inStore), inOrder.getCustomer()
-				.getUserName()
-				+ "/" + inOrder.getId() + ".xml");
+				.getUserName() + "/" + inOrder.getId() + ".xml");
 	}
 
 	public List listAllOrderIds(Store inStore) {
@@ -484,8 +508,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 	protected void loadSubmittedOrder(Store inStore, Element inOrderElement,
 			SubmittedOrder inOrder) throws StoreException {
 		inOrder.setId(inOrderElement.attributeValue("order_number"));
-		inOrder.setShippingMethod(makeShippingMethod(inStore, inOrderElement
-				.attributeValue("shipping_method")));
+		inOrder.setShippingMethod(makeShippingMethod(inStore,
+				inOrderElement.attributeValue("shipping_method")));
 		String subtotal = inOrderElement.attributeValue("subtotal");
 		if (subtotal != null) {
 			inOrder.setSubTotal(new Money(subtotal));
@@ -509,7 +533,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 		// load taxes
 		HashMap taxes = new HashMap();
-		for (Iterator it = inOrderElement.elementIterator("taxentry"); it.hasNext();) {
+		for (Iterator it = inOrderElement.elementIterator("taxentry"); it
+				.hasNext();) {
 			TaxRate rate = new TaxRate();
 			Element taxentry = (Element) it.next();
 			rate.setFraction(new Fraction(taxentry.attributeValue("rate")));
@@ -517,24 +542,22 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			rate.setState(taxentry.attributeValue("state"));
 			rate.setApplyToShipping(Boolean.parseBoolean(taxentry
 					.attributeValue("shipping")));
-			
 
 		}
 		inOrder.setTaxes(taxes);
-		
+
 		List adjustments = new ArrayList();
-		
-		for (Iterator it = inOrderElement.elementIterator("adjustment"); it.hasNext();) {
+
+		for (Iterator it = inOrderElement.elementIterator("adjustment"); it
+				.hasNext();) {
 			SaleAdjustment rate = new SaleAdjustment();
 			Element adjustment = (Element) it.next();
 			Double discount = Double.parseDouble(adjustment.getText());
 			rate.setPercentDiscount(discount);
-			
 
 		}
 		inOrder.setAdjustments(adjustments);
-		
-		
+
 		// OrderState state = new OrderState();
 		// state.setOk(true);
 		// state.setDescription(inOrderElement.attributeValue("orderstatus"));
@@ -543,7 +566,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		OrderState ostate = inStore.getOrderState(state);
 		if (ostate == null) {
 			ostate = new OrderState();
-			
+
 			ostate.setDescription(state);
 			ostate.setId(state);
 		}
@@ -552,7 +575,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 		try {
 			String formated = inOrderElement.attributeValue("date");
-			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(formated);
+			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(
+					formated);
 			inOrder.setDate(date);
 			inOrder.setDateOrdered(formated);
 		} catch (Exception ex) {
@@ -578,15 +602,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		customer.setUserField2(customerElem.attributeValue("userfield2"));
 		customer.setEmail(customerElem.attributeValue("email"));
 		customer.setFax(customerElem.attributeValue("fax"));
-//		for (Iterator it = customerElem.elementIterator("address"); it
-//				.hasNext();) {
-//			Element addressElem = (Element) it.next();
-//			Address address = makeAddress(addressElem);
-//			customer.addAddress(address);
-//		}
-		
+		// for (Iterator it = customerElem.elementIterator("address"); it
+		// .hasNext();) {
+		// Element addressElem = (Element) it.next();
+		// Address address = makeAddress(addressElem);
+		// customer.addAddress(address);
+		// }
+
 		Element shippingaddress = inOrderElement.element("shipping-address");
-		if(shippingaddress != null){
+		if (shippingaddress != null) {
 			Address shipping = new Address();
 			shipping.setAddress1(shippingaddress.attributeValue("address1"));
 			shipping.setAddress2(shippingaddress.attributeValue("address2"));
@@ -594,14 +618,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			shipping.setCountry(shippingaddress.attributeValue("country"));
 			shipping.setState(shippingaddress.attributeValue("state"));
 			shipping.setZipCode(shippingaddress.attributeValue("zip"));
-			shipping.setDescription(shippingaddress.attributeValue("description"));
-			
-			
+			shipping.setDescription(shippingaddress
+					.attributeValue("description"));
+			inOrder.setShippingAddress(shipping);
 		}
-		
 
 		Element billingaddress = inOrderElement.element("billing-address");
-		if(billingaddress != null){
+		if (billingaddress != null) {
 			Address billing = new Address();
 			billing.setAddress1(shippingaddress.attributeValue("address1"));
 			billing.setAddress2(shippingaddress.attributeValue("address2"));
@@ -609,14 +632,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			billing.setCountry(shippingaddress.attributeValue("country"));
 			billing.setState(shippingaddress.attributeValue("state"));
 			billing.setZipCode(shippingaddress.attributeValue("zip"));
-			billing.setDescription(shippingaddress.attributeValue("description"));
-			
-			
+			billing.setDescription(shippingaddress
+					.attributeValue("description"));
+			inOrder.setBillingAddress(billing);
 		}
 
-		
-		
-		
 		List items = new ArrayList();
 		for (Iterator it = inOrderElement.elementIterator("item"); it.hasNext();) {
 			Element itemElement = (Element) it.next();
@@ -631,14 +651,14 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		for (Iterator it = inOrderElement.elementIterator("extra_info"); it
 				.hasNext();) {
 			Element propElement = (Element) it.next();
-			inOrder.setProperty(propElement.attributeValue("key"), propElement
-					.attributeValue("value"));
+			inOrder.setProperty(propElement.attributeValue("key"),
+					propElement.attributeValue("value"));
 		}
 		for (Iterator it = inOrderElement.elementIterator("property"); it
 				.hasNext();) {
 			Element propElement = (Element) it.next();
-			inOrder.setProperty(propElement.attributeValue("name"), propElement
-					.getText());
+			inOrder.setProperty(propElement.attributeValue("name"),
+					propElement.getText());
 		}
 	}
 
@@ -646,8 +666,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			throws StoreException {
 		CartItem item = new CartItem();
 		// item.setSku(inItemElem.attributeValue("sku"));
-		item.setQuantity(Integer
-				.parseInt(inItemElem.attributeValue("quantity")));
+		item.setQuantity(Integer.parseInt(inItemElem.attributeValue("quantity")));
 
 		item.setYourPrice(new Money(inItemElem.attributeValue("price")));
 		item.setShippingPrefix(inItemElem.attributeValue("shipto"));
