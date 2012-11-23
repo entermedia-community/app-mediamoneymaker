@@ -203,4 +203,111 @@ public class OrderTest extends StoreTestCase {
 
 	}
 
+	
+	
+	
+	
+	public void testOrderShipTracking() throws Exception {
+		Store store = getStore();
+		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
+		OrderModule orderModule = (OrderModule) getFixture().getModuleManager().getModule("OrderModule");
+		ProductControlModule assetControl = (ProductControlModule) getFixture().getModuleManager().getModule("AssetControlModule");
+		WebPageRequest context = getFixture().createPageRequest("/store/index.html");
+		Cart cart = cartModule.getCart(context);
+		cart.setCustomer(new Customer(context.getUser()));
+
+		Product product = new Product();
+		product.setId("abcd");
+		product.addInventoryItem(new InventoryItem("abcd1"));
+
+		Product product2 = new Product();
+		product2.setId("defg");
+		product2.addInventoryItem(new InventoryItem("abcd2"));
+
+		store.saveProduct(product);
+		store.saveProduct(product2);
+		
+		
+		
+		CartItem item = new CartItem();
+		item.setProduct(product);
+		item.setQuantity(10);
+		item.setStatus("accepted");
+		item.setProperty("shipped", "true");
+//		item.setProperty("waybill", "1234");
+//		item.setProperty("quantityshippied", "12");
+		cart.addItem(item);
+
+		CartItem item2 = new CartItem();
+		item2.setProduct(product2);
+		item2.setQuantity(10);
+		item2.setStatus("accepted");
+//		item.setProperty("shipped", "true");
+//		item.setProperty("waybill", "1234");
+//		
+		cart.addItem(item2);
+
+		Order order = store.getOrderGenerator().createNewOrder(store, cart);
+		
+		order.setProperty("notes", "This is a note");
+		
+		
+		Shipment shipment = new Shipment();
+		shipment.setProperty("waybill", "12345");
+		shipment.setProperty("person", "12345");
+		
+		ShipmentEntry entry = new ShipmenEntry();
+		entry.setCartItem(item);
+		entry.setQuantity(5);
+		shipment.addEntry(entry);
+		
+		
+		ShipmentEntry entry = new ShipmenEntry();
+		entry.setCartItem(item2);
+		entry.setQuantity(10);
+		shipment.addEntry(entry);
+		
+		
+		order.addShipment(shipment);
+		
+
+		assertTrue(order.isFullyShipped(item2));
+		assertFalse(order.isFullyShipped(item1));
+		
+		assertFalse(order.isFullyShipped());
+		
+		
+		Shippment shipment2 = new Shippment();
+		
+		
+		ShipmentEntry entry2 = new ShipmenEntry();
+		entry.setCartItem(item);
+		entry.setQuantity(5);
+		shipment2.addEntry(entry);
+		
+		
+		order.addShipment(entry2);
+		
+		assertTrue(order.isFullyShipped(item1));
+		assertTrue(order.isFullyShipped());
+		
+		
+		
+		store.saveOrder(order);
+		String orderid = order.getId();
+
+		order = null;
+		
+		
+	
+		order = store.getOrderArchive().loadSubmittedOrder(store, "admin", orderid);
+		
+		assertTrue(order.isFullyShipped());
+		
+
+	}
+	
+	
+	
+	
 }

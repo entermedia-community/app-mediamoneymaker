@@ -3,14 +3,13 @@
  */
 package org.openedit.store.modules;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.data.Searcher;
 import org.openedit.links.Link;
-import org.openedit.repository.ContentItem;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Category;
@@ -24,17 +23,15 @@ import org.openedit.store.Store;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
-import org.openedit.store.edit.ProductSourcePathCreator;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
-import org.openedit.store.search.ProductProcessor;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.users.User;
-import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
 /**
@@ -784,5 +781,28 @@ public class CartModule extends BaseStoreModule
 		store.getCategoryArchive().reloadCategories();
 	}
 
+	
+	public void loadCustomerAddressList(WebPageRequest inReq){
+		Store store = getStore(inReq);
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+		HitTracker addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
+		inReq.putPageValue("addresslist", addresslist);
+		
+
+	}
+	
+	
+	public void selectShippingAddress(WebPageRequest inReq){
+		
+		Store store = getStore(inReq);
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+		String addressid = inReq.getRequestParameter("address.value");
+		Address address= (Address) addressSearcher.searchById(addressid);
+		getCart(inReq).setShippingAddress(address);
+		
+		
+	}
+	
+	
 	
 }

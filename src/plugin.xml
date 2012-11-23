@@ -258,6 +258,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="newDataName"><value>address</value></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		
 		<property name="prefix"><value>addresses</value></property>
 	</bean>

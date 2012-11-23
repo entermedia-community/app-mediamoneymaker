@@ -3,7 +3,7 @@
  */
 package org.openedit.store.customer;
 
-import org.openedit.data.BaseData;
+import org.openedit.xml.ElementData;
 
 import com.openedit.users.PropertyContainer;
 
@@ -11,7 +11,7 @@ import com.openedit.users.PropertyContainer;
  * @author dbrown
  *
  */
-public class Address extends BaseData
+public class Address extends ElementData
 {
 	protected PropertyContainer fieldPropertyContainer;
 	protected String fieldPrefix;
@@ -29,7 +29,10 @@ public class Address extends BaseData
 	}
 
 
-	
+	public String getProperty(String inKey){
+		return get(inKey);
+		
+	}
 
 	public String getPrefix()
 	{
@@ -128,6 +131,6 @@ public class Address extends BaseData
 	
 	public String toString()
 	{
-		return super.toString() + " prefix: " + getPrefix();
+		return super.toString();
 	}
 }
