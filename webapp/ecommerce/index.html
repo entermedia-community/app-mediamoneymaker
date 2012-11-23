@@ -1,15 +1,22 @@
 #set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true"))
 $featured.setHitsPerPage(4)
 $context.putPageValue("hits", $featured)
-<h1>Top Sellers</h1>
+<h1 style="color: FF3019;">Top Sellers</h1>
 $pages.include("$apphome/search/resultssection.html", $context)
 
-<h1>Recently Added</h1>
+<h1 style="color: FF3019;">Recently Added</h1>
 
 #set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random"))
-$topsellers.setHitsPerPage(8)
+$topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
 
 
 
+
+<a style="color: FF3019;" href="http://localhost:8080/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=4&operation=exact"><h1>Batteries</h1></a>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "4", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)

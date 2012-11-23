@@ -16,42 +16,10 @@
 
 
 
-	#if($canviewdistributorsection)
-
-<li><a href="$apphome/distributors/">Distributors</a></li>
-
-    #end
-	#if($canviewrogerstools)
-                	<li><a href="$apphome/rogers/">Rogers Tools</a></li>
-    #end
-
 
 
  
 
-
-#if ($user)
-
-	#set( $urlbase = "$home$apphome/views/modules" )
-	#set ( $modules = $searcherManager.getList($catalogid, "module") )
-
-#if( $modules.size() > 1)
-<li style="border-right: 1px solid #CCCCCC;"><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) Admin #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
-	<ul id="module-list" style="display: none;">
-		
-		#foreach ( $module in $modules )
-			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
-		#end
-	</ul>
-</li>
-
-#elseif( $canviewhomelink )
-
-<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
-#end
-
-
-#end
 
 
 <li  style="float: right;">
