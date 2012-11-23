@@ -3,10 +3,12 @@
  */
 package org.openedit.store;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -15,6 +17,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.openedit.data.BaseData;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.store.orders.Shipment;
 
 
 /**
@@ -32,6 +35,7 @@ public class CartItem extends BaseData
 	protected Product fieldProduct;
 	protected String fieldShippingPrefix = "shipping";
 	protected String fieldStatus;
+	protected List fieldShipments;
 	public CartItem()
 	{
 		super();
@@ -414,6 +418,14 @@ public class CartItem extends BaseData
 		return getInventoryItem().getHeight();
 		
 	}
+	public List<Shipment> getShipments() {
+		if (fieldShipments == null) {
+			fieldShipments = new ArrayList<Shipment>();
+		}
+		return fieldShipments;
+	}
 
-	
+	public void setShipments(List<Shipment> inShipments) {
+		fieldShipments = inShipments;
+	}
 }
