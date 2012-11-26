@@ -10,19 +10,41 @@
 $pages.stream("./logon.html")
 #end
 
-#if( $cart.hasZeroSubTotal() )
-<form method="post" name="orderForm" action="saveandthanks.html" >
-#else
-<form method="post" name="orderForm" action="checkout3.html">
-#end
-<input type=hidden name="userName" value="$!customer.userName" />
-<input type=hidden name="password" value="$!customer.password" />
+
+
+#set($address = $cart.getShippingAddress())
+
 <table border=0 cellpadding=0 cellspacing=0>
 	<tr>
 #if ( !$store.allowDuplicateAccounts )
 	<td class=body2>For new accounts please enter your <b>shipping and contact</b> information:<br/><br/></td>
 #else
-	<td colspan="2" style="border-bottom: 1px solid #ddd; padding-bottom: 10px;" class=body2><center>Please enter your <b>shipping and contact</b> information:</center></td>
+
+	<td colspan="2" style="border-bottom: 1px solid #ddd; padding-bottom: 10px;" class=body2><center>Please enter your <b>shipping and contact</b> information:
+	
+	 <form id="selectform" name="selectaddress" action="checkout2.html" >
+Select From Existing: <select id="address" name="address.value">
+	<option value=""></option>
+	#foreach($option in $addresslist)
+	<option value="$option.id" #if($address.id ==  $option.id) selected #end>$option.name</option>	
+	#end
+
+</select>
+</form>
+	</center>
+	
+	 
+
+	
+	
+	</td>
+
+
+<form method="post" name="orderForm" action="checkout3.html">
+<input type=hidden name="userName" value="$!customer.userName" />
+<input type=hidden name="password" value="$!customer.password" />
+
+
 #end
 	</tr>
 	<tr>
@@ -34,17 +56,17 @@ $pages.stream("./logon.html")
 	<td colspan="2" class=body2>Company (optional)<br><input type="text" name="company" class="large-field" value="$!customer.company" /></td>
 	</tr>
 	<tr>
-	<td colspan="2" class=body2>Address<br><input type="text" name="shipping.address1.value" id="shipping.address1.value"  class="large-field" value="$!customer.shippingAddress.address1" /></td>
+	<td colspan="2" class=body2>Address<br><input type="text" name="shipping.address1.value" id="shipping.address1.value"  class="large-field" value="$!address.get("address1")" /></td>
 	</tr>
 	<tr>
-	    <td colspan="2" class=body2>Address 2 (optional)<br><input type="text" name="shipping.address2.value" class="large-field" value="$!customer.shippingAddress.address2"  /></td>
+	    <td colspan="2" class=body2>Address 2 (optional)<br><input type="text" name="shipping.address2.value" class="large-field" value="$!address.get('address2')"  /></td>
 	</tr>
 	<tr>
-	<td class=body2>City<br><input type="text" name="shipping.city.value" id="shipping.city.value" class="small-field" value="$!customer.shippingAddress.city"/></td>
-	<td class=body2>State or Province<br><input type="text" name="shipping.state.value" id="shipping.state.value" class="small-field" value="$!customer.shippingAddress.state" /></td>
+	<td class=body2>City<br><input type="text" name="shipping.city.value" id="shipping.city.value" class="small-field" value="$!address.get('city')"/></td>
+	<td class=body2>State or Province<br><input type="text" name="shipping.state.value" id="shipping.state.value" class="small-field" value="$!address.get('state')" /></td>
 	</tr>
-	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shipping.zipCode.value" id="shipping.zipCode.value" class="small-field" value="$!customer.shippingAddress.zipCode"/></td>
-	<td class=body2>Country<br><input type="text" name="shipping.country.value" id="shipping.country.value" class="small-field" value="$!customer.shippingAddress.country"/></td>
+	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shipping.zipCode.value" id="shipping.zipCode.value" class="small-field" value="$!address.get('zip')"/></td>
+	<td class=body2>Country<br><input type="text" name="shipping.country.value" id="shipping.country.value" class="small-field" value="$!address.get('country')"/></td>
 	</tr>
 	<tr>
 	<td class=body2>Email<br><input type="text" name="email" class="small-field" value="$!customer.email" /></td>
@@ -71,3 +93,14 @@ $pages.stream("./logon.html")
 </tr>
 </table>
 </div>
+
+<script type="text/javascript">
+
+$("#address").change(function(){
+	$("#selectform").submit();	
+}
+
+);
+
+
+</script>

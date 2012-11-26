@@ -33,7 +33,7 @@ public class ImportAvocaProducts extends EnterMediaObject {
 	private static final String NOT_FOUND = "NOT FOUND";
 	private static final String ADDED = "ADDED";
 	private static final String INVALID_SKU = "<strong>INVALID_SKU</strong>"
-	
+
 	public PublishResult doImport(){
 		//Create Store, MediaArchive Object
 
@@ -118,25 +118,25 @@ public class ImportAvocaProducts extends EnterMediaObject {
 					String rogerssku = orderLine[columnRogersSKU];
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
 						targetProduct = store.getProduct(targetProduct.getId());
 					}
 					if(targetProduct == null){
-						
+
 						//Product does not exist - Create blank data
-						targetProduct = media.getProductsearcher().createNewData();
+						targetProduct = media.getProductSearcher().createNewData();
 						targetProduct.setProperty("name",orderLine[columnDescription]);
 						targetProduct.setProperty("accessoryname",orderLine[columnDescription]);
 						targetProduct.setProperty("manufacturerid",media.getManufacturerID(orderLine[columnManfactName]));
 						targetProduct.setProperty("rogerssku",orderLine[columnRogersSKU]);
 						targetProduct.setProperty("manufacturersku",orderLine[columnAvocaProductName]);
 						targetProduct.setProperty("validitem", "false");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
-						
+						media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
+
 						strMsg += output.appendOutMessage(orderLine[columnAvocaProductName], rogerssku, INVALID);
-						
-						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+
+						targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 						if (targetProduct != null) {
 							targetProduct = store.getProduct(targetProduct.getId());
 						} else {
@@ -154,7 +154,7 @@ public class ImportAvocaProducts extends EnterMediaObject {
 							targetProduct.setProperty("validitem", "false");
 							strMsg += output.appendOutMessage(orderLine[columnAvocaProductName], rogerssku, INVALID_SKU);
 						}
-						
+
 						//Lookup Manufacturer
 						def boolean validManufacturer = true;
 						Data manufacturer = media.getManufacturerSearcher().searchByField("name", orderLine[columnManfactName]);
@@ -172,7 +172,7 @@ public class ImportAvocaProducts extends EnterMediaObject {
 
 						//Everything is good... Update the Product
 						targetProduct.setProperty("distributor", "106");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+						media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
 
 					}
 				}

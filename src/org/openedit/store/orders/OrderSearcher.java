@@ -79,16 +79,18 @@ public class OrderSearcher extends BaseLuceneSearcher {
 
 	private void buildIndex(IndexWriter inWriter, List inList) throws Exception {
 		PropertyDetails details = getPropertyDetailsArchive()
-				.getPropertyDetails("order");
+				.getPropertyDetails("storeOrder");
 
 		for (Iterator iterator = inList.iterator(); iterator.hasNext();) {
 			OrderId id = (OrderId) iterator.next();
 			SubmittedOrder order = getOrderArchive().loadSubmittedOrder(
 					getStore(), id.getUsername(), id.getOrderId());
 			if (order != null) {
-				Document doc = new Document();
-				updateIndex(order, doc, details);
-				inWriter.addDocument(doc);
+				//Document doc = new Document();
+				//updateIndex(order, doc, details);
+				updateIndex(inWriter, order);
+				//updateIndex(order);
+				//inWriter.addDocument(doc);
 			} else {
 				log.error("Could not load " + id.getUsername() + " "
 						+ id.getOrderId());
@@ -146,132 +148,125 @@ public class OrderSearcher extends BaseLuceneSearcher {
 
 	}
 
-	protected void updateIndex(Order inOrder, Document doc,
-			PropertyDetails inDetails) {
-		doc.add(new Field("id", inOrder.getId(), Field.Store.YES,
-				Field.Index.NOT_ANALYZED_NO_NORMS));
-		if (inOrder.getCustomer() != null) {
-			doc.add(new Field("username", inOrder.getCustomer().getUserName(),
-					Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-		}
-		// //String date =
-		// if( job.getName() != null)
-		// {
-		// doc.add(new Field("name", inOrder.get(), Field.Store.YES,
-		// Field.Index.TOKENIZED));
-		// }
-
-		StringBuffer keywords = new StringBuffer();
-		// keywords.append(job.getName());
-
-		List details = inDetails.findIndexProperties();
-		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			String prop = detail.getId();
-			if (prop.equals("id") || prop.equals("name")) {
-				continue;
-			}
-			String value = null;
-			if (prop.equals("orderstatus")) {
-				value = inOrder.getOrderStatus().getId();// inOrder.get(detail.getId());
-			} else if (prop.equals("customer")) {
-				Customer customer = inOrder.getCustomer();
-				String customerString = customer.getFirstName() + " "
-						+ customer.getLastName();
-				Map properties = customer.getUser().getProperties();
-				for (Iterator iterator2 = properties.keySet().iterator(); iterator2
-						.hasNext();) {
-					String key = (String) iterator2.next();
-					keywords.append(" ");
-					keywords.append(properties.get(key));
-				}
-				keywords.append(" ");
-				keywords.append(customerString);
-				value = customer.getUserName();
-
-			} else if (prop.equals("products")) {
-				StringBuffer products = new StringBuffer();
-				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-						.hasNext();) {
-					CartItem item = (CartItem) iterator2.next();
-					if (item.getProduct() != null) {
-						products.append(item.getProduct().getId());
-						products.append(" ");
-					}
-				}
-				value = products.toString();
-			} else if (prop.equals("categories")) {
-				StringBuffer categories = new StringBuffer();
-				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-						.hasNext();) {
-					CartItem item = (CartItem) iterator2.next();
-					if (item.getProduct() != null) {
-						Category cat = item.getProduct().getDefaultCategory();
-						if (cat != null) {
-							categories.append(cat.getId());
-							categories.append(" ");
-						}
-
-					}
-				}
-				value = categories.toString();
-			} else if (detail.isDate()) {
-				if(inOrder.getDate() != null){
-				value = DateTools.dateToString(inOrder.getDate(),
-						Resolution.MINUTE);
-				}
-			} else {
-				value = inOrder.get(prop);
-			}
-			if (value != null) {
-				if (detail.isStored()) {
-					if (detail.isDate()) {
-						doc.add(new Field(detail.getId(), value,
-								Field.Store.YES,
-								Field.Index.NOT_ANALYZED_NO_NORMS));
-					} else {
-						doc.add(new Field(detail.getId(), value,
-								Field.Store.YES, Field.Index.ANALYZED));
-					}
-				} else {
-					doc.add(new Field(detail.getId(), value, Field.Store.NO,
-							Field.Index.ANALYZED));
-				}
-				if (detail.isKeyword()) {
-					keywords.append(" ");
-					keywords.append(value);
-				}
-			}
-			List productkeywords = getPropertyDetailsArchive()
-					.getPropertyDetailsCached("product")
-					.findKeywordProperties();
-			for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-					.hasNext();) {
-				CartItem item = (CartItem) iterator2.next();
-				for (Iterator iterator3 = productkeywords.iterator(); iterator3
-						.hasNext();) {
-					PropertyDetail itemdetail = (PropertyDetail) iterator3
-							.next();
-					String kvalue = item.get(itemdetail.getId());
-					if (kvalue == null) {
-						Option option = item.getOption(itemdetail.getId());
-						if (option != null) {
-							kvalue = option.getValue();
-						}
-					}
-
-					if (kvalue != null) {
-						keywords.append(" ");
-						keywords.append(kvalue);
-					}
-
-				}
-			}
-
-			doc.add(new Field("description", keywords.toString(),
-					Field.Store.YES, Field.Index.ANALYZED));
-		}
-	}
+//	protected void updateIndex(Order inOrder, Document doc,
+//			PropertyDetails inDetails) {
+//		super.updateIndex(inOrder);
+//		
+//		if (inOrder.getCustomer() != null) {
+//			doc.add(new Field("username", inOrder.getCustomer().getUserName(),
+//					Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+//		}
+//		
+//		StringBuffer keywords = new StringBuffer();
+//		
+//		List details = inDetails.findIndexProperties();
+//		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+//			PropertyDetail detail = (PropertyDetail) iterator.next();
+//			String prop = detail.getId();
+//			if (prop.equals("id") || prop.equals("name")) {
+//				continue;
+//			}
+//			String value = null;
+//			if (prop.equals("orderstatus")) {
+//				value = inOrder.getOrderStatus().getId();// inOrder.get(detail.getId());
+//			} else if (prop.equals("customer")) {
+//				Customer customer = inOrder.getCustomer();
+//				String customerString = customer.getFirstName() + " "
+//						+ customer.getLastName();
+//				Map properties = customer.getUser().getProperties();
+//				for (Iterator iterator2 = properties.keySet().iterator(); iterator2
+//						.hasNext();) {
+//					String key = (String) iterator2.next();
+//					keywords.append(" ");
+//					keywords.append(properties.get(key));
+//				}
+//				keywords.append(" ");
+//				keywords.append(customerString);
+//				value = customer.getUserName();
+//
+//			} else if (prop.equals("products")) {
+//				StringBuffer products = new StringBuffer();
+//				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
+//						.hasNext();) {
+//					CartItem item = (CartItem) iterator2.next();
+//					if (item.getProduct() != null) {
+//						products.append(item.getProduct().getId());
+//						products.append(" ");
+//					}
+//				}
+//				value = products.toString();
+//			} else if (prop.equals("categories")) {
+//				StringBuffer categories = new StringBuffer();
+//				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
+//						.hasNext();) {
+//					CartItem item = (CartItem) iterator2.next();
+//					if (item.getProduct() != null) {
+//						Category cat = item.getProduct().getDefaultCategory();
+//						if (cat != null) {
+//							categories.append(cat.getId());
+//							categories.append(" ");
+//						}
+//
+//					}
+//				}
+//				value = categories.toString();
+//			} else if (detail.isDate()) {
+//				if(inOrder.getDate() != null){
+//				value = DateTools.dateToString(inOrder.getDate(),
+//						Resolution.MINUTE);
+//				}
+//			} else {
+//				value = inOrder.get(prop);
+//			}
+//			if (value != null) {
+//				if (detail.isStored()) {
+//					if (detail.isDate()) {
+//						doc.add(new Field(detail.getId(), value,
+//								Field.Store.YES,
+//								Field.Index.NOT_ANALYZED_NO_NORMS));
+//					} else {
+//						doc.add(new Field(detail.getId(), value,
+//								Field.Store.YES, Field.Index.ANALYZED));
+//					}
+//				} else {
+//					doc.add(new Field(detail.getId(), value, Field.Store.NO,
+//							Field.Index.ANALYZED));
+//				}
+//				if (detail.isKeyword()) {
+//					keywords.append(" ");
+//					keywords.append(value);
+//				}
+//			}
+//			List productkeywords = getPropertyDetailsArchive()
+//					.getPropertyDetailsCached("product")
+//					.findKeywordProperties();
+//			for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
+//					.hasNext();) {
+//				CartItem item = (CartItem) iterator2.next();
+//				for (Iterator iterator3 = productkeywords.iterator(); iterator3
+//						.hasNext();) {
+//					PropertyDetail itemdetail = (PropertyDetail) iterator3
+//							.next();
+//					String kvalue = item.get(itemdetail.getId());
+//					if (kvalue == null) {
+//						Option option = item.getOption(itemdetail.getId());
+//						if (option != null) {
+//							kvalue = option.getValue();
+//						}
+//					}
+//
+//					if (kvalue != null) {
+//						keywords.append(" ");
+//						keywords.append(kvalue);
+//					}
+//
+//				}
+//			}
+//
+//			doc.add(new Field("description", keywords.toString(),
+//					Field.Store.YES, Field.Index.ANALYZED));
+//		}
+//	}
 
 	public Store getStore()
 	{
@@ -307,7 +302,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	public Object searchById(String inId)
 	{
 		Data orderinfo = (Data) super.searchById(inId);
-		return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("username"), inId);
+		return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("customer"), inId);
 		//return orderinfo;
 		
 	}

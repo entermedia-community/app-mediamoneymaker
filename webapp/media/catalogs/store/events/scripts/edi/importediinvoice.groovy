@@ -6,6 +6,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -203,8 +204,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									ediInvoice.setProperty("ponumber", PO);
 									log.info("Purchase Order: " + PO);
 									//Get Rogers Order ID
-									String[] orderInfo = PO.split("-");
-									Data order = media.searchForOrder(orderInfo[0]);
+									Data order = media.searchForOrder(PO);
 									if (order != null) {
 										orderID = orderInfo[0];
 										ediInvoice.setProperty("orderid", orderID);

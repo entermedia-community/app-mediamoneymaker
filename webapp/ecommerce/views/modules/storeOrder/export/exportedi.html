@@ -1,0 +1,23 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">EDI File Section</div>
+	<div class="ui-widget-content">
+	<p><strong>Listing of Created EDI Files</strong></p>
+	<p><ul>
+	#foreach($item in $filelist)
+		<li>$item</li>
+	#end
+	</ul></p>
+	<p><a 
+		href="/ecommerce/views/modules/storeOrder/export/index.html?id=$id&searchtype=storeOrder">
+		Return back to Downloads page</a></p>
+	<p><a 
+		href="/ecommerce/views/modules/storeOrder/export/ftpexportresults.html?orderid=$id&ediid=104">
+		FTP Files to EDISOFT</a></p>
+	<p><a 
+		href="/ecommerce/views/modules/storeOrder/index.html?field=last_selected_module&last_selected_module.value=storeOrder">
+		Return back to the Orders page</a></p>
+	</p>
+	</div> 
+</div>
+
+

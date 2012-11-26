@@ -3,14 +3,13 @@
  */
 package org.openedit.store.modules;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.data.Searcher;
 import org.openedit.links.Link;
-import org.openedit.repository.ContentItem;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Category;
@@ -24,17 +23,15 @@ import org.openedit.store.Store;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
-import org.openedit.store.edit.ProductSourcePathCreator;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
-import org.openedit.store.search.ProductProcessor;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.users.User;
-import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
 /**
@@ -186,6 +183,7 @@ public class CartModule extends BaseStoreModule
 	{
 		Cart cart = getCart(inPageRequest);
 		getProductAdder().updateCart(inPageRequest, cart);
+		
 	}
 
 	/**
@@ -352,7 +350,7 @@ public class CartModule extends BaseStoreModule
 			populateCustomerAddress(inPageRequest, customer
 					.getShippingAddress());
 		}
-
+		
 		List taxrates = cart.getStore().getTaxRatesFor(
 				customer.getShippingAddress().getState());
 		if(customer.getShippingAddress().getState() == null){
@@ -370,6 +368,9 @@ public class CartModule extends BaseStoreModule
 		log.debug("Setting cart customer to " + customer);
 		cart.setCustomer(customer);
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
+		cart.setShippingAddress(customer.getShippingAddress());
+		cart.setBillingAddress(customer.getBillingAddress());
+		
 		inPageRequest.putPageValue("customer", customer);
 	}
 
@@ -460,7 +461,6 @@ public class CartModule extends BaseStoreModule
 			{
 				String prefix = current[i];
 				Address address = new Address();
-				address.setPropertyContainer(user);
 				address.setPrefix(prefix);
 				address.setAddress1((String) user.getProperty(prefix
 						+ "Address1"));
@@ -490,7 +490,6 @@ public class CartModule extends BaseStoreModule
 		Cart cart = getCart(inPageRequest);
 		Customer customer = cart.getCustomer();
 		Address address = new Address();
-		address.setPropertyContainer(customer.getUser());
 		address.setPrefix(prefix);
 		populateCustomerAddress(inPageRequest, address);
 		customer.addAddress(address);
@@ -707,12 +706,13 @@ public class CartModule extends BaseStoreModule
 		if(cart.getAdjustments() != null){
 			order.setAdjustments(cart.getAdjustments());
 		}
+		order.setShippingAddress(cart.getShippingAddress());
 		// Export order to XML
 		store.saveOrder(order);
 		// process the order with the varous processors
 		inPageRequest.putPageValue("order", order);
 		store.processOrder(inPageRequest, order);
-
+		
 		if (order.getOrderStatus().isOk())
 		{
 			// Remove items from stock
@@ -781,5 +781,28 @@ public class CartModule extends BaseStoreModule
 		store.getCategoryArchive().reloadCategories();
 	}
 
+	
+	public void loadCustomerAddressList(WebPageRequest inReq){
+		Store store = getStore(inReq);
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+		HitTracker addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
+		inReq.putPageValue("addresslist", addresslist);
+		
+
+	}
+	
+	
+	public void selectShippingAddress(WebPageRequest inReq){
+		
+		Store store = getStore(inReq);
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+		String addressid = inReq.getRequestParameter("address.value");
+		Address address= (Address) addressSearcher.searchById(addressid);
+		getCart(inReq).setShippingAddress(address);
+		
+		
+	}
+	
+	
 	
 }

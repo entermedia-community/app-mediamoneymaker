@@ -56,7 +56,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 				
 				// protected static final short SUB_CATALOG_ID1 = (short) 13;
 				// protected static final short CATALOG_DESC = (short) 6;
-				short PRICE_CELL = (short) 13;
+				short PRICE_CELL = (short) 16;
 				
 				short WEIGHT_CELL = (short) 14;
 				short QUANTITY_CELL = (short) 29;
@@ -212,7 +212,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 			
 			// protected static final short SUB_CATALOG_ID1 = (short) 13;
 			// protected static final short CATALOG_DESC = (short) 6;
-			short PRICE_CELL = (short) 13;
+			short PRICE_CELL = (short) 16;
 			short COST_CELL = (short) 8;
 			short WEIGHT_CELL = (short) 14;
 			short QUANTITY_CELL = (short) 29;
@@ -457,7 +457,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 			
 			// protected static final short SUB_CATALOG_ID1 = (short) 13;
 			// protected static final short CATALOG_DESC = (short) 6;
-			short PRICE_CELL = (short) 13;
+			short PRICE_CELL = (short) 16;
 			
 			short WEIGHT_CELL = (short) 14;
 			short QUANTITY_CELL = (short) 29;
@@ -483,7 +483,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 		if (retail != null && retail.trim().length() > 0) {
 			try {
 				Money money = new Money(retail);
-
+				money = money.multiply(1.1);
 				price.setRetailPrice(money);
 
 				PriceSupport pricedata = new PriceSupport();
