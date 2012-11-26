@@ -22,7 +22,7 @@ public class AllTests
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ProductTest.class);
 		suite.addTestSuite(TextExportTest.class);
-		suite.addTestSuite(CustomerTest.class);
+		//suite.addTestSuite(CustomerTest.class);
 		suite.addTestSuite(ItemTest.class);
 		suite.addTestSuite(CatalogTest.class);
 		suite.addTestSuite(SearchTest.class);
