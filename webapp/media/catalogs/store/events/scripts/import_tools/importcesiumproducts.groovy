@@ -111,22 +111,22 @@ public class ImportCesiumProducts extends EnterMediaObject {
 					String rogerssku = orderLine[columnCesiumSKU];
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
 						targetProduct = store.getProduct(targetProduct.getId());
 					}
 					if(targetProduct == null){
 						
 						//Product does not exist - Create blank data
-						targetProduct = media.getProductsearcher().createNewData();
+						targetProduct = media.getProductSearcher().createNewData();
 						targetProduct.setProperty("name",orderLine[columnDescription]);
 						targetProduct.setProperty("accessoryname",orderLine[columnDescription]);
 						targetProduct.setProperty("rogerssku",orderLine[columnCesiumSKU]);
 						targetProduct.setProperty("manufacturersku",orderLine[columnCesiumSKU]);
 						targetProduct.setProperty("validitem", "false");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+						media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
 						
-						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+						targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 						if (targetProduct != null) {
 							targetProduct = store.getProduct(targetProduct.getId());
 						} else {
@@ -150,7 +150,7 @@ public class ImportCesiumProducts extends EnterMediaObject {
 						//Everything is good... Update the Product
 						targetProduct.setProperty("manufacturersku", orderLine[columnCesiumSKU]);
 						targetProduct.setProperty("distributor", distributorID);
-						media.getProductsearcher().saveData(targetProduct, context.getUser());
+						media.getProductSearcher().saveData(targetProduct, context.getUser());
 					}
 				}
 			} else {

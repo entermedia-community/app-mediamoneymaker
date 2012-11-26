@@ -1,12 +1,10 @@
-package edi;
+package rogers_corporate_orders;
 
 import java.text.SimpleDateFormat
 
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -15,6 +13,9 @@ import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
+
+import edi.MediaUtilities
+import edi.OutputUtilities
 
 public class ImportEDIInvoice extends EnterMediaObject {
 
@@ -204,7 +205,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									ediInvoice.setProperty("ponumber", PO);
 									log.info("Purchase Order: " + PO);
 									//Get Rogers Order ID
-									Data order = media.searchForOrder(PO);
+									String[] orderInfo = PO.split("-");
+									Data order = media.searchForOrder(orderInfo[0]);
 									if (order != null) {
 										orderID = orderInfo[0];
 										ediInvoice.setProperty("orderid", orderID);

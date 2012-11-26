@@ -129,7 +129,7 @@ public class ImportMicrocelProducts extends EnterMediaObject {
 					String searchUPC = orderLine[columnMicrocelUPC];
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, searchUPC);
+					Data targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, searchUPC);
 					if (targetProduct != null) {
 						targetProduct = store.getProduct(targetProduct.getId());
 					}
@@ -138,13 +138,13 @@ public class ImportMicrocelProducts extends EnterMediaObject {
 						String rogerssku = orderLine[columnMicrocelRogersSKU];
 						
 						//Search the product for the UPC)
-						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+						targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 						if (targetProduct != null) {
 							targetProduct = store.getProduct(targetProduct.getId());
 						}
 						if (targetProduct == null) {
 							//Product does not exist - Create blank data
-							targetProduct = media.getProductsearcher().createNewData();
+							targetProduct = media.getProductSearcher().createNewData();
 							targetProduct.setProperty("name",orderLine[columnMicrocelAccessoryName]);
 							targetProduct.setProperty("accessoryid", orderLine[columnMicrocelAccessoryID]);
 							targetProduct.setProperty("accessoryname",orderLine[columnMicrocelAccessoryName]);
@@ -154,10 +154,10 @@ public class ImportMicrocelProducts extends EnterMediaObject {
 							targetProduct.setProperty("rogerssku",orderLine[columnMicrocelRogersSKU]);
 							targetProduct.setProperty("manufacturersku",orderLine[columnMicrocelManufacturerSKU]);
 							targetProduct.setProperty("validitem", "false");
-							media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+							media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
 
 							strMsg += output.appendOutMessage(orderLine[columnMicrocelManufacturerSKU], rogerssku, INVALID);
-							targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+							targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 							if (targetProduct != null) {
 								targetProduct = store.getProduct(targetProduct.getId());
 							} else {
@@ -189,7 +189,7 @@ public class ImportMicrocelProducts extends EnterMediaObject {
 
 					//Everything is good... Update the Product Distributor
 					targetProduct.setProperty("distributor", "104");
-					media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+					media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
 				}
 			} else {
 				result.setErrorMessage("<p>The following fields in the input file are invalid:<ul>" + errorOut + "</ul></p>");

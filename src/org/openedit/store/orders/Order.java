@@ -28,24 +28,23 @@ import org.openedit.util.DateStorageUtil;
  * 
  * @author Eric Galluzzo, egalluzzo@einnovation.com
  */
-public class Order extends BaseData implements Comparable 
-{
+public class Order extends BaseData implements Comparable {
 	public final static String ACCEPTED = "accepted";
 	public final static String AUTHORIZED = "authorized";
 	public final static String CAPTURED = "captured";
 	public final static String COMPLETED = "completed";
 	public final static String REJECTED = "rejected";
-		
+
 	protected Customer fieldCustomer;
 	protected List fieldItems;
 	protected List fieldAdjustments;
 
 	protected ShippingMethod fieldShippingMethod;
 	protected Money fieldTotalShipping;
-	
+
 	protected Map fieldTaxes;
 	protected List fieldShipments;
-	
+
 	protected Money fieldTax;
 	protected Money fieldSubTotal;
 	protected Money fieldTotalPrice;
@@ -54,147 +53,148 @@ public class Order extends BaseData implements Comparable
 	protected Date fieldDate;
 	protected OrderState fieldOrderState;
 	protected Map fieldProperties;
-	
+
 	protected Cart fieldCart;
 	protected Address fieldShippingAddress;
 	protected Address fieldBillingAddress;
-	
+
 	public Address getShippingAddress() {
 		return fieldShippingAddress;
 	}
+
 	public void setShippingAddress(Address inShippingAddress) {
 		fieldShippingAddress = inShippingAddress;
 	}
+
 	public Address getBillingAddress() {
 		return fieldBillingAddress;
 	}
+
 	public void setBillingAddress(Address inBillingAddress) {
 		fieldBillingAddress = inBillingAddress;
 	}
-	public Cart getCart()
-	{
-	if (fieldCart == null)
-	{
-		fieldCart = new Cart();
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-		{
-			CartItem item = (CartItem) iterator.next();
-			fieldCart.addItem(item);
-			
+
+	public Cart getCart() {
+		if (fieldCart == null) {
+			fieldCart = new Cart();
+			for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+				CartItem item = (CartItem) iterator.next();
+				fieldCart.addItem(item);
+
+			}
+
 		}
-		
+
+		return fieldCart;
 	}
 
-	return fieldCart;
-	}
-	public void setCart(Cart inCart)
-	{
+	public void setCart(Cart inCart) {
 		fieldCart = inCart;
 	}
+
 	public List getAdjustments() {
 		return fieldAdjustments;
 	}
+
 	public void setAdjustments(List inAdjustments) {
 		fieldAdjustments = inAdjustments;
 	}
-	
-	
-	public Money getTotalShipping()
-	{
+
+	public Money getTotalShipping() {
 		return fieldTotalShipping;
 	}
-	public void setTotalShipping(Money inTotalShipping)
-	{
+
+	public void setTotalShipping(Money inTotalShipping) {
 		fieldTotalShipping = inTotalShipping;
 	}
-	public ShippingMethod getShippingMethod()
-	{
+
+	public ShippingMethod getShippingMethod() {
 		return fieldShippingMethod;
 	}
-	public void setShippingMethod(ShippingMethod inShippingMethod)
-	{
+
+	public void setShippingMethod(ShippingMethod inShippingMethod) {
 		fieldShippingMethod = inShippingMethod;
 	}
-	public Money getSubTotal()
-	{
+
+	public Money getSubTotal() {
 		return fieldSubTotal;
 	}
-	public void setSubTotal(Money inSubtotal)
-	{
+
+	public void setSubTotal(Money inSubtotal) {
 		fieldSubTotal = inSubtotal;
 	}
-	public Money getTax()
-	{
+
+	public Money getTax() {
 		return fieldTax;
 	}
-	public void setTotalTax(Money inTax)
-	{
+
+	public void setTotalTax(Money inTax) {
 		fieldTax = inTax;
 	}
-	
+
 	/**
 	 * Creates a new order with no ID and today's date.
 	 * 
-	 * <p>FIXME: Should we auto-generate an ID?
+	 * <p>
+	 * FIXME: Should we auto-generate an ID?
 	 */
-	public Order()
-	{
+	public Order() {
 		fieldDate = new Date();
 	}
 
 	/**
 	 * Creates a new order with the given ID and date.
 	 * 
-	 * @param inId    The order ID
-	 * @param inDate  The order date
+	 * @param inId
+	 *            The order ID
+	 * @param inDate
+	 *            The order date
 	 */
-	public Order( String inId, Date inDate )
-	{
+	public Order(String inId, Date inDate) {
 		fieldId = inId;
 		fieldDate = inDate;
 	}
+
 	/**
 	 * Returns the date and time at which the order was made.
 	 * 
-	 * @return  The order date
+	 * @return The order date
 	 */
-	public Date getDate()
-	{
+	public Date getDate() {
 		return fieldDate;
 	}
 
 	/**
 	 * Sets the date and time at which the order was made.
 	 * 
-	 * @param inDate  The order date
+	 * @param inDate
+	 *            The order date
 	 */
-	public void setDate( Date inDate )
-	{
+	public void setDate(Date inDate) {
 		fieldDate = inDate;
 	}
 
 	/**
 	 * Returns the order ID.
 	 * 
-	 * @return  The order ID
+	 * @return The order ID
 	 */
-	public String getId()
-	{
+	public String getId() {
 		return fieldId;
 	}
-	public String getOrderNumber()
-	{
+
+	public String getOrderNumber() {
 		return getId();
 	}
 
 	/**
-	 * Sets the order ID.  This should not normally be called.  Instead, use a
+	 * Sets the order ID. This should not normally be called. Instead, use a
 	 * constructor that accepts an ID.
 	 * 
-	 * @param inId  The order ID
+	 * @param inId
+	 *            The order ID
 	 */
-	public void setId( String inId )
-	{
+	public void setId(String inId) {
 		fieldId = inId;
 	}
 
@@ -202,12 +202,10 @@ public class Order extends BaseData implements Comparable
 	 * Returns the method that the customer used to pay for this order -- e.g. a
 	 * Visa credit card with number 4111-1111-1111-1111.
 	 * 
-	 * @return  The payment method
+	 * @return The payment method
 	 */
-	public PaymentMethod getPaymentMethod()
-	{
-		if ( fieldPaymentMethod == null )
-		{
+	public PaymentMethod getPaymentMethod() {
+		if (fieldPaymentMethod == null) {
 			fieldPaymentMethod = new CreditPaymentMethod();
 		}
 		return fieldPaymentMethod;
@@ -216,185 +214,185 @@ public class Order extends BaseData implements Comparable
 	/**
 	 * Sets the method used to pay for this order.
 	 * 
-	 * @param inPaymentMethod  The payment method
+	 * @param inPaymentMethod
+	 *            The payment method
 	 */
-	public void setPaymentMethod( PaymentMethod inPaymentMethod )
-	{
+	public void setPaymentMethod(PaymentMethod inPaymentMethod) {
 		fieldPaymentMethod = inPaymentMethod;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return "Order: " + getId();
 	}
-	
+
 	/**
 	 * @deprecated Use getOrderStatus instead.
 	 */
-	public OrderState getOrderState() //TODO: Rename to getOrderStatus
+	public OrderState getOrderState() // TODO: Rename to getOrderStatus
 	{
 		return getOrderStatus();
 	}
-	public OrderState getOrderStatus()
-	{
+
+	public OrderState getOrderStatus() {
 		return fieldOrderState;
 	}
-	public void setOrderState(OrderState inOrderState)
-	{
+
+	public void setOrderState(OrderState inOrderState) {
 		fieldOrderState = inOrderState;
 	}
-	public Customer getCustomer()
-	{
+
+	public Customer getCustomer() {
 		return fieldCustomer;
 	}
-	public void setCustomer(Customer inCustomer)
-	{
+
+	public void setCustomer(Customer inCustomer) {
 		fieldCustomer = inCustomer;
 	}
-	public List getItems()
-	{
+
+	public List getItems() {
 		if (fieldItems == null) {
 			fieldItems = new ArrayList();
 		}
 		return fieldItems;
 	}
-	public void setItems(List inItems)
-	{
+
+	public void setItems(List inItems) {
 		fieldItems = inItems;
 	}
-	public void addItem(CartItem inItem)
-	{
-		if( fieldItems == null)
-		{
+
+	public void addItem(CartItem inItem) {
+		if (fieldItems == null) {
 			fieldItems = new ArrayList();
 		}
-		getItems().add( inItem);
+		getItems().add(inItem);
 	}
-	
-	public CartItem getItem(String inSku){
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-		{
+
+	public CartItem getItem(String inSku) {
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
-			if(item.getSku().equals(inSku)){
+			if (item.getSku().equals(inSku)) {
 				return item;
 			}
 		}
 		return null;
 	}
-	
-	
-	public Money getTotalPrice()
-	{
+
+	public Money getTotalPrice() {
 		return fieldTotalPrice;
 	}
-	public void setTotalPrice(Money inTotalPrice)
-	{
+
+	public void setTotalPrice(Money inTotalPrice) {
 		fieldTotalPrice = inTotalPrice;
 	}
-	
-	public int compareTo(Object inOrder)
-	{
-		SubmittedOrder order = (SubmittedOrder)inOrder;
+
+	public int compareTo(Object inOrder) {
+		SubmittedOrder order = (SubmittedOrder) inOrder;
 		return order.getOrderNumber().compareTo(getOrderNumber());
 	}
-	public int getNumItems()
-	{
+
+	public int getNumItems() {
 		int numItems = 0;
-		for (Iterator it = getItems().iterator(); it.hasNext();)
-		{
-			CartItem item = (CartItem)it.next();
+		for (Iterator it = getItems().iterator(); it.hasNext();) {
+			CartItem item = (CartItem) it.next();
 			numItems += item.getQuantity();
 		}
 		return numItems;
 	}
-	public int sumColumn(String colName)
-	{
+
+	public int sumColumn(String colName) {
 		int sum = 0;
-		for(Iterator it = getItems().iterator(); it.hasNext();)
-		{
-			CartItem item = (CartItem)it.next();
+		for (Iterator it = getItems().iterator(); it.hasNext();) {
+			CartItem item = (CartItem) it.next();
 			String stringVal = item.get(colName);
-			if( stringVal != null && stringVal.length() != 0)
-			{
+			if (stringVal != null && stringVal.length() != 0) {
 				int val = Integer.parseInt(item.get(colName));
 				sum += val;
 			}
 		}
 		return sum;
 	}
-	public String get(String inId)
-	{
-		if("id".equals(inId)){
+
+	public String get(String inId) {
+		if ("id".equals(inId)) {
 			return getId();
 		}
-		if("orderdate".equals(inId)){
+		if ("orderdate".equals(inId)) {
 			return DateStorageUtil.getStorageUtil().formatForStorage(getDate());
 		}
-		if("customer".equals(inId)){
+		if ("customer".equals(inId)) {
 			return getCustomer().getId();
 		}
-		if("orderstatus".equals(inId)){
+		if ("orderstatus".equals(inId)) {
 			return getOrderStatus().getId();
 		}
-			
-		return (String)getProperties().get(inId);
+
+		return (String) getProperties().get(inId);
 	}
-	public Map getProperties()
-	{
-		if( fieldProperties == null)
-		{
+
+	public Map getProperties() {
+		if (fieldProperties == null) {
 			fieldProperties = ListOrderedMap.decorate(new HashMap());
 		}
 		return fieldProperties;
 	}
-	public void setProperty(String inKey, String inVal)
-	{
-		getProperties().put(inKey, inVal);	
+
+	public void setProperty(String inKey, String inVal) {
+		getProperties().put(inKey, inVal);
 	}
+
 	public Map getTaxes() {
 		return fieldTaxes;
 	}
+
 	public void setTaxes(Map inTaxes) {
 		fieldTaxes = inTaxes;
 	}
-	
+
 	// SHIPMENT INFO //
 	public void addShipment(Shipment inShipment) {
 		getShipments().add(inShipment);
 	}
+
 	public List getShipments() {
 		if (fieldShipments == null) {
 			fieldShipments = new ArrayList();
 		}
 		return fieldShipments;
 	}
+
 	public void setShipments(List inShipments) {
 		fieldShipments = inShipments;
 	}
-	
+
 	public boolean isFullyShipped(CartItem cartItem) {
+
+		return getQuantityShipped(cartItem) == cartItem.getQuantity();
+	}
+
+	public int getQuantityShipped(CartItem inItem) {
 		boolean completed = false;
-		
+
 		int total = 0;
-		
+
 		for (Iterator iterator = getShipments().iterator(); iterator.hasNext();) {
 			Shipment shipment = (Shipment) iterator.next();
 			for (Iterator iterator2 = shipment.getShipmentEntries().iterator(); iterator2
 					.hasNext();) {
 				ShipmentEntry entry = (ShipmentEntry) iterator2.next();
-				if(entry.getItem().equals(cartItem)){
+				if (entry.getItem().equals(inItem)) {
 					total += entry.getQuantity();
 				}
 			}
 		}
-		return total == cartItem.getQuantity();
+		return total;
 	}
+
 	public boolean isFullyShipped() {
 		boolean completed = false;
-		
+
 		List<CartItem> cartItems = getItems();
 		if (cartItems.size() > 0) {
-			for (int ctr=0; ctr < cartItems.size(); ctr ++) {
+			for (int ctr = 0; ctr < cartItems.size(); ctr++) {
 				CartItem item = cartItems.get(ctr);
 				completed = isFullyShipped(item);
 				if (!completed) {

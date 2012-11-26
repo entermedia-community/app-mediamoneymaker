@@ -1,12 +1,10 @@
-package edi;
+package rogers_corporate_orders;
 
 import java.text.SimpleDateFormat
 
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -16,16 +14,17 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
-public class ImportEDIInvoice extends EnterMediaObject {
+import edi.MediaUtilities
+import edi.OutputUtilities
+
+public class ImportCesiumInvoice extends EnterMediaObject {
 
 	private static final String LOG_HEADER = " - RECORDS - ";
 	private static final String FOUND = "Found"
 	private static final String NOT_FOUND = "NOT FOUND!";
 	private static final String ADDED = "Added";
-	private static final String CESIUM_ID = "105";
-	private static String strMsg = "";
 
-	public PublishResult importEdiXml() {
+	public PublishResult doImport() {
 
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
@@ -35,16 +34,14 @@ public class ImportEDIInvoice extends EnterMediaObject {
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 		media.setSearchers();
-		
-		log.info("---- START Import EDI Invoice ----");
+
+		log.info("-- START Import Cesium Invoice ----");
 
 		def String SEARCH_FIELD = "";
 		//Read the production value
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
-
 		// Get XML File
-		//String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";
-		String invoiceFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/invoices/";
+		String invoiceFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/invoices/cesium/";
 		PageManager pageManager = media.getArchive().getPageManager();
 		List dirList = pageManager.getChildrenPaths(invoiceFolder);
 		log.info("Initial directory size: " + dirList.size().toString());
@@ -55,13 +52,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			Data ediInvoiceItem = null;
 			Data product = null;
 
-			String distributorID = "";
-			String orderID = "";
-			String productID = "";
-			String ediInvoiceID = "";
-			String ediInvoiceItemID = "";
-			String storeID = "";
-
 			def int iterCounter = 0;
 			for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
 
@@ -70,8 +60,21 @@ public class ImportEDIInvoice extends EnterMediaObject {
 
 				String realpath = page.getContentItem().getAbsolutePath();
 
-				File xmlFile = new File(realpath);
-				if (xmlFile.exists() && xmlFile.isFile()) {
+				File xmlFIle = new File(realpath);
+				if (xmlFIle.exists()) {
+
+					String distributorID = "";
+					String orderID = "";
+					String productID = "";
+					String ediInvoiceID = "";
+					String ediInvoiceItemID = "";
+					String storeID = "";
+					String rogersStoreID = "";
+					String waybill = "";
+
+					String purchaseOrder = "";
+					String quantityShipped = "";
+					Date dateShipped = null;
 
 					//Create the XMLSlurper Object
 					def INVOICE = new XmlSlurper().parse(page.getReader());
@@ -85,18 +88,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							distributorID = DISTRIB.getId();
 							log.info("Distributor Found: " + distributor);
 							log.info("Distributor ID: " + distributorID);
-							if (distributorID.equals(CESIUM_ID)) {
-								result = movePageToCesium(pageManager, page, media.getCatalogid());
-								if (result.isComplete()) {
-									String inMsg = "Invoice File(" + page.getName() + ") has been moved to Cesium processing.";
-									strMsg += output.appendList(inMsg);
-									log.info(inMsg);
-								} else {
-									String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
-									result.appendErrorMessage(output.appendList(inMsg));
-								}
-								continue;
-							}
 						} else {
 							String inMsg = "ERROR: Distributor cannot be found.";
 							log.info(inMsg);
@@ -201,19 +192,22 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								//Get the PO details
 								def String PO = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
 								if (!PO.isEmpty()) {
-									ediInvoice.setProperty("ponumber", PO);
-									log.info("Purchase Order: " + PO);
+									purchaseOrder = PO;
+									ediInvoice.setProperty("ponumber", purchaseOrder);
+									log.info("Purchase Order: " + purchaseOrder);
 									//Get Rogers Order ID
-									Data order = media.searchForOrder(PO);
+									String[] orderInfo = purchaseOrder.split("");
+									Data order = media.searchForOrder(orderInfo[0]);
 									if (order != null) {
 										orderID = orderInfo[0];
 										ediInvoice.setProperty("orderid", orderID);
-										log.info("Order ID: " + orderID);
+										log.info("-Order ID: " + orderID);
 										HitTracker foundStore = media.searchForStoreInOrder(orderInfo[0], orderInfo[1]);
 										if (foundStore != null) {
 											storeID = media.getStoreID(orderInfo[1]);
+											rogersStoreID = orderInfo[1];
 											ediInvoice.setProperty("store", storeID);
-											log.info("Store: " + media.getStoreName(storeID) + ":" + orderInfo[1]);
+											log.info("-Store: " + media.getStoreName(storeID) + ":" + orderInfo[1]);
 										} else {
 											//Create web event to send an email.
 											String inMsg = "ERROR: Store(" + orderInfo[1] + ") was not found in INVOICE. PurchaseOrder: " + PO;
@@ -238,7 +232,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								def String invoiceTotal = it.InvoiceAmount.text();
 								if (!invoiceTotal.isEmpty()) {
 									ediInvoice.setProperty("invoicetotal", invoiceTotal);
-									log.info("Invoice Total: " + invoiceTotal);
+									log.info("-Invoice Total: " + invoiceTotal);
 								} else {
 									String inMsg = "ERROR: Invoice Amount value is blank in Invoice.";
 									log.info(inMsg);
@@ -252,15 +246,40 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								if (!invoiceDate.isEmpty()) {
 									Date newDate = parseDate(invoiceDate);
 									ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
-									log.info("Invoice Date: " + invoiceDate);
+									log.info("-Invoice Date: " + invoiceDate);
 								} else {
 									String inMsg = "ERROR: Invoice Date value is blank in Invoice.";
+									log.info(inMsg);
+									result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								}
+							}
+							if (!result.isError()) {
+								//QS
+								def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
+								if (!DS.isEmpty()) {
+									def newDate = parseDate(DS);
+									log.info("-Date Shipped: " + DS);
+									dateShipped = newDate;
+								} else {
+									String inMsg = "ERROR: Date Shipped value is blank in Invoice.";
+									log.info(inMsg);
+									result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								}
+							}
+							if (!result.isError()) {
+								//WY
+								def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "WY"}.ReferenceNbr.text();
+								if (!WB.isEmpty()) {
+									waybill = WB;
+									String inMsg = "---Waybill: " + WB;
+									log.info(inMsg);
+								} else {
+									String inMsg = "ERROR: Waybill value blank in Invoice.";
 									log.info(inMsg);
 									result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
 									//throw new OpenEditException(inMsg);
 								}
 							}
-
 							if (!result.isError()) {
 								log.info("Status: No errors - setting status to new");
 								ediInvoiceID = ediInvoice.getId();
@@ -271,30 +290,32 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								def allInvoiceDetails = it.depthFirst().grep{
 									it.name() == 'InvoiceDetail';
 								}
-								log.info("Found InvoiceDEtails: " + allInvoiceDetails.size().toString());
+								log.info("Found InvoiceDetails: " + allInvoiceDetails.size().toString());
 
 								allInvoiceDetails.each {
 
 									if (!result.isError()) {
 										//Go through each invoice
 										def int ctr = it.LineItemNumber.toInteger();
-										log.info("Line Item Number: " + ctr.toString());
+										String inMsg = "---Line Item Number: " + ctr.toString();
+										log.info(inMsg);
 
 										//Create a new search query for the invoice item
 										SearchQuery invoiceItemQuery = media.getInvoiceItemsSearcher().createSearchQuery();
 										invoiceItemQuery.addExact("invoiceid", ediInvoiceID);
 										invoiceItemQuery.addExact("store", storeID);
 
-										log.info(ediInvoiceID+":"+storeID);
+										log.info("--"+ediInvoiceID+":"+storeID);
 										def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 										if (!vendorCode.isEmpty()) {
 											product = media.searchForProductbyRogersSKU(vendorCode);
 											if (product != null) {
 												productID = product.getId();
-												log.info("Product Found: " + productID + ":" + product.getName());
+												inMsg = "----Product Found: " + productID + ":" + product.getName();
+												log.info(inMsg);
 												invoiceItemQuery.addExact("product", productID);
 											} else {
-												String inMsg = "Product(" + vendorCode + ") cannot be found!";
+												inMsg = "Product(" + vendorCode + ") cannot be found!";
 												log.info(inMsg);
 												result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
 												//throw new OpenEditException(inMsg);
@@ -305,15 +326,17 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											ediInvoiceItem = media.getInvoiceItemsSearcher().searchById(invoiceItems.get(0).getId());
 											if (ediInvoice != null) {
 												ediInvoiceItemID = ediInvoiceItem.getId();
-												log.info("Invoice Item exists: " + ediInvoiceItemID);
+												inMsg = "----Invoice Item exists: " + ediInvoiceItemID; 
+												log.info(inMsg);
 											} else {
-												String inMsg = "ERROR: Invalid Invoice Item.";
+												inMsg = "ERROR: Invalid Invoice Item.";
 												log.info(inMsg);
 												result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
 												//throw new OpenEditException(inMsg);
 											}
 										} else if (invoiceItems.size() == 0) {
-											log.info("Invoice Item not found!");
+											inMsg = "----Invoice Item not found!"; 
+											log.info(inMsg);
 											ediInvoiceItem = media.getInvoiceItemsSearcher().createNewData();
 											ediInvoiceItem.setId(media.getInvoiceItemsSearcher().nextId());
 											ediInvoiceItem.setSourcePath(ediInvoice.getId());
@@ -324,7 +347,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											ediInvoiceItem.setProperty("invoiceid", ediInvoiceID);
 											ediInvoiceItem.setProperty("product", product.getId());
 
-											log.info("Creating new invoice item: " + ediInvoiceItemID);
+											inMsg = "----Creating new invoice item: " + ediInvoiceItemID; 
+											log.info(inMsg);
 											media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
 
 											ediInvoiceItemID = ediInvoiceItem.getId();
@@ -333,7 +357,9 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									if (!result.isError()) {
 										String quantity = it.Quantity;
 										if (!quantity.isEmpty()) {
-											log.info("Quantity: " + quantity);
+											String inMsg = "----Quantity: " + quantity; 
+											log.info(inMsg);
+											quantityShipped = quantity;
 											ediInvoiceItem.setProperty("quantity", quantity);
 										} else {
 											//Create web event to send an email.
@@ -346,7 +372,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 
 										def String linePrice = it.Attributes.TblAmount.find {it.Qualifier == "LI"}.Amount.text();
 										if (!linePrice.isEmpty()) {
-											log.info("Line Price: " + linePrice);
+											String inMsg = "----Line Price: " + linePrice; 
+											log.info(inMsg);
 											ediInvoiceItem.setProperty("price", linePrice);
 										} else {
 											//Create web event to send an email.
@@ -359,45 +386,85 @@ public class ImportEDIInvoice extends EnterMediaObject {
 										//add properties and save
 										ediInvoiceItem.setProperty("invoiceid", ediInvoiceID);
 										media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
-										String inMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
-										strMsg += output.appendList(inMsg);
+										String inMsg = "---Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
 										log.info(inMsg);
+
+										//Update the Order
+										SearchQuery itemQuery = media.getItemSearcher().createSearchQuery();
+										itemQuery.addExact("store", rogersStoreID);
+										itemQuery.addExact("rogers_order", orderID);
+										itemQuery.addExact("product", productID);
+										HitTracker orderitems = media.getItemSearcher().search(itemQuery);
+										if (orderitems.size() > 0 ) {
+											Data orderitem = media.getItemSearcher().searchById(orderitems.get(0).getId());
+											orderitem.setProperty("quantityshipped", quantityShipped);
+											boolean check = checkQuantities(orderitem.get("quantity"), quantityShipped);
+											if (check) {
+												orderitem.setProperty("orderstatus", "completed");
+												orderitem.setProperty("deliverystatus", "shipped");
+											} else {
+												orderitem.setProperty("orderstatus", "pending");
+												orderitem.setProperty("deliverystatus", "partialshipped");
+											}
+											orderitem.setProperty("waybill", waybill);
+											orderitem.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+											media.getItemSearcher().saveData(orderitem, context.getUser());
+											inMsg = "---Order(" + orderID + ") Updated (" + purchaseOrder + ") and saved";
+											log.info(inMsg);
+										} else {
+											inMsg = "Order cannot be found (" + orderID + ")";
+											result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+											log.info(inMsg);
+											inMsg = "ProductID: " + productID + "\n";
+											inMsg += "StoreID: " + storeID + "\n";
+											inMsg += "Rogers_Order: " + orderID;
+											result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+											log.info(inMsg);
+										} // end if orderitems
 									}
 								}
 							}
 							if (!result.isError()) {
 								//Write the Invoice Details
-								log.info("Status: Saving Invoice (" + ediInvoiceID +")");
+								String inMsg = "--Status: Saving Invoice (" + ediInvoiceID +")"; 
+								log.info(inMsg);
 								media.getInvoiceSearcher().saveData(ediInvoice, media.getContext().getUser());
-								strMsg += output.appendList("Invoice (" + ediInvoiceID + ") has been created!");
 							}
 						}
 						if (!result.isError()) {
 							result = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
 							if (result.isComplete()) {
-								String inMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
-								strMsg += output.appendList(inMsg);
+								String inMsg = "-Invoice File(" + page.getName() + ") has been moved to processed.";
+								result.setCompleteMessage(inMsg);
 								log.info(inMsg);
 							} else {
-								String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
+								String inMsg = "ERROR INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
 								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							}
 						} else {
 							String inMsg = "ERROR INVOICE(" + orderID + ") NOT SAVED";
 							result.setErrorMessage(result.getErrorMessage() + output.appendList(inMsg));
 							result = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 							if (result.isComplete()) {
-								inMsg = "INVOICE FILE(" + page.getName() + ") MOVED TO ERROR";
+								inMsg = "ERROR INVOICE FILE(" + page.getName() + ") MOVED TO ERROR";
 								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							} else {
-								inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO ERROR";
+								inMsg = "ERROR INVOICE FILE(" + page.getName() + ") FAILED MOVE TO ERROR";
 								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							}
 						}
 					}
+
+				} else {
+					String inMsg = "ERROR " + realpath + " does not exist!";
+					log.info(inMsg);
+					result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+					//throw new OpenEditException(inMsg);
 				}
 			}
-			result.setCompleteMessage(strMsg);
 			result.setComplete(true);
 		} else {
 			String inMsg = "There are no files to process at this time.";
@@ -440,22 +507,15 @@ public class ImportEDIInvoice extends EnterMediaObject {
 		}
 		return move;
 	}
-	private PublishResult movePageToCesium(PageManager pageManager, Page page, String catalogid) {
+	private boolean checkQuantities(String inQuantity, String inQuantityShipped) {
+		boolean equal = false;
 
-		PublishResult move = new PublishResult();
-		move.setComplete(false);
-
-		String processedFolder = "/WEB-INF/data/${catalogid}/incoming/invoices/cesium/";
-		String destinationFile = processedFolder + page.getName();
-		Page destination = pageManager.getPage(destinationFile);
-		pageManager.movePage(page, destination);
-		if (destination.exists()) {
-			move.setCompleteMessage(page.getName() + " has been moved to " + destinationFile);
-			move.setComplete(true);
-		} else {
-			move.setErrorMessage(page.getName() + " could not be moved.");
+		int quantity = Integer.parseInt(inQuantity);
+		int quantityShipped = Integer.parseInt(inQuantityShipped);
+		if (quantity == quantityShipped) {
+			equal = true;
 		}
-		return move;
+		return equal;
 	}
 }
 
@@ -467,20 +527,23 @@ logs.startCapture();
 
 try {
 
-	ImportEDIInvoice ImportEDIInvoice = new ImportEDIInvoice();
-	ImportEDIInvoice.setLog(logs);
-	ImportEDIInvoice.setContext(context);
-	ImportEDIInvoice.setPageManager(pageManager);
+	ImportCesiumInvoice importCesiumInvoice = new ImportCesiumInvoice();
+	importCesiumInvoice.setLog(logs);
+	importCesiumInvoice.setContext(context);
+	importCesiumInvoice.setPageManager(pageManager);
 
-	result = ImportEDIInvoice.importEdiXml();
+	result = importCesiumInvoice.doImport();
 	if (result.isComplete()) {
 		//Output value to CSV file!
+		log.info(result.getCompleteMessage())
 		context.putPageValue("export", result.getCompleteMessage());
 		if (result.isError()) {
+			log.info("ERROR " + result.getErrorMessage());
 			context.putPageValue("errorout", result.getErrorMessage());
 		}
 	} else {
 		//ERROR: Throw exception
+		log.info("ERROR " + result.getErrorMessage());
 		context.putPageValue("errorout", result.getErrorMessage());
 	}
 }
