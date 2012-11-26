@@ -212,7 +212,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			for (Iterator iterator = inOrder.getShipments().iterator(); iterator
 					.hasNext();) {
 				Shipment shipment = (Shipment) iterator.next();
-				Element shipElem = orderElem.addElement("shipment");
+				Element shipElem = shippingdetails.addElement("shipment");
 				for (Iterator iterator2 = shipment.getProperties().keySet()
 						.iterator(); iterator2.hasNext();) {
 					String key = (String) iterator2.next();
@@ -234,7 +234,6 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						shipEntry.addAttribute(key2, value2);
 					}
 				}
-
 			}
 
 			Element customerElem = orderElem.addElement("customer");
@@ -608,6 +607,44 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		// Address address = makeAddress(addressElem);
 		// customer.addAddress(address);
 		// }
+		
+		
+		
+		// Load order details
+		// Get the details of the shipment info.
+		inOrder.a
+		inOrder.setShipments(inShipments);
+		
+		
+		
+//		Element shippingdetails = orderElem.addElement("shipping");
+//		for (Iterator iterator = inOrder.getShipments().iterator(); iterator
+//				.hasNext();) {
+//			Shipment shipment = (Shipment) iterator.next();
+//			Element shipElem = shippingdetails.addElement("shipment");
+//			for (Iterator iterator2 = shipment.getProperties().keySet()
+//					.iterator(); iterator2.hasNext();) {
+//				String key = (String) iterator2.next();
+//				String value = shipment.get(key);
+//				shipElem.addAttribute(key, value);
+//			}
+//			for (Iterator iterator3 = shipment.getShipmentEntries()
+//					.iterator(); iterator3.hasNext();) {
+//				ShipmentEntry entry = (ShipmentEntry) iterator3.next();
+//				Element shipEntry = shipElem.addElement("shipping-entry");
+//				shipEntry.addAttribute("productid", entry.getItem()
+//						.getProduct().getId());
+//				shipEntry.addAttribute("quantity",
+//						String.valueOf(entry.getQuantity()));
+//				for (Iterator iterator4 = entry.getProperties().keySet()
+//						.iterator(); iterator4.hasNext();) {
+//					String key2 = (String) iterator4.next();
+//					String value2 = shipment.get(key2);
+//					shipEntry.addAttribute(key2, value2);
+//				}
+//			}
+//		}
+		
 
 		Element shippingaddress = inOrderElement.element("shipping-address");
 		if (shippingaddress != null) {
@@ -719,6 +756,36 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			item.setProduct(stub);
 			item.setInventoryItem(inventory);
 		}
+		item.setShipments(inShipments);
+
+		// Element shippingdetails = orderElem.addElement("shipping");
+		// for (Iterator iterator = inOrder.getShipments().iterator();
+		// iterator.hasNext();) {
+		// Shipment shipment = (Shipment) iterator.next();
+		// Element shipElem = shippingdetails.addElement("shipment");
+		// for (Iterator iterator2 = shipment.getProperties().keySet()
+		// .iterator(); iterator2.hasNext();) {
+		// String key = (String) iterator2.next();
+		// String value = shipment.get(key);
+		// shipElem.addAttribute(key, value);
+		// }
+		// for (Iterator iterator3 = shipment.getShipmentEntries()
+		// .iterator(); iterator3.hasNext();) {
+		// ShipmentEntry entry = (ShipmentEntry) iterator3.next();
+		// Element shipEntry = shipElem.addElement("shipping-entry");
+		// shipEntry.addAttribute("productid", entry.getItem()
+		// .getProduct().getId());
+		// shipEntry.addAttribute("quantity",
+		// String.valueOf(entry.getQuantity()));
+		// for (Iterator iterator4 = entry.getProperties().keySet()
+		// .iterator(); iterator4.hasNext();) {
+		// String key2 = (String) iterator4.next();
+		// String value2 = shipment.get(key2);
+		// shipEntry.addAttribute(key2, value2);
+		// }
+		// }
+		// }
+
 		return item;
 	}
 
