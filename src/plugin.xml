@@ -116,6 +116,8 @@
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
 			<value>emailOrderProcessor</value>
+						
+			
 		</list>
 	</property>
 </bean>
@@ -157,6 +159,8 @@
 
   <bean id="authorizeNetOrderProcessor" class="org.openedit.store.gateway.AuthorizeNetOrderProcessor">
   </bean>
+
+
 
   <bean id="echoOrderProcessor" class="org.openedit.store.gateway.EchoOrderArchive">
   </bean>	
@@ -242,9 +246,32 @@
   </bean>
   
   
+<<<<<<< HEAD
    <bean id="DistributorModule" class="org.openedit.store.modules.DistributorModule">
   	<property name="searcherManager"><ref bean="searcherManager"/></property>  
   </bean>
+=======
+ 
+
+	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="newDataName"><value>address</value></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		
+		<property name="prefix"><value>addresses</value></property>
+	</bean>
+	
+	
+	<bean id="address" class="org.openedit.store.customer.Address" singleton="false">
+		
+	
+	</bean>
+	
+>>>>>>> origin/dev
   
   
   

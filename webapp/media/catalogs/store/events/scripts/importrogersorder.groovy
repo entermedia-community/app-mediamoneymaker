@@ -11,6 +11,8 @@ import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVReader
+import org.openedit.store.CartItem
+import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.util.DateStorageUtil
 
@@ -71,7 +73,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 		String catalogid = getMediaArchive().getCatalogId();
-		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order");
+		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
 		Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 
 		boolean production = Boolean.parseBoolean(context.findValue("productionmode"));
@@ -184,11 +186,14 @@ public class ImportRogersOrder extends EnterMediaObject {
 						if (validCheck) {
 							log.info(" - Item is valid!");
 							//Everything is good... Create the cart item!
-							Data orderitem = itemsearcher.createNewData();
-							orderitem.setProperty("rogers_order", order.getId());//foriegn key
-							orderitem.setProperty("product", targetProduct.getId());
+							CartItem orderitem = new CartItem();
+							Product product = store.getProduct(targetProduct.getId());
+							orderitem.setProperty("orderid", order.getId());//foriegn key
+							orderitem.setProduct(product);
+							orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
+							
 							orderitem.setProperty("productname", targetProduct.getName());
-							orderitem.setProperty("quantity", orderLine[columnQuantity]);
+							
 							orderitem.setProperty("store", storeNum);
 							orderitem.setProperty("storelevel", targetStore.level.replace(" ", ""));
 							orderitem.setProperty("storename", targetStore.name);

@@ -5,15 +5,18 @@ import java.text.SimpleDateFormat
 import org.openedit.Data
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.event.WebEvent
+import org.openedit.store.CartItem
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
+import org.openedit.store.Store
+import org.openedit.store.orders.Order
+import org.openedit.store.orders.Shipment
+import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
@@ -46,7 +49,7 @@ public class ImportEDIASN extends EnterMediaObject {
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 		media.setSearchers();
-
+		Store store  = context.getPageValue("store");
 		log.info("---- START Import EDI ASN ----");
 		
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
@@ -117,7 +120,10 @@ public class ImportEDIASN extends EnterMediaObject {
 							log.info("PO: " + PO);
 							if (!PO.isEmpty()) {
 								String[] orderInfo = PO.split("-");
-								Data order = media.searchForOrder(orderInfo[0]);
+								Order order = media.searchForOrder(orderInfo[0]);
+								Shipment shipment = new Shipment();
+								shipment.setProperty("distributor", distributorID);
+								
 								foundFlag = true;
 								if (order != null) {
 									orderID = orderInfo[0];
@@ -127,20 +133,6 @@ public class ImportEDIASN extends EnterMediaObject {
 									//Create web event to send an email.
 									strMsg += output.appendOutMessage("Rogers Order ", orderInfo[0], NOT_FOUND);
 									String inMsg = "Order(" + orderInfo[0] + ") was not found from ASN.";
-									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
-								}
-								HitTracker foundStore = media.searchForStoreInOrder(orderID, orderInfo[1]);
-								if (foundStore != null) {
-									purchaseOrder = PO;
-									storeNumber = orderInfo[1];
-									strMsg += output.appendOutMessage("Purchase Order ", purchaseOrder, FOUND);
-									strMsg += output.appendOutMessage("Store ", storeNumber, FOUND);
-								} else {
-									log.info("ERROR: Store(" + orderInfo[1] + ") was not found from ASN.");
-									log.info("ERROR: PurchaseOrder: " + PO);
-									//Create web event to send an email.
-									strMsg += output.appendOutMessage("Purchase Order ", orderInfo[1], NOT_FOUND);
-									String inMsg = "Purchase Order(" + orderInfo[1] + ") was not found from ASN.";
 									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 								}
 								//Reset the found flag
@@ -153,6 +145,7 @@ public class ImportEDIASN extends EnterMediaObject {
 											foundFlag = true;
 											strMsg += output.appendOutMessage("Courier", courier, FOUND);
 											carrier = courier;
+											shipment.setProperty("courier", courier);
 										}
 									}
 								}
@@ -168,10 +161,13 @@ public class ImportEDIASN extends EnterMediaObject {
 									if (!foundFlag) {
 										//_PRO
 										def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "_PRO"}.ReferenceNbr.text();
+										
 										if (!WB.isEmpty()) {
+										
 											foundFlag = true;
 											strMsg += output.appendOutMessage("Waybill", WB, FOUND);
 											waybill = WB;
+											shipment.setProperty("waybill", waybill);
 										}
 									}
 								}
@@ -239,6 +235,7 @@ public class ImportEDIASN extends EnterMediaObject {
 													foundFlag = true;
 													strMsg += output.appendOutMessage("Product", product.name, FOUND);
 													productID = product.getId();
+													
 												} else {
 													log.info("Product(" + vendorCode + ") was not found from ASN.");
 													//Create web event to send an email.
@@ -262,31 +259,18 @@ public class ImportEDIASN extends EnterMediaObject {
 									}
 									if ((foundFlag) && (errMsg.length() == 0)) {
 										
-//										Product product = media.getProductSearcher().searchById(productID);
-//										InventoryItem productInventory = product.getInventoryItem(0);
-//										productInventory.setQuantityInStock(Integer.parseInt(quantityShipped));
-//										media.getProductSearcher().saveData(product, context.getUser());
-																				
-										SearchQuery itemQuery = media.getItemSearcher().createSearchQuery();
-										itemQuery.addExact("store", storeNumber);
-										itemQuery.addExact("rogers_order", orderID);
-										itemQuery.addExact("product", productID);
-										HitTracker orderitems = media.getItemSearcher().search(itemQuery);
-										if (orderitems.size() > 0 ) {
-											Data orderitem = media.getItemSearcher().searchById(orderitems.get(0).getId());
-											orderitem.setProperty("quantityshipped", quantityShipped);
-											boolean check = checkQuantities(orderitem.get("quantity"), quantityShipped);
-											if (check) {
-												orderitem.setProperty("orderstatus", "completed");
-												orderitem.setProperty("deliverystatus", "shipped");
-											} else {
-												orderitem.setProperty("orderstatus", "pending");
-												orderitem.setProperty("deliverystatus", "partialshipped");
-											}
-											orderitem.setProperty("carrier", carrier);
-											orderitem.setProperty("waybill", waybill);
-											orderitem.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
-											media.getItemSearcher().saveData(orderitem, context.getUser());
+										Product target = media.getProductSearcher().searchById(productID);
+										InventoryItem productInventory = target.getInventoryItem(0);
+										CartItem item = order.getItem(productInventory.getSku());
+										
+										if (item != null ) {
+											ShipmentEntry entry = new ShipmentEntry();
+											entry.setCartItem(item);
+											entry.setQuantity(Integer.parseInt(quantityShipped));
+																
+											shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+											shipment.addEntry(entry);
+											
 											strMsg += output.appendOutMessage("ITEM UPDATED(" + purchaseOrder + ") AND SAVED");
 										} else {
 											strMsg += output.appendOutMessage("ERROR ORDER(" + purchaseOrder + ") " + NOT_FOUND);
@@ -301,7 +285,16 @@ public class ImportEDIASN extends EnterMediaObject {
 									String inMsg = "Purchase Order cannot be found in ASN XML File(" + page.getName() + ")";
 									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 								}
-							} 
+								if(shipment.getShipmentEntries().size() >0) {
+									order.addShipment(shipment);
+									if(order.isFullyShipped()){
+										order.setProperty("orderstatus", "shipped");
+									}else{
+										order.setProperty("orderstatus", "partialshipped");
+									}
+									store.getOrderArchive().saveOrder(store, order);
+								}
+							}
 							if (result.getErrorMessage() != null) {
 								foundErrors += result.getErrorMessage();
 								result.setErrorMessage("");

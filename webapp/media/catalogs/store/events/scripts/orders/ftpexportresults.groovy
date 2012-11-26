@@ -3,18 +3,18 @@ package orders;
 import java.text.SimpleDateFormat
 
 import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.store.CartItem
+import org.openedit.store.orders.Order
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
@@ -32,14 +32,17 @@ public void init() {
 
 	//Create Searcher Object
 	Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
-	Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order");
-	Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
+	Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
+	//Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 	Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 	Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
 
 	//Read orderid from the URL
 	def String orderid = inReq.getRequestParameter("orderid");
-	Data order = ordersearcher.searchById(orderid);
+	Order order = ordersearcher.searchById(orderid);
+	if (order == null) {
+		throw new OpenEditException("Invalid Order(" + orderid + ")");
+	}
 
 	//Get proper FTP info from Parameter
 	String ftpID = "";
@@ -77,14 +80,17 @@ public void init() {
 		if (!Boolean.parseBoolean(distributor.useedi)) {
 			continue;
 		}
-
-		SearchQuery distribQuery = itemsearcher.createSearchQuery();
-		distribQuery.addExact("rogers_order",orderid);
-		distribQuery.addExact("distributor", distributor.id);
-		HitTracker numDistributors = itemsearcher.search(distribQuery);//Load all of the line items for store X
-
-		if (numDistributors.size() > 0 )
-		{
+		
+		boolean includedistributor = false;
+		for(Iterator i = order.getItems().iterator(); i.hasNext();){
+			CartItem item = i.next();
+			if(distributor.getId().equals(item.getProduct().getProperty("distributor"))) {
+				includedistributor = true;
+				continue;
+			}
+		}
+		if (includedistributor)	{
+			String inMsg = "";
 			// xml generation
 			String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
 			Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
@@ -92,37 +98,29 @@ public void init() {
 			String realpath = page.getContentItem().getAbsolutePath();
 			File xmlFIle = new File(realpath);
 			if (xmlFIle.exists()) {
-				log.info("XML File exists: ${realpath}");
+				inMsg = "XML File exists: ${realpath}"
+				log.info(inMsg);
 				//FTP the files to the server
-
 				//Get the FTP Info
 				Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
-				if (ftpInfo == null) {
-
-					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
-
-				} else {
-
+				if (ftpInfo != null) {
 					PublishResult result = ftpFiles(manager, archive, page, ftpID);
-					if (result.isComplete())
-					{
-						ftpTransferedFiles.add(fileName + " has been sent by FTP to " + ftpInfo.name);
-
+					if (result.isComplete()) {
+						inMsg = fileName + " has been sent by FTP to " + ftpInfo.name;
+						log.info(inMsg);
+						ftpTransferedFiles.add(inMsg);
 					} else {
-
 						log.info(result.getErrorMessage());
-
-						throw new OpenEditException("FTP transfer did not complete. (${result.getErrorMessage()})");
-
 					}
+				} else {
+					inMsg = "Cannot get FTP Info using " + ftpID;
+					log.info("ERROR: " + inMsg);
 				}
 			} else {
-
-				throw new OpenEditException("CSV File does not exist: ${realpath}");
-
+				inMsg = "CSV File does not exist: ${realpath}";
+				log.info("ERROR: " + inMsg);
 			}
 		} else {
-
 			log.info("Distributor (${distributor.name}) not found for this order (${orderid})");
 
 		} // end if numDistributors

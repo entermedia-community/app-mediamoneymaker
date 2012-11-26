@@ -12,20 +12,19 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.money.Money
 import org.openedit.repository.filesystem.StringItem
+import org.openedit.store.CartItem
+import org.openedit.store.customer.Address
+import org.openedit.store.orders.Order
+import org.openedit.store.orders.OrderState
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
+import com.openedit.page.manage.PageManager
 
 public void init() {
-
-	PublishResult result = new PublishResult();
-	result.setComplete(false);
 
 	BaseWebPageRequest inReq = context;
 
@@ -33,18 +32,25 @@ public void init() {
 	SearcherManager manager = archive.getSearcherManager();
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
+	String catalogid = archive.getCatalogId();
+	PageManager pageManager = archive.getPageManager();
+
 	//Create Searcher Object
 	Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
-	Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order");
-	Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
+	Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
+	///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 	Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 	Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
 
 	//Read orderid from the URL
 	def orderid = inReq.getRequestParameter("orderid");
-	Data order = ordersearcher.searchById(orderid);
+	Order order = ordersearcher.searchById(orderid);
+	if (order == null) {
+		throw new OpenEditException("Invalid Order(" + orderid + ")");
+	}
 
-	def String ediID = inReq.getRequestParameter("ediid");
+	def String ediID = "";
+	//ediID = inReq.getRequestParameter("ediid");
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	HitTracker distributorList = distributorsearcher.getAllHits();
@@ -59,14 +65,20 @@ public void init() {
 
 		if (!Boolean.parseBoolean(distributor.useedi)) {
 			continue;
+		} else {
+			ediID = distributor.getId();
 		}
 
-		SearchQuery distribQuery = itemsearcher.createSearchQuery();
-		distribQuery.addExact("rogers_order",orderid);
-		distribQuery.addExact("distributor", distributor.id);
-		HitTracker numDistributors = itemsearcher.search(distribQuery);//Load all of the line items for store X
+		boolean includedistributor = false;
+		for(Iterator i = order.getItems().iterator(); i.hasNext();){
+			CartItem item = i.next();
+			if(distributor.getId().equals(item.getProduct().getProperty("distributor"))) {
+				includedistributor = true;
+				continue;
+			}
+		}
 
-		if (numDistributors.size() > 0 )
+		if (includedistributor)
 		{
 			//Iterate through each distributor
 
@@ -76,102 +88,74 @@ public void init() {
 			xml.'PurchaseOrder'()
 			{
 				Attributes()
-				result = populateGroup(xml, storesearcher, itemsearcher, orderid, distributor, log, order, productsearcher)
+				populateGroup(xml, storesearcher,  distributor, log, order)
 			}
-			if (result.isComplete()) {
 
-				if (validateXML(writer))
-				{
-					// xml generation
-					String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
-					Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
+			if (validateXML(writer))
+			{
+				// xml generation
+				String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
+				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
 
-					//Get the FTP Info
-					Data ftpInfo = getFtpInfo(context, catalogid, ediID);
-					if (ftpInfo == null) {
-						throw new OpenEditException("Cannot get FTP Info using ${ediID}");
-					}
-
-					//Generate EDI Header
-					String ediHeader = generateEDIHeader(production, ftpInfo, distributor);
-
-					//Create the output of the XML file
-					StringBuffer bufferOut = new StringBuffer();
-					bufferOut.append(ediHeader)
-					bufferOut.append(writer);
-					page.setContentItem(new StringItem(page.getPath(), bufferOut.toString(), "UTF-8"));
-
-					//Write out the XML page.
-					pageManager.putPage(page);
-					generatedfiles.add(fileName + " has been validated and created successfully.");
-				} else {
-					throw new OpenEditException("The XML did not validate.");
+				//Get the FTP Info
+				Data ftpInfo = getFtpInfo(context, catalogid, ediID);
+				if (ftpInfo == null) {
+					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
 				}
+
+				//Generate EDI Header
+				String ediHeader = generateEDIHeader(production, ftpInfo, distributor);
+
+				//Create the output of the XML file
+				StringBuffer bufferOut = new StringBuffer();
+				bufferOut.append(ediHeader)
+				bufferOut.append(writer);
+				page.setContentItem(new StringItem(page.getPath(), bufferOut.toString(), "UTF-8"));
+
+				//Write out the XML page.
+				pageManager.putPage(page);
+				String inMsg = fileName + " has been validated and created successfully.";
+				log.info(inMsg);
+				generatedfiles.add(inMsg);
 			} else {
-				log.info("ERROR: This order is invalid!" + orderid + ":" + result.getErrorMessage());
+				throw new OpenEditException("The XML did not validate.");
 			}
+
 		} // end if numDistributors
 	} // end distribIterator LOOP
+	OrderState inOrderState = new OrderState();
+	inOrderState.setOk(true);
+	order.setOrderState(inOrderState);
+	
+	order.setProperty("orderstatus", "readytosend");
+	
 	context.putPageValue("filelist", generatedfiles);
 	context.putPageValue("id", orderid)
 }
 
-private PublishResult populateGroup(xml, Searcher storesearcher, Searcher itemsearcher, String orderid, Data distributor, log, Data order, Searcher productsearcher) {
+private void populateGroup(xml, Searcher storesearcher,  Data distributor, log, Order order) {
 
-	PublishResult result = new PublishResult();
-	result.setComplete(false);
-
-	log.info("orderid: ${orderid}")
+	if (order == null) {
+		throw new OpenEditException("Invalid Order (populateGroup) (" + orderid + ")");
+	}
+	log.info("orderid: " + order.getId());
 	xml.POGroup()
 	{
-		HitTracker allStores = storesearcher.getAllHits();
-		for (Iterator eachStore = allStores.iterator(); eachStore.hasNext();)
-		{
-
-			Data rogersStore = eachStore.next();
-			def String storeNumber = rogersStore.store;
-
-			SearchQuery storeLookup = itemsearcher.createSearchQuery();
-			storeLookup.addExact("store", storeNumber);
-			storeLookup.addExact("rogers_order", orderid);
-			HitTracker foundStore = itemsearcher.search(storeLookup);
-
-			if (foundStore.size() > 0 )
-			{
-				SearchQuery itemQuery = itemsearcher.createSearchQuery();
-				itemQuery.addExact("store", storeNumber);
-				itemQuery.addExact("rogers_order", orderid);
-				itemQuery.addExact("distributor", distributor.id);
-				HitTracker orderitems = itemsearcher.search(itemQuery);//Load all of the line items for store X
-
-				if (orderitems.size() > 0 )
-				{
-					if (orderitems.size() == 1) {
-						log.info(" Item found!");
-					} else {
-						log.info(" Items(${orderitems.size()}) found!");
-					}
-					log.info(" - Distributor Name: ${distributor.name}");
-					log.info(" - Rogers Store Number: ${storeNumber}");
-					//Write Vendor/Distributor Information
-					result = populateHeader(xml, storeNumber, distributor, rogersStore,
-							orderitems, order, productsearcher)
-				} else {
-					log.info("No items found for this store (${storeNumber}) for this order (${orderid}) for this Distributor (${distributor.name}) ");
-				} // end if orderitems
-			} // end if foundStore
-		} //END eachstore LOOP
-	} // end POGroup
-
-	return result;
-
+		populateHeader(xml, distributor, order)
+	}
 }
 
-private PublishResult populateHeader(xml, String storeNumber, Data distributor, Data rogersStore, HitTracker orderitems, Data order, Searcher productsearcher) {
+private void populateHeader(xml, Data distributor,Order order) {
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
-	PublishResult result = new PublishResult();
-	result.setComplete(false);
+	BaseWebPageRequest inReq = context;
+	
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	SearcherManager manager = archive.getSearcherManager();
+
+	if (order == null) {
+		throw new OpenEditException("Invalid Order (populateHeader)");
+	}
 
 	xml.POHeader()
 	{
@@ -186,16 +170,22 @@ private PublishResult populateHeader(xml, String storeNumber, Data distributor, 
 			}
 			TblAddress()
 			{
+				Address shipping = order.getShippingAddress();
+				if (shipping == null) {
+					throw new OpenEditException("Invalid Address (populateHeader) (" + order.getId() + ")");
+				}
 				AddressType("ST")
-				AddressName1(rogersStore.name)
-				AddressIDQual(distributor.idQual)
-				AddressIDCode(storeNumber)
-				AddressLine1(rogersStore.businessaddress)
-				AddressLine2(rogersStore.address2)
-				AddressCity(rogersStore.businesscity)
-				AddressState(rogersStore.businessprovince)
-				AddressPostalCode(rogersStore.businesspostalcode)
-				AddressCountry("CA")
+				if (shipping.getName() != null) {
+					AddressName1(shipping.name)
+				}
+				AddressIDQual("92")
+				AddressIDCode(shipping.id);
+				AddressLine1(shipping.address1)
+				AddressLine2(shipping.address2)
+				AddressCity(shipping.city)
+				AddressState(shipping.state)
+				AddressPostalCode(shipping.zipCode)
+				AddressCountry(shipping.country)
 			}
 			//Write Billing Information
 			TblAddress()
@@ -218,7 +208,7 @@ private PublishResult populateHeader(xml, String storeNumber, Data distributor, 
 			TblAmount()
 			{
 				Qualifier("_TLI")
-				Amount(orderitems.size())
+				Amount(order.getItems().size())
 			}
 			TblAVP()
 			{
@@ -254,72 +244,46 @@ private PublishResult populateHeader(xml, String storeNumber, Data distributor, 
 			TblReferenceNbr()
 			{
 				Qualifier("PO")
-				ReferenceNbr(order.getId()+"-"+storeNumber)
+				ReferenceNbr(order.getId())
 			}
 
 		} // end Attributes
 		def orderCount = 0;
-		for (Iterator itemIterator = orderitems.iterator(); itemIterator.hasNext();)
+		for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();)
 		{
-			Data orderItem = itemIterator.next();
+			CartItem orderItem = itemIterator.next();
 			orderCount++
-
-			result = populateDetail(xml, orderCount, orderItem, productsearcher, storeNumber)
+			populateDetail(xml, orderCount, orderItem)
 		} // End itemIterator loop
 	} // end POHeader
-	return result;
-
 }
 
-private PublishResult populateDetail(xml, int orderCount, Data orderItem, Searcher productsearcher, String storeNumber) {
-
-	def int validCtr = 0;
-
-	PublishResult result = new PublishResult();
-	result.setComplete(false);
+private void populateDetail(xml, int orderCount, CartItem orderItem) {
 
 	xml.PODetail()
 	{
 		LineItemNumber(orderCount)
-		String productId = orderItem.product;
-		QuantityOrdered(orderItem.quantity)
+		String productId = orderItem.getProduct().getId();
+		QuantityOrdered(orderItem.getQuantity().toString())
 
 		def SEARCH_FIELD = "id";
-		Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, productId);
-		if (targetProduct != null) {
-
-			def boolean valid = Boolean.parseBoolean(orderItem.validitem);
-			if (valid) {
-				validCtr++;
-				log.info(" - Valid Product Found: " + targetProduct.getId());
-				log.info(" - Manufacturer's SKU : " + targetProduct.manufacturersku);
-				Money money = new Money(targetProduct.rogersprice);
-				UnitPrice(money.toShortString())
-				UnitOfMeasure("EA")
-				Description(targetProduct.name)
-				StoreNbr(orderItem.store)
-				Attributes()
-				{
-					TblReferenceNbr()
-					{
-						Qualifier("VN")
-						ReferenceNbr(targetProduct.manufacturersku)
-					}
-					TblReferenceNbr()
-					{
-						Qualifier("UP")
-						ReferenceNbr(targetProduct.upc)
-					}
-				}
-			} else {
-				result.setErrorMessage(orderItem.store);
+		UnitPrice(orderItem.getYourPrice().toShortString())
+		UnitOfMeasure("EA")
+		Description(orderItem.getProduct().getName())
+		Attributes()
+		{
+			TblReferenceNbr()
+			{
+				Qualifier("VN")
+				ReferenceNbr(orderItem.getProduct().get("manufacturersku"))
+			}
+			TblReferenceNbr()
+			{
+				Qualifier("UP")
+				ReferenceNbr(orderItem.getProduct().get("upc"))
 			}
 		}
 	}
-	if (validCtr > 0) {
-		result.setComplete(true);
-	}
-	return result;
 }
 
 private boolean validateXML( StringWriter xml ) {
@@ -421,15 +385,5 @@ private String generateTime() {
 
 }
 
-private Data getProduct( SearcherManager searcherManager, String id ) {
-
-	Searcher productSearcher = searcherManager.getSearcher(catalogid, "product");
-	Data product = productSearcher.searchById(id);
-	if (product != null) {
-		return product;
-	} else {
-		throw new OpenEditException("Product(" + id + ") does not exist!");
-	}
-}
 
 init();

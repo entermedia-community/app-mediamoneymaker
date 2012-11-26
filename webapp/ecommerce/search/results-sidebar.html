@@ -12,14 +12,38 @@
                	
           	#foreach($man in $mans)
 			
-                	<li #if($velocityCount > 10) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact">$man.name</a></li>
+                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact">$man.name</a></li>
                 	
                 	#end
-                	#if($mans.size() > 10)
+                	#if($mans.size() > 5)
                 	<li > <a  class="showall" data-id="categories" href="#">Show all...</a></li>
 			#end
                 </ul>
                 </div>
+
+
+ <div class="ui-widget-header">Phone Compatability</div>
+	           <div class="ui-widget-content categories-widget no-padding-for-real">
+	               <ul id="settings-menu" class="sidebar-list">
+  
+          
+                ##set($mans = $searcherManager.getList("media/catalogs/store", "phone"))
+               	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "phone").fieldSearch("id", "*", "name"))
+               	
+          	#foreach($man in $mans)
+			
+                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=phone&phone.value=$man.id&operation=exact">$man.name</a></li>
+                	
+                	#end
+                	#if($mans.size() > 5)
+                	<li > <a  class="showall" data-id="categories" href="#">Show all...</a></li>
+			#end
+                </ul>
+                </div>
+
+
+
+
 
  <div class="ui-widget-header">Manufacturers</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
@@ -29,13 +53,13 @@
                 #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
                
           	#foreach($man in $mans)
-                	<li #if($velocityCount > 10)  class="hidden-item manu"  #end ><a href="$apphome/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact">$man.name</a></li>
+                	<li #if($velocityCount > 5)  class="hidden-item manu"  #end ><a href="$apphome/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact">$man.name</a></li>
                
                 	
 			
                 	
                 	#end
-                	#if($mans.size() > 10)
+                	#if($mans.size() > 5)
                 	<li > <a  class="showall" data-id="manu" href="#">Show all...</a></li>
                 	
                 	

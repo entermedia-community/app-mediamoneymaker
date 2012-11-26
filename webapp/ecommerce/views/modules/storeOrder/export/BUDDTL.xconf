@@ -2,7 +2,7 @@
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
 
 <path-action name="Script.run" alltypes="true">
-<script>/${applicationid}/events/scripts/exportbud.groovy</script>
+<script>/${catalogid}/events/scripts/exportbud.groovy</script>
 </path-action>
 <generator name="velocity"/>
 </page>

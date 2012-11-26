@@ -103,22 +103,22 @@ public class ImportAffinityProducts extends EnterMediaObject {
 				while ((orderLine = read.readNext()) != null)
 				{
 					String rogerssku = orderLine[columnAffinitySKU];
-					Data targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
 						targetProduct = store.getProduct(targetProduct.getId());
 					}
 					if (targetProduct == null) {
 
 						//Product does not exist - Create blank data
-						targetProduct = media.getProductsearcher().createNewData();
+						targetProduct = media.getProductSearcher().createNewData();
 						targetProduct.setProperty("name",orderLine[columnAffinityDescription]);
 						targetProduct.setProperty("accessoryname",orderLine[columnAffinityDescription]);
 						targetProduct.setProperty("rogerssku",orderLine[columnAffinitySKU]);
 						targetProduct.setProperty("manufacturersku",orderLine[columnAffinitySKU]);
 						targetProduct.setProperty("validitem", "false");
-						media.getProductsearcher().saveData(targetProduct, media.getContext().getUser());
+						media.getProductSearcher().saveData(targetProduct, media.getContext().getUser());
 
-						targetProduct = media.getProductsearcher().searchByField(SEARCH_FIELD, rogerssku);
+						targetProduct = media.getProductSearcher().searchByField(SEARCH_FIELD, rogerssku);
 						if (targetProduct != null) {
 							targetProduct = store.getProduct(targetProduct.getId());
 						} else {
@@ -139,7 +139,7 @@ public class ImportAffinityProducts extends EnterMediaObject {
 						//Everything is good... Update the Product
 						targetProduct.setProperty("manufacturersku", orderLine[columnAffinitySKU]);
 						targetProduct.setProperty("distributor", distributorID);
-						media.getProductsearcher().saveData(targetProduct, context.getUser());
+						media.getProductSearcher().saveData(targetProduct, context.getUser());
 					}
 				}
 			} else {

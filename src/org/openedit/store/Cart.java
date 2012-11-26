@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.Order;
 
@@ -33,9 +34,28 @@ public class Cart
 	protected String fieldRegion;
 	protected Category fieldLastVisitedCatalog;
 	protected Category fieldLastLoadedCatalog;
+	protected Address fieldShippingAddress;
+	public Address getBillingAddress() {
+		return fieldBillingAddress;
+	}
+
+	public void setBillingAddress(Address inBillingAddress) {
+		fieldBillingAddress = inBillingAddress;
+	}
+
+	protected Address fieldBillingAddress;
+
 
 	public Cart()
 	{
+	}
+
+	public Address getShippingAddress() {
+		return fieldShippingAddress;
+	}
+
+	public void setShippingAddress(Address inShippingAddress) {
+		fieldShippingAddress = inShippingAddress;
 	}
 
 	public Cart(Store inStore)
