@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.email.PostMail;
@@ -223,8 +224,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						.iterator(); iterator3.hasNext();) {
 					ShipmentEntry entry = (ShipmentEntry) iterator3.next();
 					Element shipEntry = shipElem.addElement("shipping-entry");
-					shipEntry.addAttribute("productid", entry.getItem()
-							.getProduct().getId());
+					shipEntry.addAttribute("sku", entry.getItem().getSku());
 					shipEntry.addAttribute("quantity",
 							String.valueOf(entry.getQuantity()));
 					for (Iterator iterator4 = entry.getProperties().keySet()
@@ -674,6 +674,39 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			inOrder.setBillingAddress(billing);
 		}
 
+		
+		
+//		Element shippingdetails = orderElem.addElement("shipping");
+//		for (Iterator iterator = inOrder.getShipments().iterator(); iterator
+//				.hasNext();) {
+//			Shipment shipment = (Shipment) iterator.next();
+//			Element shipElem = orderElem.addElement("shipment");
+//			for (Iterator iterator2 = shipment.getProperties().keySet()
+//					.iterator(); iterator2.hasNext();) {
+//				String key = (String) iterator2.next();
+//				String value = shipment.get(key);
+//				shipElem.addAttribute(key, value);
+//			}
+//			for (Iterator iterator3 = shipment.getShipmentEntries()
+//					.iterator(); iterator3.hasNext();) {
+//				ShipmentEntry entry = (ShipmentEntry) iterator3.next();
+//				Element shipEntry = shipElem.addElement("shipping-entry");
+//				shipEntry.addAttribute("productid", entry.getItem()
+//						.getProduct().getId());
+//				shipEntry.addAttribute("quantity",
+//						String.valueOf(entry.getQuantity()));
+//				for (Iterator iterator4 = entry.getProperties().keySet()
+//						.iterator(); iterator4.hasNext();) {
+//					String key2 = (String) iterator4.next();
+//					String value2 = shipment.get(key2);
+//					shipEntry.addAttribute(key2, value2);
+//				}
+//			}
+//
+//		}
+		
+		
+		
 		List items = new ArrayList();
 		for (Iterator it = inOrderElement.elementIterator("item"); it.hasNext();) {
 			Element itemElement = (Element) it.next();
@@ -697,6 +730,39 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			inOrder.setProperty(propElement.attributeValue("name"),
 					propElement.getText());
 		}
+		
+		
+		Element shippingdetails = inOrderElement.element("shipping");
+		if(shippingdetails != null){
+			
+			for (Iterator iterator = shippingdetails.elementIterator("shipment"); iterator.hasNext();) {
+				Shipment shipment = new Shipment();
+				Element shipmentelem = (Element) iterator.next();
+				
+				for (Iterator iterator2 = shipmentelem.attributeIterator(); iterator2.hasNext();) {
+					Attribute object = (Attribute) iterator2.next();
+					String key = object.getName();
+					String val = object.getText();
+					shipment.setProperty(key, val);
+				}
+				
+				
+				for (Iterator iterator3 = shipmentelem.elementIterator("shipping-entry"); iterator3.hasNext();) {
+					Element details = (Element) iterator3.next();
+					ShipmentEntry entry = new ShipmentEntry();
+					String sku = details.attributeValue("sku");
+					String quantity = details.attributeValue("quantity");
+					entry.setCartItem(inOrder.getItem(sku));
+					
+					entry.setQuantity(Integer.parseInt(quantity));
+					shipment.addEntry(entry);
+				}
+				inOrder.addShipment(shipment);
+			}
+			
+		}
+		
+		
 	}
 
 	protected CartItem makeItem(Store inStore, Element inItemElem)

@@ -228,37 +228,32 @@ public class OrderTest extends StoreTestCase {
 		item.setProduct(product);
 		item.setQuantity(10);
 		item.setStatus("accepted");
-		item.setProperty("shipped", "true");
-//		item.setProperty("waybill", "1234");
-//		item.setProperty("quantityshippied", "12");
+		
 		cart.addItem(item);
 
 		CartItem item2 = new CartItem();
 		item2.setProduct(product2);
 		item2.setQuantity(10);
 		item2.setStatus("accepted");
-//		item.setProperty("shipped", "true");
-//		item.setProperty("waybill", "1234");
-//		
+	
+		
 		cart.addItem(item2);
 
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		order.setProperty("notes", "This is a note");
 		
 		Shipment shipment = new Shipment();
-		
+		shipment.setProperty("TESTPROPERTIES", "IAN");
 		ShipmentEntry entry1 = new ShipmentEntry();
 		entry1.setCartItem(item);
 		entry1.setQuantity(5);
-		entry1.setWaybill("12345");
-		entry1.setPerson("Peter Floyd");
+		
 		shipment.addEntry(entry1);
 
 		ShipmentEntry entry2 = new ShipmentEntry();
 		entry2.setCartItem(item2);
 		entry2.setQuantity(10);
-		entry2.setWaybill("54321");
-		entry2.setPerson("Ian Miller");
+		
 		shipment.addEntry(entry2);
 		
 		order.addShipment(shipment);
@@ -282,17 +277,20 @@ public class OrderTest extends StoreTestCase {
 		assertTrue(order.isFullyShipped());
 		
 		store.saveOrder(order);
-//		String orderid = order.getId();
-//
-//		order = null;
-//		
-//		
-//	
-//		order = store.getOrderArchive().loadSubmittedOrder(store, "admin", orderid);
-//		
-//		assertTrue(order.isFullyShipped());
-//		assertEquals(2, order.getShipments().size());
+		String orderid = order.getId();
 
+		order = null;
+		
+		
+	
+		order = store.getOrderArchive().loadSubmittedOrder(store, "admin", orderid);
+		
+
+		assertTrue(order.isFullyShipped());
+		assertEquals(2, order.getShipments().size());
+		shipment.setProperty("TESTPROPERTIES", "IAN");
+		assertEquals("IAN", ((Shipment) order.getShipments().get(0)).get("TESTPROPERTIES"));
+		
 	}
 	
 	

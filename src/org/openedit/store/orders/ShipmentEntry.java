@@ -26,17 +26,5 @@ public class ShipmentEntry extends BaseData{
 		cartItem = inCartItem;
 	}
 	
-	public String getWaybill() {
-		return get("waybill");
-	}
-	public void setWaybill(String inWaybill) {
-		setProperty("waybill", inWaybill);
-	}
 	
-	public String getPerson() {
-	return get("person");
-	}
-	public void setPerson(String inPerson) {
-		setProperty("person", inPerson);
-	}
 }
