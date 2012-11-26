@@ -246,11 +246,10 @@
   </bean>
   
   
-<<<<<<< HEAD
    <bean id="DistributorModule" class="org.openedit.store.modules.DistributorModule">
   	<property name="searcherManager"><ref bean="searcherManager"/></property>  
   </bean>
-=======
+
  
 
 	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -271,7 +270,6 @@
 	
 	</bean>
 	
->>>>>>> origin/dev
   
   
   
