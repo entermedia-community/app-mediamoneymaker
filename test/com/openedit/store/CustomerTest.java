@@ -40,7 +40,7 @@ public class CustomerTest extends StoreTestCase
 ////		assertEquals(1,hits.size() );
 //	}
 
-	public void testEditCustomer() throws Exception
+	public void xtestEditCustomer() throws Exception
 	{
 		/**
 		 * This test assumes Retail pro conversion worked ok
