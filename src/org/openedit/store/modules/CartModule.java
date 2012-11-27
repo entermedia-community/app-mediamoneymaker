@@ -787,6 +787,9 @@ public class CartModule extends BaseStoreModule
 			return;
 		}
 		Store store = getStore(inReq);
+		if(inReq.getUser() == null || inReq.getUserProfile().getId() == null){
+			return;
+		}
 		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
 		
 		HitTracker addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());

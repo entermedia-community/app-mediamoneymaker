@@ -31,7 +31,7 @@ public class AllTests
 		suite.addTestSuite(SegmentedProductPathFinderTest.class);
 		suite.addTestSuite(PriceSupportTest.class);
 		suite.addTestSuite(VotingTest.class);
-		suite.addTestSuite(MainFrameConvertTest.class);
+		//suite.addTestSuite(MainFrameConvertTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -170,9 +170,9 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 					orderState.setOk(true);
 					
 			} else{
-				orderState.setOk(false);
 				orderState = inStore.getOrderState(Order.REJECTED);
-			
+				orderState.setOk(false);
+
 				orderState.setDescription((String) pairs.get("error"));
 				
 			}

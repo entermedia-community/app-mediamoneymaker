@@ -114,7 +114,6 @@
 			<value>beanstreamOrderProcessor</value>			
 			 <value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
-			<value>rogersOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
 			<value>emailOrderProcessor</value>
 						
@@ -161,9 +160,6 @@
   <bean id="authorizeNetOrderProcessor" class="org.openedit.store.gateway.AuthorizeNetOrderProcessor">
   </bean>
 
-
-<bean id="rogersOrderProcessor" class="org.openedit.store.orders.RogersOrderProcessor">
-  </bean>
 
 
   <bean id="echoOrderProcessor" class="org.openedit.store.gateway.EchoOrderArchive">
@@ -250,6 +246,10 @@
   </bean>
   
   
+   <bean id="DistributorModule" class="org.openedit.store.modules.DistributorModule">
+  	<property name="searcherManager"><ref bean="searcherManager"/></property>  
+  </bean>
+
  
 
 	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">

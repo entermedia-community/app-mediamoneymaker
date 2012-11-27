@@ -4719,7 +4719,8 @@ p.resultsnumber {
     margin-bottom: 20;
 }
 #detailarea {
-    margin: 0 0 -20px 0;
+    margin: 0 0 0px 0;
+    padding-bottom: 10px;
 }
 #de-table {
     display: table;
@@ -5357,7 +5358,9 @@ p.resultsnumber {
     border-top: 1px solid #eee;
 }
 #details .tableholder {
-    width: 544px;
+ /*
+    width: 544px;*/
+    
     overflow-y: auto;
 }
 .max #details .tableholder {
