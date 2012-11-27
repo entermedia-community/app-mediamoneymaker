@@ -362,39 +362,39 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 
 	}
 
-	public Analyzer getAnalyzer()
-	{
-		if (fieldAnalyzer == null)
-		{
-//			CompositeAnalyzer composite = new CompositeAnalyzer();
-//			composite.setAnalyzer("description", new StemmerAnalyzer());
-//			composite.setAnalyzer("id", new NullAnalyzer());
-//			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+//	public Analyzer getAnalyzer()
+//	{
+//		if (fieldAnalyzer == null)
+//		{
+////			CompositeAnalyzer composite = new CompositeAnalyzer();
+////			composite.setAnalyzer("description", new StemmerAnalyzer());
+////			composite.setAnalyzer("id", new NullAnalyzer());
+////			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+////			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
+////			record.setUseTokens(false);
+////			composite.setAnalyzer("cumulusid", record);
+////			composite.setAnalyzer("name_sortable", record);
+////			fieldAnalyzer = composite;
+//			
+//			Map analyzermap = new HashMap();
+//			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
+//			//composite.setAnalyzer("description", new StemmerAnalyzer());
+//			
+//			analyzermap.put("id", new NullAnalyzer());
+//			analyzermap.put("foldersourcepath", new NullAnalyzer());
+//			analyzermap.put("sourcepath", new NullAnalyzer());
 //			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
 //			record.setUseTokens(false);
-//			composite.setAnalyzer("cumulusid", record);
-//			composite.setAnalyzer("name_sortable", record);
+//			analyzermap.put("cumulusid", record);
+//			analyzermap.put("name_sortable", record);
+//			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
+//
 //			fieldAnalyzer = composite;
-			
-			Map analyzermap = new HashMap();
-			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
-			//composite.setAnalyzer("description", new StemmerAnalyzer());
-			
-			analyzermap.put("id", new NullAnalyzer());
-			analyzermap.put("foldersourcepath", new NullAnalyzer());
-			analyzermap.put("sourcepath", new NullAnalyzer());
-			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
-			record.setUseTokens(false);
-			analyzermap.put("cumulusid", record);
-			analyzermap.put("name_sortable", record);
-			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
-
-			fieldAnalyzer = composite;
-			
-			
-		}
-		return fieldAnalyzer;
-	}
+//			
+//			
+//		}
+//		return fieldAnalyzer;
+//	}
 
 
 	protected ProductLuceneIndexer getIndexer()
