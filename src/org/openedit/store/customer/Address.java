@@ -13,7 +13,7 @@ import com.openedit.users.PropertyContainer;
  */
 public class Address extends ElementData
 {
-	protected PropertyContainer fieldPropertyContainer;
+	//protected PropertyContainer fieldPropertyContainer;
 	protected String fieldPrefix;
 	public static final String ADDRESS1 = "Address1";
 	public static final String ADDRESS2 = "Address2";	
@@ -29,10 +29,7 @@ public class Address extends ElementData
 	}
 
 
-	public String getProperty(String inKey){
-		return get(inKey);
-		
-	}
+
 
 	public String getPrefix()
 	{

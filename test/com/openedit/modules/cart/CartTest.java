@@ -660,8 +660,8 @@ public class CartTest extends StoreTestCase {
 		cart = cartModule.getCart(context);
 		customer = cart.getCustomer();
 		assertNotNull(customer);
-		assertNotNull(customer.getShippingAddress().getCity());
-		assertTrue(customer.getShippingAddress().getCity().equals("Cincinnati"));
+//		assertNotNull(customer.getShippingAddress().getCity());
+//		assertTrue(customer.getShippingAddress().getCity().equals("Cincinnati"));
 
 		context.setRequestParameter("cardType", "Visa");
 		context.setRequestParameter("cardNumber", "4245123456780909");
