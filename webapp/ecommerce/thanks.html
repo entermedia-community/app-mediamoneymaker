@@ -1,15 +1,16 @@
 #set ( $customer = $cart.getCustomer() )
 #set( $order = $cart.getCurrentOrder() )
 #set ( $orderState = $order.getOrderState() )
+$context.putPageValue("order", $order)
 
 #if ( $orderState.ok )
-
+<p>Order Reference: $order.id</p>
  <p>Thank you.</p>
 
  
  <p>Your order is complete: </p>
 
- $pages.stream("$apphome/orders/listing.html")
+ $pages.stream("$apphome/orders/listing.html", $context)
 
  
  #if ( $cart.hasZeroSubTotal() )
@@ -35,6 +36,8 @@
 #end
 
 <p><br><b><a href="$home$content.continueShoppingUrl">Continue shopping</a></b></p>
+
+
 
 $pages.stream("$apphome/orders/ordermetrics.html")
 

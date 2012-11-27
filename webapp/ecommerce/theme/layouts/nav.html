@@ -1,7 +1,7 @@
  
  <ul class="emheaderbuttons" >
 <li><a id="home"  href="$home$apphome/index.html"> Home </a></li>
-<li><a id="home"  href="$home$apphome/categories/index.html"> Browse </a></li>
+<li style="border-right: 1px solid #CCCCCC;"><a id="home"  href="$home$apphome/categories/index.html"> Browse </a></li>
 
 #set ($lastselected = $content.module )
  	#if(!$lastselected)
@@ -30,7 +30,7 @@
  
 
 
-#if ($user)
+#if ($canviewrogerstools)
 
 	#set( $urlbase = "$home$apphome/views/modules" )
 	#set ( $modules = $searcherManager.getList($catalogid, "module") )

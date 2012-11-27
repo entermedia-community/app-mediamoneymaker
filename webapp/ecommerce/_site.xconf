@@ -54,7 +54,7 @@
   <permission name="viewrogerstools">
     <or>
       <group id="administrators"/>
-      <group id="rogers"/>
+      <group id="rogersadministrators"/>
     </or>
   </permission>
   
@@ -70,6 +70,9 @@
       <group id="administrators"/>
       
     </or>
+  </permission>
+     <permission name="edituserprofile">
+   	<user/>
   </permission>
   <path-action name="storeArchive.loadStore"/>
   

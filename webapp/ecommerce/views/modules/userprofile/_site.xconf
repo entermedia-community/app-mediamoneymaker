@@ -3,4 +3,7 @@
 <page>
   <property name="fallbackdirectory">/ecommerce/views/modules/default</property>
   <property name="module">userprofile</property>
+  <permission name="view"><user/></permission>
+    <permission name="editdata"><user/></permission>
+    
 </page>

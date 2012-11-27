@@ -1,3 +1,6 @@
+  #if( !$order )
+#set ( $order = $cart.getCurrentOrder() )
+#end
                                                                                                                
 #foreach( $item in $cart.getItems() )
 <p>        $item.getQuantity() of $item.getName()  @ $item.getYourPrice()<br>
