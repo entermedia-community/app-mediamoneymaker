@@ -11,10 +11,9 @@ import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.Shipment
-import org.openedit.store.orders.ShipmentEntry;
+import org.openedit.store.orders.ShipmentEntry
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
@@ -39,40 +38,45 @@ public class ImportEDIASN extends EnterMediaObject {
 
 	public PublishResult importEdiXml() {
 
-		PublishResult result = new PublishResult();
-		result.setErrorMessage("");
-		String foundErrors = "";
-		result.setComplete(false);
+		PublishResult ediXMLresult = new PublishResult();
+		ediXMLresult.setErrorMessage("");
+		ediXMLresult.setCompleteMessage("");
+		ediXMLresult.setComplete(false);
 
-		OutputUtilities output = new OutputUtilities();
+		log.info("---- START Import EDI ASN ----");
 		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
-		Store store  = context.getPageValue("store");
-		log.info("---- START Import EDI ASN ----");
 		
-		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
+		Store store  = media.getContext().getPageValue("store");
+		if (store != null) {
+			log.info("Store loaded");
+		}
 
+		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 		String asnFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/asn/";
+		log.info("Searching " + asnFolder);
+		
 		PageManager pageManager = media.getArchive().getPageManager();
 		List dirList = pageManager.getChildrenPaths(asnFolder);
 		log.info("Initial directory size: " + dirList.size().toString());
 
-		strMsg = output.createTable("Section", "Values", "Status");
-
 		if (dirList.size() > 0) {
+
 			def int iterCounter = 0;
 			for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
+
+				List errorList = new ArrayList();
+				List completeList = new ArrayList();
 				
 				Page page = pageManager.getPage(iterator.next());
 				log.info("Processing " + page.getName());
 
 				String realpath = page.getContentItem().getAbsolutePath();
-
+				
 				File xmlFIle = new File(realpath);
 				if (xmlFIle.exists()) {
-					
+
 					String orderID = "";
 					String purchaseOrder = "";
 					String distributorID = "";
@@ -81,9 +85,8 @@ public class ImportEDIASN extends EnterMediaObject {
 					String waybill = "";
 					String quantityShipped = "";
 					String productID = "";
+					String foundErrors = "";
 					Date dateShipped = null;
-				
-					strMsg += output.appendOutMessage("<b>" + page.getName() + "</b>");
 
 					//Create the XMLSlurper Object
 					def ASN = new XmlSlurper().parse(page.getReader());
@@ -97,13 +100,13 @@ public class ImportEDIASN extends EnterMediaObject {
 
 						//Get the distributor
 						def String GSSND = ASN.Attributes.TblReferenceNbr.find {it.Qualifier == "GSSND"}.ReferenceNbr.text();
-						strMsg += output.appendOutMessage("GSSND", GSSND, FOUND);
 						Data distributor = media.searchForDistributor(GSSND, production);
 						if (distributor != null) {
-							strMsg += output.appendOutMessage("Distributor", distributor.name, FOUND);
 							distributorID = distributor.getId();
 						} else {
-							throw new OpenEditException("ERROR: Distributor value is blank in ASN.");
+							strMsg = "Distributor value is blank in ASN.";
+							log.info(strMsg);
+							errorList.add(strMsg);
 						}
 
 						def ASNHEADERS = ASN.ASNGroup.depthFirst().grep{
@@ -111,236 +114,265 @@ public class ImportEDIASN extends EnterMediaObject {
 						}
 						log.info("Found ASNHeaders: " + ASNHEADERS.size().toString());
 
-						//Set the Purchase Order Found Flag to false
-						def boolean foundFlag = false;
+						boolean poFlagFound = false;
 
 						ASNHEADERS.each {
+
 							//PO
 							def String PO = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
-							log.info("PO: " + PO);
-							if (!PO.isEmpty()) {
-								String[] orderInfo = PO.split("-");
-								Order order = media.searchForOrder(orderInfo[0]);
-								Shipment shipment = new Shipment();
-								shipment.setProperty("distributor", distributorID);
-								
-								foundFlag = true;
-								if (order != null) {
-									orderID = orderInfo[0];
-									strMsg += output.appendOutMessage("Rogers Order ", orderInfo[0], FOUND);
-								} else {
-									log.info("ERROR: Order(" + orderInfo[0] + ") was not found from ASN.");
-									//Create web event to send an email.
-									strMsg += output.appendOutMessage("Rogers Order ", orderInfo[0], NOT_FOUND);
-									String inMsg = "Order(" + orderInfo[0] + ") was not found from ASN.";
-									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
-								}
-								//Reset the found flag
-								foundFlag = false;
-								ASNHEADERS.each {
-									if (!foundFlag) {
-										//SC
-										def String courier = it.Attributes.TblEntityID.find {it.Qualifier == "SC"}.EntityValue.text();
-										if (!courier.isEmpty()) {
-											foundFlag = true;
-											strMsg += output.appendOutMessage("Courier", courier, FOUND);
-											carrier = courier;
-											shipment.setProperty("courier", courier);
-										}
-									}
-								}
-								if (!foundFlag) {
-									strMsg += output.appendOutMessage("Courier", "", NOT_FOUND);
-									String inMsg = "Courier cannot be found in ASN XML File(" + page.getName() + ")";
-									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
-								}
 
-								//Reset the found flag
-								foundFlag = false;
-								ASNHEADERS.each {
-									if (!foundFlag) {
-										//_PRO
-										def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "_PRO"}.ReferenceNbr.text();
-										
-										if (!WB.isEmpty()) {
-										
-											foundFlag = true;
-											strMsg += output.appendOutMessage("Waybill", WB, FOUND);
-											waybill = WB;
-											shipment.setProperty("waybill", waybill);
+							Shipment shipment = new Shipment();
+
+							if (!PO.isEmpty()) {
+
+								//Set the Purchase Order Found Flag to false
+								def boolean foundFlag = false;
+								poFlagFound = true;
+
+								purchaseOrder = PO;
+								log.info("Purchase Order: " + purchaseOrder);
+								Order order = null;
+								try {
+									order = media.searchForOrder(purchaseOrder);
+									if (order != null) {
+										foundFlag = true;
+										shipment.setProperty("distributor", distributorID);
+										if (order != null) {
+											orderID = purchaseOrder;
+										} else {
+											strMsg = "ERROR: Order(" + purchaseOrder + ") was not found from ASN.";
+											log.info(strMsg);
+											errorList.add(strMsg);
 										}
 									}
 								}
-								if (!foundFlag) {
-									strMsg += output.appendOutMessage("Waybill", "", NOT_FOUND);
-									String inMsg = "Waybill cannot be found in ASN XML File(" + page.getName() + ")";
-									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+								catch (Exception e) {
+									strMsg = "Invalid Order: " + purchaseOrder + "\n";
+									strMsg += "Exception thrown:\n";
+									strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
+									strMsg += "Stack Trace: " + e.getStackTrace().toString();;
+									log.info(strMsg);
+									errorList.add(strMsg);
 								}
 								if (foundFlag) {
-
-									def SUBHEADERS = it.depthFirst().grep{
-										it.name() == 'ASNHeader';
-									}
-									log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
-
 									//Reset the found flag
 									foundFlag = false;
-									SUBHEADERS.each {
+									ASNHEADERS.each {
 										if (!foundFlag) {
-											//QS
-											def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
-											if (!QS.isEmpty()) {
+											//SC
+											def String courier = it.Attributes.TblEntityID.find {it.Qualifier == "SC"}.EntityValue.text();
+											if (!courier.isEmpty()) {
 												foundFlag = true;
-												strMsg += output.appendOutMessage("Quantity Shipped", QS, FOUND);
-												quantityShipped = QS;
+												carrier = courier;
+												shipment.setProperty("courier", courier);
 											}
 										}
 									}
 									if (!foundFlag) {
-										strMsg += output.appendOutMessage("Quantity Shipped", "", NOT_FOUND);
-										String inMsg = "Quantity Shipped cannot be found in ASN XML File(" + page.getName() + ")";
-										result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+										strMsg = "Courier cannot be found in ASN XML File(" + page.getName() + ")";
+										log.info(strMsg);
+										errorList.add(strMsg);
 									}
 
 									//Reset the found flag
 									foundFlag = false;
-									SUBHEADERS.each {
+									ASNHEADERS.each {
 										if (!foundFlag) {
-											//QS
-											def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
-											if (!DS.isEmpty()) {
+											//_PRO
+											def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "_PRO"}.ReferenceNbr.text();
+											if (!WB.isEmpty()) {
 												foundFlag = true;
-												def newDate = parseDate(DS);
-												strMsg += output.appendOutMessage("Date Shipped", DS, FOUND);
-												dateShipped = newDate;
+												waybill = WB;
+												shipment.setProperty("waybill", waybill);
 											}
 										}
 									}
 									if (!foundFlag) {
-										strMsg += output.appendOutMessage("Date Shipped", "", NOT_FOUND);
-										String inMsg = "Date Shipped cannot be found in ASN XML File(" + page.getName() + ")";
-										result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+										strMsg = "Waybill cannot be found in ASN XML File(" + page.getName() + ")";
+										log.info(strMsg);
+										errorList.add(strMsg);
 									}
+									if (foundFlag) {
+										def SUBHEADERS = it.depthFirst().grep{
+											it.name() == 'ASNHeader';
+										}
+										log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
 
-									//Reset the found flag
-									foundFlag = false;
-									SUBHEADERS.each {
-										if (!foundFlag) {
-											//VN
-											def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
-											if (!vendorCode.isEmpty()) {
-												foundFlag = true;
-												Data product = media.searchForProductbyRogersSKU(vendorCode);
-												if (product != null) {
+										//Reset the found flag
+										foundFlag = false;
+										SUBHEADERS.each {
+											if (!foundFlag) {
+												//QS
+												def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
+												if (!QS.isEmpty()) {
 													foundFlag = true;
-													strMsg += output.appendOutMessage("Product", product.name, FOUND);
-													productID = product.getId();
-													
-												} else {
-													log.info("Product(" + vendorCode + ") was not found from ASN.");
-													//Create web event to send an email.
-													strMsg += output.appendOutMessage("Product ", vendorCode, NOT_FOUND);
-													String inMsg = "Product(" + vendorCode + ") was not found from ASN.";
-													result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
+													quantityShipped = QS;
 												}
 											}
 										}
-									}
-									if (!foundFlag) {
-										strMsg += output.appendOutMessage("Product", "", NOT_FOUND);
-										String inMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
-										result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
-									}
+										if (!foundFlag) {
+											strMsg = "Quantity Shipped cannot be found in ASN XML File(" + page.getName() + ")";
+											log.info(strMsg);
+											errorList.add(strMsg);
+										}
+										//Reset the found flag
+										foundFlag = false;
+										SUBHEADERS.each {
+											if (!foundFlag) {
+												//QS
+												def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
+												if (!DS.isEmpty()) {
+													foundFlag = true;
+													def newDate = parseDate(DS);
+													dateShipped = newDate;
+												}
+											}
+										}
+										if (!foundFlag) {
+											strMsg = "Date Shipped cannot be found in ASN XML File(" + page.getName() + ")";
+											log.info(strMsg);
+											errorList.add(strMsg);
+										}
 
-									//Finally write the data to the Tables!
-									String errMsg = "";
-									if (result.getErrorMessage() != null) {
-										errMsg = result.getErrorMessage();
+										//Reset the found flag
+										foundFlag = false;
+										SUBHEADERS.each {
+											if (!foundFlag) {
+												//VN
+												def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+												if (!vendorCode.isEmpty()) {
+													foundFlag = true;
+													Data product = media.searchForProductbyRogersSKU(vendorCode);
+													if (product != null) {
+														foundFlag = true;
+														productID = product.getId();
+													} else {
+														strMsg = "Product(" + vendorCode + ") was not found from ASN.";
+														log.info(strMsg);
+														errorList.add(strMsg);
+													}
+												}
+											}
+										}
+										if (!foundFlag) {
+											strMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
+											log.info(strMsg);
+											errorList.add(strMsg);
+										}
+
+										if ((foundFlag) && (errorList.size() == 0)) {
+
+											Product target = media.getProductSearcher().searchById(productID);
+											InventoryItem productInventory = target.getInventoryItem(0);
+											CartItem item = order.getItem(productInventory.getSku());
+
+											if (item != null ) {
+												ShipmentEntry entry = new ShipmentEntry();
+												entry.setCartItem(item);
+												entry.setQuantity(Integer.parseInt(quantityShipped));
+
+												shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+												shipment.addEntry(entry);
+												foundFlag = true;
+
+												strMsg = "Order Updated(" + purchaseOrder + ") and saved.";
+												log.info(strMsg);
+												completeList.add(strMsg);
+											} else {
+												strMsg = "Cart Item cannot be found(" + orderID + ")";
+												log.info(strMsg);
+												errorList.add(strMsg);
+											} // end if orderitems
+										}
 									}
-									if ((foundFlag) && (errMsg.length() == 0)) {
-										
-										Product target = media.getProductSearcher().searchById(productID);
-										InventoryItem productInventory = target.getInventoryItem(0);
-										CartItem item = order.getItem(productInventory.getSku());
-										
-										if (item != null ) {
-											ShipmentEntry entry = new ShipmentEntry();
-											entry.setCartItem(item);
-											entry.setQuantity(Integer.parseInt(quantityShipped));
-																
-											shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
-											shipment.addEntry(entry);
-											
-											strMsg += output.appendOutMessage("ITEM UPDATED(" + purchaseOrder + ") AND SAVED");
-										} else {
-											strMsg += output.appendOutMessage("ERROR ORDER(" + purchaseOrder + ") " + NOT_FOUND);
-											String inMsg = "Order cannot be found(" + orderID + ")";
-											result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
-										} // end if orderitems
-									} else {
-										strMsg += output.appendOutMessage("ERROR ORDER(" + purchaseOrder + ") NOT SAVED");
-									}
-								} else {
-									strMsg += output.appendOutMessage("ERROR PURCHASE ORDER NOT FOUND IN ASN (" + page.getName() + ")");
-									String inMsg = "Purchase Order cannot be found in ASN XML File(" + page.getName() + ")";
-									result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 								}
-								if(shipment.getShipmentEntries().size() >0) {
-									order.addShipment(shipment);
-									if(order.isFullyShipped()){
-										order.setProperty("orderstatus", "shipped");
-									}else{
-										order.setProperty("orderstatus", "partialshipped");
+								if (foundFlag) {
+									if(shipment.getShipmentEntries().size() >0) {
+										order.addShipment(shipment);
+										if(order.isFullyShipped()){
+											order.setProperty("order_status", "shipped");
+											strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+											log.info(strMsg);
+											completeList.add(strMsg);
+										}else{
+											order.setProperty("order_status", "partialshipped");
+											strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
+											log.info(strMsg);
+											completeList.add(strMsg);
+										}
+										store.getOrderArchive().saveOrder(store, order);
+										strMsg = "Order (" + purchaseOrder + ") saved.";
+										log.info(strMsg);
+										completeList.add(strMsg);
 									}
-									store.getOrderArchive().saveOrder(store, order);
 								}
 							}
-							if (result.getErrorMessage() != null) {
-								foundErrors += result.getErrorMessage();
-								result.setErrorMessage("");
-							}
 						}
-					}
-					if (foundErrors.isEmpty()) {
-						result = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
-						if (result.complete) {
-							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") MOVED");
-						} else {
-							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") FAILED MOVE");
-						}
-					} else {
-						strMsg += output.appendOutMessage("ERROR ORDER(" + orderID + ") NOT SAVED");
-						result = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
-						if (result.complete) {
-							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") MOVED TO ERROR");
-						} else {
-							strMsg += output.appendOutMessage("ASN FILE(" + page.getName() + ") FAILED MOVE TO ERROR");
+						if (!poFlagFound) {
+							strMsg = "PO could not be found in ASN";
+							log.info(strMsg);
+							errorList.add(strMsg);
 						}
 					}
 				} else {
-					result.setErrorMessage(realpath + " does not exist!");
+					strMsg = realpath + " does not exist!";
+					log.info(strMsg);
+					errorList.add(strMsg);
 				}
+				if (errorList.size() == 0) {
+					if (movePageToProcessed(pageManager, page, media.getCatalogid(), true)) {
+						strMsg = "COMPLETE: ASN File (" + page.getName() + ") moved to processed";
+						log.info(strMsg);
+						completeList.add(strMsg);
+					} else {
+						strMsg = "ERROR: ASN File(" + page.getName() + ") failed to move";
+						log.info(strMsg);
+						errorList.add(strMsg);
+					}
+				} else {
+					strMsg = "ERROR: ASN File(" + page.getName() + ":" + purchaseOrder + ") failed in processing.";
+					log.info(strMsg);
+					errorList.add(strMsg);
+					if (movePageToProcessed(pageManager, page, media.getCatalogid(), false)) {
+						strMsg = "ASN file(" + page.getName() + ") moved to Error Processed";
+						log.info(strMsg);
+						errorList.add(strMsg);
+					} else {
+						strMsg = "ASN file(" + page.getName() + ") failed to move to error";
+						log.info(strMsg);
+						errorList.add(strMsg);
+					}
+				}
+				if (completeList.size() > 0) {
+					for (String complete : completeList) {
+						ediXMLresult.appendCompleteMessage("<LI>" + complete + "</LI>\n");
+					}
+				} 
+				if (errorList.size() > 0) {
+					String foundErrors = "";
+					for (String error : errorList) {
+						ediXMLresult.appendErrorMessage("<LI>" + error + "</LI>\n");
+						foundErrors += error + "\n";
+					}
+					log.info("ERROR: The folowwing errors occurred:");
+					log.info(foundErrors);
+					//Create web event to send an email.
+					WebEvent event = new WebEvent();
+					event.setSearchType("asn_processing");
+					event.setCatalogId(media.getCatalogid());
+					event.setProperty("error", foundErrors);
+					media.getArchive().getMediaEventHandler().eventFired(event);
+				}
+				errorList = null;
+				completeList = null;
 			}
-			strMsg += output.finishTable();
-			result.setCompleteMessage(strMsg);
-			result.setComplete(true);
-			//extractTestXML(page, log, result);
-			if (!foundErrors.isEmpty()) {
-				result.setErrorMessage(foundErrors + "\n");
-				log.info("ERROR: The folowwing errors occurred:");
-				log.info(result.getErrorMessage());
-				//Create web event to send an email.
-				WebEvent event = new WebEvent();
-				event.setSearchType("asn_processing");
-				event.setCatalogId(media.getCatalogid());
-				event.setProperty("error", result.getErrorMessage());
-				media.getArchive().getMediaEventHandler().eventFired(event);
-			}
+			ediXMLresult.setComplete(true);
+
 		} else {
-			result.setCompleteMessage("There are no files to process at this time.");
-			result.setComplete(true);
+			ediXMLresult.setCompleteMessage("There are no files to process at this time.");
+			ediXMLresult.setComplete(true);
 		}
-		return result;
+		return ediXMLresult;
 	}
 
 	private Date parseDate(String date)
@@ -352,11 +384,9 @@ public class ImportEDIASN extends EnterMediaObject {
 		return (Date)newFormat.parse(date);
 	}
 
-	private PublishResult movePageToProcessed(PageManager pageManager, Page page,
+	private boolean movePageToProcessed(PageManager pageManager, Page page,
 	String catalogid, boolean saved) {
-
-		PublishResult move = new PublishResult();
-		move.setComplete(false);
+		boolean movePageResult = false;
 
 		String processedFolder = "/WEB-INF/data/${catalogid}/processed/asn/";
 		String asnFolder = "/WEB-INF/data/${catalogid}/incoming/asn/";
@@ -368,17 +398,14 @@ public class ImportEDIASN extends EnterMediaObject {
 		Page destination = pageManager.getPage(destinationFile);
 		pageManager.movePage(page, destination);
 		if (destination.exists()) {
-			move.setCompleteMessage(page.getName() + " has been moved to " + destinationFile);
-			move.setComplete(true);
-		} else {
-			move.setErrorMessage(page.getName() + " could not be moved.");
+			movePageResult = true;
 		}
-		return move;
+		return movePageResult;
 	}
-	
+
 	private boolean checkQuantities(String inQuantity, String inQuantityShipped) {
 		boolean equal = false;
-		
+
 		int quantity = Integer.parseInt(inQuantity);
 		int quantityShipped = Integer.parseInt(inQuantityShipped);
 		if (quantity == quantityShipped) {
@@ -403,17 +430,21 @@ try {
 	result = ImportEDIASN.importEdiXml();
 	if (result.isComplete()) {
 		//Output value to CSV file!
+		log.info("Return is complete.");
 		context.putPageValue("export", result.getCompleteMessage());
-		String errMsg = "";
-		if (result.getErrorMessage() != null) {
-			errMsg = result.getErrorMessage();
-		}
-		if (errMsg.length() > 0) {
-			context.putPageValue("errorout", result.getErrorMessage());
+		if (result.isError()) {
+			String errMsg = result.getErrorMessage();
+			if (errMsg.length() > 0) {
+				log.info("ErrorOut: " + errMsg);
+				context.putPageValue("errorout", errMsg);
+			}
 		}
 	} else {
-		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
+		if (result.isError()) {
+			String errMsg = result.getErrorMessage();
+			log.info("ErrorOut: " + errMsg);
+			context.putPageValue("errorout", errMsg);
+		}
 	}
 }
 finally {

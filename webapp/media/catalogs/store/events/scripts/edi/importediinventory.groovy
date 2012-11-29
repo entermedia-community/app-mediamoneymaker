@@ -46,7 +46,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 		
 		log.info("---- START Import EDI Inventory ----");
 		
@@ -244,7 +243,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		try {
 	

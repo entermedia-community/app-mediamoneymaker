@@ -43,7 +43,6 @@ public class ImportCesiumProducts extends EnterMediaObject {
 		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		def String distributorID = "105";
 

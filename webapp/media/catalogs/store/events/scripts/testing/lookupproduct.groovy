@@ -22,7 +22,6 @@ class LookupProduct extends EnterMediaObject {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		def productid = media.getContext().getRequestParameter("productid");
 		def rogersSKU = media.getContext().getRequestParameter("rogerssku");

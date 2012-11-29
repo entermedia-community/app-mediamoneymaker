@@ -43,7 +43,6 @@ public class ImportMicrocelProducts extends EnterMediaObject {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		BaseWebPageRequest inReq = context;
 

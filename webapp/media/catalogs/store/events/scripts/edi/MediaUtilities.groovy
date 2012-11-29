@@ -4,6 +4,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
+import org.openedit.store.Product
 import org.openedit.store.orders.Order
 
 import com.openedit.OpenEditException
@@ -33,113 +34,93 @@ public class MediaUtilities extends EnterMediaObject {
 	public MediaUtilities() {
 	}
 
-	public void setSearchers() {
-		setArchive();
-		setCatalogid();
-		setManager();
-		setDistributorSearcher();
-		setProductSearcher();
-		setOrderSearcher();
-//		setItemSearcher();
-		setStoreSearcher();
-		setManufacturerSearcher();
-		setInvoiceSearcher();
-		setInvoiceItemsSearcher();
-		setErrorSearcher();
-	}
-
 	////////////////////////////////////////////
 	// GETTERS AND SETTERS for Searchers
 	////////////////////////////////////////////
-	
+	@Override
 	public void setContext(WebPageRequest inContext) {
 		context = inContext;
 	}
+	
+	@Override
 	public WebPageRequest getContext() {
 		return context;
 	}
 	
-	void setCatalogid() {
-		catalogid = archive.getCatalogId();
-	}
 	public String getCatalogid() {
+		if (catalogid == null) {
+			catalogid = getArchive().getCatalogId();
+		}
 		return catalogid;
 	}
 	
-	protected void setArchive() {
-		archive = context.getPageValue("mediaarchive");
-	}
 	public MediaArchive getArchive() {
+		if (archive == null) {
+			archive = getContext().getPageValue("mediaarchive");
+		}
 		return archive;
 	}
 	
-	protected void setManager() {
-		manager = archive.getSearcherManager();
-	}
 	public SearcherManager getManager() {
+		if (manager == null) {
+			manager = archive.getSearcherManager();			
+		}
 		return manager;
 	}
 	
-	protected void setDistributorSearcher() {
-		distributorsearcher = manager.getSearcher(catalogid, "distributor");
-	}
 	public Searcher getDistributorSearcher() {
-		return distributorSearcher;
+		if (distributorsearcher == null) {
+			distributorsearcher = getManager().getSearcher(catalogid, "distributor");			
+		}
+		return distributorsearcher;
 	}
 	
-	protected void setProductSearcher() {
-		productsearcher = manager.getSearcher(catalogid, "product");
-	}
 	public Searcher getProductSearcher() {
+		if (productsearcher == null) {
+			productsearcher = getManager().getSearcher(catalogid, "product");			
+		}
 		return productsearcher;
 	}
 	
-	protected void setOrderSearcher() {
-		ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
-	}
 	public Searcher getOrderSearcher() {
+		if (ordersearcher == null) {
+			ordersearcher = getManager().getSearcher(archive.getCatalogId(), "storeOrder");
+		}
 		return ordersearcher;
 	}
 	
-//	protected void setItemSearcher() {
-//		itemsearcher = manager.getSearcher(catalogid, "rogers_order_item");
-//	}
-//	public Searcher getItemSearcher() {
-//		return itemsearcher;
-//	}
-//	
-	void setStoreSearcher() {
-		storesearcher = manager.getSearcher(catalogid, "store");
-	}
 	public Searcher getStoreSearcher() {
+		if (storesearcher == null) {
+			storesearcher = getManager().getSearcher(catalogid, "store");			
+		}
 		return storesearcher;
 	}
 	
-	void setManufacturerSearcher() {
-		manufacturersearcher = manager.getSearcher(catalogid , "manufacturer");
-	}
 	public Searcher getManufacturerSearcher() {
+		if (manufacturersearcher == null) {
+			manufacturersearcher = getManager().getSearcher(catalogid , "manufacturer");
+		}
 		return manufacturersearcher;
 	}
 
-	void setInvoiceSearcher() {
-		invoicesearcher = manager.getSearcher(catalogid , "invoice");
-	}
 	public Searcher getInvoiceSearcher() {
+		if (invoicesearcher == null) {
+			invoicesearcher = getManager().getSearcher(catalogid , "invoice");
+		}
 		return invoicesearcher;
 	}
 	
-	void setInvoiceItemsSearcher() {
-		invoiceitemssearcher = manager.getSearcher(catalogid , "invoiceitem");
-	}
 	public Searcher getInvoiceItemsSearcher() {
+		if (invoiceitemssearcher == null) {
+			invoiceitemssearcher = getManager().getSearcher(catalogid , "invoiceitem");
+		}
 		return invoiceitemssearcher;
 	}
 	
-	protected void setErrorSearcher() {
-		errorsearcher = manager.getSearcher(catalogid, "errormessage");
-	}
 	public Searcher getErrorSearcher() {
+		if (errorsearcher == null) {
+			errorsearcher = getManager().getSearcher(catalogid, "errormessage");
+		}
 		return errorsearcher;
 	}
 	
@@ -162,67 +143,58 @@ public class MediaUtilities extends EnterMediaObject {
 		} else {
 			SEARCH_FIELD = "headermailboxtest";
 		}
-		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
+		Searcher distributorsearcher = getManager().getSearcher(archive.getCatalogId(), "distributor");
 		Data targetDistributor = distributorsearcher.searchByField(SEARCH_FIELD, searchForName);
 
 		return targetDistributor;
 	}
 	
-	public HitTracker searchForItem( SearcherManager manager,
-	MediaArchive archive, String orderID, String store, String distributor) {
-
-		itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
-		SearchQuery itemQuery = itemsearcher.createSearchQuery();
-		itemQuery.addExact("store", storeID);
-		itemQuery.addExact("rogers_order", orderid);
-		itemQuery.addExact("distributor", distributor.name);
-		HitTracker orderitems = itemsearcher.search(itemQuery);
-
-		return orderitems;
-
-	}
 	public Order searchForOrder( String inId ) {
-		Data rogersOrder = ordersearcher.searchById(inId);
+		Order rogersOrder = getOrderSearcher().searchById(inId);
+		if (rogersOrder == null) {
+			return null;
+		}
 		return rogersOrder;
 	}
 
 	public Data searchForStore( String searchForName ) {
 		String SEARCH_FIELD = "store";
-		Data rogersStore = storesearcher.searchByField(SEARCH_FIELD, searchForName);
+		Data rogersStore = getStoreSearcher().searchByField(SEARCH_FIELD, searchForName);
 		return rogersStore;
 	}
+	
 	public Data searchForStoreByID( String storeID ) {
-		Data rogersStore = storesearcher.searchById(storeID);
+		Data rogersStore = getStoreSearcher().searchById(storeID);
 		return rogersStore;
 	}
 		
 	public HitTracker searchForStoreInOrder( String orderid, String store_number ) {
-		SearchQuery itemQuery = storesearcher.createSearchQuery();
+		SearchQuery itemQuery = getStoreSearcher().createSearchQuery();
 		itemQuery.addExact("store", store_number);
 		itemQuery.addExact("rogers_order", orderid);
-		HitTracker orderitems = storesearcher.search(itemQuery);
+		HitTracker orderitems = getStoreSearcher().search(itemQuery);
 		return orderitems;
 	}
 
 	public Data searchForProductbyUPC( String searchForName ) {
 		String SEARCH_FIELD = "upc";
-		Data product = productsearcher.searchByField(SEARCH_FIELD, searchForName);
+		Data product = getProductSearcher().searchByField(SEARCH_FIELD, searchForName);
 		return product;
 	}
 	
 	public Data searchForProductbyRogersSKU( String searchForName ) {
 		String SEARCH_FIELD = "rogerssku";
-		Data product = productsearcher.searchByField(SEARCH_FIELD, searchForName);
+		Data product = getProductSearcher().searchByField(SEARCH_FIELD, searchForName);
 		return product;
 	}
 	
-	public Data searchForProduct( String productID ) {
-		Data product = productsearcher.searchById(productID);
+	public Product searchForProduct( String productID ) {
+		Product product = getProductSearcher().searchById(productID);
 		return product;
 	}
 	
 	public String getManufacturerID(String searchForName) {
-		Data manufacturer = manufacturersearcher.searchByField("name", searchForName);
+		Data manufacturer = getManufacturerSearcher().searchByField("name", searchForName);
 		if (manufacturer == null) {
 			manufacturer = addManufacturer(searchForName);
 		}
@@ -231,14 +203,14 @@ public class MediaUtilities extends EnterMediaObject {
 
 	// ADD UTILITIES
 	public Data addManufacturer(String manufacturerName) {
-		Data manufacturer = manufacturersearcher.searchByField("name", manufacturerName);
+		Data manufacturer = getManufacturerSearcher().searchByField("name", manufacturerName);
 		if (manufacturer == null) {
-			manufacturer = manufacturersearcher.createNewData();
-			manufacturer.setId(manufacturersearcher.nextId());
+			manufacturer = getManufacturerSearcher().createNewData();
+			manufacturer.setId(getManufacturerSearcher().nextId());
 			manufacturer.setSourcePath(manufacturer.getId());
 			manufacturer.setName(manufacturerName);
-			manufacturersearcher.saveData(manufacturer, context.getUser());
-			Data newManufacturer = manufacturersearcher.searchByField("name", manufacturerName);
+			getManufacturerSearcher().saveData(manufacturer, context.getUser());
+			Data newManufacturer = getManufacturerSearcher().searchByField("name", manufacturerName);
 			if (newManufacturer != null) {
 				return newManufacturer;
 			}
@@ -250,7 +222,7 @@ public class MediaUtilities extends EnterMediaObject {
 	
 	public String getStoreID(String storeNumber) {
 		String id = "";
-		Data storeInfo = storesearcher.searchByField("store", storeNumber);
+		Data storeInfo = getStoreSearcher().searchByField("store", storeNumber);
 		if (storeInfo != null) {
 			id = storeInfo.getId();
 		} else {
@@ -261,12 +233,12 @@ public class MediaUtilities extends EnterMediaObject {
 	}
 	
 	public String getStoreName(String storeID) {
-		Data storeInfo = storesearcher.searchById(storeID);
+		Data storeInfo = getStoreSearcher().searchById(storeID);
 		return storeInfo.getName();
 	}
 	
 	public String getProductName(String productID) {
-		Data productInfo = productsearcher.searchById(productID);
+		Data productInfo = getProductSearcher().searchById(productID);
 		return productInfo.getName();
 	}
 }
