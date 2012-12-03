@@ -379,6 +379,10 @@ public class CartModule extends BaseStoreModule
 	{
 
 		String inPrefix = inAddress.getPrefix();
+		String addressid = getAddressValue(inPageRequest, inPrefix, "id");
+		if(addressid != null){
+			inAddress.setId(addressid);
+		}
 		inAddress.setAddress1(getAddressValue(inPageRequest, inPrefix,
 				"address1"));
 		inAddress.setAddress2(getAddressValue(inPageRequest, inPrefix,
@@ -709,6 +713,21 @@ public class CartModule extends BaseStoreModule
 		order.setShippingAddress(cart.getShippingAddress());
 		// Export order to XML
 		store.saveOrder(order);
+		if(cart.getShippingAddress().getId() == null){
+			Searcher addressSearcher = getSearcherManager().getSearcher(store.getCatalogId(), "address");
+			Address target = cart.getShippingAddress();
+			target.setId(addressSearcher.nextId());
+			target.setProperty("userprofile", inPageRequest.getUserProfile().getId());
+			addressSearcher.saveData(target, inPageRequest.getUser());
+			
+		} else{
+
+			Searcher addressSearcher = getSearcherManager().getSearcher(store.getCatalogId(), "address");
+			Address target = cart.getShippingAddress();
+			addressSearcher.saveData(target, inPageRequest.getUser());
+			
+		}
+		
 		// process the order with the varous processors
 		inPageRequest.putPageValue("order", order);
 		store.processOrder(inPageRequest, order);

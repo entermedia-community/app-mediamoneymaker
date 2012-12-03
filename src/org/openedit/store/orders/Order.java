@@ -328,6 +328,8 @@ public class Order extends BaseData implements Comparable {
 
 		return (String) getProperties().get(inId);
 	}
+	
+	
 
 	public Map getProperties() {
 		if (fieldProperties == null) {
