@@ -199,21 +199,11 @@ private void populateHeader(xml, Data distributor,Order order) {
 					throw new OpenEditException("Invalid Address (populateHeader) (" + order.getId() + ")");
 				}
 				AddressType("ST")
-				if (order.getCustomer().getName() != null) {
-					AddressName1(order.getCustomer().getName())
-				} else {
-					AddressName1("WEB_ORDER")
-				}
+				log.info("Name: " + shipping.getName())
+				AddressName1(shipping.getName())
 				AddressIDQual("92")
-//				if (order.getId() != null) {
-//					AddressIDCode(order.getId())
-//				} else {
-//					if (order.getCustomer().getId() != null) {
-//						AddressIDCode(order.getCustomer().getId())
-//					} else {
-//						AddressIDCode("000")
-//					}
-//				}				
+				log.info("ID: " + shipping.getId())
+				AddressIDCode(shipping.getId())
 				AddressLine1(shipping.getAddress1())
 				AddressLine2(shipping.getAddress2())
 				AddressCity(shipping.getCity())
