@@ -267,10 +267,6 @@ public class CartModule extends BaseStoreModule
 			}
 		}
 		
-		
-		
-		
-		
 		if (customer == null)
 		{
 			if (!store.getAllowDuplicateAccounts())
@@ -340,7 +336,6 @@ public class CartModule extends BaseStoreModule
 						.getRequestParameter("referenceNumber"));
 			}
 		}
-
 		if (inPageRequest.getRequestParameter("billing.address1.value") != null)
 		{
 			populateCustomerAddress(inPageRequest, customer.getBillingAddress());
@@ -379,10 +374,16 @@ public class CartModule extends BaseStoreModule
 	{
 
 		String inPrefix = inAddress.getPrefix();
-		String addressid = getAddressValue(inPageRequest, inPrefix, "id");
+		String addressid = getAddressValue(inPageRequest, inPrefix, 
+				"id");
 		if(addressid != null){
 			inAddress.setId(addressid);
 		}
+		String storeName = getAddressValue(inPageRequest, inPrefix, 
+				"name");
+		if(storeName != null){
+			inAddress.setName(storeName);
+		} 
 		inAddress.setAddress1(getAddressValue(inPageRequest, inPrefix,
 				"address1"));
 		inAddress.setAddress2(getAddressValue(inPageRequest, inPrefix,
@@ -724,6 +725,15 @@ public class CartModule extends BaseStoreModule
 
 			Searcher addressSearcher = getSearcherManager().getSearcher(store.getCatalogId(), "address");
 			Address target = cart.getShippingAddress();
+			if (target.getName() == null) {
+				String inPrefix = target.getPrefix();
+				String storeName = getAddressValue(inPageRequest, inPrefix, 
+						"name");
+				if(storeName != null){
+					target.setName(storeName);
+				} 
+			}
+			target.setProperty("userprofile", inPageRequest.getUserProfile().getId());
 			addressSearcher.saveData(target, inPageRequest.getUser());
 			
 		}

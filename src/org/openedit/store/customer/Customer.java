@@ -23,6 +23,7 @@ import com.openedit.users.filesystem.FileSystemUser;
  * @author dbrown
  */
 public class Customer implements Data {
+	public static final String NAME = "Name";
 	public static final String PHONE1 = "Phone1";
 	public static final String FAX = "Fax";
 	public static final String TITLE = "Title";
@@ -122,7 +123,7 @@ public class Customer implements Data {
 	}
 	public void setName(String inName)
 	{
-		
+		getUser().safePut(NAME, inName);
 	}
 	public PaymentMethod getPaymentMethod() {
 		return fieldPaymentMethod;
