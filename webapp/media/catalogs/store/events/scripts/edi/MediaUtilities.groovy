@@ -60,7 +60,7 @@ public class MediaUtilities extends EnterMediaObject {
 	
 	public Searcher getDistributorSearcher() {
 		if (distributorsearcher == null) {
-			distributorsearcher = getManager().getSearcher(getCatalogid(). "distributor");			
+			distributorsearcher = getManager().getSearcher(getCatalogid(), "distributor");			
 		}
 		return distributorsearcher;
 	}
@@ -133,7 +133,6 @@ public class MediaUtilities extends EnterMediaObject {
 		} else {
 			SEARCH_FIELD = "headermailboxtest";
 		}
-		Searcher distributorsearcher = getManager().getSearcher(getArchive().getCatalogId(), "distributor");
 		Data targetDistributor = getDistributorSearcher().searchByField(SEARCH_FIELD, searchForName);
 
 		return targetDistributor;
