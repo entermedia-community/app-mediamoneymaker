@@ -10,5 +10,6 @@
   <property id="zip" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="address" internalfield="false">Zip/Postal Code</property>
   <property id="description" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="address" internalfield="false">Description</property>
   <property id="storenumber" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="address">Store Number</property>
-  <property id="userprofile" catalogid="media/catalogs/store" index="true" stored="true" editable="true">userprofile</property>
+  <property id="userprofile" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="address">userprofile</property>
+  <property id="phone" catalogid="media/catalogs/store" index="true" stored="true" editable="true">Phone</property>
 </properties>
