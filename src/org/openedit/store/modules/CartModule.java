@@ -714,7 +714,7 @@ public class CartModule extends BaseStoreModule
 		order.setShippingAddress(cart.getShippingAddress());
 		// Export order to XML
 		store.saveOrder(order);
-		if(cart.getShippingAddress().getId() == null){
+		if(cart.getShippingAddress() != null && cart.getShippingAddress().getId() == null){
 			Searcher addressSearcher = getSearcherManager().getSearcher(store.getCatalogId(), "address");
 			Address target = cart.getShippingAddress();
 			target.setId(addressSearcher.nextId());
