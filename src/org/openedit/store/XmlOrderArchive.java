@@ -156,6 +156,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			Address shipping = inOrder.getShippingAddress();
 			if (shipping != null) {
 				Element shippingElem = orderElem.addElement("shipping-address");
+				shippingElem.addAttribute("id", shipping.getId());
+				shippingElem.addAttribute("name", shipping.getName());
 				shippingElem.addAttribute("address1", shipping.getAddress1());
 				shippingElem.addAttribute("address2", shipping.getAddress2());
 				shippingElem.addAttribute("city", shipping.getCity());
@@ -612,6 +614,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		Element shippingaddress = inOrderElement.element("shipping-address");
 		if (shippingaddress != null) {
 			Address shipping = new Address();
+			shipping.setId(shippingaddress.attributeValue("id"));
+			shipping.setName(shippingaddress.attributeValue("name"));
 			shipping.setAddress1(shippingaddress.attributeValue("address1"));
 			shipping.setAddress2(shippingaddress.attributeValue("address2"));
 			shipping.setCity(shippingaddress.attributeValue("city"));
@@ -858,6 +862,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 	protected Address makeAddress(Element inAddressElem) {
 		Address address = new Address();
+		address.setName(inAddressElem.attributeValue("name"));
 		address.setAddress1(inAddressElem.attributeValue("address1"));
 		address.setAddress2(inAddressElem.attributeValue("address2"));
 		address.setCity(inAddressElem.attributeValue("city"));

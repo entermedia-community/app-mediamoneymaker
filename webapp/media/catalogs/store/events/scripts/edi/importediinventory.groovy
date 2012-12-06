@@ -46,7 +46,9 @@ public class ImportEDIInventory extends EnterMediaObject {
 		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
+		if (media == null) {
+			throw new OpenEditException("MediaUtilities is null!");
+		}
 		
 		log.info("---- START Import EDI Inventory ----");
 		
@@ -74,11 +76,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 					//Create the XMLSlurper Object
 					def InventoryInquiryAdvice = new XmlSlurper().parse(page.getReader());
 					
-					ErrorProcessing errors = new ErrorProcessing();
-					errors.setContext(media.getContext());
-					errors.setProcessName("importediinventory");
-					errors.setErrorType("Missing Data");
-					
 					foundErrorCtr = 0;
 
 					def INQGROUP = InventoryInquiryAdvice.depthFirst().grep{
@@ -97,6 +94,7 @@ public class ImportEDIInventory extends EnterMediaObject {
 							
 							//Set the Purchase Order Found Flag to false
 							def boolean foundFlag = false;
+							def boolean errorFound = false;
 	
 							def INQDETAIL = it.depthFirst().grep{
 								it.name() == 'INQDetail';
@@ -104,35 +102,38 @@ public class ImportEDIInventory extends EnterMediaObject {
 							log.info("Found INQDetails: " + INQDETAIL.size().toString());
 		
 							INQDETAIL.each {
-								
-								def String quantity = it.Quantity.text();
-								if (quantity != null) {
-									def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
-									if (!vendorCode.isEmpty()) {
-										foundFlag = true;
-										Data product = media.searchForProductbyRogersSKU(vendorCode);
-										if (product != null) {
+								if (!errorFound) {
+									def String quantity = it.Quantity.text();
+									if (quantity != null && quantity.length() > 0) {
+										def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+										if (vendorCode != null && vendorCode.length() > 0) {
 											foundFlag = true;
-											productID = product.getId();
-											result = updateInventoryItem(productID, quantity, store);
-											
+											Data product = media.searchForProductBySku("manufacturersku", vendorCode);
+											if (product != null) {
+												foundFlag = true;
+												productID = product.getId();
+												PublishResult update = updateInventoryItem(productID, quantity, store, media);
+												if (!update.isComplete()) {
+													foundErrorCtr++;
+													errorFound = true;
+													result.setErrorMessage(update.getErrorMessage());
+												}
+											} else {
+												String inMsg = page.getName() + ":Product(" + vendorCode + ") could not be found from Inventory file.";
+												log.info(inMsg);
+											}
 										} else {
-											String inMsg = page.getName() + ":Product(" + vendorCode + ") could not be found from Inventory file.";
+											String inMsg = page.getName() + ":Vendor Code cannot be found in Inventory XML File(" + page.getName() + ")";
 											log.info(inMsg);
-											errors.addToList(inMsg);
+											result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 											foundErrorCtr++;
 										}
 									} else {
-										String inMsg = page.getName() + ":Vendor Code cannot be found in Inventory XML File(" + page.getName() + ")";
+										String inMsg = page.getName() + ":Quantity cannot be found in Inventory XML File(" + page.getName() + ")";
 										log.info(inMsg);
-										errors.addToList(inMsg);
+										result.setErrorMessage(result.getErrorMessage() + "\n" + inMsg);
 										foundErrorCtr++;
 									}
-								} else {
-									String inMsg = page.getName() + ":Quantity cannot be found in Inventory XML File(" + page.getName() + ")";
-									log.info(inMsg);
-									errors.addToList(inMsg);
-									foundErrorCtr++;
 								}
 							}
 						}
@@ -151,50 +152,22 @@ public class ImportEDIInventory extends EnterMediaObject {
 						} else {
 							inMsg = "Inventory File (" + page.getName() + ") failed to move to processed.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						}
 					} else {
 						PublishResult move = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 						if (move.isComplete()) {
 							inMsg = "Inventory File (" + page.getName() + ") moved to ERROR.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							foundErrorCtr++;
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						} else {
 							inMsg = "Inventory File (" + page.getName() + ") failed to move to ERROR.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							foundErrorCtr++;
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						}
 					}
 					if (inMsg.length() > 0) {
 						WebEvent event = new WebEvent();
 						event.setSearchType("inventory_processing");
 						event.setCatalogId(media.getCatalogid());
+						inMsg += result.getErrorMessage();
 						event.setProperty("error", inMsg);
 						media.getArchive().getMediaEventHandler().eventFired(event);
 					}
@@ -237,36 +210,45 @@ public class ImportEDIInventory extends EnterMediaObject {
 		return move;
 	}
 	
-	public PublishResult updateInventoryItem( String productID, String quantity, Store store ) throws Exception {
+	public PublishResult updateInventoryItem( String productID, String quantity, Store store, MediaUtilities media) throws Exception {
 
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
-		
-		MediaUtilities media = new MediaUtilities();
-		media.setContext(context);
-		media.setSearchers();
-
-		try {
-	
-			Product product = store.getProduct(productID);
-			if (product != null) {
-				InventoryItem productInventory = null
-				productInventory = product.getInventoryItem(0);
-				if (productInventory == null) {
-					//Need to create the Inventory Item
-					productInventory = new InventoryItem();
-					productInventory.setSku(product.getId());
-					product.addInventoryItem(productInventory);
+		if (productID != null && productID.length() > 0) {
+			try {
+				Product product = store.getProduct(productID);
+				if (product != null) {
+					InventoryItem productInventory = null
+					productInventory = product.getInventoryItem(0);
+					if (productInventory == null) {
+						//Need to create the Inventory Item
+						productInventory = new InventoryItem();
+						productInventory.setSku(product.getId());
+						product.addInventoryItem(productInventory);
+					}
+					productInventory.setQuantityInStock(Integer.parseInt(quantity));
+					Date now = new Date();
+					product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(now));
+					try {				
+						media.getProductSearcher().saveData(product, media.getContext().getUser());
+					} catch (Exception e) {
+						result.setErrorMessage("ERROR:" + product.getId() + ":" + e.getMessage() + ":" + e.getLocalizedMessage())
+						
+						log.info(e.getMessage());
+						result.setComplete(false);
+					}
+					result.setComplete(true);
+				} else {
+					log.info("Product( " + productID + ") could not be found");
+					result.setComplete(true);
 				}
-				productInventory.setQuantityInStock(Integer.parseInt(quantity));
-				
-				media.getProductSearcher().saveData(product, media.getContext().getUser());
-				result.setComplete(true);
-			} else {
-				result.setErrorMessage("Product( " + productID + ") could not be found");
+			} catch(Exception e) {
+				result.setErrorMessage("ERROR:" + e.getMessage() + ":" + e.getLocalizedMessage())
+				result.setComplete(false);
 			}
-		} catch(Exception e) {
-			result.setErrorMessage(e.getMessage() + ":" + e.getLocalizedMessage())
+		} else {
+			log.info("ProductID is blank.");
+			result.setComplete(true);
 		}
 		return result;
 	}
@@ -295,6 +277,7 @@ try {
 			errMsg = result.getErrorMessage();
 		}
 		if (errMsg.length() > 0) {
+			log.info(errMsg);
 			context.putPageValue("errorout", errMsg);
 		}
 	} else {

@@ -24,7 +24,6 @@ class UpdateDistributor extends EnterMediaObject {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		WebPageRequest inReq = context;
 		Store store = inReq.getPageValue("store");

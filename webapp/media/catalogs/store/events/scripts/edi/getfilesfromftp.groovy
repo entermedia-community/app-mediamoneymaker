@@ -248,7 +248,6 @@ try {
 	
 	MediaUtilities media = new MediaUtilities();
 	media.setContext(context);
-	media.setSearchers();
 	
 	GetFilesFromFTP ftpInvoice = new GetFilesFromFTP();
 	ftpInvoice.setLog(logs);

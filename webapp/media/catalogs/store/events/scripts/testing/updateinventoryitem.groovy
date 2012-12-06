@@ -20,7 +20,6 @@ class UpdateInventoryItem extends EnterMediaObject {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		Data searchproduct = media.searchForProductbyRogersSKU(rogersSKU);
 		Product product = store.getProduct(searchproduct.getId());

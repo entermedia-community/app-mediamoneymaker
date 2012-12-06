@@ -20,13 +20,14 @@ import org.openedit.store.orders.OrderState
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
+import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
 public void init() {
 
-	BaseWebPageRequest inReq = context;
+	WebPageRequest inReq = context;
 
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	SearcherManager manager = archive.getSearcherManager();
@@ -49,8 +50,31 @@ public void init() {
 		throw new OpenEditException("Invalid Order(" + orderid + ")");
 	}
 
-	def String ediID = "";
-	//ediID = inReq.getRequestParameter("ediid");
+	//Get proper FTP info from Parameter
+	String ftpID = "";
+	String ftpIDProd = inReq.findValue('ftpidprod');
+	String ftpIDTest = inReq.findValue('ftpidtest');
+	if (production) {
+		ftpID = ftpIDProd;
+		if (ftpID == null) {
+			ftpID = "104";
+		} else if (ftpID.isEmpty()) {
+			ftpID = "104";
+		}
+	} else {
+		ftpID = ftpIDTest;
+		if (ftpID == null) {
+			ftpID = "103";
+		} else if (ftpID.isEmpty()) {
+			ftpID = "103";
+		}
+	}
+	///////////////////////
+	// FTPID OVERRIDE FOR TESTING
+	///////////////////////
+	ftpID = "104";
+	///////////////////////
+
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	HitTracker distributorList = distributorsearcher.getAllHits();
@@ -98,9 +122,9 @@ public void init() {
 				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
 
 				//Get the FTP Info
-				Data ftpInfo = getFtpInfo(context, catalogid, ediID);
+				Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
 				if (ftpInfo == null) {
-					throw new OpenEditException("Cannot get FTP Info using ${ediID}");
+					throw new OpenEditException("Cannot get FTP Info using ${ftpID}");
 				}
 
 				//Generate EDI Header
@@ -175,17 +199,17 @@ private void populateHeader(xml, Data distributor,Order order) {
 					throw new OpenEditException("Invalid Address (populateHeader) (" + order.getId() + ")");
 				}
 				AddressType("ST")
-				if (shipping.getName() != null) {
-					AddressName1(shipping.name)
-				}
+				log.info("Name: " + shipping.getName())
+				AddressName1(shipping.getName())
 				AddressIDQual("92")
-				AddressIDCode(shipping.id);
-				AddressLine1(shipping.address1)
-				AddressLine2(shipping.address2)
-				AddressCity(shipping.city)
-				AddressState(shipping.state)
-				AddressPostalCode(shipping.zipCode)
-				AddressCountry(shipping.country)
+				log.info("ID: " + shipping.getId())
+				AddressIDCode(shipping.getId())
+				AddressLine1(shipping.getAddress1())
+				AddressLine2(shipping.getAddress2())
+				AddressCity(shipping.getCity())
+				AddressState(shipping.getState())
+				AddressPostalCode(shipping.getZipCode())
+				AddressCountry(getCountryCode(shipping.getCountry()))
 			}
 			//Write Billing Information
 			TblAddress()
@@ -384,6 +408,18 @@ private String generateTime() {
 	return outDate;
 
 }
-
+private String getCountryCode(String inCountryName) {
+	BaseWebPageRequest inReq = context;
+	
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	SearcherManager manager = archive.getSearcherManager();
+	Searcher countrysearcher = manager.getSearcher(archive.getCatalogId(), "country");
+	Data country = countrysearcher.searchByField("name", inCountryName);
+	if (country != null) {
+		return country.getId();
+	} else {
+		return null;
+	}
+}
 
 init();

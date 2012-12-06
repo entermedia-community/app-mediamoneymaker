@@ -33,7 +33,6 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
-		media.setSearchers();
 
 		log.info("-- START Import Cesium Invoice ----");
 

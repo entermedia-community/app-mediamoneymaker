@@ -44,7 +44,6 @@ public class ErrorProcessing extends EnterMediaObject {
 		if (errorList.size() > 0) {
 			MediaUtilities searcherUtility = new MediaUtilities();
 			searcherUtility.setContext(context);
-			searcherUtility.setSearchers();
 			
 			Data errorMessage = searcherUtility.getErrorSearcher().createNewData();
 			errorMessage.setId(searcherUtility.getErrorSearcher().nextId());

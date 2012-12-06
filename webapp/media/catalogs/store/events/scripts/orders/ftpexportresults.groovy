@@ -29,6 +29,7 @@ public void init() {
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 	PageManager pageManager = archive.getPageManager();
+	String catalogid = archive.getCatalogId();
 
 	//Create Searcher Object
 	Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
@@ -92,8 +93,9 @@ public void init() {
 		if (includedistributor)	{
 			String inMsg = "";
 			// xml generation
-			String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
-			Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
+			String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml";
+			String filePath = "/WEB-INF/data/" + catalogid + "/orders/exports/" + orderid;
+			Page page = pageManager.getPage(filePath + "/" + fileName);
 
 			String realpath = page.getContentItem().getAbsolutePath();
 			File xmlFIle = new File(realpath);
@@ -132,6 +134,7 @@ public void init() {
 private PublishResult ftpFiles(SearcherManager manager, MediaArchive archive, Page page, String ftpID) {
 
 	UserManager userManager = archive.getModuleManager().getBean("userManager");
+	String catalogid = archive.getCatalogId();
 	PublishResult result = new PublishResult();
 
 	//Get the FTP Info

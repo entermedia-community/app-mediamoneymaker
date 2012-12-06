@@ -44,6 +44,7 @@ Select From Existing: <select id="address" name="address.value">
 <input type=hidden name="userName" value="$!customer.userName" />
 <input type=hidden name="password" value="$!customer.password" />
 
+<input type=hidden name="shipping.id.value" value="$!{address.id}" />
 
 #end
 	</tr>
@@ -53,7 +54,7 @@ Select From Existing: <select id="address" name="address.value">
 	</tr>
 	<tr>
 	
-	<td colspan="2" class=body2>Company (optional)<br><input type="text" name="company" class="large-field" value="$!customer.company" /></td>
+	<td colspan="2" class=body2>Store Name: <br><input type="text" name="shipping.name.value" class="large-field" value="$!address.get('name')" /></td>
 	</tr>
 	<tr>
 	<td colspan="2" class=body2>Address<br><input type="text" name="shipping.address1.value" id="shipping.address1.value"  class="large-field" value="$!address.get("address1")" /></td>
