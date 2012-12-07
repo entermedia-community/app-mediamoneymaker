@@ -615,7 +615,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		if (shippingaddress != null) {
 			Address shipping = new Address();
 			shipping.setId(shippingaddress.attributeValue("id"));
-			shipping.setName(shippingaddress.attributeValue("name"));
+			
+			String name = shippingaddress.attributeValue("name");
+			if(name != null){
+				shipping.setName(name);
+			}
 			shipping.setAddress1(shippingaddress.attributeValue("address1"));
 			shipping.setAddress2(shippingaddress.attributeValue("address2"));
 			shipping.setCity(shippingaddress.attributeValue("city"));

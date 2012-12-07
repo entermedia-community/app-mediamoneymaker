@@ -15,7 +15,6 @@ public class Address extends ElementData
 {
 	//protected PropertyContainer fieldPropertyContainer;
 	protected String fieldPrefix;
-	public static final String NAME = "name";
 	public static final String ADDRESS1 = "address1";
 	public static final String ADDRESS2 = "address2";	
 	public static final String CITY = "city";
@@ -45,12 +44,7 @@ public class Address extends ElementData
 		fieldPrefix = inPrefix;
 	}
 
-	public String getName() {
-		return get(NAME);
-	}
-	public void setName(String inName) {
-		setProperty(NAME, inName);
-	}
+	
 	public String getAddress1()
 	{
 		return get(ADDRESS1);
