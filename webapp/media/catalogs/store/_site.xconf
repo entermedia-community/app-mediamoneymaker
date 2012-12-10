@@ -3,4 +3,5 @@
 <page>
   <property name="fallbackdirectory">/media/catalog</property>
   <property name="catalogid">media/catalogs/store</property>
+  <path-action name="storeArchive.loadStore"/>
 </page>
