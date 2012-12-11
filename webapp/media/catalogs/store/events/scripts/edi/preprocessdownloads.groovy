@@ -1,15 +1,15 @@
 package edi;
 
-import java.util.Iterator;
-
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.event.WebEvent;
+import org.openedit.event.WebEvent
 
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
+
+import edi.PreprocessDownloads.FileCount;
 
 public class PreprocessDownloads extends EnterMediaObject {
 
@@ -30,10 +30,72 @@ public class PreprocessDownloads extends EnterMediaObject {
 			return type.toString();
 		}
 	}
-
-	public PublishResult processFiles() {
+	
+	private class FileCount {
+		int invoice;
+		int asn;
+		int inventory;
+		int invalid;
 		
-		log.info("---- START Preprocess Downloaded Files ----");
+		public FileCount() {
+			
+		}
+		
+		public int getInvoice() {
+			if (this.invoice == null) {
+				this.invoice = 0;				
+			}
+			return this.invoice;
+		}
+		public int getAsn() {
+			if (this.asn == null) {
+				this.asn = 0;
+			}
+			return this.asn;
+		}
+		public int getInventory() {
+			if (this.inventory == null) {
+				this.inventory = 0;
+			}
+			return this.inventory;
+		}
+		public int getInvalid() {
+			if (this.invalid == null) {
+				this.invalid = 0;
+			}
+			return this.invalid;
+		}
+		
+		public void increaseInvoice() {
+			if (this.invoice == null) {
+				this.invoice = 0
+			}
+			this.invoice++;
+		}
+		public void increaseAsn() {
+			if (this.asn == null) {
+				this.asn = 0;
+			}
+			this.asn++;
+		}
+		public void increaseInventory() {
+			if (this.inventory == null) {
+				this.inventory = 0;
+			}
+			this.inventory++;
+		}
+		public void increaseInvalid() {
+			if (this.invalid == null) {
+				this.invalid = 0
+			}
+			this.invalid++;
+		}
+	}
+	public FileCount getFileCount() {
+		return new FileCount();
+	}
+
+	public PublishResult processFiles(FileCount counter) {
 		
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
@@ -47,7 +109,7 @@ public class PreprocessDownloads extends EnterMediaObject {
 		String inventoryFolder = "/WEB-INF/data/${catalogid}/incoming/inventory/";
 
 		PageManager pageManager = archive.getPageManager();
-
+		
 		List dirList = pageManager.getChildrenPaths(downloadFolder);
 		log.info("Initial directory size: " + dirList.size().toString());
 
@@ -88,6 +150,7 @@ public class PreprocessDownloads extends EnterMediaObject {
 										pageManager.movePage(xmlFile, destination);
 										iterCounter++;
 										found = true;
+										counter.increaseInvoice();
 									}
 								}
 							}
@@ -116,6 +179,7 @@ public class PreprocessDownloads extends EnterMediaObject {
 										pageManager.movePage(xmlFile, destination);
 										iterCounter++;
 										found = true;
+										counter.increaseAsn();
 									}
 								}
 							}
@@ -144,6 +208,7 @@ public class PreprocessDownloads extends EnterMediaObject {
 										pageManager.movePage(xmlFile, destination);
 										iterCounter++;
 										found = true;
+										counter.increaseInventory();
 									}
 								}
 							}
@@ -175,7 +240,6 @@ public class PreprocessDownloads extends EnterMediaObject {
 			dirList = pageManager.getChildrenPaths(downloadFolder);
 			log.info("New updated directory size: " + dirList.size().toString());
 			if (dirList.size() == 0) {
-				log.info("Upload processing is complete!");
 				result.setCompleteMessage("Upload processing is complete!");
 				result.setComplete(true);
 			} else {
@@ -188,6 +252,9 @@ public class PreprocessDownloads extends EnterMediaObject {
 				archive.getMediaEventHandler().eventFired(event);
 				result.setErrorMessage("ERROR: Files are left in the upload folder!");
 			}
+		} else {
+			result.setCompleteMessage("There are no files to process");
+			result.setComplete(true);
 		}
 
 		return result;
@@ -220,24 +287,39 @@ logs.startCapture();
 
 try {
 
+	log.info("---- START PreprocessDownloads.processFiles ----");
+	
 	PreprocessDownloads processDownloads = new PreprocessDownloads();
 	processDownloads.setLog(logs);
 	processDownloads.setContext(context);
 	processDownloads.setPageManager(pageManager);
+	
+	PreprocessDownloads.FileCount fileCounter = processDownloads.getFileCount();
 
-	result = processDownloads.processFiles();
+	result = processDownloads.processFiles(fileCounter);
 	if (result.isComplete()) {
 		//Output value to CSV file!
-		context.putPageValue("export", result.getCompleteMessage());
+		log.info(result.getCompleteMessage());
 	} else {
 		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
+		log.info("ERROR:")
+		log.info(result.getErrorMessage());
 	}
-	MediaArchive archive = context.getPageValue("mediaarchive");
-	archive.fireSharedMediaEvent("processinvoices");
-	archive.fireSharedMediaEvent("processasns");
-	archive.fireSharedMediaEvent("processinventory");
+	log.info("---- END PreprocessDownloads.processFiles ----");
 	
+	MediaArchive archive = context.getPageValue("mediaarchive");
+	if (fileCounter.getAsn() > 0) {
+		archive.fireSharedMediaEvent("processasns");
+	}
+	if (fileCounter.getInvoice() > 0) {
+		archive.fireSharedMediaEvent("processinvoices");
+	}
+	if (fileCounter.getInventory() > 0) {
+		archive.fireSharedMediaEvent("processinventory");
+	}
+	if (fileCounter.getInvalid() > 0) {
+		log.info("INVALID FILES: " + fileCounter.getInvalid().toString())
+	}
 }
 finally {
 	logs.stopCapture();
