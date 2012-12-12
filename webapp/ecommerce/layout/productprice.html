@@ -13,7 +13,7 @@
 ##     	</select>
 ##	#end
 	#if ( $product.isOnSale() )
-		<div class="mainprice onsale" $product.getRetailPrice()</div>
+		<div class="mainprice onsale">$product.getRetailPrice()</div>
 		<div class="saleprice">$product.getYourPrice()</div>
 	#else
 		<div class="mainprice">$product.getYourPrice()</div>
@@ -26,7 +26,10 @@
 		#end
 
 </li>
-Current Stock: 10000
+#if($product.isAvailable())
+	Current Stock: $product.getInventoryItem(0).getQuantityInStock()
+#end
+	
 #if($canvieweol)
 
 #if($product.expectedendoflife)
