@@ -1,6 +1,0 @@
-
-<properties>
-  <property id="id"  index="true" stored="true" editable="true" searchtype="registrationcode">id</property>
-  <property id="name" index="true" stored="true" editable="true"  >Name</property>
-  <property id="active" index="true" stored="true" editable="true" type="boolean" >Active</property>
-</properties>

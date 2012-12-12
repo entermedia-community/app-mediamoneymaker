@@ -1,0 +1,6 @@
+
+<root>
+  <property id="manufacturer"/>
+  <property id="name"/>
+  <property id="active"/>
+</root>

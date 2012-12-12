@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phones>
+  <phone id="2" manufacturer="5" active="false">6515</phone>
+  <phone id="3" manufacturer="5" active="false">HP6955</phone>
+  <phone id="4" manufacturer="7" active="false">240</phone>
+  <phone id="6" manufacturer="7" active="false">1400</phone>
+  <phone id="7" manufacturer="7" active="false">1500</phone>
+  <phone id="9" manufacturer="3" active="false">FIREFLY</phone>
+  <phone id="12" manufacturer="1" active="false">SMT5600</phone>
+  <phone id="15" manufacturer="7" active="false">500</phone>
+  <phone id="16" manufacturer="7" active="false">4015</phone>
+  <phone id="17" manufacturer="22" active="false">9100</phone>
+  <phone id="19" manufacturer="9" active="false">E1</phone>
+  <phone id="20" manufacturer="9" active="false">K1KRZR</phone>
+  <phone id="21" manufacturer="9" active="false">L2</phone>
+  <phone id="22" manufacturer="9" active="false">L6</phone>
+  <phone id="23" manufacturer="9" active="false">L7</phone>
+  <phone id="24" manufacturer="9" active="false">V186</phone>
+  <phone id="26" manufacturer="9" active="false">V190</phone>
+  <phone id="37" manufacturer="9" active="false">V361</phone>
+  <phone id="41" manufacturer="9" active="false">V551</phone>
+  <phone id="43" manufacturer="9" active="false">V635</phone>
+  <phone id="45" manufacturer="10" active="false">3120</phone>
+  <phone id="46" manufacturer="10" active="false">6010</phone>
+  <phone id="48" manufacturer="10" active="false">6133</phone>
+  <phone id="49" manufacturer="10" active="false">6620</phone>
+  <phone id="50" manufacturer="10" active="false">6682</phone>
+  <phone id="51" manufacturer="10" active="false">6820</phone>
+  <phone id="53" manufacturer="10" active="false">2610</phone>
+  <phone id="54" manufacturer="10" active="false">3220i</phone>
+  <phone id="58" manufacturer="10" active="false">6101</phone>
+  <phone id="59" manufacturer="10" active="false">E62</phone>
+  <phone id="60" manufacturer="10" active="false">5300</phone>
+  <phone id="61" manufacturer="10" active="false">6085</phone>
+  <phone id="62" manufacturer="10" active="false">6103</phone>
+  <phone id="66" manufacturer="11" active="false">680</phone>
+  <phone id="67" manufacturer="28" active="false">C3</phone>
+  <phone id="69" manufacturer="22" active="false">7280</phone>
+  <phone id="71" manufacturer="22" active="false">7130G</phone>
+  <phone id="73" manufacturer="22" active="false">Pearl 8100</phone>
+  <phone id="75" manufacturer="22" active="false">7290</phone>
+  <phone id="76" manufacturer="22" active="false">8700</phone>
+  <phone id="77" manufacturer="13" active="false">C327</phone>
+  <phone id="78" manufacturer="13" active="false">C417</phone>
+  <phone id="79" manufacturer="13" active="false">D606</phone>
+  <phone id="80" manufacturer="13" active="false">D807R</phone>
+  <phone id="81" manufacturer="13" active="false">D807X</phone>
+  <phone id="82" manufacturer="13" active="false">P207</phone>
+  <phone id="84" manufacturer="13" active="false">T609</phone>
+  <phone id="85" manufacturer="13" active="false">X426</phone>
+  <phone id="86" manufacturer="13" active="false">X507</phone>
+  <phone id="88" manufacturer="13" active="false">C61</phone>
+  <phone id="89" manufacturer="15" active="false">AC860</phone>
+  <phone id="90" manufacturer="16" active="false">GC89</phone>
+  <phone id="91" manufacturer="16" active="false">J300</phone>
+  <phone id="92" manufacturer="16" active="false">K790</phone>
+  <phone id="93" manufacturer="16" active="false">W300i</phone>
+  <phone id="95" manufacturer="16" active="false">W600i</phone>
+  <phone id="96" manufacturer="16" active="false">W810i</phone>
+  <phone id="98" manufacturer="16" active="false">Z520a</phone>
+  <phone id="99" manufacturer="7" active="false">9200</phone>
+  <phone id="100" manufacturer="7" active="false">Chocolate TG800</phone>
+  <phone id="101" manufacturer="9" active="false">C261</phone>
+  <phone id="104" manufacturer="9" active="false">Pebl U6</phone>
+  <phone id="105" manufacturer="9" active="false">V235</phone>
+  <phone id="106" manufacturer="9" active="false">V3</phone>
+  <phone id="108" manufacturer="9" active="false">V360</phone>
+  <phone id="109" manufacturer="10" active="false">6061</phone>
+  <phone id="110" manufacturer="10" active="false">6126</phone>
+  <phone id="112" manufacturer="13" active="false">D407F</phone>
+  <phone id="115" manufacturer="15" active="false">Aircard860</phone>
+  <phone id="116" manufacturer="16" active="false">K510a</phone>
+  <phone id="117" manufacturer="16" active="false">Z710i</phone>
+  <phone id="118" manufacturer="11" active="false">650</phone>
+  <phone id="119" manufacturer="13" active="false">A706</phone>
+  <phone id="120" manufacturer="19" active="false">S621</phone>
+  <phone id="121" manufacturer="22" active="false">8800</phone>
+  <phone id="122" manufacturer="22" active="false">8300</phone>
+  <phone id="123" manufacturer="10" active="false">8801</phone>
+  <phone id="124" manufacturer="19" active="false">Tytn</phone>
+  <phone id="125" manufacturer="10" active="false">6300</phone>
+  <phone id="126" manufacturer="13" active="false">A436</phone>
+  <phone id="127" manufacturer="13" active="false">A516</phone>
+  <phone id="128" manufacturer="16" active="false">W200i</phone>
+  <phone id="129" manufacturer="16" active="false">W580i</phone>
+  <phone id="130" manufacturer="9" active="false">V9</phone>
+  <phone id="131" manufacturer="9" active="false">Q9</phone>
+  <phone id="132" manufacturer="19" active="false">Touch</phone>
+  <phone id="133" manufacturer="11" active="false">750</phone>
+  <phone id="134" manufacturer="7" active="false">TU720 Shine</phone>
+  <phone id="135" manufacturer="7" active="false">TU515</phone>
+  <phone id="136" manufacturer="19" active="false">TyTnII</phone>
+  <phone id="137" manufacturer="9" active="false">W370</phone>
+  <phone id="138" manufacturer="13" active="false">A736</phone>
+  <phone id="139" manufacturer="13" active="false">i616</phone>
+  <phone id="140" manufacturer="13" active="false">E747</phone>
+  <phone id="141" manufacturer="22" active="false">8110</phone>
+  <phone id="142" manufacturer="22" active="false">8120</phone>
+  <phone id="143" manufacturer="16" active="false">K850i</phone>
+  <phone id="144" manufacturer="10" active="false">6555</phone>
+  <phone id="145" manufacturer="10" active="false">5310</phone>
+  <phone id="146" manufacturer="10" active="false">3555</phone>
+  <phone id="148" manufacturer="10" active="false">N95</phone>
+  <phone id="149" manufacturer="7" active="false">TU915</phone>
+  <phone id="150" manufacturer="13" active="false">A746</phone>
+  <phone id="151" manufacturer="9" active="false">E8</phone>
+  <phone id="153" manufacturer="16" active="false">Z 750</phone>
+  <phone id="154" manufacturer="9" active="false">Z6</phone>
+  <phone id="155" manufacturer="9" active="false">U9</phone>
+  <phone id="156" manufacturer="16" active="false">W380</phone>
+  <phone id="157" manufacturer="22" active="false">8310</phone>
+  <phone id="158" manufacturer="22" active="false">8820</phone>
+  <phone id="159" manufacturer="16" active="false">W760a</phone>
+  <phone id="160" manufacturer="16" active="false">Z780i</phone>
+  <phone id="161" manufacturer="11" active="false">Centro</phone>
+  <phone id="162" manufacturer="53" active="false">iPhone</phone>
+  <phone id="163" manufacturer="13" active="false">J706</phone>
+  <phone id="164" manufacturer="13" active="false">A226</phone>
+  <phone id="165" manufacturer="13" active="false">T336</phone>
+  <phone id="166" manufacturer="22" active="false">9000 Bold</phone>
+  <phone id="167" manufacturer="22" active="false">8220</phone>
+  <phone id="168" manufacturer="16" active="false">W350i</phone>
+  <phone id="169" manufacturer="19" active="false">Shift</phone>
+  <phone id="171" manufacturer="16" active="false">Z310</phone>
+  <phone id="172" manufacturer="9" active="false">W510</phone>
+  <phone id="173" manufacturer="10" active="false">5200</phone>
+  <phone id="174" manufacturer="10" active="false">6070</phone>
+  <phone id="175" manufacturer="7" active="false">TU500</phone>
+  <phone id="176" manufacturer="10" active="false">6301</phone>
+  <phone id="177" manufacturer="10" active="false">3500</phone>
+  <phone id="178" manufacturer="16" active="false">K300</phone>
+  <phone id="179" manufacturer="13" active="false">X497</phone>
+  <phone id="180" manufacturer="10" active="false">6030</phone>
+  <phone id="181" manufacturer="5" active="false">HP 910</phone>
+  <phone id="182" manufacturer="9" active="false">VA76R</phone>
+  <phone id="183" manufacturer="10" active="false">6086</phone>
+  <phone id="184" manufacturer="10" active="false">2760</phone>
+  <phone id="185" manufacturer="10" active="false">2680</phone>
+  <phone id="186" manufacturer="13" active="false">F406</phone>
+  <phone id="187" manufacturer="22" active="false">8320</phone>
+  <phone id="188" manufacturer="22" active="false">8900</phone>
+  <phone id="189" manufacturer="10" active="false">N810</phone>
+  <phone id="190" manufacturer="13" active="false">A836</phone>
+  <phone id="192" manufacturer="19" active="false">HTC Touch Diamond</phone>
+  <phone id="193" manufacturer="10" active="false">E71</phone>
+  <phone id="195" manufacturer="13" active="false">T456</phone>
+  <phone id="196" manufacturer="13" active="false">A766</phone>
+  <phone id="201" manufacturer="13" active="false">F266</phone>
+  <phone id="202" manufacturer="7" active="false">TU750</phone>
+  <phone id="203" manufacturer="10" active="false">7510</phone>
+  <phone id="204" manufacturer="7" active="false">TU330</phone>
+  <phone id="205" manufacturer="7" active="false">TE365</phone>
+  <phone id="206" manufacturer="9" active="false">W233</phone>
+  <phone id="207" manufacturer="16" active="false">W303</phone>
+  <phone id="208" manufacturer="9" active="false">V9x</phone>
+  <phone id="209" manufacturer="16" active="false">X1</phone>
+  <phone id="210" manufacturer="13" active="false">S366</phone>
+  <phone id="211" manufacturer="16" active="false">C905</phone>
+  <phone id="212" manufacturer="19" active="false">G1</phone>
+  <phone id="213" manufacturer="19" active="false">Magic</phone>
+  <phone id="214" manufacturer="19" active="false">Dream</phone>
+  <phone id="215" manufacturer="10" active="false">1661</phone>
+  <phone id="216" manufacturer="10" active="false">5800</phone>
+  <phone id="217" manufacturer="7" active="false">GR500R</phone>
+  <phone id="218" manufacturer="22" active="false">8520</phone>
+  <phone id="219" manufacturer="13" active="false">A256</phone>
+  <phone id="220" manufacturer="10" active="false">6790</phone>
+  <phone id="222" manufacturer="22" active="false">9700</phone>
+  <phone id="223" manufacturer="13" active="false">a886</phone>
+  <phone id="224" manufacturer="7" active="false">GB250G</phone>
+  <phone id="225" manufacturer="7" active="false">GW620R</phone>
+  <phone id="226" manufacturer="5" active="false">Mini 110</phone>
+  <phone id="227" manufacturer="10" active="false">2720</phone>
+  <phone id="228" manufacturer="16" active="false">T715a</phone>
+  <phone id="229" manufacturer="10" active="false">6750</phone>
+  <phone id="230" manufacturer="10" active="false">N86</phone>
+  <phone id="231" manufacturer="9" active="false">W388</phone>
+  <phone id="233" manufacturer="13" active="false">a796</phone>
+  <phone id="235" manufacturer="7" active="false">GD510</phone>
+  <phone id="237" manufacturer="16" active="false">J105</phone>
+  <phone id="238" manufacturer="13" active="false">5700i</phone>
+  <phone id="239" manufacturer="16" active="false">X10</phone>
+  <phone id="240" manufacturer="7" active="false">KM555</phone>
+  <phone id="241" manufacturer="5" active="false">HP 210</phone>
+  <phone id="242" manufacturer="5" active="false">CQ10</phone>
+  <phone id="243" manufacturer="82" active="false">A1</phone>
+  <phone id="244" manufacturer="13" active="false">B3410</phone>
+  <phone id="245" manufacturer="13" active="false">7330D</phone>
+  <phone id="246" manufacturer="9" active="false">Quench</phone>
+  <phone id="247" manufacturer="10" active="false">N97 Mini</phone>
+  <phone id="249" manufacturer="7" active="false">GW300</phone>
+  <phone id="250" manufacturer="10" active="false">2220</phone>
+  <phone id="251" manufacturer="10" active="false">7020</phone>
+  <phone id="252" manufacturer="13" active="false">S8500</phone>
+  <phone id="253" manufacturer="16" active="false">X10 MINI</phone>
+  <phone id="255" manufacturer="53" active="true">iPhone 4</phone>
+  <phone id="256" manufacturer="7" active="true">GT350 Neon 2</phone>
+  <phone id="257" manufacturer="9" active="false">MB511</phone>
+  <phone id="258" manufacturer="13" active="false">T566</phone>
+  <phone id="259" manufacturer="22" active="false">9300</phone>
+  <phone id="260" manufacturer="7" active="false">GT540</phone>
+  <phone id="261" manufacturer="13" active="false">B5310</phone>
+  <phone id="262" manufacturer="88" active="false">Streak</phone>
+  <phone id="263" manufacturer="16" active="false">X10 MINI PRO</phone>
+  <phone id="264" manufacturer="10" active="false">6700</phone>
+  <phone id="265" manufacturer="13" active="false">i896 Captivate</phone>
+  <phone id="266" manufacturer="16" active="false">Vivaz Pro</phone>
+  <phone id="267" manufacturer="22" active="false">9800 Torch</phone>
+  <phone id="268" manufacturer="92" active="false">410GSM</phone>
+  <phone id="269" manufacturer="22" active="false">9780</phone>
+  <phone id="270" manufacturer="10" active="false">N8</phone>
+  <phone id="272" manufacturer="53" active="false">iPad</phone>
+  <phone id="273" manufacturer="13" active="false">i917 Focus</phone>
+  <phone id="274" manufacturer="11" active="false">Pre 2</phone>
+  <phone id="275" manufacturer="13" active="false">Galaxy Tablet</phone>
+  <phone id="276" manufacturer="13" active="true">Rugby II</phone>
+  <phone id="277" manufacturer="10" active="false">C1</phone>
+  <phone id="278" manufacturer="16" active="false">J108A</phone>
+  <phone id="279" manufacturer="82" active="false">Liquid mt (S200)</phone>
+  <phone id="280" manufacturer="88" active="false">Venue Pro</phone>
+  <phone id="281" manufacturer="22" active="true">Playbook</phone>
+  <phone id="282" manufacturer="13" active="false">Nexus S</phone>
+  <phone id="284" manufacturer="16" active="false">Xperia ARC</phone>
+  <phone id="285" manufacturer="16" active="false">Xperia Play</phone>
+  <phone id="286" manufacturer="13" active="false">T369</phone>
+  <phone id="287" manufacturer="13" active="false">T249</phone>
+  <phone id="288" manufacturer="13" active="false">C414R</phone>
+  <phone id="289" manufacturer="7" active="false">Optimus Pad</phone>
+  <phone id="290" manufacturer="7" active="false">Phoenix (P505)</phone>
+  <phone id="291" manufacturer="13" active="false">Infuse 4G</phone>
+  <phone id="292" manufacturer="10" active="false">X7</phone>
+  <phone id="293" manufacturer="13" active="true">Galaxy Q</phone>
+  <phone id="294" manufacturer="22" active="false">9810</phone>
+  <phone id="295" manufacturer="98" active="false">XP1300 CORE</phone>
+  <phone id="296" manufacturer="16" active="false">txt pro</phone>
+  <phone id="299" manufacturer="16" active="false">Xperia Pro</phone>
+  <phone id="301" manufacturer="22" active="true">9900</phone>
+  <phone id="302" manufacturer="10" active="false">X7</phone>
+  <phone id="303" manufacturer="7" active="false">Optimus 3D</phone>
+  <phone id="304" manufacturer="19" active="false">Evo 3D</phone>
+  <phone id="306" manufacturer="10" active="false">X2</phone>
+  <phone id="307" manufacturer="7" active="true">2X</phone>
+  <phone id="308" manufacturer="22" active="true">9360</phone>
+  <phone id="309" manufacturer="22" active="false">9860</phone>
+  <phone id="310" manufacturer="13" active="false">Galaxy Tab 10.1"</phone>
+  <phone id="311" manufacturer="10" active="false">C6</phone>
+  <phone id="312" manufacturer="13" active="true">Galaxy S II LTE</phone>
+  <phone id="313" manufacturer="9" active="true">RAZR</phone>
+  <phone id="314" manufacturer="22" active="true">9790</phone>
+  <phone id="315" manufacturer="19" active="false">Raider</phone>
+  <phone id="316" manufacturer="19" active="false">Jetstream</phone>
+  <phone id="317" manufacturer="7" active="true">Gossip Pro</phone>
+  <phone id="318" manufacturer="82" active="false">Iconia Tab</phone>
+  <phone id="319" manufacturer="53" active="true">iPhone 4S</phone>
+  <phone id="320" manufacturer="13" active="true">Nexus</phone>
+  <phone id="321" manufacturer="13" active="true">Note</phone>
+  <phone id="322" manufacturer="13" active="true">Glide</phone>
+  <phone id="323" manufacturer="10" active="true">Lumia 710</phone>
+  <phone id="324" manufacturer="19" active="false">Ville</phone>
+  <phone id="325" manufacturer="13" active="true">Galaxy Rugby</phone>
+  <phone id="326" manufacturer="19" active="true">One S</phone>
+  <phone id="327" manufacturer="13" active="false">Galaxy Tab 8.9"</phone>
+  <phone id="328" manufacturer="19" active="true">One X</phone>
+  <phone id="329" manufacturer="10" active="true">Lumia 900</phone>
+  <phone id="330" manufacturer="16" active="true">Xperia U</phone>
+  <phone id="331" manufacturer="19" active="true">One X</phone>
+  <phone id="332" manufacturer="7" active="true">Optimus L7</phone>
+</phones>

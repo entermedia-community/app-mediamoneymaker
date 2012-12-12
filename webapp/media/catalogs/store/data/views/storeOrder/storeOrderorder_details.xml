@@ -1,0 +1,7 @@
+
+<root>
+  <property id="id"/>
+  <property id="orderdate"/>
+  <property id="shippingstatus"/>
+  <property id="orderstatus"/>
+</root>

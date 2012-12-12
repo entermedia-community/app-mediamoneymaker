@@ -1,5 +1,0 @@
-#set( $fields = $store.getFieldArchive().getStoredProperties("category") )
-CategoryId	CategoryName	CategoryShortDescription	ParentCategoryId	ParentCategoryName
-#foreach( $cat in $store.getCategoryArchive().listAllCategories() )
-$cat.id	$cat.name	$!cat.shortDescription	$!cat.getParentCatalog().id	$!cat.getParentCatalog().name
-#end

@@ -9,4 +9,5 @@
   <property id="rogersponumber" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">AS400 PO Number</property>
   <property id="orderstatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">Status</property>
   <property id="shippingstatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">Shipping Status</property>
+  <property id="edistatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">EDI Status</property>
 </properties>

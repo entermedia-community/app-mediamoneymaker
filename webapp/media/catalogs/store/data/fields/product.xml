@@ -1,60 +1,45 @@
 
-<properties prefix="product" beanname="dynamicSearcher">
-  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product">Product ID</property>
-  <property id="name" catalogid="media/catalogs/store" stored="true" editable="true" searchtype="product">Name</property>
-  <property id="code" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Model Code</property>
-  <property id="description" catalogid="media/catalogs/store" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Description</property>
-  <property id="producttype" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Product Type</property>
-  <property id="users" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Users</property>
-  <property id="groups" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Groups</property>
-  <property id="accessoryid" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory ID</property>
-  <property id="accessoryname" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name</property>
-  <property id="accessorynamefr" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name FR</property>
-  <property id="upc" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">UPC</property>
-  <property id="manufacturerid" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" listid="manufacturer" datatype="list">Manufacturer</property>
-  <property id="image" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="autocomplete" searchtype="product" internalfield="false" listid="asset" datatype="list">Image</property>
-  <property id="descrip" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description</property>
-  <property id="descripfr" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description - FR</property>
-  <property id="rogerssku" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers - SKU</property>
-  <property id="manufacturersku" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Manufacturer - SKU</property>
-  <property id="categoryid" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" datatype="list">Product Category</property>
-  <property id="displaydesignationid" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
-  <property id="msrp" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">MSRP</property>
-  <property id="fidomsrp" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido MSRP</property>
-  <property id="rogersprice" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers Price</property>
-  <property id="standardprice" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Standard Price</property>
-  <property id="wholesaleprice" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Wholesale Price</property>
-  <property id="fidowholesaleprice" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido Wholesale Price</property>
-  <property id="clearanceprice" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product" internalfield="false">Clearance Price</property>
-  <property id="clearancecentre" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Clearance Centre</property>
-  <property id="clearancecentredescrip" catalogid="media/catalogs/store" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Clearance Centre Description</property>
-  <property id="clearancecentredescripfr" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Clearance Centre Description - FR</property>
-  <property id="snapshotonmainpage" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Snapshot On Main Page</property>
-  <property id="snapshotstatic" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Snapshot Static</property>
-  <property id="snapshotdescrip" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Snapshot Description</property>
-  <property id="snapshotdescripfr" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product" internalfield="false">Snapshot Description - FR</property>
-  <property id="featuredonmainpage" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Featured On Main Page</property>
-  <property id="featureddescrip" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Featured Descriptiom</property>
-  <property id="featureddescripfr" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Featured Description - FR</property>
-  <property id="approved" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Approved</property>
-  <property id="approvedon" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Approved On</property>
-  <property id="approvedcomment" catalogid="media/catalogs/store" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Approved Comment</property>
-  <property id="deleted" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Deleted</property>
-  <property id="pending" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Pending</property>
-  <property id="pendingon" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Pending On</property>
-  <property id="createdon" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Created On</property>
-  <property id="banneren" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">BannerEN</property>
-  <property id="bannerfr" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">BannerFR</property>
-  <property id="bannerid" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">BannerID</property>
-  <property id="updatedon" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">UpdatedOn</property>
-  <property id="sourcepath" catalogid="media/catalogs/store" searchtype="product">SourcePath</property>
-  <property id="expectedendoflife" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Expected End Of Life</property>
-  <property id="participantid" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">ParticipantID</property>
-  <property id="phone" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Phone Compatability</property>
-  <property id="thumbnailimage" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">ThumbnailImage</property>
-  <property id="distributor" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" datatype="list">Distributor</property>
-  <property id="validitem" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="product" internalfield="false" datatype="boolean">Valid Item</property>
-  <property id="rogersstatus" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">Rogers Status</property>
-  <property id="distributorstatus" catalogid="media/catalogs/store" index="true" stored="true" searchtype="product">Distributor Status</property>
-  <property id="inventoryupdated" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="product" internalfield="false" datatype="date">Inventory Updated</property>
+<properties prefix="product" beanname="productSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="product">Product ID</property>
+  <property id="name" stored="true" editable="true" searchtype="product">Name</property>
+  <property id="code" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Model Code</property>
+  <property id="description" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Description</property>
+  <property id="producttype" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Product Type</property>
+  <property id="users" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Users</property>
+  <property id="groups" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Groups</property>
+  <property id="accessoryid" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory ID</property>
+  <property id="accessoryname" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name</property>
+  <property id="accessorynamefr" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name FR</property>
+  <property id="upc" index="true" stored="true" editable="true" searchtype="product" internalfield="false">UPC</property>
+  <property id="manufacturerid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" listid="manufacturer" datatype="list">Manufacturer</property>
+  <property id="image" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" internalfield="false" listid="asset" datatype="list">Image</property>
+  <property id="descrip" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description</property>
+  <property id="descripfr" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description - FR</property>
+  <property id="rogerssku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers - SKU</property>
+  <property id="manufacturersku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Manufacturer - SKU</property>
+  <property id="categoryid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" datatype="list">Product Category</property>
+  <property id="displaydesignationid" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
+  <property id="msrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">MSRP</property>
+  <property id="fidomsrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido MSRP</property>
+  <property id="rogersprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers Price</property>
+  <property id="standardprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Standard Price</property>
+  <property id="wholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Wholesale Price</property>
+  <property id="fidowholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido Wholesale Price</property>
+  <property id="saleprice" index="true" stored="true" searchtype="product" internalfield="false">Clearance Price</property>
+  <property id="featuredonmainpage" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Featured On Main Page</property>
+  <property id="approved" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Approved</property>
+  <property id="approvedon" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Approved On</property>
+  <property id="approvedcomment" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Approved Comment</property>
+  <property id="deleted" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Deleted</property>
+  <property id="createdon" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Created On</property>
+  <property id="sourcepath" searchtype="product">SourcePath</property>
+  <property id="expectedendoflife" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Expected End Of Life</property>
+  <property id="participantid" index="true" stored="true" searchtype="product">ParticipantID</property>
+  <property id="phone" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Phone Compatability</property>
+  <property id="thumbnailimage" index="true" stored="true" searchtype="product">ThumbnailImage</property>
+  <property id="x507" index="true" stored="true" editable="true" searchtype="product">X507</property>
+  <property id="topseller" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Top Selling Product</property>
+  <property id="rogersstatus" index="true" stored="true" searchtype="product">Rogers Status</property>
+  <property id="distributorstatus" index="true" stored="true" searchtype="product">Distributor Status</property>
+  <property id="distributor" index="true" stored="true" searchtype="product">Distributor</property>
 </properties>

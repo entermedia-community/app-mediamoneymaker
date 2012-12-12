@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <data id="productproduct_details" module="product" systemdefined="false" ordering="1343919573577">Product Details</data>
-  <data id="productsubmit_for_review" module="product" systemdefined="false" ordering="1344521076435">Submit For Review</data>
-  <data id="productreview" module="product" systemdefined="false" ordering="1345128031548">Review</data>
   <data id="storestore_details" module="store" systemdefined="false" ordering="1345486552321">Store Details</data>
-  <data id="productdetails" module="product" systemdefined="false" ordering="1345729518360">details</data>
-  <data id="corporateorderorder_details" module="corporateorder" systemdefined="false" ordering="1346252297244">Order Details</data>
-  <data id="corporateorderorder_items" module="corporateorder" systemdefined="false" ordering="1346252301212" rendertable="corporateorderitems" renderexternalid="corporateorderid">Order Items</data>
   <data id="ticketsticket_details" module="tickets" systemdefined="false" ordering="1346264674082">Ticket Details</data>
   <data id="ticketsticket_history" module="tickets" systemdefined="false" ordering="1346264755713" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
   <data id="profileprofile" module="profile" systemdefined="false" ordering="1347638289389">Profile</data>
   <data id="profileaddress_list" module="profile" systemdefined="false" ordering="1347638394543" rendertable="profile_address_list" renderexternalid="profileid">Address List</data>
-  <data id="rogers_order_itemitem_details" module="rogers_order_item" systemdefined="false" ordering="1349790556364">Item Details</data>
-  <data id="rogers_orderorder_details" module="rogers_order" systemdefined="false" ordering="1349790607817">Order Details</data>
   <data id="storestore_headers" module="store" systemdefined="false" ordering="1351173422158">Store Headers</data>
-  <data id="rogers_order_itemexport" module="rogers_order_item" systemdefined="false" ordering="1351175944063">export</data>
   <data id="invoiceinvoice" module="invoice" systemdefined="false" ordering="1351606916917">Invoice</data>
   <data id="rogers_order_itemcsvexport" module="rogers_order_item" systemdefined="false" ordering="1352149421062">csvexport</data>
   <data id="invoiceinvoice_items" module="invoice" systemdefined="false" ordering="1353016910964" rendertable="invoiceitem" renderexternalid="invoiceid">Invoice Items</data>
@@ -24,7 +15,7 @@
   <property id="processresultstable" module="process" systemdefined="true" rendertable="error" renderexternalid="id">Results Table</property>
   <data id="userprofileprofile" module="userprofile" systemdefined="false" ordering="1354037545919">Profile</data>
   <data id="userprofileaddress_list" module="userprofile" systemdefined="false" ordering="1354036872520" rendertable="address" renderexternalid="userprofile">Address List</data>
-  <data id="storeOrderorder_items" module="storeOrder" systemdefined="false" ordering="1347631079880" rendertable="storeorderitems" renderexternalid="orderid">Order Items</data>
   <data id="storeOrderorder_details" module="storeOrder" systemdefined="false" ordering="1345132596871" rendertable="storeOrder" renderexternalid="id">Order Details</data>
-  <property id="storeOrderresultstable" module="storeOrder" systemdefined="true" rendertable="storeOrder" renderexternalid="id">Results Table</property>
+  <data id="productphone_compatability" module="product" systemdefined="false" ordering="1355259395878">Phone Compatability</data>
+  <data id="phonephone_details" module="phone" systemdefined="false" ordering="1355335705305">Phone Details</data>
 </root>

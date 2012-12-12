@@ -1,9 +1,0 @@
-<page>
-	<property name="tab">products</property>
-	<property name="fieldname">product</property>
-	<property name="hitsname">hits</property>
-	<inner-layout>/${applicationid}/admin/products/innertablayout.html</inner-layout>
-	<path-action name="StoreSearchModule.loadHits" />
-	
-	
-</page>

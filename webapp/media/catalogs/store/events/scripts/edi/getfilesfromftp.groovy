@@ -28,6 +28,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 	private String host;
 	private String workingDirectory;
 	private String localUploadFolder;
+	private String localDownloadFolder;
 	private String fileExtension;
 	private Boolean overwrite;
 	
@@ -51,6 +52,10 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		this.localUploadFolder = localuploadfolder;
 	}
 
+	public void setLocalDownloadFolder(String inLocalDownloadfolder) {
+		this.localDownloadFolder = inLocalDownloadfolder;
+	}
+	
 	public void setFileExtension(String fileExtension) {
 		this.fileExtension = fileExtension;
 	}
@@ -63,8 +68,9 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		setUsername(ftpInfo.username);
 		setPassword(ftpInfo.password);
 		setHost(ftpInfo.host_address);
-		setWorkingDirectory(ftpInfo.upload_folder);
+		setWorkingDirectory(ftpInfo.download_folder);
 		setLocalUploadFolder(ftpInfo.localuploadfolder);
+		setLocalDownloadFolder(ftpInfo.localdownloadfolder);
 		setFileExtension("xml");
 		
 	}
@@ -147,6 +153,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		}
 
 		String url = this.workingDirectory;
+		log.info("Working directory: " + url);
 	
 		//change paths if necessary
 		if(url != null && url.length() > 0) {
@@ -210,13 +217,13 @@ public class GetFilesFromFTP extends EnterMediaObject {
 			}
 			strMsg += "</li>\n";
 			if (ctr == 0) {
-				result.setErrorMessage("There are no files to upload at this time.");
+				log.info("There are no files to upload at this time.");
 				log.info("Logging out.");
 				ftp.disconnect();
 				return result;
 			}
 		} else {
-			result.setErrorMessage("There are no files to upload at this time.");
+			log.info("There are no files to upload at this time.");
 			log.info("Logging out.");
 			ftp.disconnect();
 			return result;
@@ -280,7 +287,7 @@ try {
 	///////////////////////
 	// FTPID OVERRIDE FOR TESTING
 	///////////////////////
-	ftpID = "104";
+	//ftpID = "104";
 	///////////////////////
 	
 	//Get the FTP Info
@@ -291,13 +298,9 @@ try {
 	result = ftpInvoice.getFiles();
 	if (result.isComplete()) {
 		//Output value to CSV file!
-		media.getContext().putPageValue("export", result.getCompleteMessage());
-		
-		Log log = LogFactory.getLog(GroovyScriptRunner.class);
-		media.getArchive().fireSharedMediaEvent("edidownloaded");
 	} else {
 		//ERROR: Throw exception
-		media.getContext().putPageValue("errorout", result.getErrorMessage());
+		log.info("ERROR: " + result.getErrorMessage());
 	}
 }
 finally {

@@ -1,5 +1,0 @@
-<page>
-	<path-action name="Script.run">
-		<script>./scripts/sync.groovy</script>
-	</path-action>
-</page>

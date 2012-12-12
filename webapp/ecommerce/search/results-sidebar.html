@@ -28,16 +28,37 @@
   
           
                 ##set($mans = $searcherManager.getList("media/catalogs/store", "phone"))
-               	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "phone").fieldSearch("id", "*", "name"))
-               	
+              
+              
+              
+            #set($phonesearcher = $searcherManager.getSearcher("media/catalogs/store", "phone"))
+            #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
+            #set($mancount = 0)   
           	#foreach($man in $mans)
-			
-                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=phone&phone.value=$man.id&operation=exact">$man.name</a></li>
-                	
-                	#end
-                	#if($mans.size() > 5)
-                	<li > <a  class="showall" data-id="categories" href="#">Show all...</a></li>
+           		<!-- 
+           		#set($query = $phonesearcher.createSearchQuery().append("manufacturer", "${man.id}").append("active", "true"))
+           		 -->
+           		#set($phones = $phonesearcher.search($query))
+               	#if($phones.size() >0)
+               		#set($mancount = $mancount+1)
+               		
+               		<li class="search-sidebar-header"> <span style="padding-top:4px;">  $man </span> </li>
+          			#set($phonecount = 0)   
+          			       			
+          			#foreach($phone in $phones)						
+						#set($phonecount = $phonecount+1)
+						
+						<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end><a href="$apphome/search/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact">$phone.name</a></li>                	
+                	#end                	
+				#end
+				#if($phones.size()  > 3)
+				<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;More $man</a></li>
+				#end
+				#set($phones = "")
+				
 			#end
+			    
+			
                 </ul>
                 </div>
 
@@ -77,7 +98,8 @@
 		            	var id = jQuery(this).data("id");
 		            	
 		            	jQuery("." + id).toggle(500);
-		            	if(jQuery(this).text() == "Show all...")
+		            	if(jQuery(this).text() == "Show all..." || jQuery(this).text().indexOf("More") != -1)
+		            	
 		            	jQuery(this).text("Show less..");
 		            	else{		            		
 		            		jQuery(this).text("Show all...");
