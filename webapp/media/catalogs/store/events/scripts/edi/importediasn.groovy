@@ -12,6 +12,7 @@ import org.openedit.store.Store
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.Shipment
 import org.openedit.store.orders.ShipmentEntry
+import org.openedit.store.util.MediaUtilities;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject

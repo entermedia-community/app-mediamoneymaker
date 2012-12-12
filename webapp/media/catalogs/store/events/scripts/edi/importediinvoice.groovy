@@ -9,6 +9,7 @@ import org.openedit.money.Money
 import org.openedit.store.CartItem
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.OrderProcessor;
+import org.openedit.store.util.MediaUtilities;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject

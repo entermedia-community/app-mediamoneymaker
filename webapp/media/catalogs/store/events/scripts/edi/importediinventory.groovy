@@ -9,6 +9,7 @@ import org.openedit.event.WebEvent
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.store.util.MediaUtilities;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException

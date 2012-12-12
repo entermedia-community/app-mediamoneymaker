@@ -10,6 +10,7 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.store.util.MediaUtilities;
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject

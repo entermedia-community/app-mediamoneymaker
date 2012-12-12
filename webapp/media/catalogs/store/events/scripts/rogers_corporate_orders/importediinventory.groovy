@@ -6,15 +6,12 @@ import org.openedit.event.WebEvent
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.store.util.MediaUtilities
 
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
-
-import edi.ErrorProcessing
-import edi.MediaUtilities
-import edi.OutputUtilities
 
 public class ImportEDIInventory extends EnterMediaObject {
 
@@ -39,8 +36,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 		int foundErrorCtr = 0;
 		result.setComplete(false);
 
-		OutputUtilities output = new OutputUtilities();
-		
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 		
@@ -69,11 +64,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 					
 					//Create the XMLSlurper Object
 					def InventoryInquiryAdvice = new XmlSlurper().parse(page.getReader());
-					
-					ErrorProcessing errors = new ErrorProcessing();
-					errors.setContext(media.getContext());
-					errors.setProcessName("importediinventory");
-					errors.setErrorType("Missing Data");
 					
 					foundErrorCtr = 0;
 
@@ -115,19 +105,16 @@ public class ImportEDIInventory extends EnterMediaObject {
 										} else {
 											String inMsg = page.getName() + ":Product(" + vendorCode + ") could not be found from Inventory file.";
 											log.info(inMsg);
-											errors.addToList(inMsg);
 											foundErrorCtr++;
 										}
 									} else {
 										String inMsg = page.getName() + ":Vendor Code cannot be found in Inventory XML File(" + page.getName() + ")";
 										log.info(inMsg);
-										errors.addToList(inMsg);
 										foundErrorCtr++;
 									}
 								} else {
 									String inMsg = page.getName() + ":Quantity cannot be found in Inventory XML File(" + page.getName() + ")";
 									log.info(inMsg);
-									errors.addToList(inMsg);
 									foundErrorCtr++;
 								}
 							}
@@ -147,44 +134,15 @@ public class ImportEDIInventory extends EnterMediaObject {
 						} else {
 							inMsg = "Inventory File (" + page.getName() + ") failed to move to processed.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						}
 					} else {
 						PublishResult move = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 						if (move.isComplete()) {
 							inMsg = "Inventory File (" + page.getName() + ") moved to ERROR.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							foundErrorCtr++;
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						} else {
 							inMsg = "Inventory File (" + page.getName() + ") failed to move to ERROR.";
 							log.info(inMsg);
-							errors.addToList(inMsg);
-							foundErrorCtr++;
-							ArrayList<String> errList = errors.getErrorList();
-							if (errList != null && errList.size()>0) {
-								if (errors.createNewMessage()) {
-									inMsg = "ERROR: Errors (" + foundErrorCtr + ") have occurred and logged. (" + errors.getErrorID() + ")"; 
-									result.appendErrorMessage("<LI>" + inMsg + "</LI>");
-									log.info(inMsg);
-								}
-							}
 						}
 					}
 					if (inMsg.length() > 0) {
@@ -288,13 +246,15 @@ try {
 		String errMsg = "";
 		if (result.getErrorMessage() != null) {
 			errMsg = result.getErrorMessage();
+			log.info(errMsg);
 		}
 		if (errMsg.length() > 0) {
-			context.putPageValue("errorout", errMsg);
+			log.info(errMsg);
 		}
 	} else {
 		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
+		errMsg = result.getErrorMessage();
+		log.info(errMsg);
 	}
 }
 finally {
