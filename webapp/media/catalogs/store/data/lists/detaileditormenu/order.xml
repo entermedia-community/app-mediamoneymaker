@@ -1,0 +1,10 @@
+<linktree>
+	<a folder="orderdetails" module="storeOrder"  id="storeorderdetails"  useajax="false" multiedit="false" name="Additional Details" />
+	<a folder="shippingdetails" module="storeOrder"  id="ordershippingdetails"  useajax="false" multiedit="false" name="Shipping Status" />
+	
+	
+	
+	<!-- 
+	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
+ -->
+</linktree>

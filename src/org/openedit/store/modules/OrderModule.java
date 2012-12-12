@@ -89,6 +89,9 @@ public class OrderModule extends BaseModule
 	public SubmittedOrder loadOrderById(WebPageRequest inContext) 
 	{
 		String ordernum = inContext.getRequestParameter("orderid");
+		if(ordernum == null){
+			ordernum = inContext.getRequestParameter("id");
+		}
 		String customerid = inContext.getRequestParameter("customerid");
 		if (ordernum != null)
 		{

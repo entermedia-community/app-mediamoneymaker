@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="productadvancedsearch" module="product" systemdefined="true" byassettype="false">Advanced Search</property>
-  <property id="productresultstable" module="product" systemdefined="true" byassettype="false">Results Table</property>
-</properties>
+<root>
+  <data id="productproduct_details" module="product" systemdefined="false" ordering="1343919573577">Product Details</data>
+  <data id="productsubmit_for_review" module="product" systemdefined="true" ordering="1344521076435">Distributor Submission</data>
+  <data id="productreview" module="product" systemdefined="true" ordering="1345128031548">Product Review</data>
+    <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">Product Details - French</data>
+   <data id="productdetails_box" module="product" systemdefined="true" ordering="1355259486794">Details Box</data>
+ 
+</root>

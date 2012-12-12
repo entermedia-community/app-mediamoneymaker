@@ -1,0 +1,6 @@
+
+<root>
+  <property id="image"/>
+  <property id="accessoryname"/>
+  <property id="distributor"/>
+</root>

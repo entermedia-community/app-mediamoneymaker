@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <property name="text.Please select an action from the list">
-    <value>Please select an action from the list</value>
-    <value locale="es">Por favor, elija una acción de la lista</value>
-  </property>
-</page>

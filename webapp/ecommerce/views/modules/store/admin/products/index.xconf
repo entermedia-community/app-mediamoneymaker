@@ -1,6 +1,0 @@
-<page>
-	<property name="fieldname">product</property>
-
-	<path-action name="StoreSearchModule.returnAllProducts" />
-
-</page>

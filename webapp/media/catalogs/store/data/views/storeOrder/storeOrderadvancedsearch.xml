@@ -1,0 +1,11 @@
+
+<root>
+  <property id="rogersponumber"/>
+  <property id="customer"/>
+  <property id="edistatus"/>
+  <property id="id"/>
+  <property id="orderdate"/>
+  <property id="products"/>
+  <property id="shippingstatus"/>
+  <property id="orderstatus"/>
+</root>
