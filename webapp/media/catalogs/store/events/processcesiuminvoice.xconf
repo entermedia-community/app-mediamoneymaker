@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="enabled">false</property>
+  <property name="enabled">true</property>
   <path-action name="Script.run">
     <script>/${catalogid}/events/scripts/edi/importcesiuminvoice.groovy</script>
   </path-action>

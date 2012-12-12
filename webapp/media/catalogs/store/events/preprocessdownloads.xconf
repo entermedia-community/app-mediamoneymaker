@@ -2,7 +2,7 @@
 
 <page>
   <property name="virtual">true</property>
-  <property name="enabled">false</property>
+  <property name="enabled">true</property>
   <property name="period">15m</property>
   <property name="allowspecifiedpath">true</property>
   <path-action allowduplicates="true" name="Script.run">

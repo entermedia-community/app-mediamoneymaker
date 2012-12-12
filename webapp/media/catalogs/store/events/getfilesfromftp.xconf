@@ -2,7 +2,7 @@
 
 <page>
   <property name="virtual">true</property>
-  <property name="enabled">false</property>
+  <property name="enabled">true</property>
   <property name="period">10m</property>
   <property name="eventname">Get Files From FTP</property>
   <path-action name="Script.run">
