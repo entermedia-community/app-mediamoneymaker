@@ -2224,7 +2224,7 @@ tr.odd {
 
 .search-list, .sidebar-list {
     padding: 0;
-    margin: -10px -14px;
+    margin: -10px 0px;
 }
 
 .search-list li, .sidebar-list li {
@@ -2234,6 +2234,12 @@ tr.odd {
     color: #49494b;
 }
 
+.search-sidebar-header span{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #CC0000;
+}
 
 .search-list li a.search-href, .sidebar-list a {
     padding: 10px 40px;
