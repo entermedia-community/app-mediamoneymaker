@@ -1,8 +1,0 @@
-<page>
-	<page-action bean="CatalogEditModule" name="PageValue.loadPageVariable"/>
-	<page-action name="Script.run">
-		<script>./createnew.bsh</script>
-	</page-action>
-	<property name="redirecttosourcepath">true</property>
-	<property name="createasfolder">true</property>
-</page>

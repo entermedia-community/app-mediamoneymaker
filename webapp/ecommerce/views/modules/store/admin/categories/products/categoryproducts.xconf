@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <property name="text.Add New Product">
-    <value>Add New Product</value>
-    <value locale="es">Añadir un nuevo producto</value>
-  </property>
-  <inner-layout>/${applicationid}/admin/categories/innertablayout.html</inner-layout>
-</page>

@@ -1,7 +1,0 @@
-Number	First Name	Last Name	Phone	EMail	Address Line 1	Address Line 2	City	State	Zip Code	Country	Address Line 1	Address Line 2	City	State	Zip Code	Country
-#foreach ( $customer in $customerlist )
-#set( $address1 = $customer.getBillingAddress() )
-#set( $address2 = $customer.getShippingAddress() )
-$customer.getUserName()	$customer.getFirstName()	$customer.getLastName()	$customer.getPhone1()	$customer.getEmail()	$address1.getAddress1()	$address1.getAddress2()	$address1.getCity()	$address1.getState()	$address1.getZipCode()	$address1.getCountry()	$address2.getAddress1()	$address2.getAddress2()	$address2.getCity()	$address2.getState()	$address2.getZipCode()	$address2.getCountry()
-#end
-

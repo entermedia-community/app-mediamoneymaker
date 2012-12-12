@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-	<path-action name="StoreOrderModule.changeOrderStatus" />
-	<path-action name="StoreOrderModule.loadOrder" />
-	<property name="virtual">true</property>	
-	<inner-layout>/${applicationid}/admin/orders/data/adminorderlayout.html</inner-layout>
-</page>

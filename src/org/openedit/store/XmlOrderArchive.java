@@ -41,6 +41,7 @@ import org.openedit.xml.ElementData;
 
 import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
+import com.openedit.page.Page;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.filesystem.FileSystemUser;
@@ -950,5 +951,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 	public void setUserManager(UserManager inUserManager) {
 		fieldUserManager = inUserManager;
 	}
-
+	protected File getOrdersDirectory( Store inStore )
+	{
+		Page target = inStore.getPageManager().getPage("/WEB-INF/data/" + inStore.getCatalogId() + "/storeorders/");
+		return new File(target.getContentItem().getAbsolutePath() );
+	}
 }

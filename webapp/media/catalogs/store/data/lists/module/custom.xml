@@ -7,7 +7,5 @@
   <data id="store">Stores</data>
   <corporateorder id="tickets">Ticket Management</corporateorder>
   <data id="profile">Profile</data>
-  <data id="rogers_order">Rogers Corporate Orders</data>
-  <data id="rogers_order_item">Corporate Order Items</data>
   <data id="invoice">Invoices</data>
 </root>

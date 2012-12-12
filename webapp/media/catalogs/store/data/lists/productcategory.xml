@@ -1,8 +1,0 @@
-<properties>
-	<property id="dishwasher">Dishwashers</property>
-	<property id="microwave">Microwave Oven</property>
-	<property id="range">Range</property>
-	<property id="refrigeration">Refrigeration</property>
-	<property id="washers">Washers and Dryers</property>
-
-</properties>
