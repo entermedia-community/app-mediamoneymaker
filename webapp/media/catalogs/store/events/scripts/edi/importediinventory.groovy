@@ -41,8 +41,6 @@ public class ImportEDIInventory extends EnterMediaObject {
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
 
-		OutputUtilities output = new OutputUtilities();
-
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 		if (media == null) {
@@ -61,7 +59,7 @@ public class ImportEDIInventory extends EnterMediaObject {
 
 		def int fileCtr = 0;
 		def boolean errorFound = false;
-		
+
 		if (dirList.size() > 0) {
 
 			for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
@@ -98,7 +96,7 @@ public class ImportEDIInventory extends EnterMediaObject {
 											if (quantity != null) {
 												if (quantity.length() == 0) {
 													quantity = "0";
-												}												
+												}
 											} else {
 												String inMsg = page.getName() + ": Quantity field not found in Inventory File";
 												log.info(inMsg);
@@ -106,8 +104,11 @@ public class ImportEDIInventory extends EnterMediaObject {
 											}
 											if (!errorFound) {
 												productID = product.getId();
+//												log.info("ID to be updated: " + productID);
 												PublishResult update = updateInventoryItem(productID, quantity, store, media);
-												if (!update.isComplete()) {
+												if (update.isComplete()) {
+													log.info("Product( " + vendorCode + ") updated to " + quantity + ".");
+												} else {
 													log.info(update.getErrorMessage());
 													errorFound = true;
 												}
@@ -124,6 +125,7 @@ public class ImportEDIInventory extends EnterMediaObject {
 					}
 
 					String inMsg = "";
+					store.clearProducts();
 					if (!errorFound) {
 						PublishResult move = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
 						if (move.isComplete()) {
@@ -190,15 +192,17 @@ public class ImportEDIInventory extends EnterMediaObject {
 		return move;
 	}
 
-	public PublishResult updateInventoryItem( String productID, String quantity, Store store, MediaUtilities media) throws Exception {
+	public PublishResult updateInventoryItem( String productID, String quantity, Store store, MediaUtilities mediaUtilities) throws Exception {
 
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
+//		log.info("Looking up Product: " + productID);
 		if (productID != null && productID.length() > 0) {
 			try {
 				Product product = store.getProduct(productID);
 				if (product != null) {
-					InventoryItem productInventory = null
+//					log.info("Product to be updated: " + product.getId());
+					InventoryItem productInventory = null;
 					productInventory = product.getInventoryItem(0);
 					if (productInventory == null) {
 						//Need to create the Inventory Item
@@ -210,10 +214,10 @@ public class ImportEDIInventory extends EnterMediaObject {
 					Date now = new Date();
 					product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(now));
 					try {
-						media.getProductSearcher().saveData(product, media.getContext().getUser());
+						store.saveProduct(product);
+//						log.info("Product (" + product.getId() + ") inventory item updated to " + quantity);
 					} catch (Exception e) {
 						result.setErrorMessage("ERROR:" + product.getId() + ":" + e.getMessage() + ":" + e.getLocalizedMessage())
-
 						log.info(e.getMessage());
 						result.setComplete(false);
 					}
@@ -242,7 +246,7 @@ logs.startCapture();
 try {
 
 	log.info("---- START Inventory Item Processing --- .");
-	
+
 	ImportEDIInventory importInventory = new ImportEDIInventory();
 	importInventory.setLog(logs);
 	importInventory.setContext(context);
