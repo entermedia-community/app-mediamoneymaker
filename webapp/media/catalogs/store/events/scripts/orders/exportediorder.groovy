@@ -155,7 +155,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 						if (validateXML(writer, catalogid))
 						{
 							// xml generation
-							String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml"
+							String fileName = currentOrder.getId() + "-export-" + distributor.name.replace(" ", "-") + ".xml"
 							Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
 
 							//Get the FTP Info

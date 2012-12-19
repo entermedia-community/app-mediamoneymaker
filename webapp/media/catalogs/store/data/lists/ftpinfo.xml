@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ftpinfos>
-<!-- 
+  <!-- 
 	<ftpinfo id="103" username="peterf" host_address="localhost" host_address_ip="127.0.0.1" download_folder="test/download" headericc="{ICC}" headerfiletype="TPI" headerdoctype="850" headerversion="002" upload_folder="test/upload" localuploadfolder="uploads">LOCALHOST</ftpinfo>
  -->
   <ftpinfo id="104" username="areaftp" host_address="vanftp.easylink.com" host_address_ip="165.251.195.5" headericc="{ICC}" headerfiletype="TPI" headerdoctype="850" headerversion="002" download_folder="../../ZZ_AREACOMMT/Outbox/EDI/Immediate" upload_folder="../../ZZ_AREACOMMT/Inbox" localuploadfolder="uploads" prodsendermailbox="MICROCELLACC" testsendermailbox="MICROCELLACC">AREA FTP</ftpinfo>
-<!-- 
+  <!-- 
   <ftpinfo id="105" username="ftpuser" host_address="192.168.0.100" host_address_ip="192.168.0.100" download_folder="test/download" upload_folder="test/upload" headericc="{ICC}" headerfiletype="TPI" headerdoctype="850" headerversion="002" prodsendermailbox="HOME" testsendermailbox="HOMET" localuploadfolder="uploads">HOME</ftpinfo>
  -->
+  <ftpinfo id="103" username="peterf" host_address="localhost" host_address_ip="127.0.0.1" download_folder="test/download" headericc="{ICC}" headerfiletype="X12" headerdoctype="850" headerversion="002" prodsendermailbox="HOME" testsendermailbox="HOMET" upload_folder="test/upload" localuploadfolder="uploads">LocalHost</ftpinfo>
 </ftpinfos>

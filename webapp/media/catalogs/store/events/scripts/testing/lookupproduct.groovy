@@ -7,11 +7,11 @@ import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.store.util.MediaUtilities;
 
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 
-import edi.MediaUtilities
 
 class LookupProduct extends EnterMediaObject {
 	

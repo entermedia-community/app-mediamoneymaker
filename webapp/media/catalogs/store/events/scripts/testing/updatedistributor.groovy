@@ -6,6 +6,7 @@ import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.store.util.MediaUtilities;
 
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -13,7 +14,6 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
-import edi.MediaUtilities
 
 class UpdateDistributor extends EnterMediaObject {
 

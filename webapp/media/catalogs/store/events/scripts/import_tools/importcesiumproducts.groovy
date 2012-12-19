@@ -13,6 +13,7 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Store
+import org.openedit.store.util.MediaUtilities;
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
@@ -21,7 +22,6 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
-import edi.MediaUtilities
 import edi.OutputUtilities
 
 public class ImportCesiumProducts extends EnterMediaObject {

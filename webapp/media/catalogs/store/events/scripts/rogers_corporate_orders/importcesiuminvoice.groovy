@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.store.util.MediaUtilities;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -14,7 +15,6 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
-import edi.MediaUtilities
 import edi.OutputUtilities
 
 public class ImportCesiumInvoice extends EnterMediaObject {

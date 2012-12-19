@@ -1,4 +1,57 @@
-$order.getAddress("shipping")
+#set ( $customer = $order.customer ) 
+#set ( $shippingAddress = $order.getShippingAddress() )
+#set ( $billingAddress = $order.getBillingAddress() )
+#set ( $searcherManager = $store.getSearcherManager() ) 
+#set ( $orderNumber = $order.orderNumber )
+#set ( $shipments = $order.getShipments() )
+#set ( $isFullyShipped = $order.isFullyShipped() )
 
-<h2>Shipping History</h2>
-$order.getShipments()
+<h3>Shipping History</h3>
+<table cellspacing="2" class="oestandard-table" cellpadding="10">
+	<tr>
+		<th align="left">Product ID</th>
+<!-- 	<th align="left">Item SKU</th> -->
+		<th align="center" width="100">Quantity</th> 
+		#if	($content.isPropertyTrue("showprice"))
+			<th align="right">Unit Price</th> 
+		#end 
+		#foreach ($detail in $store.fieldArchive.getDataProperties("item","orderdetails",$user))
+			<th align="center">$!detail.text</th> 
+		#end 
+		<th align="center">SD</th>
+		<th align="center">WB</th>
+		<th align="center">QS</th>
+	</tr>
+
+	#foreach ( $item in $order.items ) 
+		#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+		<tr>
+			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+			<td><a href="$home$path" target="_blank">$product.getName()</a></td>
+<!-- 		<td>$item.sku</td> -->
+			<td align="center">$item.quantity</td>
+			#if	($content.isPropertyTrue("showprice"))
+				<td align="right">$item.yourPrice</td> 
+			#end 
+			#foreach ( $detail in $store.fieldArchive.getDataProperties("item","orderdetails",$user) )
+				<td>$!item.getProperties().get($detail.id)</td>
+			#end 
+			<td>
+				$isFullyShipped
+				<input type="hidden" name="sku" value="$item.sku" /> 
+				<input type="hidden" name="ordernumber" value="$orderNumber" /> 
+				<input type="hidden" name="origURL" value="$content.path" />
+			</td>
+		</tr>
+	#end
+	</tr>
+</table>
+<!-- 
+#foreach ($detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user))
+	<th align="center">b - $!detail.text</th> 
+#end
+#foreach ( $detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user)	)
+	<td>$!item.getProduct().get($detail.id)</td>
+#end
+ -->
+ 

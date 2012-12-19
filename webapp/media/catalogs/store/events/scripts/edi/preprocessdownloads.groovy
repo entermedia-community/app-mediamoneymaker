@@ -227,11 +227,11 @@ public class PreprocessDownloads extends EnterMediaObject {
 					pageManager.movePage(xmlFile, target);
 
 					//Create web event to send an email.
-					WebEvent event = new WebEvent();
-					event.setSearchType("order");
-					event.setCatalogId(catalogid);
-					event.setProperty("filename", xmlFile.getName());
-					archive.getMediaEventHandler().eventFired(event);
+//					WebEvent event = new WebEvent();
+//					event.setSearchType("order");
+//					event.setCatalogId(catalogid);
+//					event.setProperty("filename", xmlFile.getName());
+//					archive.getMediaEventHandler().eventFired(event);
 					continue;
 				}
 			}
@@ -308,18 +308,18 @@ try {
 	log.info("---- END PreprocessDownloads.processFiles ----");
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	if (fileCounter.getAsn() > 0) {
-		archive.fireSharedMediaEvent("processasns");
-	}
-	if (fileCounter.getInvoice() > 0) {
-		archive.fireSharedMediaEvent("processinvoices");
-	}
-	if (fileCounter.getInventory() > 0) {
-		archive.fireSharedMediaEvent("processinventory");
-	}
-	if (fileCounter.getInvalid() > 0) {
-		log.info("INVALID FILES: " + fileCounter.getInvalid().toString())
-	}
+//	if (fileCounter.getAsn() > 0) {
+//		archive.fireSharedMediaEvent("processasns");
+//	}
+//	if (fileCounter.getInvoice() > 0) {
+//		archive.fireSharedMediaEvent("processinvoices");
+//	}
+//	if (fileCounter.getInventory() > 0) {
+//		archive.fireSharedMediaEvent("processinventory");
+//	}
+//	if (fileCounter.getInvalid() > 0) {
+//		log.info("INVALID FILES: " + fileCounter.getInvalid().toString())
+//	}
 }
 finally {
 	logs.stopCapture();

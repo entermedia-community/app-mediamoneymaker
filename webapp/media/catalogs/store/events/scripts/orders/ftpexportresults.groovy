@@ -136,7 +136,7 @@ public class FtpExportResults extends EnterMediaObject {
 						orderCount++;
 						String inMsg = "";
 						// xml generation
-						String fileName = "export-" + distributor.name.replace(" ", "-") + ".xml";
+						String fileName = currentOrder.getId() + "-export-" + distributor.name.replace(" ", "-") + ".xml";
 						String filePath = "/WEB-INF/data/" + catalogid + "/orders/exports/" + orderid;
 						Page page = pageManager.getPage(filePath + "/" + fileName);
 

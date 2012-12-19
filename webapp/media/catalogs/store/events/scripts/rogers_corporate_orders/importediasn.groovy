@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import org.openedit.Data
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.event.WebEvent
+import org.openedit.store.util.MediaUtilities;
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
@@ -15,7 +16,6 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
-import edi.MediaUtilities
 import edi.OutputUtilities
 
 public class ImportEDIASN extends EnterMediaObject {
