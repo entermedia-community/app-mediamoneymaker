@@ -41,5 +41,21 @@
   <property id="topseller" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Top Selling Product</property>
   <property id="rogersstatus" index="true" stored="true" searchtype="product">Rogers Status</property>
   <property id="distributorstatus" index="true" stored="true" searchtype="product">Distributor Status</property>
-  <property id="distributor" index="true" stored="true" searchtype="product">Distributor</property>
+  <property id="distributor" index="true" stored="true" type="list" searchtype="product" internalfield="false" datatype="list">Distributor</property>
+  <property id="clearanceprice" index="true" stored="true" searchtype="product">ClearancePrice</property>
+  <property id="clearancecentre" index="true" stored="true" searchtype="product">ClearanceCentre</property>
+  <property id="clearancecentredescrip" index="true" stored="true" searchtype="product">ClearanceCentreDescrip</property>
+  <property id="clearancecentredescripfr" index="true" stored="true" searchtype="product">ClearanceCentreDescripFR</property>
+  <property id="snapshotonmainpage" index="true" stored="true" searchtype="product">SnapshotOnMainPage</property>
+  <property id="snapshotstatic" index="true" stored="true" searchtype="product">SnapshotStatic</property>
+  <property id="snapshotdescrip" index="true" stored="true" searchtype="product">SnapshotDescrip</property>
+  <property id="snapshotdescripfr" index="true" stored="true" searchtype="product">SnapshotDescripFR</property>
+  <property id="featureddescrip" index="true" stored="true" searchtype="product">FeaturedDescrip</property>
+  <property id="featureddescripfr" index="true" stored="true" searchtype="product">FeaturedDescripFR</property>
+  <property id="pending" index="true" stored="true" searchtype="product">Pending</property>
+  <property id="pendingon" index="true" stored="true" searchtype="product">PendingOn</property>
+  <property id="banneren" index="true" stored="true" searchtype="product">BannerEN</property>
+  <property id="bannerfr" index="true" stored="true" searchtype="product">BannerFR</property>
+  <property id="bannerid" index="true" stored="true" searchtype="product">BannerID</property>
+  <property id="updatedon" index="true" stored="true" searchtype="product">UpdatedOn</property>
 </properties>
