@@ -594,6 +594,8 @@ public class CartModule extends BaseStoreModule {
 			order.setAdjustments(cart.getAdjustments());
 		}
 		order.setShippingAddress(cart.getShippingAddress());
+		order.setBillingAddress(cart.getBillingAddress());
+		
 		// Export order to XML
 		store.saveOrder(order);
 		if (cart.getShippingAddress() != null
