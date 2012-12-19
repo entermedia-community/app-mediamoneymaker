@@ -1,4 +1,7 @@
+<div class="ui-widget-content no-padding-for-real">
 #set ( $orderNumber = $order.orderNumber )
+#set ( $shippingAddress = $order.getShippingAddress() )
+#set ( $billingAddress = $order.getBillingAddress() )
 #set ( $customer = $order.customer )
 #set($searcherManager = $store.getSearcherManager())
 
@@ -11,12 +14,12 @@
 				<select name="orderstatus" id="orderstatus" >
 					#set ($types = $store.getOrderArchive().getOrderStates($store))		
 				 	#foreach( $key in $types.keySet() )
-							<option value="$key" #if( $order.getOrderState().getId() == $key ) selected #end>
-								$types.get($key)
-							</option>
-							#end
+						<option value="$key" #if( $order.getOrderState().getId() == $key ) selected #end>
+							$types.get($key)
+						</option>
+					#end
 				</select>
-				<input type=submit value="Change Order Status" />
+			<!-- <input type=submit value="Change Order Status" /> -->
 			</form> 
 #else
 $order.getOrderStatus()
@@ -28,10 +31,10 @@ $order.getOrderStatus()
 	
 #end
 
-#if ( $customer.billingAddress && $customer.billingAddress.address1 )
-	#set ( $customerAddress = $customer.billingAddress )
+#if ( $shippingAddress.address1 == $billingAddress.address1 )
+	#set ( $customerAddress = $order.getBillingAddress() )
 #else
-	#set ( $customerAddress = $customer.shippingAddress )
+	#set ( $customerAddress = $order.getShippingAddress() )
 #end
 
 <p>
@@ -39,9 +42,7 @@ $order.getOrderStatus()
 	$!customer.getFirstName() $!customer.getLastName()
 	#if( $user.hasPermission("oe.cart.admin" ) )
 	( <a href="$home/system/usermanager/modifyuser.html?username=$customer.userName">$!customer.userName</a> )
-	#end	
-	<br>
-                                                                                                           	</br>
+	#end<br/>
 	$!customerAddress.address1<br>
 	#if ( $customerAddress.address2 && $customerAddress.address2 != "" )
 		$customerAddress.address2<br>
@@ -57,127 +58,138 @@ $order.getOrderStatus()
 	#end
 </p>
 
-#if ( $customer.shippingAddress && $customer.shippingAddress.address1 && $customer.billingAddress && $customer.billingAddress.address1 )
+#if ( $order.shippingAddress && $order.shippingAddress.address1 && $order.billingAddress && $order.billingAddress.address1 )
 	<p>
 		<b>Ship to:</b><br>
-		$customer.shippingAddress.address1<br>
-		#if ( $customer.shippingAddress.address2 && $customer.shippingAddress.address2 != "" )
-			$customer.shippingAddress.address2<br>
+		$order.shippingAddress.address1<br>
+		#if ( $order.shippingAddress.address2 && $order.shippingAddress.address2 != "" )
+			$order.shippingAddress.address2<br>
 		#end
-		$customer.shippingAddress.city, $customer.shippingAddress.state $customer.shippingAddress.zipCode $!customer.shippingAddress.country<br>
+		$order.shippingAddress.city, $order.shippingAddress.state $order.shippingAddress.zipCode $!order.shippingAddress.country<br>
 	</p>
 #end
-<table cellspacing="2" class="standard-table">
+	<script>
+	//array of participating td's ids
+	var navid_array = new Array();
+#set($itemCounter = 0)
+#foreach ( $item in $order.items )
+	#set($itemCounter = $itemCounter + 1)
+	#set($arrayCounter = $itemCounter - 1)
+	navid_array[${arrayCounter}] = 'nav${itemCounter}';
+#end
+	
+	#set($itemCounter = 0)
+	var trid_array = new Array();
+#foreach ( $item in $order.items )
+	#set($itemCounter = $itemCounter + 1)
+	#set($arrayCounter = $itemCounter - 1)
+	trid_array[${arrayCounter}] = 'tr${itemCounter}';
+#end
+	var state1 = '#FFFFFF'; //initial colour
+	var state2 = '#E0E6F8'; //onclick colour
+	
+	function nav_colour_swap(navid) {
+	    for(var i = 0; i < navid_array.length; i++) {
+	        var nav = document.getElementById(navid_array[i]);
+	        var trv = document.getElementById(trid_array[i]);
+	        if(navid == nav.id) { //selected td
+	            if (trv.style.display == "none") {
+	                trv.style.display = "inline";
+	                trv.style.visibility = "visible"
+	//                nav.style.backgroundColor = state2;
+	            } else { //other td
+	                trv.style.display = "none";
+	                trv.style.visibility = "hidden"
+	//                nav.style.backgroundColor = state1;
+	            }
+	        }
+	//        else { //other td
+	//            trv.style.display = "none";
+	//            nav.style.backgroundColor = state1;
+	//        }
+	    }
+	}
+	</script>
+	
+<table cellspacing="5" class="standard-table" cellpadding="3" border="1">
 	<tr>
-		<th align="left">Product ID</th>
+		<th>&nbsp;</th>
+		<th align="left">Product ID<br/>(Click to view Product)</th>
 		<th align="left">Item SKU</th>
 		<th align="center" width="100" >Quantity</th>
-		#if ($content.isPropertyTrue("showprice"))
+	#if ($content.isPropertyTrue("showprice"))
 		<th align="right">Unit Price</th>
-		#end
-		#foreach ($detail in $store.fieldArchive.getDataProperties("item","orderdetails",$user))
-		<th align="center">$!detail.text</th>
-		#end
-		#foreach ($detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user))
-		<th align="center">$!detail.text</th>
-		#end
-	</tr>
-	
-	<form name="permissions" action="$home$apphome/admin/orders/updateitemstatus.html" method="post">
-	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
-		
-	#foreach ( $item in $order.items )
-		#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
-		<tr>
-			<td><a href="$home$path" target="_blank">$item.product.id</a></td>
-			<td>$item.sku</td>
-			<td align="center">$item.quantity</td>
-			#if ($content.isPropertyTrue("showprice"))
-			<td align="right">$item.yourPrice</td>
-			#end
-		#foreach ( $detail in $store.fieldArchive.getDataProperties("item","orderdetails",$user) )
-			<td>
-				$!item.getProperties().get($detail.id)
-			</td>
-		#end
-			#foreach ( $detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user) )
-			<td>
-				$!item.getProduct().get($detail.id)
-			</td>
-		#end
-		<td>
-		
-		<input type="hidden" name="sku" value="$item.sku"/>
-		<input type="hidden" name="ordernumber" value="$orderNumber"/>
-		<input type="hidden" name="origURL" value="$content.path"/>
-		
-		#if($canmanageorders)
-			<select name="${item.sku}.status">
-			#foreach( $type in $types )
-			#set( $key = $type.id)
-			<option value="$key" #if( $key == $item.status ) selected #end>
-				$type
-			</option>
-			#end
-		   </select>
-		 #else
-		##    $!types.getById($item.status)
-		#end
-		</td>
-		</tr>
-		#foreach ( $option in $item.getOptions() )
-		<tr>
-			<td></td>
-			<td><i>
-				&nbsp;&nbsp;$option.name: $!option.value
-			</i></td>
-		</tr>
-		#end
 	#end
-	<tr>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td>
-			#if( $canmanageorders )
-			<input type="submit" value="Save Item Status"/>
-			#end
-
-	</form>
-	<br><br>
+		<th align="center" width="100" nowrap>Shipment Status<br/>(Click to view info)</th>
+	</tr>
+	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 	
-
-<br>
-
-		</td>
-	</tr>
+#set($itemCounter = 0)
+#foreach ( $item in $order.items )
+	#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+	#set($itemCounter = $itemCounter + 1)
 	<tr>
-		<td><br></td>
-	</tr>
+		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+		<td id="nav${itemCounter}" onclick="nav_colour_swap(this.id)">
+			<p class="results-list"><img src="$home$apphome/theme/images/details_open.png"></p></td>
+		<td>
+			<p class="results-list">
+				<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>
+			<input type="hidden" name="sku" value="$item.sku"/>
+			<input type="hidden" name="ordernumber" value="$orderNumber"/>
+			<input type="hidden" name="origURL" value="$content.path"/></p></td>
+		<td align="center">
+			<p class="results-list">$item.sku</p></td>
+		<td align="center">
+			<p class="results-list">$item.quantity</p></td>
+		#if ($content.isPropertyTrue("showprice"))
+		<td align="right">
+				<p class="results-list">$item.yourPrice</p></td>
+		#end
+		<td align="center" nowrap>
+			<p class="results-list">
+				#if( $order.isFullyShipped() == "true" )
+					Shipped
+				#else
+					#if ( $order.getQuantityShipped($item) == $item.quantity )
+						Shipped
+					#else
+						#if ( $order.getQuantityShipped($item) > 0 )
+							Partially Shipped
+						#else
+							Waiting for Shipment
+						#end
+					#end
+				#end
+			</p></td></tr>
+    <tr id="tr${itemCounter}">
+        <td colspan="5" align="center">
+        	<p class="results-list">Display text here!</p></td>
+    </tr>
+    <!--  style="display: none; visibility: hidden" -->
+    #end
 	#if ($content.isPropertyTrue("showprice"))
 	<tr>
-		<td colspan="6" align="right">Subtotal:</td>
+		<td colspan="3" align="right">Subtotal:</td>
 		<td align="right">$order.subTotal</td>
 	</tr>
 	<tr>
-		<td colspan="6" align="right">Tax:</td>
+		<td colspan="3" align="right">Tax:</td>
 		<td align="right">$order.tax</td>
 	</tr>
-	  #if ( ($order.shippingMethod.description && $order.shippingMethod.description != "")
+		#if ( ($order.shippingMethod.description && $order.shippingMethod.description != "")
 		|| $order.shippingCost != "0.00" )
-	  <tr>
+	<tr>
 		  <td colspan="3" align="right">Ship by $order.shippingMethod.description:</td>
 		  <td align="right">$order.shippingCost</td>
-	  </tr>
-	  #end
+	</tr>
+		#end
 	<tr>
 		<td colspan="3" align="right"><b>Grand Total:</b></td>
 		<td align="right"><b>$order.totalPrice</b></td>
 	</tr>
 	#end
-	
 </table>
-
 <p>
 	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
 		#if( $order.getOrderState().getId() == "authorized" )
@@ -218,5 +230,14 @@ $order.getOrderStatus()
 		Notes: $order.paymentMethod.note
 	#end
 </p>
-
-
+</div>
+<!-- 
+<a href="$home$apphome/views/modules/storeOrder/shippingdetails/index.html?id=$orderNumber&oemaxlevel=1" class="results-list thickbox uibutton">
+<a href="/ecommerce/views/modules/storeOrder/shippingdetails/index.html?id=WEB0000076&oemaxlevel=1" class="thickbox uibutton" target="_parent">
+<script language="JavaScript" type="text/javascript">
+function openWindow()
+{
+window.open("/ecommerce/views/modules/storeOrder/shippingdetails/index.html?id=WEB0000076&oemaxlevel=1","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
+}
+</script>
+ -->
