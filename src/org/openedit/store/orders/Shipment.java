@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.openedit.data.BaseData;
+import org.openedit.util.DateStorageUtil;
 
 public class Shipment extends BaseData{
 
@@ -40,5 +41,8 @@ public class Shipment extends BaseData{
 	public boolean containsEntryForSku(String inSku){
 		return getEntryForSku(inSku) != null;
 		
+	}
+	public String get(String inId) {
+		return (String) getProperties().get(inId);
 	}
 }
