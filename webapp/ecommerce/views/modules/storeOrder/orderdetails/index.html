@@ -68,59 +68,17 @@ $order.getOrderStatus()
 		$order.shippingAddress.city, $order.shippingAddress.state $order.shippingAddress.zipCode $!order.shippingAddress.country<br>
 	</p>
 #end
-	<script>
-	//array of participating td's ids
-	var navid_array = new Array();
-#set($itemCounter = 0)
-#foreach ( $item in $order.items )
-	#set($itemCounter = $itemCounter + 1)
-	#set($arrayCounter = $itemCounter - 1)
-	navid_array[${arrayCounter}] = 'nav${itemCounter}';
-#end
-	
-	#set($itemCounter = 0)
-	var trid_array = new Array();
-#foreach ( $item in $order.items )
-	#set($itemCounter = $itemCounter + 1)
-	#set($arrayCounter = $itemCounter - 1)
-	trid_array[${arrayCounter}] = 'tr${itemCounter}';
-#end
-	var state1 = '#FFFFFF'; //initial colour
-	var state2 = '#E0E6F8'; //onclick colour
-	
-	function nav_colour_swap(navid) {
-	    for(var i = 0; i < navid_array.length; i++) {
-	        var nav = document.getElementById(navid_array[i]);
-	        var trv = document.getElementById(trid_array[i]);
-	        if(navid == nav.id) { //selected td
-	            if (trv.style.display == "none") {
-	                trv.style.display = "inline";
-	                trv.style.visibility = "visible"
-	//                nav.style.backgroundColor = state2;
-	            } else { //other td
-	                trv.style.display = "none";
-	                trv.style.visibility = "hidden"
-	//                nav.style.backgroundColor = state1;
-	            }
-	        }
-	//        else { //other td
-	//            trv.style.display = "none";
-	//            nav.style.backgroundColor = state1;
-	//        }
-	    }
-	}
-	</script>
-	
-<table cellspacing="5" class="standard-table" cellpadding="3" border="1">
-	<tr>
-		<th>&nbsp;</th>
-		<th align="left">Product ID<br/>(Click to view Product)</th>
-		<th align="left">Item SKU</th>
-		<th align="center" width="100" >Quantity</th>
+<p>
+<b>Order details:</b><br>
+<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
+	<tr class="results-list-head">
+		<th align="left" class="results-list-head">Product ID</th>
+		<th align="left" class="results-list-head">Item SKU</th>
+		<th align="center" width="100"  class="results-list-head">Quantity</th>
 	#if ($content.isPropertyTrue("showprice"))
-		<th align="right">Unit Price</th>
+		<th align="right" class="results-list-head">Unit Price</th>
 	#end
-		<th align="center" width="100" nowrap>Shipment Status<br/>(Click to view info)</th>
+		<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
 	</tr>
 	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 	
@@ -128,10 +86,13 @@ $order.getOrderStatus()
 #foreach ( $item in $order.items )
 	#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
 	#set($itemCounter = $itemCounter + 1)
-	<tr>
+	#set($bkgrnd = $itemCounter % 2)
+	#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+	#else
+		<tr class="results-list-b">
+	#end
 		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-		<td id="nav${itemCounter}" onclick="nav_colour_swap(this.id)">
-			<p class="results-list"><img src="$home$apphome/theme/images/details_open.png"></p></td>
 		<td>
 			<p class="results-list">
 				<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>
@@ -162,11 +123,6 @@ $order.getOrderStatus()
 					#end
 				#end
 			</p></td></tr>
-    <tr id="tr${itemCounter}">
-        <td colspan="5" align="center">
-        	<p class="results-list">Display text here!</p></td>
-    </tr>
-    <!--  style="display: none; visibility: hidden" -->
     #end
 	#if ($content.isPropertyTrue("showprice"))
 	<tr>
@@ -189,7 +145,7 @@ $order.getOrderStatus()
 		<td align="right"><b>$order.totalPrice</b></td>
 	</tr>
 	#end
-</table>
+</table></p>
 <p>
 	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
 		#if( $order.getOrderState().getId() == "authorized" )
@@ -221,13 +177,13 @@ $order.getOrderStatus()
 #end
 	#end
 	#if ( $order.paymentMethod.poNumber )
-		Purchase Order: $order.paymentMethod.poNumber<br>
+		<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
 	#end
 	#if ( $order.paymentMethod.billMeLater )
-		Bill Me Later<br />
+		<strong>Payment Method:</strong> Bill Me Later<br />
 	#end
 	#if ( $order.paymentMethod.note )
-		Notes: $order.paymentMethod.note
+		<stong>Notes:</stong><br/>$order.paymentMethod.note
 	#end
 </p>
 </div>
