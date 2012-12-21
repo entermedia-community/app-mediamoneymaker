@@ -9,127 +9,132 @@
 #set ( $sSize = $shipments.size() )
 <h2>Shipping History</h2>
 <h3>Order ID: $orderid</h3>
-<h3>Order Status: 
-	#if ($isFullyShipped == "false")
-		Partially Shipped
-	#else
-		Shipped
-	#end</h3>
-<h3>Shipment details per Product.</h3>
-<table cellspacing="2" class="oestandard-table" cellpadding="10">
-	<tr class="results-list-head">
-		<th align="left" class="results-list-head">Product ID</th>
-		<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
-		<th align="center" class="results-list-head">Way Bill Number</th>
-<!-- 
-		<th align="center" class="results-list-head">Courier</th>
-		<th align="center" class="results-list-head">Ship Date</th>
--->
-		<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
-	</tr>
-	#set($itemCounter = 0)
-	#foreach ( $item in $order.items ) 
-		#set( $itemCounter = $itemCounter + 1 )
-		#if ( ($itemCounter % 2) == 0 )
-			<tr class="results-list-a">
+#if ( $sSize > 0)
+	<h3>Order Status: 
+		#if ($isFullyShipped == "false")
+			Partially Shipped
 		#else
-			<tr class="results-list-b">
-		#end
-		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-		<td><a href="$home$path?oemaxlevel=2" class="results-list thickbox" data-fancybox-type="ajax">$product.getName()</a></td>
-		<td class="results-list">$item.quantity</td>
-		<td class="results-list">&nbsp;</td>
-<!-- 
-		<td class="results-list">&nbsp;</td>
-		<td class="results-list">&nbsp;</td>
--->
-		<td class="results-list">&nbsp;</td>
-		#foreach ( $shipmentEntry in $shipments )
-			#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
-			#set( $waybill = $shipmentEntry.get("waybill") )
+			Shipped
+		#end</h3>
+	<h3>Shipment details per Product.</h3>
+#else
+	<h2>No shippments for this order</h2>
+#end
+#if ( $sSize > 0)
+	<table cellspacing="2" class="oestandard-table" cellpadding="10">
+		<tr class="results-list-head">
+			<th align="left" class="results-list-head">Product ID</th>
+			<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
+			<th align="center" class="results-list-head">Way Bill Number</th>
+	<!-- 
+			<th align="center" class="results-list-head">Courier</th>
+			<th align="center" class="results-list-head">Ship Date</th>
+	-->
+			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
+		</tr>
+		#set($itemCounter = 0)
+		#foreach ( $item in $order.items ) 
+			#set( $itemCounter = $itemCounter + 1 )
+			#if ( ($itemCounter % 2) == 0 )
+				<tr class="results-list-a">
+			#else
+				<tr class="results-list-b">
+			#end
+			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
 			#set( $path="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html" )
-			#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
-				</tr>
-				#if ( ($itemCounter % 2) == 0 )
-					<tr class="results-list-a">
-				#else
-					<tr class="results-list-b">
+			<td><a href="$home$path?oemaxlevel=2" class="thickbox" 
+					data-fancybox-type="ajax"><img 
+					src="$home$apphome/theme/images/details_open.png"/></a>$product.getName()</td>
+			<td class="results-list-center">$item.quantity</td>
+			<td class="results-list-left">&nbsp;</td>
+	<!-- 
+			<td class="results-list-left">&nbsp;</td>
+			<td class="results-list-left">&nbsp;</td>
+	-->
+			<td class="results-list">&nbsp;</td>
+			#foreach ( $shipmentEntry in $shipments )
+				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+				#set( $waybill = $shipmentEntry.get("waybill") )
+				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+					</tr>
+					#if ( ($itemCounter % 2) == 0 )
+						<tr class="results-list-a">
+					#else
+						<tr class="results-list-b">
+					#end
+					<td colspan="2" class="results-list-left">&nbsp;</td>
+					<td class="results-list-left">$waybill</a></td>
+	<!-- 
+					<td class="results-list">$shipmentEntry.get("courier")</td>
+					<td class="results-list">$shipmentEntry.get("shipdate")</td>
+	-->
+					<td class="results-list-center">$entry.getQuantity()</td>
+					</tr>
 				#end
-				<td colspan="2" class="results-list">&nbsp;</td>
-				<td class="results-list"><a 
-				href="$home$apphome/views/modules/storeOrder/shippingdetails/waybilldetails.html?waybill=$waybill&id=$orderid&oemaxlevel=1" 
-				class="thickbox results-list-link" data-fancybox-type="ajax">$waybill</a></td>
-<!-- 
-				<td class="results-list">$shipmentEntry.get("courier")</td>
-				<td class="results-list">$shipmentEntry.get("shipdate")</td>
--->
-				<td class="results-list">$entry.getQuantity()</td>
-				</tr>
 			#end
 		#end
-	#end
-	</tr>
-</table>
-
-#foreach ( $shipmentEntry in $shipments )
-	#set( $shipCounter = $shipCounter + 1 )
-#end
-
-<h3>Shipment details per Waybill.</h3>
-<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
-	<tr class="results-list-head">
-		<th align="center" class="results-list-head">Way Bill Number</th>
-<!--
-		<th align="center" class="results-list-head">Courier</th>
-		<th align="center" class="results-list-head">Ship Date</th>
--->
-		<th align="left" class="results-list-head">Product ID</th>
-		<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
-	</tr>
+		</tr>
+	</table>
 	
-	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
-	#set( $shipCounter = 0)
 	#foreach ( $shipmentEntry in $shipments )
 		#set( $shipCounter = $shipCounter + 1 )
-		#set( $waybill = $shipmentEntry.get("waybill") )
-		#set( $courier = $shipmentEntry.get("courier") )
-		#set( $shipdate = $shipmentEntry.get("shipdate") )
-		#if ( ($shipCounter % 2) == 0 )
-			<tr class="results-list-a">
-		#else
-			<tr class="results-list-b">
-		#end
-			<td class="results-list"><a 
-				href="$home$apphome/views/modules/storeOrder/shippingdetails/waybilldetails.html?waybill=$waybill&id=$orderid&oemaxlevel=1" 
-				class="thickbox results-list-link" data-fancybox-type="ajax">$waybill</a></td>
-<!--
-	 		<td class="results-list">$courier</td>
-			<td class="results-list">$shipdate</td>
--->
-			<td colspan="2" class="results-list">&nbsp;</td>
-			</tr>
-		#foreach ( $item in $order.items ) 
-			#set( $path="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html" )
-			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-			#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
-			#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
-				#if ( ($shipCounter % 2) == 0 )
-					<tr class="results-list-a">
-				#else
-					<tr class="results-list-b">
-				#end
-<!--
-				<td colspan="3">&nbsp;</td>
--->
-				<td class="results-list">&nbsp;</td>
-				<td class="results-list">$product.getName()</td>
-				<td class="results-list">$entry.getQuantity()</td>
+	#end
+	
+	<h3>Shipment details per Waybill.</h3>
+	<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
+		<tr class="results-list-head">
+			<th align="center" class="results-list-head">Way Bill Number</th>
+	<!--
+			<th align="center" class="results-list-head">Courier</th>
+			<th align="center" class="results-list-head">Ship Date</th>
+	-->
+			<th align="left" class="results-list-head">Product ID</th>
+			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
+		</tr>
+		
+		#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
+		#set( $shipCounter = 0)
+		#foreach ( $shipmentEntry in $shipments )
+			#set( $shipCounter = $shipCounter + 1 )
+			#set( $waybill = $shipmentEntry.get("waybill") )
+			#set( $courier = $shipmentEntry.get("courier") )
+			#set( $shipdate = $shipmentEntry.get("shipdate") )
+			#if ( ($shipCounter % 2) == 0 )
+				<tr class="results-list-a">
+			#else
+				<tr class="results-list-b">
+			#end
+				<td class="results-list"><a href="$home$apphome/views/modules/storeOrder/shippingdetails/waybilldetails.html?waybill=$waybill&id=$orderid&oemaxlevel=1"
+						class="thickbox" data-fancybox-type="ajax"><img 
+					src="$home$apphome/theme/images/details_open.png"/></a>$waybill</a></td>
+	<!--
+		 		<td class="results-list-center">$courier</td>
+				<td class="results-list-center">$shipdate</td>
+	-->
+				<td colspan="2" class="results-list-left">&nbsp;</td>
 				</tr>
+			#foreach ( $item in $order.items ) 
+				#set( $path="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html" )
+				#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+					#if ( ($shipCounter % 2) == 0 )
+						<tr class="results-list-a">
+					#else
+						<tr class="results-list-b">
+					#end
+	<!--
+					<td colspan="3">&nbsp;</td>
+	-->
+					<td class="results-list-left">&nbsp;</td>
+					<td class="results-list-left">$product.getName()</td>
+					<td class="results-list-center">$entry.getQuantity()</td>
+					</tr>
+				#end
 			#end
 		#end
-	#end
-</table>
-
+	</table>
+#end
 <!-- 
 #foreach ($detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user))
 	<th align="center">b - $!detail.text</th> 

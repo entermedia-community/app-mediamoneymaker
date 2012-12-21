@@ -226,3 +226,26 @@ padding:0px;
 #newnav li {
     border: 1px solid #ccc;
 }
+
+/* SHIPPING DETAILS */
+tr.results-list-head {
+	background: #909090;
+	color: #000000;
+}
+tr.results-list-a {
+	background: #FFFFFF;
+	color: #000000;
+}
+tr.results-list-a {
+	background: #E8E8E8;
+	color: #000000;
+}
+td.results-list-left {
+	text-align: left;
+}
+td.results-list-center {
+	text-align: center;
+}
+a.results-list-link {
+	font-size: 12px;
+}
