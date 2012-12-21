@@ -21,5 +21,30 @@ function nextPage()
 	$pages.stream("$apphome/shoppingcartsummary.html") 
 	
  </form>
- $pages.stream("$apphome/sslcertificate.html")
-
+ <br/>
+<div class="ui-widget  uipanel" style="width:300px;">
+    <div class="ui-widget-header">Quick Add Item</div>
+    <div class="ui-widget-content">
+		<form name="addquickitem" method="post" action="/ecommerce/shoppingbag.html">
+	    	<div style="text-align:center;">
+				<table style="width:100%;">
+					<tr class="results-list">
+						<td style="vertical-align:middle;">Enter Accessory ID:</td>
+						<td class="proddata2" style="text-align:center;vertical-align:middle;">
+							<input type="text" name="productid" style="text-align: center" size="3">
+						</td>
+					</tr>
+					<tr class="results-list">
+						<td class="results-list-center" colspan="2">
+							<input type="hidden" name="reloadcart" value="true" />
+							<input class="btn right" type="submit" value="Add to Cart">
+						</td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+</div>
+<br/>
+<br/>
+$pages.stream("$apphome/sslcertificate.html")
