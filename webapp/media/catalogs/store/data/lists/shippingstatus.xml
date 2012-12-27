@@ -1,0 +1,5 @@
+
+<shippingstatuss>
+  <shippingstatus id="shipped">Shipped</shippingstatus>
+  <shippingstatus id="partialshipped">Partial Shipped</shippingstatus>
+</shippingstatuss>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<invoicestatuss>
+  <invoicestatus id="new">New</invoicestatus>
+  <invoicestatus id="approved">Approved</invoicestatus>
+  <invoicestatus id="complete">Complete</invoicestatus>
+  <invoicestatus id="updated">Updated</invoicestatus>
+  <invoicestatus id="submitted">Submitted</invoicestatus>
+  <invoicestatus id="waiting">Waiting for Approval</invoicestatus>
+</invoicestatuss>
