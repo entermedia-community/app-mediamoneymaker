@@ -415,4 +415,7 @@ public class Order extends BaseData implements Comparable {
 		}
 		return shipment;
 	}
+	public boolean containsShipmentByWaybill( String inWaybill ) {
+		return getShipmentByWaybill(inWaybill) != null;
+	}
 }
