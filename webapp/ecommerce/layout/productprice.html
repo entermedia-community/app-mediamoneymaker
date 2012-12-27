@@ -18,16 +18,23 @@
 	#else
 		<div class="mainprice">$product.getYourPrice()</div>
 	#end
-	 	#if( $product.isAvailable() )                                                                                                                                                                          
-	 <input type="hidden" name="productid" value="$product.getId()" />	
-		#else	
-		<b>Product No Longer Available.</b> please select another product
+ 	#if( $product.isAvailable() )                                                                                                                                                                          
+		<input type="hidden" name="productid" value="$product.getId()" />
+	#else	
+	<b>Product No Longer Available.</b> please select another product
 
-		#end
+	#end
 
 </li>
-#if($product.isAvailable())
-	Current Stock: $product.getInventoryItem(0).getQuantityInStock()
+#if( $product.isAvailable() )                                                                                                                                                                          
+	<li class="price">
+		<div class="instock">Current Stock: $product.getInventoryItem(0).getQuantityInStock()</div>
+	</li>
+	<li class="price">
+		<strong>Accessory ID:</strong> $product.get("accessoryid")<br>
+		<strong>UPC:</strong> $product.get("upc")<br>
+		<strong>MSRP:</strong> $product.get("msrp")<br>
+	</li>
 #end
 	
 #if($canvieweol)
