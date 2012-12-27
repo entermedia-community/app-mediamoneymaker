@@ -44,8 +44,6 @@ public class ImportEDIASN extends EnterMediaObject {
 		ediXMLresult.setCompleteMessage("");
 		ediXMLresult.setComplete(false);
 
-		log.info("---- START Import EDI ASN ----");
-
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 
@@ -214,96 +212,103 @@ public class ImportEDIASN extends EnterMediaObject {
 											errorList.add(strMsg);
 										}
 										if (foundFlag) {
-											def SUBHEADERS = it.depthFirst().grep{
-												it.name() == 'ASNHeader';
-											}
-											log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
-
-											//Reset the found flag
-											foundFlag = false;
-											SUBHEADERS.each {
-												
-												def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
-												if (!QS.isEmpty()) {
-													quantityShipped = QS;
+											if (!order.containsShipmentByWaybill(waybill)) {
+												def SUBHEADERS = it.depthFirst().grep {
+													it.name() == 'ASNHeader';
 												}
-												def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
-												if (!DS.isEmpty()) {
-													def newDate = parseDate(DS);
-													dateShipped = newDate;
-												}
-
-												def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
-												if (!vendorCode.isEmpty()) {
-													foundFlag = true;
-													Data product = media.searchForProductBySku("manufacturersku", vendorCode);
-													if (product != null) {
-														foundFlag = true;
-														productID = product.getId();
-													} else {
-														strMsg = "Product(" + vendorCode + ") was not found from ASN.";
-														log.info(strMsg);
-														errorList.add(strMsg);
-													}
-													if (!foundFlag) {
-														strMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
-														log.info(strMsg);
-														errorList.add(strMsg);
-													}
-												}
-
-												if ((foundFlag) && (errorList.size() == 0)) {
+												log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
 	
-													Product target = media.getProductSearcher().searchById(productID);
-													InventoryItem productInventory = target.getInventoryItem(0);
-													CartItem item = order.getItem(productInventory.getSku());
+												//Reset the found flag
+												foundFlag = false;
+												SUBHEADERS.each {
+													
+													def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
+													if (!QS.isEmpty()) {
+														quantityShipped = QS;
+													}
+													def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
+													if (!DS.isEmpty()) {
+														def newDate = parseDate(DS);
+														dateShipped = newDate;
+													}
 	
-													if (!shipment.containsEntryForSku(productInventory.getSku()) && item !=  null ) {
-														ShipmentEntry entry = new ShipmentEntry();
-														entry.setCartItem(item);
-														entry.setQuantity(Integer.parseInt(quantityShipped));
-														shipment.setProperty("waybill", waybill);
-														shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
-														shipment.addEntry(entry);
+													def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+													if (!vendorCode.isEmpty()) {
 														foundFlag = true;
-
-														strMsg = "Order Updated(" + purchaseOrder + ") and saved";
+														Data product = media.searchForProductBySku("manufacturersku", vendorCode);
+														if (product != null) {
+															foundFlag = true;
+															productID = product.getId();
+														} else {
+															strMsg = "Product(" + vendorCode + ") was not found from ASN.";
+															log.info(strMsg);
+															errorList.add(strMsg);
+														}
+														if (!foundFlag) {
+															strMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
+															log.info(strMsg);
+															errorList.add(strMsg);
+														}
+													}
+	
+													if ((foundFlag) && (errorList.size() == 0)) {
+		
+														Product target = media.getProductSearcher().searchById(productID);
+														InventoryItem productInventory = target.getInventoryItem(0);
+														CartItem item = order.getItem(productInventory.getSku());
+		
+														if (!shipment.containsEntryForSku(productInventory.getSku()) && item !=  null ) {
+															ShipmentEntry entry = new ShipmentEntry();
+															entry.setCartItem(item);
+															entry.setQuantity(Integer.parseInt(quantityShipped));
+															shipment.setProperty("waybill", waybill);
+															shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+															shipment.addEntry(entry);
+															foundFlag = true;
+	
+															strMsg = "Order Updated(" + purchaseOrder + ") and saved";
+															log.info(strMsg);
+															completeList.add(strMsg);
+															
+															strMsg = "Waybill (" + waybill + ")";
+															log.info(strMsg);
+															completeList.add(strMsg);
+															
+															strMsg = "SKU (" + productInventory.getSku() + ")";
+															log.info(strMsg);
+															completeList.add(strMsg);
+														} else {
+															strMsg = "Cart Item cannot be found(" + orderID + ")";
+															log.info(strMsg);
+															errorList.add(strMsg);
+														} // end if orderitems
+													}
+												} // END SUB-HEADERS
+												if(shipment.getShipmentEntries().size() >0) {
+													order.addShipment(shipment);
+													order.getOrderStatus();
+													if(order.isFullyShipped()){
+														order.setProperty("shippingstatus", "shipped");
+														strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
 														log.info(strMsg);
 														completeList.add(strMsg);
-														
-														strMsg = "Waybill (" + waybill + ")";
+													}else{
+														order.setProperty("shippingstatus", "partialshipped");
+														strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
 														log.info(strMsg);
 														completeList.add(strMsg);
-														
-														strMsg = "SKU (" + productInventory.getSku() + ")";
-														log.info(strMsg);
-														completeList.add(strMsg);
-
-													} else {
-														strMsg = "Cart Item cannot be found(" + orderID + ")";
-														log.info(strMsg);
-														errorList.add(strMsg);
-													} // end if orderitems
-												}
-											} // END SUB-HEADERS
-											if(shipment.getShipmentEntries().size() >0) {
-												order.addShipment(shipment);
-												order.getOrderStatus();
-												if(order.isFullyShipped()){
-													order.setProperty("shippingstatus", "shipped");
-													strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+													}
+													store.getOrderArchive().saveOrder(store, order);
+													strMsg = "Order (" + purchaseOrder + ") saved.";
 													log.info(strMsg);
 													completeList.add(strMsg);
-												}else{
-													order.setProperty("shippingstatus", "partialshipped");
-													strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
-													log.info(strMsg);
-													completeList.add(strMsg);
 												}
-												store.getOrderArchive().saveOrder(store, order);
-												strMsg = "Order (" + purchaseOrder + ") saved.";
+												media.getOrderSearcher().reIndexAll();
+											} else {
+												strMsg = "Waybill entry already exists (" + waybill + ")."
 												log.info(strMsg);
-												completeList.add(strMsg);
+												strMsg = "Skipping ASN Entry."
+												log.info(strMsg);
 											}
 										}
 									}
@@ -440,6 +445,7 @@ try {
 	ImportEDIASN.setContext(context);
 	ImportEDIASN.setPageManager(pageManager);
 
+	log.info("---- START Import EDI ASN ----");
 	result = ImportEDIASN.importEdiXml();
 	if (result.isComplete()) {
 		//Output value to CSV file!
@@ -459,6 +465,7 @@ try {
 			context.putPageValue("errorout", errMsg);
 		}
 	}
+	log.info("---- END Import EDI ASN ----");
 }
 finally {
 	logs.stopCapture();
