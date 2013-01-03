@@ -1,0 +1,18 @@
+
+#set( $resultdetail = $archive.getDataProperties("resultdetail") )
+#set( $resulthover = $archive.getDataProperties("resulthover") )
+#if( $page.isPropertyTrue('showprice') )
+	#set( $showprice = true )
+#end
+
+$pages.include("$apphome/distributors/resultssection.html", $context)
+
+$pages.include("$apphome/distributors/results-navigation.html")
+
+#if ( $hits.totalPages == 0 )
+<p>
+No results found for <b>$hits.friendlyQuery</b>
+</p>
+                                                                                                                                                                                                              
+#end
+

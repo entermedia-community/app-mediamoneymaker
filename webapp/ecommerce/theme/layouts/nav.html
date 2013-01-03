@@ -1,8 +1,9 @@
  
  <ul class="emheaderbuttons" >
 <li><a id="home"  href="$home$apphome/index.html"> Home </a></li>
+#if($canbrowseproducts)
 <li style="border-right: 1px solid #CCCCCC;"><a id="home"  href="$home$apphome/categories/index.html"> Browse </a></li>
-
+#end
 #set ($lastselected = $content.module )
  	#if(!$lastselected)
  		#set($lastselected = $userprofile.last_selected_module )
@@ -16,8 +17,11 @@
 
 
 
+
+
 	#if($canviewdistributorsection)
 
+<li><a href="$apphome/distributors/myproducts.html">Browse</a></li>
 <li><a href="$apphome/distributors/">Distributors</a></li>
 
     #end
@@ -53,11 +57,12 @@
 
 #end
 
-
+#if($canviewcart)
 <li  style="float: right;">
  	  <a href="$apphome/shoppingbag.html">View Cart</a>
  </li>
-
+#end
+#if($canbrowseproducts)
 <li style="float: right; border:0px;  padding-right: 132px; padding-top: 3px;">
 	<div id="searchform" class="">
 		<form target="_parent" name="qsearch" action="$home$apphome/search/results.html">
@@ -69,7 +74,7 @@
 </form>
 	</div>
 </li>
-
+#end
  
 
 

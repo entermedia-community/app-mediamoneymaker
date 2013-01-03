@@ -18,6 +18,8 @@
       <group id="administrators"/>
     </or>
   </permission>
+  
+  
   <permission name="maximize">
     <userprofile value="true" name="maximize"/>
   </permission>
@@ -45,12 +47,12 @@
       <pagevalue equals="true" name="caneditasset"/>
     </and>
   </permission>
+  
   <permission name="viewdistributorsection">
-    <or>
-      <group id="administrators"/>
-      <group id="distributors"/>
-    </or>
+      <userprofile value="true" name="distributorsection"/>  
   </permission>
+  
+  
   <permission name="viewrogerstools">
     <or>
       <group id="administrators"/>
@@ -71,12 +73,31 @@
       
     </or>
   </permission>
-     <permission name="edituserprofile">
+ 
+  <permission name="edituserprofile">
    	<user/>
   </permission>
+  
+  <permission name="browseproducts">
+      <userprofile value="true" name="browseproducts"/>
+  </permission>
+  
+  <permission name="viewcart">
+      <userprofile value="true" name="viewcart"/>
+  </permission>
+   
+  <permission name="createwishlist">
+      <userprofile value="true" name="wishlist"/>
+  </permission>
+  
+  <permission name="viewtesting">
+      <userprofile value="true" name="viewtesting"/>
+  </permission>
+  
+  
+  
   <path-action name="storeArchive.loadStore"/>
   
-  	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable" allowduplicates="true" class="org.openedit.util.DateStorageUtil" />
+  	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable"  class="org.openedit.util.DateStorageUtil" />
     	<path-action bean="Date" name="PageValue.loadPageVariable" allowduplicates="true" class="java.util.Date" />
-<path-action name="CartModule.loadCustomerAddressList"/>
 </page>

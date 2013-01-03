@@ -1,6 +1,7 @@
 <li class="price">
-    <h5>Product Price<input class="btn right" type="submit" value="Add to Cart" /></h5>
-	
+    #if($canviewcart)
+     <h5>Product Price<input class="btn right" type="submit" value="Add to Cart" /></h5>
+    #end
 
 ##if($canvieweol)
 ##<input type="hidden" name="field" value="store">

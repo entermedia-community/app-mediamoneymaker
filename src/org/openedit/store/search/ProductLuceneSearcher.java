@@ -1,6 +1,5 @@
 package org.openedit.store.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -12,21 +11,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
-import org.openedit.data.lucene.CompositeAnalyzer;
 import org.openedit.data.lucene.LuceneSearchQuery;
-import org.openedit.data.lucene.NullAnalyzer;
-import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
@@ -34,7 +25,6 @@ import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
-import org.openedit.store.SearchFilter;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
@@ -49,7 +39,6 @@ import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
-import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
 
 public class ProductLuceneSearcher extends BaseLuceneSearcher implements ProductSearcher, ProductPathFinder
@@ -830,7 +819,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
-			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
+			StringBuffer buffer = new StringBuffer(); //true is for wide open searches
 			if (currentUser != null)
 			{
 				UserProfile profile = inPageRequest.getUserProfile();
@@ -860,6 +849,9 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 //					{
 //						buffer.append(" profileviewassets");
 //					}
+					if(profile.get("distributor") != null){
+						buffer.append(" distributor_" + profile.get("distributor"));
+					}
 				}
 //				if(currentUser.getProperty("zone") != null)
 //				{
@@ -871,6 +863,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 					buffer.append(" group_" + allow);
 				}
 				buffer.append(" user_" + currentUser.getUserName());
+				
 			}
 			inSearch.addOrsGroup("viewproduct", buffer.toString().toLowerCase());
 			inSearch.setSecurityAttached(true);

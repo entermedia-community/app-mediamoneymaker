@@ -2,20 +2,14 @@
                                                                                                                                    
 <page>
         <path-action name="CartModule.loadProductDetails"  />
-        <inner-layout>/${applicationid}/layout/productdetails.html</inner-layout>
-        <property name="editable">false</property>
+        <inner-layout>/${applicationid}/layout/distributordetails.html</inner-layout>
+        <property name="editable">true</property>
 		<!--
 		<generator name="file" /> 
 		-->
 		<property name="importfilepath">./products/images/original/</property>
 		<property name="importfilepathpostfix">.jpg</property>
 		<property name="virtual">true</property>
-		
-		
-		<permission name="view">
-      		<userprofile value="true" name="browseproducts"/>
-  		</permission>
-		
 		
 </page>
 

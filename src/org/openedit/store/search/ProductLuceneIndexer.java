@@ -335,6 +335,14 @@ public class ProductLuceneIndexer {
 
 			}
 		}
+		
+		
+		
+		String distributorid = p.get("distributor");
+		if (distributorid != null) {
+			buffer.append(" distributor_" + distributorid);			
+		}
+		
 		if (p.get("user") != null) {
 			String[] users = p.get("user").split("\\s");
 

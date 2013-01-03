@@ -26,7 +26,12 @@
 			        	#end
 			        	<div class="checkout-options">
 			        	    <div class="clearfix">
-			                     <a href="javascript:nextPage();" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Begin Checkout</b></a>
+			                     #if($cancheckout)
+						     <a href="javascript:nextPage();" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Begin Checkout</b></a>
+		        		     #end
+					     #if($cancreatewishtlist)
+			                       <a href="$apphome/wishlist/index.html" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Save Wish List</b></a>
+        					#end
 			                </div>
 			               <div style="text-align: right;" class="clearfix">
 			                 <a style="color: #999; font-size: 12px; font-weight: normal; margin-right: 4px;" href="$continueShoppingUrl">Continue Shopping</a>

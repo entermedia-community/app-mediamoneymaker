@@ -1,0 +1,11 @@
+<page>
+        <path-action name="CartModule.loadProductDetails"  />
+
+	<path-action name="Email.sendEmail"/>
+	<property name="to">info@wirelessarea.ca. ian@ijsolutions.ca</property>
+	<property name="from">info@wirelessarea.ca</property>
+	<property name="subject">Change Request</property>
+	<property name="emailbody">/${applicationid}/distributors/changerequest-template.html</property>
+
+
+</page>
