@@ -2,7 +2,7 @@
 
 #foreach ( $cell in $hits.getPageOfHits() )
 
-			#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
+			#set( $clink = "$home$apphome/distributors/products/${cell.sourcepath}.html" )
 	#set ($sourcepath = $cell.sourcepath)
 	
 
@@ -24,9 +24,9 @@
             <div class="product-price">
 		        #if( $cell.regularprice ) 
 		        	Sale: $cell.yourprice
-		    		$cell.regularprice 
+		    		$cell.regularprice
 		        #else
-		        	$cell.yourprice ($cell.distributor)
+		        	$cell.yourprice
 		        #end
             </div>
         </div>

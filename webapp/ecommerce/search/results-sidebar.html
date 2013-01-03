@@ -1,7 +1,20 @@
-                                    
+#set($showsidebar = false)
+#if($canbrowseproducts)
+
+	#set($searchroot = "$apphome/search")
+	#set($showsidebar = "true")
+
+#elseif($canviewdistributorsection)
+	#set($searchroot = "$apphome/distributors")
+	#set($showsidebar = "true")
+	#if(!$canbrowseproducts)
+		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
+	#end
+#end                                    
+
 
 ##$pages.stream("$apphome/search/search.html")
-
+#if($showsidebar =="true")
   <div class="ui-widget-header">Categories</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">
@@ -12,7 +25,7 @@
                	
           	#foreach($man in $mans)
 			
-                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$apphome/search/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact">$man.name</a></li>
+                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></li>
                 	
                 	#end
                 	#if($mans.size() > 5)
@@ -32,7 +45,8 @@
               
               
             #set($phonesearcher = $searcherManager.getSearcher("media/catalogs/store", "phone"))
-            #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
+            #set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
+            #set($mans = $mansearcher.fieldSearch("id", "*", "name"))
             #set($mancount = 0)   
           	#foreach($man in $mans)
            		<!-- 
@@ -48,7 +62,7 @@
           			#foreach($phone in $phones)						
 						#set($phonecount = $phonecount+1)
 						
-						<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end><a href="$apphome/search/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact">$phone.name</a></li>                	
+						<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end><a href="$searchroot/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact$!extra">$phone.name</a></li>                	
                 	#end                	
 				#end
 				#if($phones.size()  > 3)
@@ -74,7 +88,7 @@
                 #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
                
           	#foreach($man in $mans)
-                	<li #if($velocityCount > 5)  class="hidden-item manu"  #end ><a href="$apphome/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact">$man.name</a></li>
+                	<li #if($velocityCount > 5)  class="hidden-item manu"  #end ><a href="$searchroot/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact$!extra">$man.name</a></li>
                
                 	
 			
@@ -113,3 +127,5 @@
             });
             
             </script>
+
+#end

@@ -2,6 +2,8 @@
 
 <page>
 	<property name="editable">false</property>
-
+<permission name="view">
+      		<userprofile value="true" name="browseproducts"/>
+  		</permission>
 </page>
 

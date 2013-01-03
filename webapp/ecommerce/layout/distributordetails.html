@@ -1,0 +1,35 @@
+#if($product.distributor == $userprofile.distributor)
+#set($distributor = $searcherManager.getData($catalogid, "distributor", $userprofile.distributor))
+<h2>$distributor - $product.getName()</h2>
+
+$pages.stream("$apphome/layout/productimages.html")
+<h2>Product Description</h2>
+$pages.stream("$cataloghome/products/${product.id}.html")
+  	$context.putPageValue("view", $viewpath)
+   	$context.putPageValue("searcher", $store.getProductSearcher())
+   	$context.putPageValue("data", $product)
+<br/>
+  <h2>Submit a change request</h2>
+
+<form action="$apphome/distributors/sendchangerequest.html" >
+	$context.putPageValue("view", "product/productdistributor_change_request")
+	$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+	<input type="hidden" name="id" value="$product.id"/>
+	<input type="hidden" name="productid" value="$product.id"/>
+	<input type="submit" name="submit" value="Submit"/>
+</form>
+
+
+			
+
+
+
+
+
+
+#else
+You've arrived here in error.  Please verify your links.
+#end
+
+
+

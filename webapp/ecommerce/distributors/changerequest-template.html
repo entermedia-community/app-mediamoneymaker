@@ -1,0 +1,17 @@
+<h2>Change Request Submission</h2>
+A Product Change Request has been submitted.  Please click <a href="$content.siteroot$apphome/views/modules/product/edit/edit.html?id=$product.id&searchtype=product">Here</a> 
+to review.
+
+
+ 	$context.putPageValue("searcher", $store.getProductSearcher())
+   	$context.putPageValue("data", $product)
+<br/>
+
+	$context.putPageValue("view", "product/productdistributor_change_request")
+	$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+	
+
+
+
+			
+

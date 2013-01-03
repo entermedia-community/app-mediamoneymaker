@@ -1,3 +1,5 @@
+#if($canbrowseproducts)
+
 <form action="$home$apphome/shoppingbag.html" name="shop" id="shop" >
  
 <div class="product-left-col">  
@@ -59,3 +61,10 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 </div>
 </form>
 
+
+
+
+
+#else
+You've arrived here in error.  Please check the link and try again.
+#end

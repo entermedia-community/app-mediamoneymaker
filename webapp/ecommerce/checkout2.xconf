@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
+<path-action name="CartModule.loadCustomerAddressList"/>
+
    <path-action name="CartModule.updateCart" />
    <path-action name="CartModule.selectShippingAddress" />	
    <path-action name="CartModule.saveShippingMethod" />
