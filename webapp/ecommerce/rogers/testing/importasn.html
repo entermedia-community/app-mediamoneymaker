@@ -1,0 +1,16 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Test XML Section</div>
+	#if ($export)
+		<div class="ui-widget-content">
+			<p>The following files were processed:</p>
+			<p><ul>$export</ul></p>
+		</div> 
+		#end
+		#if ($errorout)
+		<div class="ui-widget-content">
+			<p>The following errors occurred.</p>
+			<p><ul>$errorout</ul></p>
+		</div>
+		#end
+</div>
+		

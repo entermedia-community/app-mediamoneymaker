@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+//array of participating td's ids
+var navid_array = new Array();
+navid_array[0] = 'nav1';
+navid_array[1] = 'nav2';
+navid_array[2] = 'nav3';
+
+var state1 = '#FFFFFF'; //initial colour
+var state2 = '#FE3000'; //onclick colour
+
+function nav_colour_swap(navid) {
+for(var i = 0; i < navid_array.length; i++) {
+var nav = document.getElementById(navid_array[i]);
+if(navid == nav.id) { //selected td
+nav.style.backgroundColor = state2;
+}
+else { //other td
+nav.style.backgroundColor = state1;
+}
+}
+}
+</script>
+
+<table border="1" cellspacing="5" cellpadding="5" >
+<tr>
+<td width="6" height="18">Nav1</td>
+</tr>
+<tr>
+<td class="tablecells" id="nav1" onclick="nav_colour_swap(this.id)"><a href="#" id="nav1">1</a></td>
+</tr>
+<tr style="height:1px; visibility: hidden; display: none">
+<td class="tablecells" id="hidden1">Hidden1</td>
+</tr>
+<tr>
+<td width="6" height="18">Nav1</td>
+</tr>
+<tr>
+<td class="tablecells" id="nav2" onclick="nav_colour_swap(this.id)"><a href="#" id="nav2">2</a></td>
+</tr>
+<tr id="tr2" style="height:1px; visibility: hidden; display: none">
+<td class="tablecells" id="hidden1">Hidden1</td>
+</tr>
+<tr>
+<td width="6" height="18">Nav1</td>
+</tr>
+<tr>
+<td class="tablecells" id="nav3" onclick="nav_colour_swap(this.id)"><a href="#" id="nav3">3</a></td>
+</tr>
+<tr id="tr3" style="height:1px; visibility: hidden; display: none">
+<td class="tablecells" id="hidden1">Hidden1</td>
+</tr>
+</body>
+</html>
+
+
+

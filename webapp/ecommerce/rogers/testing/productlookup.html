@@ -1,0 +1,46 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Peter's Testing Section</div>
+	<div class="ui-widget-content">
+		<p>
+		<form action="productlookup.html" method="post">
+		<table cellpadding=5 cellspacing=0 border=0>
+			<thead>
+			<tr>
+				<td colspan=2 align=center><strong>Rogers Product Lookup</strong></td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>Enter Product ID:</td><td><input type="text" name="productid"/></td>
+			</tr>
+			<tr>
+				<td>Enter Rogers SKU:</td><td><input type="text" name="rogerssku"/></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" name="Submit"/></td>
+			</tr>
+			</tbody>
+		</table>
+		</form>
+		</p>
+	</div> 
+	#if ($export)
+	<div class="ui-widget-content">
+		<p>Results</p>
+		<p><table cellpadding="1" cellspacing="0" width="100%">
+		<thead>
+			<td>ID</td>
+			<td>Name</td>
+			<td>Distributor</td>
+			<td>Rogers SKU</td>
+			<td>Manfacturer's SKU</td>
+			<td>UPC</td>
+			<td>Rogers Price</td>
+		</thead>
+		<tbody>
+		$export
+		</tbody>
+		</table></p>
+	</div> 
+	#end
+</div>

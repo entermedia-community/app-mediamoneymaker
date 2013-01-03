@@ -1,0 +1,26 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Peter's Testing Section</div>
+	<div class="ui-widget-content">
+		<p>
+		<form action="$home$apphome/rogers/uploadavocaitems.html" method="post" enctype="multipart/form-data">
+			<p>Please click the browse button to upload the Import File:</p>
+			<input type="file" name="file.0" /><br />
+			<input type="submit" name="Upload" value="Upload File"/>
+			<input type="hidden" name="path" value="$cataloghome/temp/upload/import.csv"/>
+		</form>
+		</p>
+	</div> 
+	#if ($export)
+	<div class="ui-widget-content">
+		<p>Results</p>
+		<p><table cellpadding="1" cellspacing="0" width="100%">
+		<thead>
+			<td>Status</td>
+		</thead>
+		<tbody>
+		$export
+		</tbody>
+		</table></p>
+	</div> 
+	#end
+</div>

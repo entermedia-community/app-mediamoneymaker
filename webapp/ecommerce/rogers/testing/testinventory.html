@@ -1,0 +1,14 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Test XML Section</div>
+	<div class="ui-widget-content">
+		#if ($export)
+			<p><ul>$export</ul></p>
+		#end
+		#if ($errorout)
+			<p class="error">The following errors occurred:</p>
+			<ul>
+			$errorout
+			</ul>
+		#end
+	</div> 
+</div>
