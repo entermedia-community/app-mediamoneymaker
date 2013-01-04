@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="accessoryname"/>
+  <property id="description"/>
+  <property id="msrp"/>
+  <property id="wholesaleprice"/>
+  <property id="fidowholesaleprice"/>
+  <property id="fidomsrp"/>
+</root>

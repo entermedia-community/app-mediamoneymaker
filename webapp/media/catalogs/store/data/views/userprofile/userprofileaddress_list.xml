@@ -1,0 +1,11 @@
+
+<root>
+  <property id="name"/>
+  <property id="address1"/>
+  <property id="address2"/>
+  <property id="city"/>
+  <property id="state"/>
+  <property id="country"/>
+  <property id="zip"/>
+  <property id="storenumber"/>
+</root>

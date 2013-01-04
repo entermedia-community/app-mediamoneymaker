@@ -14,7 +14,7 @@
   <property id="manufacturerid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" listid="manufacturer" datatype="list">Manufacturer</property>
   <property id="image" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" internalfield="false" listid="asset" datatype="list">Image</property>
   <property id="descrip" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description</property>
-  <property id="descripfr" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Description - FR</property>
+  <property id="descripfr" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Description - FR</property>
   <property id="rogerssku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers - SKU</property>
   <property id="manufacturersku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Manufacturer - SKU</property>
   <property id="categoryid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" datatype="list">Product Category</property>

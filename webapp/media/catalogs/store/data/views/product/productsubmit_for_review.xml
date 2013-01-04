@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="accessoryname"/>
+  <property id="accessorynamefr"/>
+  <property id="manufacturerid"/>
+  <property id="manufacturersku"/>
+  <property id="rogerssku"/>
+  <property id="categoryid"/>
+  <property id="displaydesignationid"/>
+  <property id="description"/>
+  <property id="descripfr" viewtype="html"/>
+  <property id="phonecompatability"/>
+  <property id="upc"/>
+  <property id="phone"/>
+  <property id="fidomsrp"/>
+  <property id="fidowholesaleprice"/>
+  <property id="msrp"/>
+  <property id="rogersprice"/>
+</root>
