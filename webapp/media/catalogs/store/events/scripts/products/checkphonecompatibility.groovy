@@ -14,9 +14,9 @@ import com.openedit.page.manage.PageManager
 
 public class CheckPhoneCompatibility extends EnterMediaObject {
 
-	public List<String> doIt() {
+	public List<String> doCheck(String choice) {
 		
-		log.info("PROCESS: ExportEdiOrder.init()");
+		log.info("PROCESS: CheckPhoneCompatibility.doIt()");
 		
 		List<String> export = new ArrayList<String>();
 		
@@ -29,27 +29,65 @@ public class CheckPhoneCompatibility extends EnterMediaObject {
 		PageManager pageManager = archive.getPageManager();
 
 		//Create Searcher Object
-		Searcher phoneSearcher = manager.getSearcher(archive.getCatalogId(), "phone");
+		Searcher phonesearcher = manager.getSearcher(archive.getCatalogId(), "phone");
+		Searcher manufacturersearcher = manager.getSearcher(archive.getCatalogId(), "manufacturer");
 		Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
-		
-		HitTracker phoneList = phoneSearcher.getAllHits();
-		for (Iterator phoneIterator = phoneList.iterator(); phoneIterator.hasNext();) {
-			Data phone = (Data) phoneIterator.next();
-			if (phone.get("active") == "true") {
-				HitTracker productList = productsearcher.fieldSearch("phone", phone.getId());
-				if (productList.size() == 0) {
-					phone.setProperty("active", "false");
-					String strMsg = phone.getId() + ":" + phone.getName(); 
-					export.add(strMsg);
-					log.info(strMsg + " has no accessories associated with it");
+
+		export.add("<strong>" + choice + "</strong>");
+		int counter = 0;
+				
+		HitTracker theList;
+		if (choice.equals("phone")) {
+			theList = phonesearcher.getAllHits();
+			for (Iterator iterator = theList.iterator(); iterator.hasNext();) {
+				Data item = (Data) iterator.next();
+				if ((item.get("active") == null) || (item.get("active") == "true")) {
+					HitTracker productList = productsearcher.fieldSearch("phone", item.getId());
+					if (choice.equals("manufacturer")) {
+						log.info(item.getName() + "List Count: " + productList.size().toString());
+					}
+					if (productList.size() == 0) {
+						item.setProperty("active", "false");
+						String strMsg = item.getId() + ":" + item.getName(); 
+						export.add(strMsg);
+						log.info(strMsg + " has no accessories associated with it");
+						counter++;
+					} else {
+						String strMsg = item.getId() + ":" + item.getName();
+						log.info(strMsg + " has " + productList.size().toString() + " accessories associated with it");
+						//phone.setProperty("active", "true");
+					}
 				} else {
-					String strMsg = phone.getId() + ":" + phone.getName();
-					log.info(strMsg + " has " + productList.size().toString() + " accessories associated with it");
-					//phone.setProperty("active", "true");
+					log.info(item.getId() + ":" + item.getName() + " is not active.");
 				}
-			} else {
-				log.info(phone.getId() + ":" + phone.getName() + " is not active.");
 			}
+		} else if (choice.equals("manufacturer")) {
+			theList = manufacturersearcher.getAllHits();
+			for (Iterator iterator = theList.iterator(); iterator.hasNext();) {
+				Data item = (Data) iterator.next();
+				if ((item.get("active") == null) || (item.get("active") == "true")) {
+					HitTracker productList = productsearcher.fieldSearch("manufacturer", item.getId());
+					if (choice.equals("manufacturer")) {
+						log.info(item.getName() + "List Count: " + productList.size().toString());
+					}
+					if (productList.size() == 0) {
+						item.setProperty("active", "false");
+						String strMsg = item.getId() + ":" + item.getName(); 
+						export.add(strMsg);
+						log.info(strMsg + " has no accessories associated with it");
+						counter++;
+					} else {
+						String strMsg = item.getId() + ":" + item.getName();
+						log.info(strMsg + " has " + productList.size().toString() + " accessories associated with it");
+						//phone.setProperty("active", "true");
+					}
+				} else {
+					log.info(item.getId() + ":" + item.getName() + " is not active.");
+				}
+			}
+		}
+		if (counter == 0) {
+			export.add("No items in the list");
 		}
 		return export;
 	}
@@ -59,13 +97,16 @@ logs = new ScriptLogger();
 logs.startCapture();
 
 try {
-	CheckPhoneCompatibility checkPhones = new CheckPhoneCompatibility();
-	checkPhones.setLog(logs);
-	checkPhones.setContext(context);
-	checkPhones.setModuleManager(moduleManager);
-	checkPhones.setPageManager(pageManager);
-	List export = checkPhones.doIt();
+	CheckPhoneCompatibility checkData = new CheckPhoneCompatibility();
+	checkData.setLog(logs);
+	checkData.setContext(context);
+	checkData.setModuleManager(moduleManager);
+	checkData.setPageManager(pageManager);
+	List export = checkData.doCheck("phone");
 	context.putPageValue("exportphones", export);
+	export = null;
+	export = checkData.doCheck("manufacturer");
+	context.putPageValue("exportmanufacturer", export);
 }
 finally {
 	logs.stopCapture();

@@ -1,87 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <manufacturers>
-<manufacturer id="1">AudioVox</manufacturer>
-<manufacturer id="3">FireFly </manufacturer>
-<manufacturer id="5">Hewlett-Packard</manufacturer>
-<manufacturer id="6">Jabra</manufacturer>
-<manufacturer id="7">LG</manufacturer>
-<manufacturer id="9">Motorola</manufacturer>
-<manufacturer id="10">Nokia</manufacturer>
-<manufacturer id="11">Palm</manufacturer>
-<manufacturer id="12">Panasonic</manufacturer>
-<manufacturer id="13">Samsung</manufacturer>
-<manufacturer id="15">Sierra Wireless</manufacturer>
-<manufacturer id="16">Sony Ericsson</manufacturer>
-<manufacturer id="18">Bluetrek</manufacturer>
-<manufacturer id="19">HTC</manufacturer>
-<manufacturer id="20">Sandisk</manufacturer>
-<manufacturer id="21">Kingston Cards</manufacturer>
-<manufacturer id="22">Blackberry</manufacturer>
-<manufacturer id="23">Plantronics</manufacturer>
-<manufacturer id="24">Rogers Branded Accessories</manufacturer>
-<manufacturer id="25">CPD</manufacturer>
-<manufacturer id="26">Fido Branded Accessories</manufacturer>
-<manufacturer id="27">Golla</manufacturer>
-<manufacturer id="28">Pantech</manufacturer>
-<manufacturer id="29">Sony</manufacturer>
-<manufacturer id="30">Fortte</manufacturer>
-<manufacturer id="32">VTECH</manufacturer>
-<manufacturer id="33">Philips</manufacturer>
-<manufacturer id="34">MicroCel</manufacturer>
-<manufacturer id="35">Naztech</manufacturer>
-<manufacturer id="36">TeleNav</manufacturer>
-<manufacturer id="37">Other</manufacturer>
-<manufacturer id="38">Gennum</manufacturer>
-<manufacturer id="39">Handset Manager</manufacturer>
-<manufacturer id="40">BoomTube</manufacturer>
-<manufacturer id="42">Universal Electronics Inc.</manufacturer>
-<manufacturer id="43">JAWBONE</manufacturer>
-<manufacturer id="44">Scientific Atlantic</manufacturer>
-<manufacturer id="45">Rogers</manufacturer>
-<manufacturer id="46">NextNet Wireless</manufacturer>
-<manufacturer id="47">Blackline</manufacturer>
-<manufacturer id="48">Parrot</manufacturer>
-<manufacturer id="49">Novatel</manufacturer>
-<manufacturer id="50">Affinity</manufacturer>
-<manufacturer id="51">Griffin</manufacturer>
-<manufacturer id="52">Belkin</manufacturer>
-<manufacturer id="53">Apple</manufacturer>
-<manufacturer id="54">Otterbox</manufacturer>
-<manufacturer id="55">Importcom</manufacturer>
-<manufacturer id="56">BlueAnt</manufacturer>
-<manufacturer id="57">Ethereal MHKB</manufacturer>
-<manufacturer id="58">Zagg</manufacturer>
-<manufacturer id="59">Contour</manufacturer>
-<manufacturer id="60">Bury</manufacturer>
-<manufacturer id="61">Ultimate Ears</manufacturer>
-<manufacturer id="62">Mophie</manufacturer>
-<manufacturer id="63">iSkin</manufacturer>
-<manufacturer id="64">Pirata</manufacturer>
-<manufacturer id="65">Seagate</manufacturer>
-<manufacturer id="66">Sennheiser</manufacturer>
-<manufacturer id="67">Wazabee</manufacturer>
-<manufacturer id="68">Spatial View</manufacturer>
-<manufacturer id="69">Scosche</manufacturer>
-<manufacturer id="70">InCase</manufacturer>
-<manufacturer id="71">LICENCED</manufacturer>
-<manufacturer id="72">CaseCrown</manufacturer>
-<manufacturer id="73">Targus</manufacturer>
-<manufacturer id="74">CallPod</manufacturer>
-<manufacturer id="76">Powermat</manufacturer>
-<manufacturer id="77">Wireless Solutions</manufacturer>
-<manufacturer id="78">XPAL</manufacturer>
-<manufacturer id="79">Digipower</manufacturer>
-<manufacturer id="80">Luxury Life Brands</manufacturer>
-<manufacturer id="81">TruProtection</manufacturer>
-<manufacturer id="82">Acer</manufacturer>
-<manufacturer id="83">Trexta</manufacturer>
-<manufacturer id="84">TomTom</manufacturer>
-<manufacturer id="85">iGO</manufacturer>
-<manufacturer id="86">GZed</manufacturer>
-<manufacturer id="87">Puregear</manufacturer>
-<manufacturer id="88">Dell</manufacturer>
-<manufacturer id="89">ID8Mobile</manufacturer>
-<manufacturer id="90">Polaroid</manufacturer>
-<manufacturer id="91">BoomPhones</manufacturer>
-<manufacturer id="92">Doro</manufacturer>
+  <manufacturer id="1" active="true">AudioVox</manufacturer>
+  <manufacturer id="3" active="true">FireFly</manufacturer>
+  <manufacturer id="5" active="true">Hewlett-Packard</manufacturer>
+  <manufacturer id="6" active="true">Jabra</manufacturer>
+  <manufacturer id="7" active="true">LG</manufacturer>
+  <manufacturer id="9" active="true">Motorola</manufacturer>
+  <manufacturer id="10" active="true">Nokia</manufacturer>
+  <manufacturer id="11" active="true">Palm</manufacturer>
+  <manufacturer id="12" active="true">Panasonic</manufacturer>
+  <manufacturer id="13" active="true">Samsung</manufacturer>
+  <manufacturer id="15" active="true">Sierra Wireless</manufacturer>
+  <manufacturer id="16" active="true">Sony Ericsson</manufacturer>
+  <manufacturer id="18" active="true">Bluetrek</manufacturer>
+  <manufacturer id="19" active="true">HTC</manufacturer>
+  <manufacturer id="20" active="true">Sandisk</manufacturer>
+  <manufacturer id="21" active="true">Kingston Cards</manufacturer>
+  <manufacturer id="22" active="true">Blackberry</manufacturer>
+  <manufacturer id="23" active="true">Plantronics</manufacturer>
+  <manufacturer id="24" active="true">Rogers Branded Accessories</manufacturer>
+  <manufacturer id="25" active="true">CPD</manufacturer>
+  <manufacturer id="26" active="true">Fido Branded Accessories</manufacturer>
+  <manufacturer id="27" active="true">Golla</manufacturer>
+  <manufacturer id="28" active="true">Pantech</manufacturer>
+  <manufacturer id="29" active="true">Sony</manufacturer>
+  <manufacturer id="30" active="true">Fortte</manufacturer>
+  <manufacturer id="32" active="true">VTECH</manufacturer>
+  <manufacturer id="33" active="true">Philips</manufacturer>
+  <manufacturer id="34" active="true">MicroCel</manufacturer>
+  <manufacturer id="35" active="true">Naztech</manufacturer>
+  <manufacturer id="36" active="true">TeleNav</manufacturer>
+  <manufacturer id="37" active="true">Other</manufacturer>
+  <manufacturer id="38" active="true">Gennum</manufacturer>
+  <manufacturer id="39" active="true">Handset Manager</manufacturer>
+  <manufacturer id="40" active="true">BoomTube</manufacturer>
+  <manufacturer id="42" active="true">Universal Electronics Inc.</manufacturer>
+  <manufacturer id="43" active="true">JAWBONE</manufacturer>
+  <manufacturer id="44" active="true">Scientific Atlantic</manufacturer>
+  <manufacturer id="45" active="true">Rogers</manufacturer>
+  <manufacturer id="46" active="true">NextNet Wireless</manufacturer>
+  <manufacturer id="47" active="true">Blackline</manufacturer>
+  <manufacturer id="48" active="true">Parrot</manufacturer>
+  <manufacturer id="49" active="true">Novatel</manufacturer>
+  <manufacturer id="50" active="true">Affinity</manufacturer>
+  <manufacturer id="51" active="true">Griffin</manufacturer>
+  <manufacturer id="52" active="true">Belkin</manufacturer>
+  <manufacturer id="53" active="true">Apple</manufacturer>
+  <manufacturer id="54" active="true">Otterbox</manufacturer>
+  <manufacturer id="55" active="true">Importcom</manufacturer>
+  <manufacturer id="56" active="true">BlueAnt</manufacturer>
+  <manufacturer id="57" active="true">Ethereal MHKB</manufacturer>
+  <manufacturer id="58" active="true">Zagg</manufacturer>
+  <manufacturer id="59" active="true">Contour</manufacturer>
+  <manufacturer id="60" active="true">Bury</manufacturer>
+  <manufacturer id="61" active="true">Ultimate Ears</manufacturer>
+  <manufacturer id="62" active="true">Mophie</manufacturer>
+  <manufacturer id="63" active="true">iSkin</manufacturer>
+  <manufacturer id="64" active="true">Pirata</manufacturer>
+  <manufacturer id="65" active="true">Seagate</manufacturer>
+  <manufacturer id="66" active="true">Sennheiser</manufacturer>
+  <manufacturer id="67" active="true">Wazabee</manufacturer>
+  <manufacturer id="68" active="true">Spatial View</manufacturer>
+  <manufacturer id="69" active="true">Scosche</manufacturer>
+  <manufacturer id="70" active="true">InCase</manufacturer>
+  <manufacturer id="71" active="true">LICENCED</manufacturer>
+  <manufacturer id="72" active="true">CaseCrown</manufacturer>
+  <manufacturer id="73" active="true">Targus</manufacturer>
+  <manufacturer id="74" active="true">CallPod</manufacturer>
+  <manufacturer id="76" active="true">Powermat</manufacturer>
+  <manufacturer id="77" active="true">Wireless Solutions</manufacturer>
+  <manufacturer id="78" active="true">XPAL</manufacturer>
+  <manufacturer id="79" active="true">Digipower</manufacturer>
+  <manufacturer id="80" active="true">Luxury Life Brands</manufacturer>
+  <manufacturer id="81" active="true">TruProtection</manufacturer>
+  <manufacturer id="82" active="true">Acer</manufacturer>
+  <manufacturer id="83" active="true">Trexta</manufacturer>
+  <manufacturer id="84" active="true">TomTom</manufacturer>
+  <manufacturer id="85" active="true">iGO</manufacturer>
+  <manufacturer id="86" active="true">GZed</manufacturer>
+  <manufacturer id="87" active="true">Puregear</manufacturer>
+  <manufacturer id="88" active="true">Dell</manufacturer>
+  <manufacturer id="89" active="true">ID8Mobile</manufacturer>
+  <manufacturer id="90" active="true">Polaroid</manufacturer>
+  <manufacturer id="91" active="true">BoomPhones</manufacturer>
+  <manufacturer id="92" active="true">Doro</manufacturer>
 </manufacturers>
-                                                 

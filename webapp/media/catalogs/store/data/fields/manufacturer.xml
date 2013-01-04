@@ -1,5 +1,6 @@
 
-<properties prefix="manufacturers" >
-  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
-  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="default">Name</property>
+<properties prefix="manufacturers" beanname="dynamicSearcher">
+  <property id="id" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="default">Name</property>
+  <property id="active" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="manufacturer" internalfield="false" datatype="boolean">Active</property>
 </properties>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phones>
-  <phone id="2" manufacturer="5" active="false">6515</phone>
-  <phone id="3" manufacturer="5" active="false">HP6955</phone>
-  <phone id="4" manufacturer="7" active="false">240</phone>
-  <phone id="6" manufacturer="7" active="false">1400</phone>
-  <phone id="7" manufacturer="7" active="false">1500</phone>
-  <phone id="9" manufacturer="3" active="false">FIREFLY</phone>
-  <phone id="12" manufacturer="1" active="false">SMT5600</phone>
-  <phone id="15" manufacturer="7" active="false">500</phone>
-  <phone id="16" manufacturer="7" active="false">4015</phone>
-  <phone id="17" manufacturer="22" active="false">9100</phone>
-  <phone id="19" manufacturer="9" active="false">E1</phone>
-  <phone id="20" manufacturer="9" active="false">K1KRZR</phone>
-  <phone id="21" manufacturer="9" active="false">L2</phone>
-  <phone id="22" manufacturer="9" active="false">L6</phone>
-  <phone id="23" manufacturer="9" active="false">L7</phone>
+  <phone id="2" manufacturer="5" active="true">6515</phone>
+  <phone id="3" manufacturer="5" active="true">HP6955</phone>
+  <phone id="4" manufacturer="7" active="true">240</phone>
+  <phone id="6" manufacturer="7" active="true">1400</phone>
+  <phone id="7" manufacturer="7" active="true">1500</phone>
+  <phone id="9" manufacturer="3" active="true">FIREFLY</phone>
+  <phone id="12" manufacturer="1" active="true">SMT5600</phone>
+  <phone id="15" manufacturer="7" active="true">500</phone>
+  <phone id="16" manufacturer="7" active="true">4015</phone>
+  <phone id="17" manufacturer="22" active="true">9100</phone>
+  <phone id="19" manufacturer="9" active="true">E1</phone>
+  <phone id="20" manufacturer="9" active="true">K1KRZR</phone>
+  <phone id="21" manufacturer="9" active="true">L2</phone>
+  <phone id="22" manufacturer="9" active="true">L6</phone>
+  <phone id="23" manufacturer="9" active="true">L7</phone>
   <phone id="24" manufacturer="9" active="false">V186</phone>
   <phone id="26" manufacturer="9" active="false">V190</phone>
   <phone id="37" manufacturer="9" active="false">V361</phone>
