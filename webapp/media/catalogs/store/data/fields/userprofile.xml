@@ -1,0 +1,16 @@
+
+<properties prefix="userprofile" beanname="dynamicSearcher">
+  <property id="id" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="userprofile">ID</property>
+  <property id="userid" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">User Id</property>
+  <property id="settingsgroup" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="userprofile" datatype="list">Role</property>
+  <property id="view_asset_resultstable" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">View Table Results</property>
+  <property id="profilesearchfilters" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">Filters Used By Search</property>
+  <property id="hideassettype" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">Hide Asset Types</property>
+  <property id="maximize_screen" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">Maximize</property>
+  <property id="sourcepath" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">Source Path</property>
+  <property id="last_selected_module" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">asset</property>
+  <property id="maximize_player" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">false</property>
+  <property id="expand_media_sidebar" catalogid="media/catalogs/store" index="true" stored="true" searchtype="userprofile">true</property>
+  <property id="firstname" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="userprofile">First Name</property>
+  <property id="lastname" catalogid="media/catalogs/store" index="true" stored="true" editable="true">Last name</property>
+</properties>

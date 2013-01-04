@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="manufactureradvancedsearch" module="manufacturer" systemdefined="true" byassettype="false">Advanced Search</property>
+  <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" byassettype="false">Results Table</property>
+  <property id="manufacturerbatchedit" module="manufacturer" systemdefined="true" byassettype="false">Batch Edit</property>
+</properties>

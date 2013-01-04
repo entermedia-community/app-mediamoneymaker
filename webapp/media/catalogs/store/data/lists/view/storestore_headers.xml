@@ -1,0 +1,12 @@
+<properties>
+  <property id="store" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" internalfield="false">STORE_NUMBER</property>
+  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="store" internalfield="false">Name</property>
+  <property id="businessaddress" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" geodata="true">Business Address</property>
+  <property id="businessaddress2" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" internalfield="false" columnnumber="6">Business Address 2</property>
+  <property id="businesscity" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" geodata="true">Business City</property>
+  <property id="businessprovince" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="store" geodata="true" listid="province" datatype="list">Business Province</property>
+  <property id="businesspostalcode" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" geodata="true">Business Postal Code</property>
+  <property id="businessphone" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store">Business Phone</property>
+  <property id="businessfax" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" searchtype="store" internalfield="false">Business Fax</property>
+
+</properties>

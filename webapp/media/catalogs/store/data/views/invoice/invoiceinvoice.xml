@@ -1,0 +1,7 @@
+
+<root>
+  <property id="invoicenumber"/>
+  <property id="ponumber"/>
+  <property id="invoicetotal"/>
+  <property id="invoicestatus"/>
+</root>

@@ -8,4 +8,5 @@
   <data id="profile">Profile</data>
   <data id="invoice">Invoices</data>
   <data id="phone">Phones</data>
+  <data id="manufacturer">Manufacturers</data>
 </root>
