@@ -819,7 +819,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
-			StringBuffer buffer = new StringBuffer(); //true is for wide open searches
+			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
 			if (currentUser != null)
 			{
 				UserProfile profile = inPageRequest.getUserProfile();
