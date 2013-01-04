@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="userprofileadvancedsearch" module="userprofile" systemdefined="true" byassettype="false">Advanced Search</property>
+  <property id="userprofileresultstable" module="userprofile" systemdefined="true" byassettype="false">Results Table</property>
+  <property id="userprofilebatchedit" module="userprofile" systemdefined="true" byassettype="false">Batch Edit</property>
+</properties>

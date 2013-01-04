@@ -4,4 +4,6 @@
   <property id="phoneadvancedsearch" module="phone" systemdefined="true" byassettype="false">Advanced Search</property>
   <property id="phoneresultstable" module="phone" systemdefined="true" byassettype="false">Results Table</property>
   <property id="phonebatchedit" module="phone" systemdefined="true" byassettype="false">Batch Edit</property>
+    <data id="productdistributor_change_request" module="product" systemdefined="true" ordering="1357233939928">Distributor Change Request</data>
+  
 </properties>
