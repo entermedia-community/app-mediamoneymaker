@@ -1,0 +1,6 @@
+
+<tickettypes>
+  <tickettype id="stockrequest">Stock Request</tickettype>
+  <tickettype id="order">Order Issue</tickettype>
+  <tickettype id="feedback">Feedback</tickettype>
+</tickettypes>

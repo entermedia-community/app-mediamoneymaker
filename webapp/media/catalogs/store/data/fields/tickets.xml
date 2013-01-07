@@ -1,0 +1,10 @@
+
+<properties beanname="xmlFileSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="tickets" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="tickets">Name</property>
+  <property id="date" index="true" stored="true" editable="true" searchtype="tickets" internalfield="false">Date</property>
+  <property id="description" index="true" stored="true" editable="true" searchtype="tickets" internalfield="false">Notes</property>
+  <property id="product" index="true" stored="true" editable="true" type="list" viewtype="autocomplete" searchtype="tickets" internalfield="false" datatype="list">Product</property>
+  <property id="storeOrder" index="true" stored="true" editable="true" searchtype="tickets" internalfield="false">Order</property>
+  <property id="tickettype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="tickets" internalfield="false" datatype="list">Request Type</property>
+</properties>

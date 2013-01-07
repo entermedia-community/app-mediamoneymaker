@@ -39,7 +39,7 @@ FileUploadItem item = properties.getFirstItem();
 
 
 if (item != null) {
-				String sourcepath = "products/" + product.getSourcePath() ;
+				String sourcepath = "productimages/" + product.getSourcePath() ;
 				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 				String filename =item.getName();
 				path = path + filename;

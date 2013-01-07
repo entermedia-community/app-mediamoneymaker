@@ -7,7 +7,7 @@
 	
 	
 	</page-action>
-	<property name="to">ian@ijsolutions.ca</property>
+	<property name="to">ian@ijsolutions.ca, pf@area.ca, info@wirelessarea.ca</property>
 	<property name="from">ian@ijsolutions.ca</property>
 	<property name="subject">Submission Reviewed</property>
 	<property name="emailbody">/${applicationid}/views/modules/product/edit/workflow/notify-template.html</property>

@@ -4,9 +4,9 @@
   <data id="product">Products</data>
   <data id="storeOrder">Orders</data>
   <data id="store">Stores</data>
-  <corporateorder id="tickets">Ticket Management</corporateorder>
   <data id="invoice">Invoices</data>
   <data id="phone">Phones</data>
   <data id="manufacturer">Manufacturers</data>
   <data id="userprofile">Profile</data>
+  <corporateorder id="tickets">Support Tickets</corporateorder>
 </root>

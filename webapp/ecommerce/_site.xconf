@@ -86,6 +86,11 @@
       <userprofile value="true" name="viewcart"/>
   </permission>
    
+     <permission name="checkout">
+      <userprofile value="true" name="purchase"/>
+  </permission>
+   
+   
   <permission name="createwishlist">
       <userprofile value="true" name="wishlist"/>
   </permission>
