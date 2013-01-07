@@ -6,6 +6,7 @@
   <data id="store">Stores</data>
   <data id="invoice">Invoices</data>
   <data id="phone">Phones</data>
+  <data id="manufacturer">Manufacturers</data>
   <data id="userprofile">Profile</data>
   <corporateorder id="tickets">Support Tickets</corporateorder>
 </root>

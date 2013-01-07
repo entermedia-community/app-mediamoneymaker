@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="rogers_order_itemadvancedsearch" module="rogers_order_item" systemdefined="true" byassettype="false">Advanced Search</property>
+  <property id="rogers_order_itemresultstable" module="rogers_order_item" systemdefined="true" byassettype="false">Results Table</property>
+  <property id="rogers_order_itembatchedit" module="rogers_order_item" systemdefined="true" byassettype="false">Batch Edit</property>
+</properties>

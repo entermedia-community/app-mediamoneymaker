@@ -2,22 +2,14 @@
 <div class="subcolumns" style="border: 1px solid #CCC;">
     <div class="c25l" id="left-col">
         <div class="subcl" >
-                                                
-      <a href="$home$apphome/index.html" style="margin-left: -12px;"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
-
-  
-                </div>
-
-                
+			<a href="$home$apphome/index.html" style="margin-left: -12px;"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
         </div>
-          <div id="right-col">
-   <div id="headernav">          
-	<h1 style="margin-top: 25px; color: #49494B;">                        
-      Accessories Portal
-      </h1>
-		              
-                        
-
+	</div>
+    <div id="right-col">
+   		<div id="headernav">          
+			<h1 style="margin-top: 25px; color: #49494B;">                        
+      			Accessories Portal
+      		</h1>
  
        	#set ($lastselected = $content.module )
 		 	#if(!$lastselected)
@@ -34,11 +26,11 @@
        
 
 #if( $user )
+Welcome $userprofile.getName()
 #if( $canviewmyaccount )
 	<a href="$home$apphome/views/modules/userprofile/edit/edit.html?id=$userprofile.id&viewid=userprofileprofile&viewpath=userprofile/userprofileprofile&searchtype=userprofile">My Account</a> |
 #end	
-	<a href="$home$apphome/authentication/logout.html">Logout</a>
-	
+<a href="$home$apphome/authentication/logout.html">Logout</a>	
 	
 #else
 	<a href="$home$apphome/authentication/login.html">Login</a>

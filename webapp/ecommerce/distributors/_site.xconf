@@ -8,16 +8,7 @@
   </permission>
   
   <permission name="view">
-    <or>
-
-      <group id="administrators"/>
-      <group id="distributors"/>
-
-      <group id="settingsgroup.1356977356489"/>
-    </or>
-
-
-
+      <userprofile value="true" name="distributorsection"/>  
   </permission>
 
 

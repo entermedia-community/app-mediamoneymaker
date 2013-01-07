@@ -18,5 +18,6 @@
   <data id="storeOrderorder_details" module="storeOrder" systemdefined="false" ordering="1345132596871" rendertable="storeOrder" renderexternalid="id">Order Details</data>
   <data id="productphone_compatability" module="product" systemdefined="false" ordering="1355259395878">Phone Compatability</data>
   <data id="phonephone_details" module="phone" systemdefined="false" ordering="1355335705305">Phone Details</data>
+  <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="userprofilepassword" module="userprofile" systemdefined="false" ordering="1355345763364">Password</data>
 </root>

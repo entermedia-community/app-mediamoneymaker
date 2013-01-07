@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="image"/>
+  <property id="accessoryid"/>
   <property id="accessoryname"/>
-  <property id="distributor"/>
   <property id="phone"/>
+  <property id="distributor"/>
+  <property id="manufacturersku"/>
+  <property id="rogersprice"/>
 </root>

@@ -1,0 +1,12 @@
+
+<properties beanname="xmlFileSearcher">
+  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list" internalfield="true">Id</property>
+  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Name</property>
+  <property id="address1" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Address 1</property>
+  <property id="address2" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Address 2</property>
+  <property id="city" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">City</property>
+  <property id="province" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Province</property>
+  <property id="postalcode" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Postal Code</property>
+  <property id="country" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile_address_list">Country</property>
+  <property id="level" catalogid="media/catalogs/store" index="true" stored="true" editable="true">level</property>
+</properties>

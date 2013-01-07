@@ -1,0 +1,7 @@
+
+<rogersorderstatuss>
+  <rogersorderstatus id="new">New</rogersorderstatus>
+  <rogersorderstatus id="ready">Ready to Send</rogersorderstatus>
+  <rogersorderstatus id="sent">Sent</rogersorderstatus>
+  <rogersorderstatus id="closed">Closed/Finalized</rogersorderstatus>
+</rogersorderstatuss>

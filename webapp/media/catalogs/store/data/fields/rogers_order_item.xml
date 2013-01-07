@@ -1,0 +1,23 @@
+
+<properties prefix="rogers_order_item" beanname="xmlFileSearcher">
+  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item" internalfield="true">Id</property>
+  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">Name</property>
+  <property id="sourcepath" catalogid="media/catalogs/store" searchtype="rogers_order_item">SourcePath</property>
+  <property id="rogers_order" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="rogers_order_item" internalfield="false" datatype="list">Rogers Order</property>
+  <property id="product" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="autocomplete" searchtype="rogers_order_item" internalfield="false" listid="product" datatype="list">Product</property>
+  <property id="quantity" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">Quantity</property>
+  <property id="store" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="rogers_order_item" internalfield="false" datatype="list">Store Number</property>
+  <property id="storelevel" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="rogers_order_item" internalfield="false" datatype="list">Store Level</property>
+  <property id="storename" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item" internalfield="false">Store Name</property>
+  <property id="distributor" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="rogers_order_item" internalfield="false" datatype="list">Distributor</property>
+  <property id="as400id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">as400id</property>
+  <property id="shipdate" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">shipdate</property>
+  <property id="orderstatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="rogers_order_item" internalfield="false" datatype="list">orderstatus</property>
+  <property id="carrier" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">carrier</property>
+  <property id="waybill" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">waybill</property>
+  <property id="shippedquantity" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">shippedquantity</property>
+  <property id="deliverydate" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">deliverydate</property>
+  <property id="deliverystatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">deliverystatus</property>
+  <property id="deliveryperson" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="rogers_order_item">deliveryperson</property>
+  <property id="validitem" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="rogers_order_item" internalfield="false" datatype="boolean">validitem</property>
+</properties>
