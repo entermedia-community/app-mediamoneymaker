@@ -23,7 +23,11 @@ $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
 #else
-
-Welcome to the portal.  Please use a link at the top to get started
+	#if( $canviewdistributorsection )
+		<p>Welcome $userprofile</p>
+		<p>$pages.include("$apphome/distributors/myproducts.html")</p>
+	#else
+		Welcome to the portal.  Please use a link at the top to get started
+	#end
 
 #end
