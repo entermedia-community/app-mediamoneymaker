@@ -4,7 +4,7 @@
 
 <table width="100%" class="oedivided-box" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="oedivided-box-title" colspan="2">Inventory Items</td>
+		<td class="oedivided-box-title" colspan="2"><h1>Inventory Items</h1></td>
 	</tr>
 <tr>
 	<td class="divided-box-white" height="100%" valign="top">
@@ -38,20 +38,7 @@
 	</td>
 #else
 	<td class="oedivided-box-blue" height="100%" valign="top">
-		<table cellpadding="5" cellspacing="5" border="0">
-			<tr>
-				<td>
-					<div class="oesubmit-button">
-						<a href="javascript:document.saveitem.submit();" name="Save" class="oesubmit-button">[[Save Edits]]</a>
-					</div>
-				</td>
-				<td>
-					<div class="oesubmit-button">
-						<a href="javascript:document.deleteitem.submit();" name="Delete" class="oesubmit-button">[[Delete Item]]</a>
-					</div>
-				</td>
-			</tr>
-		</table>
+		
 		<div class="oeblue-list-box">                                               
 
 			<script language="JavaScript">
@@ -129,16 +116,23 @@
 							<input type="hidden" name="sku" value="$item.sku" />
 							<input type="hidden" name="oe-action" value="CatalogEditModule.deleteItem" />
 						</form>
-						<p><a href="upload/imageupload.html?type=item">[[Upload Item Images]]</a><br>
 						
-										#foreach( $imagetype in $storeeditor.getImageList() )
-										#set( $url = "$apphome/products/images/items/${imagetype.type}/${item.sku}-${imagetype.count}.jpg" )
-										#if( $pages.doesExist( $url) )
-											<br>&nbsp;&nbsp;(found $imagetype.description <a href="$home$url">(view)</a> <a href="producteditor.html?oe-action=CatalogEditModule.resizeImage&width=$imagetype.width&imagepath=$url">[[auto resize]]</a> )
-										#end
-							#end
+						<table cellpadding="5" cellspacing="5" border="0">
+			<tr>
+				<td>
+					<div class="oesubmit-button">
+						<a href="javascript:document.saveitem.submit();" name="Save" class="btn">[[Save Edits]]</a>
+					</div>
+				</td>
+				<td>
+					<div class="oesubmit-button">
+						<a href="javascript:document.deleteitem.submit();" name="Delete" class="btn">[[Delete Item]]</a>
+					</div>
+				</td>
+			</tr>
+		</table>
 						
-						</p>
+						
 					
 					</td>
 					#end

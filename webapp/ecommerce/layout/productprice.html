@@ -28,9 +28,22 @@
 
 </li>
 #if( $product.isAvailable() )                                                                                                                                                                          
+#if($product.isInStock())
+
 	<li class="price">
 		<div class="instock">Current Stock: $product.getInventoryItem(0).getQuantityInStock()</div>
 	</li>
+	
+	
+	#else
+
+	<li class="price">
+		<div class="instock">This product is currently out of stock. <a class="btn" href="$apphome/views/modules/tickets/edit/addnew.html?product.value=${product.id}&tickettype.value=stockrequest&viewid=ticketsticket_details&viewpath=tickets/ticketsticket_details">Request additional stock</a></div>
+	</li>
+
+	
+	
+	#end
 	<li class="price">
 		<strong>Accessory ID:</strong> $product.get("accessoryid")<br>
 		<strong>UPC:</strong> $product.get("upc")<br>

@@ -1,0 +1,18 @@
+
+<root>
+  <property id="accessoryname"/>
+  <property id="accessorynamefr"/>
+  <property id="manufacturerid"/>
+  <property id="manufacturersku"/>
+  <property id="rogerssku"/>
+  <property id="categoryid"/>
+  <property id="displaydesignationid"/>
+  <property id="descripfr"/>
+  <property id="upc"/>
+  <property id="phone"/>
+  <property id="fidomsrp"/>
+  <property id="fidowholesaleprice"/>
+  <property id="msrp"/>
+  <property id="rogersprice"/>
+  <property id="approved"/>
+</root>

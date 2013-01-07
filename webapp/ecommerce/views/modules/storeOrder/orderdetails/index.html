@@ -6,6 +6,7 @@
 #set($searcherManager = $store.getSearcherManager())
 
 <h2 >Order #$orderNumber</h2>
+(<a class="btn" href="$apphome/views/modules/storeOrder/actions/recreatecart.html?orderid=${order.orderNumber}">Re-order this</a>)
 
 <h3 >$order.dateOrdered</h3>
 #if( $canmanageorders )

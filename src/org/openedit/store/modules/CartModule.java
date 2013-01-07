@@ -26,6 +26,7 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.SubmittedOrder;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -720,5 +721,20 @@ public class CartModule extends BaseStoreModule {
 		getCart(inReq).setShippingAddress(address);
 
 	}
+	
+	
+	public void createCartFromOrder(WebPageRequest inReq) throws Exception{
+		clearCart(inReq);
+		String orderid = inReq.getRequestParameter("orderid");
+		Store store = getStore(inReq);
+		Order order = (SubmittedOrder)store.getOrderSearcher().searchById(orderid);
+		Cart cart = order.getCart();
+		inReq.putSessionValue(store.getCatalogId() + "cart", cart);
+		cart.setStore(store);
+		inReq.putPageValue("cart", cart);		
+		
+	}
+	
+	
 
 }

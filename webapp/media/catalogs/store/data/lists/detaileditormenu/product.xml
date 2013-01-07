@@ -1,0 +1,10 @@
+<linktree>
+	<a folder="edit/items" module="product"  id="productitems"  useajax="false" multiedit="false" name="Invemtory Items" />
+	<a folder="edit/workflow" module="product"  id="productworkflow"  useajax="false" multiedit="false" name="Product Workflow" />
+	
+	
+	
+	<!-- 
+	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
+ -->
+</linktree>

@@ -512,6 +512,10 @@ public class CatalogEditModule extends BaseStoreModule {
 
 		if (product == null) {
 			String id = inContext.getRequestParameter("productid");
+			if(id == null){
+				id = inContext.getRequestParameter("id");
+			}
+			
 			if (id == null) {
 				id = PathUtilities.extractPageName(inContext.getContentPage()
 						.getPath());
