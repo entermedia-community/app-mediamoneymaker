@@ -4,7 +4,8 @@
 
 $pages.stream("$apphome/layout/productimages.html")
 <h2>Product Description</h2>
-$pages.stream("$cataloghome/products/${product.id}.html")
+##$pages.stream("$cataloghome/products/${product.id}.html")
+$!product.get("description")
   	$context.putPageValue("view", $viewpath)
    	$context.putPageValue("searcher", $store.getProductSearcher())
    	$context.putPageValue("data", $product)
@@ -16,6 +17,7 @@ $pages.stream("$cataloghome/products/${product.id}.html")
 	$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 	<input type="hidden" name="id" value="$product.id"/>
 	<input type="hidden" name="productid" value="$product.id"/>
+	<input type="hidden" name="to" value="pf@area.ca"/>
 	<input type="submit" name="submit" value="Submit"/>
 </form>
 

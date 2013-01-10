@@ -6,32 +6,27 @@
     <h2>$product.getName()</h2>
 	   $pages.stream("$apphome/layout/productimages.html")
 		
-				$pages.stream("$cataloghome/products/${product.id}.html")
+		$!product.get("description")
 
-				$pages.streamContent()
+		$pages.streamContent()
+		#set( $productdetails = $store.getProductDetails("productdetails", $user) )
 
-			
-			
-				#set( $productdetails = $store.getProductDetails("productdetails", $user) )
+		 #foreach( $detail in $productdetails )
+		 	#if( $detail.isList() )
+				#set( $types = $store.getProperties(${detail.getId()}) ) 
+				#set ($info = $types.get($product.get($detail.getId() )))
+			#else
+				#set ($info = $product.get($detail.getId()))
+			#end
+			#if ($info.length() > 0)
 
-				 #foreach( $detail in $productdetails )
-				 	#if( $detail.isList() )
-						#set( $types = $store.getProperties(${detail.getId()}) ) 
-						#set ($info = $types.get($product.get($detail.getId() )))
-					#else
-						#set ($info = $product.get($detail.getId()))
-					#end
-					#if ($info.length() > 0)
+						$detail.getText():
+					
+						$info
 
-								$detail.getText():
-							
-								$info
-
-					#end
-					#set ($info = "")
-				#end
-
-
+			#end
+			#set ($info = "")
+		#end
     	
     	$context.putPageValue("view", $viewpath)
     	$context.putPageValue("searcher", $store.getProductSearcher())
