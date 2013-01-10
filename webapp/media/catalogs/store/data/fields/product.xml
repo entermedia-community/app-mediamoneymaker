@@ -58,4 +58,5 @@
   <property id="bannerfr" index="true" stored="true" searchtype="product">BannerFR</property>
   <property id="bannerid" index="true" stored="true" searchtype="product">BannerID</property>
   <property id="updatedon" index="true" stored="true" searchtype="product">UpdatedOn</property>
+  <property id="profileid" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="userprofile" datatype="list">Profile ID</property>
 </properties>

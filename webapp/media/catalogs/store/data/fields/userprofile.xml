@@ -26,4 +26,5 @@
   <property id="enabled" index="true" keyword="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="userprofile" datatype="boolean">Enabled</property>
   <property id="password" index="true" keyword="true" stored="true" editable="true" viewtype="password" searchtype="userprofile">Password</property>
   <property id="distributor" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="userprofile" internalfield="false" datatype="list">distributor</property>
+  <property id="email" index="true" stored="true" editable="true">email</property>
 </properties>
