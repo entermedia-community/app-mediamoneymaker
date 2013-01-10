@@ -8,7 +8,6 @@
   <property id="users" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Users</property>
   <property id="groups" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Groups</property>
   <property id="accessoryid" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory ID</property>
-  <property id="accessoryname" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name</property>
   <property id="accessorynamefr" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name FR</property>
   <property id="upc" index="true" stored="true" editable="true" searchtype="product" internalfield="false">UPC</property>
   <property id="manufacturerid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" listid="manufacturer" datatype="list">Manufacturer</property>

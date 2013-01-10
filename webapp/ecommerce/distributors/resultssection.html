@@ -2,7 +2,12 @@
 
 #foreach ( $cell in $hits.getPageOfHits() )
 
-			#set( $clink = "$home$apphome/distributors/products/${cell.sourcepath}.html" )
+
+	#if($cell.approved == "true")
+	#set( $clink = "$home$apphome/distributors/products/${cell.sourcepath}.html" )
+	#else
+	#set( $clink = "$home$apphome/distributors/submitforreview.html?id=$cell.id" )
+	#end
 	#set ($sourcepath = $cell.sourcepath)
 	
 
@@ -16,7 +21,7 @@
 		
 		<div class="product-details">
 		    <div class="product-title">
-                <a href="$clink">$cell.name</a> 
+                <a href="$clink">$cell.name #if($cell.approved == "true") Active #else Pending #end</a> 
             </div>
             <div class="product-cat">
                 <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer)</a> 

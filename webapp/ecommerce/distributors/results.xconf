@@ -4,6 +4,7 @@
 	<path-action name="StoreSearchModule.searchStore" />
 	
 	<page-action name="StoreSearchModule.loadPageOfSearch" />	
-	<inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
+	<inner-layout>/${applicationid}/distributors/innerlayout.html</inner-layout>
+	
 </page>
 
