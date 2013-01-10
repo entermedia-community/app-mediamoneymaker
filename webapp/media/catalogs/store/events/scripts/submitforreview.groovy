@@ -14,55 +14,62 @@ import org.openedit.store.Store
 
 
 public void handleSubmission(){
-Store store = context.getPageValue("store");
-MediaArchive archive = context.getPageValue("mediaarchive");
- 
-Searcher productsearcher = store.getProductSearcher();
-Searcher assetsearcher = archive.getAssetSearcher();
-
-Product product = productsearcher.createNewData();
-String [] fields = context.getRequestParameters("field");
-productsearcher.updateData(context, fields, product)
-productsearcher.saveData(product, context.getUser());
-
-FileUpload command = new FileUpload();
-command.setPageManager(archive.getPageManager());
-UploadRequest properties = command.parseArguments(context);
-if (properties == null) {
-	return;
-}
-if (properties.getFirstItem() == null) {
-	return;
-}
-
-FileUploadItem item = properties.getFirstItem();
-
-
-if (item != null) {
-				String sourcepath = "productimages/" + product.getSourcePath() ;
-				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
-				String filename =item.getName();
-				path = path + filename;
-				properties.saveFirstFileAs(path, context.getUser());
-				Asset asset = archive.getAssetBySourcePath(sourcepath);
-				if (asset == null) {
-					asset = archive.createAsset(sourcepath);
-					 root = archive.getCategoryArchive().createCategoryTree(sourcepath);
-					asset.addCategory(root);
-				}
-				asset.setPrimaryFile(filename);
-				asset.setProperty("product", product.getId());
-			
-				archive.removeGeneratedImages(asset);
-				archive.saveAsset(asset, null);
-				
-				product.setProperty("image", asset.getId());
-				productsearcher.saveData(product, context.getUser());
-				context.putPageValue("product", product);
-}
-
-
-
+	
+	Store store = context.getPageValue("store");
+	MediaArchive archive = context.getPageValue("mediaarchive");
+	 
+	Searcher productsearcher = store.getProductSearcher();
+	Searcher assetsearcher = archive.getAssetSearcher();
+	
+	Product product = null;
+	
+	FileUpload command = new FileUpload();
+	command.setPageManager(archive.getPageManager());
+	UploadRequest properties = command.parseArguments(context);
+	
+	String productid = context.getRequestParameter("productid");
+	
+	if (productid != null) {
+		product = store.getProduct(productid);
+	}
+	
+	FileUploadItem item = properties.getFirstItem();
+	
+	if (product == null && item == null) {
+		return;
+	}
+	if (product == null) {
+		product = productsearcher.createNewData();
+	}
+	if (item != null && item.getName() != null && item.getName().length() > 0) {
+		
+		String sourcepath = "productimages/" + product.getSourcePath();
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+		String filename =item.getName();
+		path = path + filename;
+		properties.saveFirstFileAs(path, context.getUser());
+		Asset asset = archive.getAssetBySourcePath(sourcepath);
+		if (asset == null) {
+			asset = archive.createAsset(sourcepath);
+			 root = archive.getCategoryArchive().createCategoryTree(sourcepath);
+			asset.addCategory(root);
+		}
+		asset.setPrimaryFile(filename);
+		asset.setProperty("product", product.getId());
+	
+		archive.removeGeneratedImages(asset);
+		archive.saveAsset(asset, null);
+		
+		product.setProperty("image", asset.getId());
+		productsearcher.saveData(product, context.getUser());
+		context.putPageValue("product", product);
+	}
+	String [] fields = context.getRequestParameters("field");
+	productsearcher.updateData(context, fields, product);
+	product.setProperty("submittedby", context.getUserName());
+	product.setProperty("distributor", context.getUserProfile().get("distributor"));
+	product.setProperty("profileid", context.getUserProfile().getId());
+	productsearcher.saveData(product, context.getUser());
 
 }
 

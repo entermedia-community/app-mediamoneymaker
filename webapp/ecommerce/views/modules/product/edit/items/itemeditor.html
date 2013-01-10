@@ -8,10 +8,11 @@
 	</tr>
 <tr>
 	<td class="divided-box-white" height="100%" valign="top">
-			[[Items are actual price points for ordering such as small, medium or large shoe sizes.]]
+			Items are actual price points for ordering such as small, medium or large shoe sizes.<br>
+			Please choose an item below or add an item.
 			<form name="listitems" id="listitems" action="$home$apphome/views/modules/product/edit/items/itemeditor.html">
 			<font color=red>$!editerror</font><br>
-			<select size="12" style="width: 200px;"  name="sku" onchange="document.listitems.submit();" >
+			<select size="4" style="width: 200px;"  name="sku" onchange="document.listitems.submit();" >
 				#foreach($itemOption in $product.getInventoryItems() )
 					<option value="$!itemOption.sku"
 					#if ( $itemOption.sku )
@@ -33,6 +34,8 @@
 		
 			</form>
 	</td>
+</tr>
+<tr>
 #if (!$item)
 	<td class="oedivided-box-blue" >
 	</td>

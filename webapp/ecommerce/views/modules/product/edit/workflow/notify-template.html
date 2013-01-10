@@ -1,10 +1,10 @@
-#if($data.approved=="true")
-Your submission has been approved. You can view your submission here: <a href="$content.siteroot$apphome/distributors/products/${data.id}.html">Here</a> 
+#if($product.approved=="true")
+	Your submission has been approved. You can view your submission here: <a href="$content.siteroot$apphome/distributors/products/${data.id}.html">Here</a> 
 to review.
 
 #else
  
-Additional Review needed.  Please click <a href="$content.siteroot$apphome/distributors/submitforreview.html?id=$data.id&searchtype=product">Here</a>
+Additional Review needed.  Please click <a href="$content.siteroot$apphome/distributors/submitforreview.html?id=$data.id&productid=$data.id&searchtype=product">Here</a>
  to review the product and make requested updates.
 #end
 

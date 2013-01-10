@@ -1,14 +1,9 @@
 <page>
-
-	
 	<path-action name="Script.run">
 		<script>/${catalogid}/events/scripts/submitforreview.groovy</script>
 	</path-action>
-	
-	<path-action name="Email.sendEmail">	
-	</path-action>
-	
-	<property name="to">ian@ijsolutions.ca</property>
+    <path-action name="CartModule.loadProductDetails"/>
+	<path-action name="Email.sendEmail"/>	
 	<property name="from">ian@ijsolutions.ca</property>
 	<property name="subject">New Submission</property>
 	<property name="emailbody">/${applicationid}/distributors/notify-template.html</property>
