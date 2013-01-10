@@ -64,7 +64,6 @@ public void handleSubmission(){
 		
 		product.setProperty("image", asset.getId());
 		productsearcher.saveData(product, context.getUser());
-		context.putPageValue("product", product);
 	}
 	String [] fields = context.getRequestParameters("field");
 	productsearcher.updateData(context, fields, product);
@@ -72,7 +71,8 @@ public void handleSubmission(){
 	product.setProperty("distributor", context.getUserProfile().get("distributor"));
 	product.setProperty("profileid", context.getUserProfile().getId());
 	productsearcher.saveData(product, context.getUser());
-
+	context.putPageValue("product", product);
+	
 }
 
 handleSubmission();
