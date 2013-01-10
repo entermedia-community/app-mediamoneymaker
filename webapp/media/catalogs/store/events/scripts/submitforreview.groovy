@@ -40,6 +40,8 @@ public void handleSubmission(){
 	}
 	if (product == null) {
 		product = productsearcher.createNewData();
+		product.setId(productsearcher.nextId());
+		product.setSourcePath(context.getUserProfile().get("distributor") + "/" + product.getId());
 	}
 	if (item != null && item.getName() != null && item.getName().length() > 0) {
 		

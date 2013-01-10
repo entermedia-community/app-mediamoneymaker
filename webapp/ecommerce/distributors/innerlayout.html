@@ -11,14 +11,42 @@
 			
 		
 		<li>
-		<a href="submitforreview.html">Submit a product</a>
-		<a href="myproducts.html">My Products</a>
+		<a href="$home$apphome/distributors/submitforreview.html">Submit a product</a>
+		<a href="$home$apphome/distributors/myproducts.html">My Products</a>
+		<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Approved Products</a>
+		<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Pending Products</a>
+		<a href="$home$apphome/distributors/help.html">Help</a>
 
 		</li>
 		</ul>
 		
 		
         </div>
+
+
+
+<div class="ui-widget uipanel" id="left-col-search" >
+	
+	
+	<div  class="ui-widget-header">Search
+	</div>
+	
+	
+	
+	<div  class="ui-widget-content">
+			$pages.include("$apphome/distributors/searchform.html")
+
+	</div>
+	
+	
+	
+</div>
+
+			
+
+
+
+
                 </div>
         </div>
           <div id="right-col" >

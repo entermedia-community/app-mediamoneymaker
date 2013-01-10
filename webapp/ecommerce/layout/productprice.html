@@ -1,7 +1,6 @@
 <li class="price">
-    #if($canviewcart)
-     <h5>Product Price<input class="btn right" type="submit" value="Add to Cart" /></h5>
-    #end
+     <h5>Product Price
+
 
 ##if($canvieweol)
 ##<input type="hidden" name="field" value="store">
@@ -25,8 +24,21 @@
 	<b>Product No Longer Available.</b> please select another product
 
 	#end
-
+</h5>
+#if($canviewcart)
+<div style="margin-top:3px;float:right;">
+	<select name="quantity">
+	#foreach($numb in [1..100])
+		<option value="$numb">$numb</option>
+	#end
+	</select>
+	<input class="btn right" type="submit" value="Add to Cart" />
+    #end
+</div>
+<br/><br/>
 </li>
+    
+
 #if( $product.isAvailable() )                                                                                                                                                                          
 #if($product.isInStock())
 

@@ -881,4 +881,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 
 		return hits;
 	}
+public String nextId() {
+	return getProductArchive().nextProductNumber();
+}	
 }

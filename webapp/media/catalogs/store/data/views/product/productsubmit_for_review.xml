@@ -2,6 +2,7 @@
 
 <root>
   <property id="accessoryname"/>
+  <property id="name"/>
   <property id="accessorynamefr"/>
   <property id="manufacturerid"/>
   <property id="manufacturersku"/>
