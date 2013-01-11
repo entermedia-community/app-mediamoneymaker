@@ -4,7 +4,8 @@
   <data id="productproduct_details" module="product" systemdefined="false" ordering="1343919573577">Product Details</data>
   <data id="productsubmit_for_review" module="product" systemdefined="true" ordering="1344521076435">Distributor Submission</data>
   <data id="productreview" module="product" systemdefined="true" ordering="1345128031548">Product Review</data>
-    <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">Product Details - French</data>
-   <data id="productdetails_box" module="product" systemdefined="true" ordering="1355259486794">Details Box</data>
+  <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">Product Details - French</data>
+  <data id="productdetails_box" module="product" systemdefined="true" ordering="1355259486794">Details Box</data>
+  <data id="productstore_search" module="product" systemdefined="true" ordering="1344521076435">Store Search</data>
  
 </root>

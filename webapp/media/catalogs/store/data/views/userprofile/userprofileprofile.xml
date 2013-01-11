@@ -8,4 +8,5 @@
   <property id="phone"/>
   <property id="distributor"/>
   <property id="userid"/>
+  <property id="email"/>
 </root>

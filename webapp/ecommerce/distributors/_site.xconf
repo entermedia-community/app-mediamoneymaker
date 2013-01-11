@@ -1,5 +1,5 @@
 <page>
-<inner-layout>/${applicationid}/distributors/innerlayout.html</inner-layout>
+<inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 
 	<permission name="editdata">
     <or>

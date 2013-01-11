@@ -4,6 +4,7 @@
 	#set($searchroot = "$apphome/search")
 	#set($showsidebar = "true")
 
+
 #elseif($canviewdistributorsection)
 	#set($searchroot = "$apphome/distributors")
 	#set($showsidebar = "true")
@@ -15,6 +16,30 @@
 
 ##$pages.stream("$apphome/search/search.html")
 #if($showsidebar =="true")
+	#if($canviewdistributorsection)
+       <div class="ui-widget-header">Distributor Menu</div>
+		<div class="ui-widget-content categories-widget no-padding-for-real">
+        	<ul  class="sidebar-list">
+			<li>
+			<a href="$home$apphome/distributors/submitforreview.html">Submit a product</a>
+			<a href="$home$apphome/distributors/myproducts.html">My Products</a>
+			<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Approved Products</a>
+			<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Pending Products</a>
+			<a href="$home$apphome/distributors/help/index.html">Help</a>
+	
+			</li>
+			</ul>
+       	</div>
+	#end        
+		<div class="ui-widget uipanel" id="left-col-search" >
+			<div  class="ui-widget-header">Search
+			</div>
+			<div  class="ui-widget-content">
+					$pages.include("$apphome/search/searchform.html")
+			</div>
+		</div>
+
+
   <div class="ui-widget-header">Categories</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">

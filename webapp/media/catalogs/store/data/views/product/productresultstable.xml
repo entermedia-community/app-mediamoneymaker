@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="accessoryid"/>
+  <property id="id"/>
   <property id="accessoryname"/>
-  <property id="phone"/>
   <property id="distributor"/>
   <property id="manufacturersku"/>
+  <property id="msrp"/>
   <property id="rogersprice"/>
+  <property id="fidomsrp"/>
+  <property id="fidowholesaleprice"/>
 </root>
