@@ -33,8 +33,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
 
-		OutputUtilities output = new OutputUtilities();
-
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 
@@ -98,7 +96,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								boolean move = movePageToCesium(pageManager, page, media.getCatalogid());
 								if (move) {
 									String inMsg = "Invoice File(" + page.getName() + ") has been moved to Cesium processing.";
-									strMsg += output.appendList(inMsg);
 									log.info(inMsg);
 								} else {
 									String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
@@ -401,11 +398,10 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							if (move) {
 								String inMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
 								log.info(inMsg);
-								result.setCompleteMessage(result.getCompleteMessage() + "\n" + output.appendList(inMsg));
 								result.setComplete(true);
 							} else {
 								String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							}
 						} else {
 							String inMsg = "ERROR Invoice not saved.";
