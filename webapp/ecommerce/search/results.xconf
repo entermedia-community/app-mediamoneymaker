@@ -2,8 +2,7 @@
 
 <page>
 	<path-action name="StoreSearchModule.searchStore" />
-	
-	<page-action name="StoreSearchModule.loadPageOfSearch" />	
+	<page-action name="StoreSearchModule.loadPageOfSearch" />
 	<inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
 </page>
 
