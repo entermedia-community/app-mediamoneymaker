@@ -14,7 +14,7 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 
 
-public class ExportAffinity extends EnterMediaObject implements Affinity {
+public class ExportAffinity extends EnterMediaObject {
 
 	private static String distributorName = "Affinity";
 	private String orderID;
@@ -32,6 +32,7 @@ public class ExportAffinity extends EnterMediaObject implements Affinity {
 		result.setComplete(false);
 
 		String finalOutput = "";
+		log.info("PROCESS: START Orders.exportaffinity");
 
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
 		MediaArchive archive = context.getPageValue("mediaarchive");

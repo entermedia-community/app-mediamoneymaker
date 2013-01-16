@@ -73,7 +73,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 		///////////////////////
 		// FTPID OVERRIDE FOR TESTING
 		///////////////////////
-		ftpID = "104";
+		//ftpID = "104";
 		///////////////////////
 
 		String inMsg = "";

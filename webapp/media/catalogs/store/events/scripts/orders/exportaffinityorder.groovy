@@ -1,5 +1,7 @@
 package orders;
 
+import java.io.StringWriter;
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
@@ -8,18 +10,21 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVWriter
 import org.openedit.repository.filesystem.StringItem
+import org.openedit.store.CartItem
+import org.openedit.store.orders.Order
+import org.openedit.store.util.MediaUtilities
 
 import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
+import com.sun.star.beans.GetDirectPropertyTolerantResult;
 
 
-public class ExportAffinityOrder extends EnterMediaObject implements Affinity {
+public class ExportAffinityOrder extends EnterMediaObject {
 
 	private static String distributorName = "Affinity";
 	private String orderID;
@@ -31,10 +36,14 @@ public class ExportAffinityOrder extends EnterMediaObject implements Affinity {
 		return this.orderID;
 	}
 	
-	public PublishResult doExport() {
+	public boolean doExport() {
 
-		PublishResult result = new PublishResult();
-		result.setComplete(false);
+		log.info("PROCESS: START Orders.exportaffinityorder");
+		
+		boolean result = false;
+				
+		MediaUtilities media = new MediaUtilities();
+		media.setContext(context);
 
 		//Get Media Info
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
@@ -45,11 +54,8 @@ public class ExportAffinityOrder extends EnterMediaObject implements Affinity {
 		// Create the Searcher Objects to read values!
 		SearcherManager searcherManager = archive.getSearcherManager();
 
-		//Create OrderSearcher - Look for order
-		Searcher orderSearcher = searcherManager.getSearcher(catalogid, "rogers_order");
-
 		//Read the Order Info
-		Data order = orderSearcher.searchById(this.orderID);
+		Order order = media.searchForOrder(this.orderID);
 		if (order != null) {
 
 			log.info("DATA: Order found: " + this.orderID);
@@ -58,204 +64,146 @@ public class ExportAffinityOrder extends EnterMediaObject implements Affinity {
 			StringWriter output  = new StringWriter();
 			CSVWriter writer  = new CSVWriter(output, (char)',');
 
-			//Setup processing PublishResult
-			PublishResult processCSV = new PublishResult();
-			processCSV.setComplete(false);
-
-			//Write the Header Line
-			List orderRows = new ArrayList();
-			orderRows = getHeaderRows(writer);
-
 			//Write the body of all of the orders
-			processCSV.setComplete(false);
-			processCSV = createOrderDetails(catalogid, order, searcherManager,
-					distributorName, orderRows, writer);
-
-			if (processCSV.isComplete()) {
-				//Order is ready to be written to CSV file.
-				processCSV.setComplete(false);
-
+			result = createOrderDetails(order, writer);
+			
+			if (result) {
 				// xml generation
 				String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";
 				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${this.orderID}/${fileName}");
-
-				processCSV = writeOrderToFile(page, output, fileName);
-				if (processCSV.isComplete()) {
-					result.setCompleteMessage( processCSV.getCompleteMessage());
-					result.setComplete(true);
-				} else {
-					result.setErrorMessage(processCSV.getErrorMessage());
-				}
-			} else {
-				result.setErrorMessage(processCSV.getErrorMessage());
+				result = writeOrderToFile(page, output, fileName);
 			}
 		}
 		return result;
 	}
 
-	/*
-	 * getHeaderRows()
-	 * returns: List
-	 */
-	private List getHeaderRows( CSVWriter writer ) {
-
-		List headerRow = new ArrayList();
-
-		headerRow.add("ROGER_ORDER_NUMBER");
-		int detailCtr = 0;
+	private boolean createOrderDetails(Order order, CSVWriter writer) {
 		
-		List details = getRogersStoreHeaders();
-		if (details == null) {
-			throw new OpenEditException("details is null");
-		}
-		for (detailCtr=0; detailCtr < details.size(); detailCtr++) {
-			PropertyDetail detail = details.get(detailCtr);
-			String text = detail.getText().trim().toUpperCase().replace(" ", "_");
-			headerRow.add(text);
-		}
-
-		List itemdetails = getCSVHeaders();
-		if (itemdetails == null) {
-			throw new OpenEditException("itemdetails is null");
-		}
-		for (detailCtr=0; detailCtr < itemdetails.size(); detailCtr++) {
-			PropertyDetail detail = itemdetails.get(detailCtr);
-			String text = detail.getText().trim().toUpperCase().replace(" ", "_");
-			headerRow.add(text);
-		}
-		/*		
-		 headerRow.add("AS400_SKU");
-		 headerRow.add("ITEM_DESCRIPTION");
-		 headerRow.add("SHIP_DATE");
-		 headerRow.add("ORDER_STATUS");
-		 headerRow.add("CARRIER");
-		 headerRow.add("WAYBILL");
-		 headerRow.add("ORDERED_QTY");
-		 headerRow.add("SHIPPED_QTY");
-		 headerRow.add("DELIVERY_DATE");
-		 headerRow.add("DELIVERY_STATUS");
-		 headerRow.add("DELIVERY_PERSON");
-		 */		
-		//Create the row
-		String[] nextrow = new String[headerRow.size()];
-		for ( int headerCtr=0; headerCtr < headerRow.size(); headerCtr++ ){
-			nextrow[headerCtr] = headerRow.get(headerCtr);
-		}
-		writer.writeNext(nextrow);
-		log.info(nextrow.toString());
-
-		return headerRow;
-	}
-
-	/*
-	 * createOrderDetails(String catalogid, Data order, SearcherManager searcherManager,	String distributorName, List orderRows, CSVWriter writer)
-	 * returns: PublishResult
-	 */
-	private PublishResult createOrderDetails(String catalogid, Data order,
-	SearcherManager searcherManager, String distributorName,
-	List orderRows, CSVWriter writer) {
-	
-		int detailCtr = 0;
-
 		//Set up result
-		PublishResult result = new PublishResult();
-		result.setComplete(false);
-
-		//Set up the rows for the output
-		//String[] nextRow = new String[orderRows.size()];
-		Searcher storesearcher = searcherManager.getSearcher(catalogid, "store");
-		List storeDetails = storesearcher.getDetailsForView("store/storestore_headers", context.getUser());
-		//Get the store details
-		if (storeDetails == null) {
-			throw new OpenEditException("storeDetails is null");
+		boolean result = false;
+		
+		MediaArchive archive = context.getPageValue("mediaarchive");
+		SearcherManager manager = archive.getSearcherManager();
+		String catalogid = archive.getCatalogId();
+		
+		//Write the Header Line
+		List headerRow = new ArrayList();
+		//Add the Order Number
+		headerRow.add("ORDER_NUMBER");
+		result = getDetailsFromView("userprofile", "userprofile/userprofileusername", order, headerRow, true);
+		if (result) {
+			result = getDetailsFromView("userprofile", "userprofile/userprofileaddress_list", order, headerRow, true);
 		}
-
-		//Create the searcher for the rogers order item
-		Searcher itemsearcher = searcherManager.getSearcher(catalogid, "rogers_order_item");
-
-		SearchQuery orderQuery = itemsearcher.createSearchQuery();
-		orderQuery.addExact("rogers_order",order.getId());
-		orderQuery.addExact("distributor", distributorName);
-		HitTracker orderItems = itemsearcher.search(orderQuery);//Load all of the line items for store X
-
-		if (orderItems.size() > 0) {
-
-			//Go through each item and extract the data
-			for (Iterator itemIterator = orderItems.iterator(); itemIterator.hasNext();)
-			{
-
-				Data orderitem = itemIterator.next();
-				Data product = getProduct(catalogid, searcherManager, orderitem.get("product"));
-				List nextRow = new ArrayList();
-
-				//Add the order number
-				nextRow.add(order.id);
+		if (result) {
+			result = getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, headerRow, true);
+		}
+		if (result) {
+			result = getDetailsFromView("product", "product/productproduct_info", order, headerRow, true);
+		}
+		if (result) {
+			headerRow.add("QUANTITY");
+			log.info(headerRow.toString());
+			result = writeRowToWriter(headerRow, writer);
+		}
+		
+		if (result) {
+		// Loop through each order item.
+			for(Iterator i = order.getItems().iterator(); i.hasNext();) {
+				//Get the cart Item
+				CartItem item = i.next();
 				
-				Data store = storesearcher.searchByField("store", orderitem.store);
-				if (store != null) {
-					for (detailCtr=0; detailCtr < storeDetails.size(); detailCtr++) {
-						PropertyDetail detail = storeDetails.get(detailCtr);
-						nextRow.add(store.get(detail.id));
-					}
+				List orderDetailRow = new ArrayList();
+				//Add the Order ID
+				orderDetailRow.add(order.getId());
+				if (result) {
+					//Get Customer Info
+					result = getDetailsFromView("userprofile", "userprofile/userprofileusername", order.getCustomer(), orderDetailRow, false);
+				}
+				if (result) {
+					//Get Customer Info
+					result = getDetailsFromView("address", "userprofile/userprofileaddress_list", order.getShippingAddress(), orderDetailRow, false);
+				}
+				if (result) {
+					//Get Order Info
+					result = getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, orderDetailRow, false);
+				}
+				if (result) {
+					//Get Product Info
+					result = getDetailsFromView("product", "product/productproduct_info", item.getProduct(), orderDetailRow, false);
+				}
+				if (result) {
+					//Get Order Quantity
+					orderDetailRow.add(item.getQuantity().toString());
+					result = writeRowToWriter(orderDetailRow, writer);
+					log.info(orderDetailRow.toString());
+					orderDetailRow = null;
 				} else {
-					throw new OpenEditException("ERROR: Store does not exist! (" + orderitem.store + ")");
+					break;
 				}
-				//Get the item details
-				List itemDetails = itemsearcher.getDetailsForView("rogers_order_item/rogers_order_itemexport", context.getUser());
-				if (itemDetails == null) {
-					throw new OpenEditException("itemdetails is null");
-				}
-				for (detailCtr=0; detailCtr < itemDetails.size(); detailCtr++) {
-					PropertyDetail detail = itemDetails.get(detailCtr);
-					if(detail.isList()) {
-						Data remote = searcherManager.getData(catalogid, detail.getListId(), orderitem.get(detail.id));
-						if(detail.get("field") != null){
-							nextRow.add(remote.get(detail.get("field")));
-						} else{
-							nextRow.add(remote.getName());
-						}
-					}
-					else{
-						nextRow.add(orderitem.get(detail.id));
-					}
-				}
-
-				String[] values = (String[])nextRow.toArray();
-				writer.writeNext(values);
-				log.info(nextRow.toString());
-
-				product = null;
-				orderitem = null;
-
-				result.setComplete(true);
 			}
-		} else {
-			result.setCompleteMessage("ERROR: Order(" + order.getId() + ") has no items!");
 		}
-
 		return result;
-
 	}
 
-	/*
-	 * getProduct( SearcherManager searcherManager, String id )
-	 * returns: Data
-	 */
-	private Data getProduct( String catalogid, SearcherManager searcherManager, String id ) {
-
-		Searcher productSearcher = searcherManager.getSearcher(catalogid, "product");
-		Data product = productSearcher.searchById(id);
-		if (product != null) {
-			return product;
-		} else {
-			throw new OpenEditException("Product(" + id + ") does not exist!");
+	private boolean getDetailsFromView( String inSearcher, String inViewName, Data inOrder, 
+		List inListRows, boolean isHeaderRow) {
+		
+		boolean result = false;
+				
+		MediaArchive archive = context.getPageValue("mediaarchive");
+		SearcherManager manager = archive.getSearcherManager();
+		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), inSearcher);
+		List details = storesearcher.getDetailsForView(inViewName, context.getUser());
+		for (int detailCtr=0; detailCtr < details.size(); detailCtr++) {
+			String value = "";
+			//Get the property detail
+			PropertyDetail detail = details.get(detailCtr);
+			if (isHeaderRow) {
+				//Get and set the Header Row Value
+				value = detail.getText().trim().toUpperCase().replace(" ", "_");
+				inListRows.add(value);
+			} else {
+				//Get and set the Detail Row Value
+				value = inOrder.get(detail.getId());
+				if (detail.isList()) {
+					String listID = detail.getListId();
+					log.info(listID + ":" + value);
+					Data target = manager.getData(archive.getCatalogId(), listID, value);
+					if (target != null) {
+						value = target.getName();
+					} else {
+						log.info("Remote data not found: " + listID + ":" + value);
+					}
+				}
+				inListRows.add(value);
+			}
 		}
+		result = true;
+		return result;
 	}
 
-	private PublishResult writeOrderToFile(Page page, StringWriter output, String fileName) {
-
-		PublishResult result = new PublishResult();
-
+	private boolean writeRowToWriter( List inRow, CSVWriter writer) {
+		
+		boolean result = false;
+		String[] nextrow = new String[inRow.size()];
+		for ( int headerCtr=0; headerCtr < inRow.size(); headerCtr++ ){
+			nextrow[headerCtr] = inRow.get(headerCtr);
+		}
+		try	{
+			writer.writeNext(nextrow);
+			result = true;
+		}
+		catch (Exception e) {
+			result = false;
+			log.info(e.message);
+			log.info(e.getStackTrace().toString());
+		}
+		return result;
+	}
+	
+	private boolean writeOrderToFile(Page page, StringWriter output, String fileName) {
+		
+		boolean result = false;
 		//Create the output of the CSV file
 		//StringBuffer bufferOut = new StringBuffer();
 		//bufferOut.append(writer);
@@ -263,54 +211,19 @@ public class ExportAffinityOrder extends EnterMediaObject implements Affinity {
 
 		//Write out the CSV file.
 		pageManager.putPage(page);
-
-		result.setCompleteMessage(fileName + " has been created.");
-		result.setComplete(true);
-
-		return result;
-
-	}
-
-	private List getRogersStoreHeaders() {
-
-		MediaArchive archive = context.getPageValue("mediaarchive");
-		SearcherManager manager = archive.getSearcherManager();
-		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
-		List details = storesearcher.getDetailsForView("store/storestore_headers", context.getUser());
-
-		return details;
-	}
-	
-	private List getCSVHeaders() {
-		
-		MediaArchive archive = context.getPageValue("mediaarchive");
-		SearcherManager manager = archive.getSearcherManager();
-		Searcher itemsearcher = searcherManager.getSearcher(archive.getCatalogId(), "rogers_order_item");
-		List details = itemsearcher.getDetailsForView("rogers_order_item/rogers_order_itemexport", context.getUser());
-		
-		return details;
-	}
-	
-	private List getRogersStoreInfo(String catalogid, String storeNumber,
-	SearcherManager searcherManager) {
-
-		List values = new ArrayList();
-
-		Searcher storeSearcher = searcherManager.getSearcher(catalogid, "store");
-		List details = storeSearcher.getDetailsForView("store/storestore_headers", context.getUser());
-
-		Data store = storeSearcher.searchByField("store", storeNumber);
-		if (store != null) {
-			details.each{
-				values.add(store.get(it.id));
-			}
+		if (page.exists()) {
+			result = true;
+			String strMsg = fileName + " has been created.";
+			log.info(strMsg);
+		} else {
+			String strMsg = "ERROR:" + fileName + " was not created.";
+			log.info(strMsg);
 		}
-		return values;
+		return result;
 	}
 }
 
-PublishResult result = new PublishResult();
-result.setComplete(false);
+boolean result = false;
 
 logs = new ScriptLogger();
 logs.startCapture();
@@ -324,13 +237,15 @@ try {
 	affinityOrder.setPageManager(pageManager);
 
 	result = affinityOrder.doExport();
-	if (result.isComplete()) {
+	if (result) {
 		//Output value to CSV file!
-		context.putPageValue("export", result.getCompleteMessage());
+		log.info("PROCESS: END Orders.exportaffinity");
+		context.putPageValue("export", "The file has been exported. Click the download link.");
 		context.putPageValue("id", affinityOrder.getOrderID());
 	} else {
 		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
+		context.putPageValue("errorout", "There was a problem exporting the file. Please check with your administrator.");
+		log.info("PROCESS: ERROR Orders.exportaffinity");
 	}
 }
 finally {

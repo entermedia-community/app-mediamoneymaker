@@ -1,4 +1,4 @@
 <page>
-		<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
-<path-action name="DataEditModule.loadSearcherForEdit"/>
+	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+	<path-action name="StoreOrderModule.loadOrderById"/>
 </page>
