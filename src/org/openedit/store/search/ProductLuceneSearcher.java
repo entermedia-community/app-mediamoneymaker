@@ -835,6 +835,8 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 							buffer.append( " library_" + library);
 						}
 					}
+					//addSettingsGroupFilters( inPageRequest,inSearch);
+
 //					if(profile.getSettingsGroup() != null)
 //					{
 //						buffer.append( " sgroup" + profile.getSettingsGroup().getId() );

@@ -3,7 +3,6 @@
  */
 package org.openedit.store.modules;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import org.openedit.event.WebEventListener;
 import org.openedit.money.Money;
 import org.openedit.repository.RepositoryException;
 import org.openedit.store.Category;
-import org.openedit.store.CompositeProduct;
 import org.openedit.store.Image;
 import org.openedit.store.InventoryItem;
 import org.openedit.store.Option;
@@ -52,7 +50,6 @@ import org.openedit.xml.ElementData;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.modules.update.Downloader;
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
@@ -631,35 +628,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		return product;
 	}
 
-	public void deleteProducts(WebPageRequest inContext)
-			throws OpenEditException {
-		StoreEditor editor = getStoreEditor(inContext);
-		String[] productIds = inContext.getRequestParameters("productid");
-
-		Product product;
-
-		for (int i = 0; i < productIds.length; i++) {
-			if (productIds[i].startsWith("multiedit:")) {
-				try {
-					CompositeProduct products = (CompositeProduct) inContext
-							.getSessionValue(productIds[i]);
-					for (Iterator iterator = products.iterator(); iterator
-							.hasNext();) {
-						product = (Product) iterator.next();
-						editor.deleteProduct(product);
-					}
-				} catch (Exception e) {
-					continue;
-				}
-			} else {
-				product = editor.getProduct(productIds[i]);
-				if (product != null) {
-					editor.deleteProduct(product);
-				}
-			}
-		}
-
-	}
+	
 
 	public void removeProductsFromCatalog(WebPageRequest inContext)
 			throws OpenEditException {
@@ -1033,12 +1002,6 @@ public class CatalogEditModule extends BaseStoreModule {
 		String id = inReq.getRequestParameter("productid");
 		if (id == null) {
 			product = editor.getCurrentProduct();
-		} else if (id.startsWith("multiedit:")) {
-			CompositeProduct composite = (CompositeProduct) inReq
-					.getSessionValue(id);
-			composite.addKeyword(key);
-			editor.saveProducts(composite.getItems());
-			return;
 		} else {
 			product = getStore(inReq).getProduct(id);
 		}
@@ -1057,12 +1020,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		String id = inReq.getRequestParameter("productid");
 		if (id == null) {
 			product = editor.getCurrentProduct();
-		} else if (id.startsWith("multiedit:")) {
-			CompositeProduct composite = (CompositeProduct) inReq
-					.getSessionValue(id);
-			composite.removeKeyword(key);
-			editor.saveProducts(composite.getItems());
-			return;
+		
 		} else {
 			product = getStore(inReq).getProduct(id);
 		}
@@ -1694,16 +1652,11 @@ public class CatalogEditModule extends BaseStoreModule {
 			return;
 		}
 
-		if (productid.startsWith("multiedit:")) {
-			CompositeProduct composite = (CompositeProduct) inPageRequest
-					.getSessionValue(productid);
-			composite.removeCategory(c);
-			store.saveProducts(composite.getItems());
-		} else {
+		
 			Product product = store.getProduct(productid);
 			product.removeCategory(c);
 			store.saveProduct(product, inPageRequest.getUser());
-		}
+		
 	}
 
 	public void addCategoryToProduct(WebPageRequest inPageRequest)
@@ -1716,16 +1669,11 @@ public class CatalogEditModule extends BaseStoreModule {
 			return;
 		}
 
-		if (productid.startsWith("multiedit:")) {
-			CompositeProduct composite = (CompositeProduct) inPageRequest
-					.getSessionValue(productid);
-			composite.addCategory(c);
-			store.saveProducts(composite.getItems());
-		} else {
+		
 			Product product = store.getProduct(productid);
 			product.addCatalog(c);
 			store.saveProduct(product, inPageRequest.getUser());
-		}
+	
 	}
 
 	/**
@@ -1785,42 +1733,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		 */
 	}
 
-	public Data createMultiEditData(WebPageRequest inReq) throws Exception {
-		String hitsname = inReq.getRequestParameter("multihitsname");// expects
-																		// session
-																		// id
-		if (hitsname == null) {
-			return null;
-		}
-		Store store = getStore(inReq);
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
-		if (hits == null) {
-			log.error("Could not find " + hitsname);
-			return null;
-		}
-		CompositeProduct composite = new CompositeProduct();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-			Object target = (Object) iterator.next();
-			Product p = null;
-			if (target instanceof Product) {
-				p = (Product) target;
-			} else {
-				String id = hits.getValue(target, "id");
-				p = store.getProduct(id);
-			}
-			if (p != null) {
-				composite.addData(p);
-			}
-		}
-		composite.setId("multiedit:" + hitsname);
-		// set request param?
-		inReq.setRequestParameter("productid", composite.getId());
-		inReq.putPageValue("data", composite);
-		inReq.putPageValue("product", composite);
-		inReq.putSessionValue(composite.getId(), composite);
 
-		return composite;
-	}
 
 	public WebEventListener getWebEventListener() {
 		return fieldWebEventListener;
