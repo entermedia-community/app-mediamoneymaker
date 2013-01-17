@@ -21,4 +21,8 @@
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="userprofilepassword" module="userprofile" systemdefined="false" ordering="1355345763364">Password</data>
   <data id="productdistributor_search" module="product" systemdefined="false" ordering="1357832009494">Distributor Search</data>
+  <data id="storeOrdercsvheaders" module="storeOrder" systemdefined="false" ordering="1358281088731">csvheaders</data>
+  <data id="storeOrderproductdetails" module="storeOrder" systemdefined="false" ordering="1358281350106" recordstatus="deleted">productdetails</data>
+  <data id="productproduct_info" module="product" systemdefined="false" ordering="1358281690814">Product Info</data>
+  <data id="userprofileusername" module="userprofile" systemdefined="false" ordering="1358279791492">UserInfo</data>
 </root>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
   <property id="name"/>
@@ -5,7 +6,7 @@
   <property id="address2"/>
   <property id="city"/>
   <property id="state"/>
+  <property id="zip"/>
   <property id="country"/>
   <property id="zip"/>
-  <property id="storenumber"/>
 </root>

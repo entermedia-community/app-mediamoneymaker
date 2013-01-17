@@ -1,0 +1,5 @@
+
+<root>
+  <property id="firstName"/>
+  <property id="lastName"/>
+</root>
