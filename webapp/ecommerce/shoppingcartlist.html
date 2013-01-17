@@ -17,10 +17,11 @@
              #if($page.isPropertyTrue("multipleaddress"))
             <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html"> Manage Addresses</a>)</td>
             #end
-            
+            <!--
             #if($canvieweol)
             	<td class="prodhead" style="width: 200px;">EOL</td>
             #end
+-->
             <td class="prodhead" style="width: 60px;">Remove</td>
         </tr>
         
@@ -131,7 +132,7 @@
      	</td>
      	#end
      	
-     	
+     	<!--
      	#if($canvieweol)
         
       
@@ -152,6 +153,7 @@
         		            	</td>
         	     
         #end
+-->
     	  <td class="proddata2" style="text-align: center;"><input type="checkbox" name="remove.${productcounter}"/>
     	
      	</tr>	  

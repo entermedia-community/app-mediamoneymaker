@@ -2,7 +2,18 @@
 <div class="subcolumns" style="border: 1px solid #CCC;">
     <div class="c25l" id="left-col">
         <div class="subcl" >
-			<a href="$home$apphome/index.html" style="margin-left: -12px;"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
+			#if($userprofile.displaydesignation == "fido")
+			<a href="$home$apphome/index.html">
+			
+			<img class="logo" src="$home$themeprefix/images/fido.png" alt="EnterMedia Share" style="padding-left: 35px; padding-top: 15px;" />
+			</a>
+			#else
+			<a href="$home$apphome/index.html" style="margin-left: -12px;">
+
+			<img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" />
+			</a>
+			#end
+
         </div>
 	</div>
     <div id="right-col">
