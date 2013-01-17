@@ -1,0 +1,7 @@
+
+<root>
+  <property id="name"/>
+  <property id="manufacturerid"/>
+  <property id="phone"/>
+  <property id="categoryid"/>
+</root>
