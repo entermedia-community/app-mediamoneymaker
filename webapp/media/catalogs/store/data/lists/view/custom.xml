@@ -25,4 +25,5 @@
   <data id="storeOrderproductdetails" module="storeOrder" systemdefined="false" ordering="1358281350106" recordstatus="deleted">productdetails</data>
   <data id="productproduct_info" module="product" systemdefined="false" ordering="1358281690814">Product Info</data>
   <data id="userprofileusername" module="userprofile" systemdefined="false" ordering="1358279791492">UserInfo</data>
+  <data id="productadvancedsearch" module="product" systemdefined="false" ordering="1358521388841">advancedsearch</data>
 </root>

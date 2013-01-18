@@ -36,8 +36,6 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 		PublishResult result = new PublishResult();
 		result.setComplete(false);
 
-		OutputUtilities output = new OutputUtilities();
-
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 

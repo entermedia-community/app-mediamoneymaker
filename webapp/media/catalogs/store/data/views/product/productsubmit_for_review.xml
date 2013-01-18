@@ -14,8 +14,7 @@
   <property id="phonecompatability"/>
   <property id="upc"/>
   <property id="phone"/>
-  <property id="fidomsrp"/>
-  <property id="fidowholesaleprice"/>
   <property id="msrp"/>
+  <property id="fidomsrp"/>
   <property id="rogersprice"/>
 </root>

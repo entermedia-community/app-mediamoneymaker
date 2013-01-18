@@ -4,7 +4,7 @@
 	</path-action>
     <path-action name="CartModule.loadProductDetails"/>
 	<path-action name="Email.sendEmail"/>	
-	<property name="from">ian@ijsolutions.ca</property>
+	<property name="from">info@wirelessarea.ca</property>
 	<property name="subject">New Submission</property>
 	<property name="emailbody">/${applicationid}/distributors/notify-template.html</property>
 </page>
