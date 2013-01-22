@@ -3,14 +3,20 @@
  * Created on Aug 24, 2005
  */
 
-import org.entermedia.upload.FileUpload;
+import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
+import org.openedit.money.Money
+import org.openedit.store.InventoryItem
+import org.openedit.store.Price
+import org.openedit.store.PriceSupport
 import org.openedit.store.Product
 import org.openedit.store.Store
+
+import com.openedit.OpenEditException
 
 
 public void handleSubmission(){
@@ -70,6 +76,24 @@ public void handleSubmission(){
 	product.setProperty("submittedby", context.getUserName());
 	product.setProperty("distributor", context.getUserProfile().get("distributor"));
 	product.setProperty("profileid", context.getUserProfile().getId());
+	
+	if (product.get("rogersprice") == null) {
+		throw new OpenEditException("Cannot create product without pricing information.");
+	}
+	
+	//Clear the items!
+	product.clearItems();
+	
+	//Create the new item
+	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
+	Money money = new Money(product.get("rogersprice"));
+	money = money.multiply(1.1);
+	Price price = new Price(money);
+	PriceSupport pricing = new PriceSupport();
+	pricing.addTierPrice(1, price);
+	inventoryItem.setPriceSupport(pricing);
+	product.addInventoryItem(inventoryItem);
+		
 	productsearcher.saveData(product, context.getUser());
 	context.putPageValue("product", product);
 	

@@ -3,5 +3,7 @@
 <page>
   <property name="fallbackdirectory">/media/catalog</property>
   <property name="catalogid">media/catalogs/store</property>
-  <path-action name="storeArchive.loadStore"/>
+  <path-action alltypes="true" name="storeArchive.loadStore"/>
+  <path-action alltypes="true" name="CartModule.getCart"/>
+  <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 </page>

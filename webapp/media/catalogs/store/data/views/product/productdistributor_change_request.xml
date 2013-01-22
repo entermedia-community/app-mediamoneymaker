@@ -3,6 +3,8 @@
 <root>
   <property id="accessoryname"/>
   <property id="description"/>
+  <property id="descripfr"/>
+  <property id="phone"/>
   <property id="msrp"/>
   <property id="fidomsrp"/>
   <property id="rogersprice"/>

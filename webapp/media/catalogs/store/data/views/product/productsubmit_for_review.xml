@@ -4,7 +4,7 @@
   <property id="accessoryname"/>
   <property id="name"/>
   <property id="accessorynamefr"/>
-  <property id="manufacturerid"/>
+  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
   <property id="categoryid"/>

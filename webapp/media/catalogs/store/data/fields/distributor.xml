@@ -1,12 +1,13 @@
 
 <properties prefix="distributors" beanname="dynamicSearcher">
-  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
-  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="default">Name</property>
-  <property id="fullname" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Full Name</property>
-  <property id="idcode" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">ID Code</property>
-  <property id="idQual" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">ID Qual Code</property>
-  <property id="useedi" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="boolean" searchtype="distributor" internalfield="false" datatype="boolean">Use EDI FTP</property>
-  <property id="headermailboxprod" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Header Mailbox ID (Production)</property>
-  <property id="headerprefix" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor">headerPrefix</property>
-  <property id="headermailboxtest" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Header Mailbox ID (Test)</property>
+  <property id="id" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="default">Name</property>
+  <property id="fullname" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Full Name</property>
+  <property id="idcode" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">ID Code</property>
+  <property id="idQual" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">ID Qual Code</property>
+  <property id="useedi" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="distributor" internalfield="false" datatype="boolean">Use EDI FTP</property>
+  <property id="headermailboxprod" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Header Mailbox ID (Production)</property>
+  <property id="headerprefix" index="true" stored="true" editable="true" searchtype="distributor">headerPrefix</property>
+  <property id="headermailboxtest" index="true" stored="true" editable="true" searchtype="distributor" internalfield="false">Header Mailbox ID (Test)</property>
+  <property id="manufacturer" index="true" stored="true" editable="true" type="list" viewtype="multiselect" sort="name" searchtype="distributor" internalfield="false" datatype="list" defaultoperation="exact">Manufacturer</property>
 </properties>

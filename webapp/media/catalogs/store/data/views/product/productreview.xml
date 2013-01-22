@@ -13,9 +13,7 @@
   <property id="descripfr"/>
   <property id="upc"/>
   <property id="phone"/>
-  <property id="wholesaleprice"/>
   <property id="fidomsrp"/>
-  <property id="fidowholesaleprice"/>
   <property id="msrp"/>
   <property id="rogersprice"/>
   <property id="approved"/>

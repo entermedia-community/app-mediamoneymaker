@@ -2,7 +2,6 @@
 
 <root>
   <property id="name"/>
-  <property id="description"/>
   <property id="manufacturerid"/>
   <property id="categoryid"/>
 </root>

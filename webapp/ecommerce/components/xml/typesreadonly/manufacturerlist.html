@@ -1,0 +1,27 @@
+#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+#set($manufacturersearcher = $searcherManager.getSearcher($catalogid, "manufacturer"))
+
+#if (!$value)
+  #set ($value = $context.getRequestParameter("manufacturerid.value"))
+#end
+
+#set($isDistributor = $userprofile.get("distributor"))
+#set($distributor = $searcherManager.getData($catalogid, "distributor", $isDistributor))
+Value = $value<br>
+<select style="margin-top: 8px;" id="list-phone" data-placeholder=" " name="manufacturerid.value" 
+	class="choose-select autosubmited ">
+	<option value=""></option>
+	#if($distributor)
+		#set($distributor = $distributorsearcher.searchById($distributor.getId()))
+		#set($manufacturerList = $distributor.getValues("manufacturer"))
+		#foreach($manufacturer in $manufacturerList)
+			#set($target = $manufacturersearcher.searchById($manufacturer)))
+			<option value="$target.getId()" #if( $value && $target.getId() == $value ) selected #end>$target.get("name")</option>
+		#end
+	#else
+		#set($manufacturerList = $mediaarchive.getSearcher("manufacturer").fieldSearch("id", "*", name))
+		#foreach($manufacturer in $manufacturerList)
+			<option value="$manufacturer.getId()" #if( $value && $manufacturer.getId() == $value ) selected #end>$manufacturer</option>
+		#end
+	#end
+</select>
