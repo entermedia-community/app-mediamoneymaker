@@ -2,6 +2,6 @@
 
 <root>
   <property id="name"/>
-  <property id="manufacturerid"/>
+  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="categoryid"/>
 </root>

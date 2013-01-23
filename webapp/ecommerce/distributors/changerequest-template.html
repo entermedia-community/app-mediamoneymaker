@@ -1,6 +1,5 @@
-<h2>Change Request Submission</h2>
+<p style="color:red;font-size:16px">Change Request Submission</p>
 <p>A Product Change Request has been submitted.</p>
-<p>Please click <a href="$content.siteroot$apphome/views/modules/product/edit/workflow/reviewchangerequest.html?productid=$product.id&ticketid=$ticket.id&searchtype=product">Here 
-to review.</a></p>
-			
-
+<p><a href="$content.siteroot$apphome/views/modules/product/edit/workflow/index.html?id=$product.id&searchtype=product">Please 
+click here to review.</a></p>
+$context.putPageValue("data", $product)

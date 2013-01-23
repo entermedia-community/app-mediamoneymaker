@@ -1,46 +1,46 @@
-#if($data && $data.approved == "true")
-	This product has already been approved. You can view the listing <a href="$apphome/distributors/products/${data.id}.html">here</a>.
-#else
-	<div class="ui-widget uipanel">
-		<div class="ui-widget-header">Submit a new product</div>
-		<div class="ui-widget-content ">
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">View Product</div>
+	<div class="ui-widget-content ">
+	#if($data && $data.approved == "true")
+		<strong>This product has already been approved.</strong><br>
+		You can view the listing <a href="$apphome/distributors/products/${data.id}.html">here</a>.
+	#else
+		$context.putPageValue("searcher", $searcher)	 
+		$context.putPageValue("view", "product/productsubmit_for_review")	
 	
-			$context.putPageValue("searcher", $searcher)	 
-			$context.putPageValue("view", "product/productsubmit_for_review")	
+		<form name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
+	 		<input name="searchtype" type="hidden" value="product" />
+	 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
+	 		<input name="field" type="hidden" value="approved" />
+	 		<input name="approved.value" type="hidden" value="false" />
+		   	<input name="to" type="hidden" value="dsf@area.ca, ian@ijsolutions.ca, pf@area.ca" />
+		   	#if($data)
+		   		<input name="id" type="hidden" value="$!data.id" />
+		   		<input name="productid" type="hidden" value="$!data.id" />
+		   	#end
+		  	<br/>
+		  	#if($data.image)
+				#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$data.sourcepath/thumb.jpg")
+				#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
 		
-			<form name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
-		 		<input name="searchtype" type="hidden" value="product" />
-		 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
-		 		<input name="field" type="hidden" value="approved" />
-		 		<input name="approved.value" type="hidden" value="false" />
-			   	<input name="to" type="hidden" value="dsf@area.ca, ian@ijsolutions.ca, pf@area.ca" />
-			   	#if($data)
-			   		<input name="id" type="hidden" value="$!data.id" />
-			   		<input name="productid" type="hidden" value="$!data.id" />
-			   	#end
-			  	<br/>
-			  	#if($data.image)
-					#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$data.sourcepath/thumb.jpg")
-					#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
+		        <div class="thumbnail">
+		          
+		          <a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
+		                <img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
+		                <link rel="image_src" type="image/jpeg" href="$home$tsize" />
+		            </a>
+		          
+		        </div>
+		  	#end
+	 	 	    Product Image: <input type="file" name="file.0" #if(!$data.image) class="required" #end/>
+		    <br/>
+		
+			#set( $origURL = $context.getRequestParameter("origURL" ) )
+			#set ( $moduleid = $context.findValue("module") )
 			
-			        <div class="thumbnail">
-			          
-			          <a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
-			                <img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
-			                <link rel="image_src" type="image/jpeg" href="$home$tsize" />
-			            </a>
-			          
-			        </div>
-			  	#end
-	  	 	    Product Image: <input type="file" name="file.0" #if(!$data.image) class="required" #end/>
-			    <br/>
-			
-				#set( $origURL = $context.getRequestParameter("origURL" ) )
-				#set ( $moduleid = $context.findValue("module") )
-				
-				$pages.include("/system/components/xml/detaileditor.html", $context)
-				<input type="submit" name="submit" value="submit"/>
-			</form>
-		</div>
+			$pages.include("$apphome/components/xml/detaileditor.html", $context)
+			<input type="submit" name="submit" value="submit"/>
+		</form>
+	#end
 	</div>
-#end
+</div>

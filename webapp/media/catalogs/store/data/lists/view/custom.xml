@@ -26,8 +26,9 @@
   <data id="productproduct_info" module="product" systemdefined="false" ordering="1358281690814">Product Info</data>
   <data id="userprofileusername" module="userprofile" systemdefined="false" ordering="1358279791492">UserInfo</data>
   <data id="productadvancedsearch" module="product" systemdefined="false" ordering="1358521388841">advancedsearch</data>
-  <data id="wishlistwish_list" module="wishlist" systemdefined="false" ordering="1358814781935">Wish List</data>
-  <data id="wishlistitems" module="wishlist" systemdefined="false" ordering="1358814785623" rendertype="table" rendertable="wishlistitems" renderexternalid="wishlist">Items</data>
-  <data id="userprofileadditional" module="userprofile" systemdefined="false" ordering="1358871854972">Additional</data>
-  <data id="userprofilewish_list" module="userprofile" systemdefined="false" ordering="1358874068534" rendertype="table" rendertable="wishlist" renderexternalid="parentprofile">Wish List</data>
+  <data id="userprofiledistributor" module="userprofile" systemdefined="false" ordering="1358536765388" rendertype="table" rendertable="dsitributor" renderexternalid="id" recordstatus="deleted">Distributor</data>
+  <data id="userprofilemanufacturer" module="userprofile" systemdefined="false" ordering="1358536869945" rendertype="table" rendertable="manufacturer" renderexternalid="id" recordstatus="deleted">Manufacturer</data>
+  <data id="manufacturerdetails" module="manufacturer" systemdefined="false" ordering="1358537664744">Details</data>
+  <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
+  <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
 </root>

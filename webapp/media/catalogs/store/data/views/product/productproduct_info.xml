@@ -3,7 +3,7 @@
 <root>
   <property id="id"/>
   <property id="name"/>
-  <property id="manufacturerid"/>
+  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="rogerssku"/>
   <property id="manufacturersku"/>
 </root>
