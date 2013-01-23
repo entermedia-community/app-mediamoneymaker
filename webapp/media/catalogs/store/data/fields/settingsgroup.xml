@@ -1,0 +1,16 @@
+
+<properties beanname="dynamicSearcher">
+  <property id="id" index="true" stored="true" searchtype="settingsgroup">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="settingsgroup">Name</property>
+  <property id="profilesearchfilters" index="true" stored="true" editable="true" searchtype="settingsgroup" note="Used for filtering">Filters</property>
+  <property id="viewtableresults" editable="true" searchtype="settingsgroup">Table Columns</property>
+  <property id="viewupload" stored="true" editable="true" type="list" searchtype="acesslevel" listid="accesslevels" datatype="list">Upload Access</property>
+  <property id="assetadmin" searchtype="settingsgroup">Asset Admin</property>
+  <property id="viewassets" stored="true" editable="true" type="list" searchtype="settingsgroup" listid="accesslevels" datatype="list">View Assets</property>
+  <property id="editasset" searchtype="settingsgroup">Edit Metadata"</property>
+  <property id="deleteasset" searchtype="settingsgroup">Deleting Asset</property>
+  <property id="vieworders" stored="true" editable="true" type="list" searchtype="settingsgroup" listid="partialaccesslevels" datatype="list">Orders Access</property>
+  <property id="deleteorder" searchtype="settingsgroup">Delete Order</property>
+  <property id="viewsettings" stored="true" editable="true" type="list" searchtype="settingsgroup" listid="partialaccesslevels" datatype="list">Settings Access</property>
+  <property id="displaydesignation" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="settingsgroup" internalfield="false" datatype="list">Display Designation</property>
+</properties>

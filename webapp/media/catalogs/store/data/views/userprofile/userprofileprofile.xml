@@ -9,4 +9,5 @@
   <property id="distributor"/>
   <property id="userid"/>
   <property id="email"/>
+  <property id="parentprofile"/>
 </root>

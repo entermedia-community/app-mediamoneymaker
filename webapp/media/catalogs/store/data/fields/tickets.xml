@@ -8,4 +8,5 @@
   <property id="storeOrder" index="true" stored="true" editable="true" searchtype="tickets" internalfield="false">Order</property>
   <property id="tickettype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="tickets" internalfield="false" datatype="list">Request Type</property>
   <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="tickets" internalfield="false" listid="userprofile" datatype="list">Owner</property>
+  <property id="ticketstatus" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="tickets" internalfield="false" datatype="list">Ticket Status</property>
 </properties>

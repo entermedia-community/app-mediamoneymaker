@@ -3,13 +3,16 @@
  */
 package org.openedit.store.modules;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.links.Link;
+import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Category;
@@ -27,6 +30,7 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -735,6 +739,68 @@ public class CartModule extends BaseStoreModule {
 		
 	}
 	
+	public void saveWishList(WebPageRequest inReq) throws Exception{
+		Cart cart = getCart(inReq);
+		Store store = getStore(inReq);
+		Searcher wishlistsearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "wishlist");
+		Searcher wishitems = store.getSearcherManager().getSearcher(store.getCatalogId(), "wishlistitems");
+		UserProfile profile = inReq.getUserProfile();
+		String parentid = profile.get("parentprofile");
+		User user = inReq.getUser();
+		Data wishlist = wishlistsearcher.createNewData();
+		wishlist.setProperty("userid", user.getId());
+		wishlist.setProperty("creationdate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		wishlist.setProperty("profileid", profile.getId());
+		wishlist.setProperty("parentprofile", profile.getId());
+
+		wishlist.setProperty("store", user.get("store"));
+		wishlist.setId(wishlistsearcher.nextId());
+		String[] fields = inReq.getRequestParameters("field");
+		wishlistsearcher.updateData(inReq, fields, wishlist);
+		wishlist.setProperty("wishstatus", "pending");
+		wishlistsearcher.saveData(wishlist, user);
+		
+		for (Iterator iterator = cart.getItems().iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			Data listitem = wishitems.createNewData();
+			listitem.setId(wishitems.nextId());
+			listitem.setProperty("product", item.getProduct().getId());
+			listitem.setProperty("quantity", String.valueOf(item.getQuantity()));
+			listitem.setProperty("wishlist", wishlist.getId());
+			wishitems.saveData(listitem, inReq.getUser());
+		}
+		
+		
+	}
 	
+	
+	public Cart loadWishList(WebPageRequest inReq) throws Exception{
+		Store store = getStore(inReq);
+		clearCart(inReq);
+		Cart cart = getCart(inReq);
+		String [] listids = inReq.getRequestParameters("listid");
+		Searcher wishlistsearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "wishlist");
+		Searcher wishitems = store.getSearcherManager().getSearcher(store.getCatalogId(), "wishlistitems");
+			
+		for (int i = 0; i < listids.length; i++) {
+			String listid = listids[i];
+			cart.setProperty("wishlist", listid);
+			HitTracker items = wishitems.fieldSearch("wishlist", listid);
+		
+			for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+				Data item = (Data) iterator.next();
+				Product product = store.getProduct(item.get("product"));
+				if(product != null){
+					CartItem cartitem = new CartItem();
+					cartitem.setProduct(product);
+					cartitem.setQuantity(Integer.parseInt(item.get("quantity")));
+					cart.addItem(cartitem);
+				}
+			}
+		}
+		
+		return cart;
+		
+	}
 
 }

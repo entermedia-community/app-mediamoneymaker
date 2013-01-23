@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <tickettypes>
   <tickettype id="stockrequest">Stock Request</tickettype>
   <tickettype id="order">Order Issue</tickettype>
   <tickettype id="feedback">Feedback</tickettype>
+  <tickettype id="productchangerequest">Product Change Request</tickettype>
 </tickettypes>

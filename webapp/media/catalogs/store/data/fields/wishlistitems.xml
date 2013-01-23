@@ -1,0 +1,9 @@
+
+<properties beanname="xmlFileSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="wishlistitems" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="wishlistitems">Name</property>
+  <property id="product" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="wishlistitems" internalfield="false" datatype="list">product</property>
+  <property id="quantity" index="true" stored="true" editable="true" type="number" viewtype="number" searchtype="wishlistitems" internalfield="false" datatype="number">quantity</property>
+  <property id="wishlist" index="true" stored="true" editable="true" type="list" searchtype="wishlistitems" internalfield="true" >wishlist</property>
+
+</properties>

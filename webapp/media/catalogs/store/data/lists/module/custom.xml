@@ -9,4 +9,5 @@
   <data id="manufacturer">Manufacturers</data>
   <data id="userprofile">Profile</data>
   <corporateorder id="tickets">Support Tickets</corporateorder>
+  <data id="wishlist">WishList</data>
 </root>
