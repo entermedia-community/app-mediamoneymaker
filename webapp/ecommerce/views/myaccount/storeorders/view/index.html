@@ -1,0 +1,203 @@
+#set ( $orderNumber = $order.orderNumber )
+#set ( $shippingAddress = $order.getShippingAddress() )
+#set ( $billingAddress = $order.getBillingAddress() )
+#set ( $customer = $order.customer )
+#set($searcherManager = $store.getSearcherManager())
+
+
+<div class="ui-widget-header">Order #$orderNumber</div>
+<div class="ui-widget-content ">
+
+
+<a class="btn" href="$apphome/reloadorder.html?orderid=${order.orderNumber}">Re-order this</a>
+
+<h3 >$order.dateOrdered</h3>
+#if( $canmanageorders )
+			<form name="orderstatusform" >
+				<input type=hidden name="ordernumber" value="$order.getOrderNumber()"/>
+				<select name="orderstatus" id="orderstatus" >
+					#set ($types = $store.getOrderArchive().getOrderStates($store))		
+				 	#foreach( $key in $types.keySet() )
+						<option value="$key" #if( $order.getOrderState().getId() == $key ) selected #end>
+							$types.get($key)
+						</option>
+					#end
+				</select>
+			<!-- <input type=submit value="Change Order Status" /> -->
+			</form> 
+#else
+$order.getOrderStatus()
+#end
+
+#if( $canmanageorders)
+	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$apphome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
+	<span id="messagearea"> </span>
+	
+#end
+
+#if ( $shippingAddress.address1 == $billingAddress.address1 )
+	#set ( $customerAddress = $order.getBillingAddress() )
+#else
+	#set ( $customerAddress = $order.getShippingAddress() )
+#end
+
+<p>
+	<b>Customer:</b><br>
+	$!customer.getFirstName() $!customer.getLastName()
+	#if( $user.hasPermission("oe.cart.admin" ) )
+	( <a href="$home/system/usermanager/modifyuser.html?username=$customer.userName">$!customer.userName</a> )
+	#end<br/>
+	$!customerAddress.address1<br>
+	#if ( $customerAddress.address2 && $customerAddress.address2 != "" )
+		$customerAddress.address2<br>
+	#end
+	$!customerAddress.city #if ($customerAddress.state || $customerAddress.zipCode || $customerAddress.country),#end $!customerAddress.state $!customerAddress.zipCode $!customerAddress.country<br>
+	#if ($customer.phone1)Phone: $customer.phone1<br> #end
+	#if ($customer.email)Email: <a href="mailto:$customer.email">$customer.email</a><br> #end
+	#if( $customer.fax )
+		Fax: $!customer.fax<br>
+	#end
+	#if( $customer.userfield2 )
+	UserField 2: $!customer.userfield2
+	#end
+</p>
+
+#if ( $order.shippingAddress && $order.shippingAddress.address1 && $order.billingAddress && $order.billingAddress.address1 )
+	<p>
+		<b>Ship to:</b><br>
+		$order.shippingAddress.address1<br>
+		#if ( $order.shippingAddress.address2 && $order.shippingAddress.address2 != "" )
+			$order.shippingAddress.address2<br>
+		#end
+		$order.shippingAddress.city, $order.shippingAddress.state $order.shippingAddress.zipCode $!order.shippingAddress.country<br>
+	</p>
+#end
+<p>
+<b>Order details:</b><br>
+<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
+	<tr class="results-list-head">
+		<th align="left" class="results-list-head">Product ID</th>
+		<th align="left" class="results-list-head">Item SKU</th>
+		<th align="center" width="100"  class="results-list-head">Quantity</th>
+	#if ($content.isPropertyTrue("showprice"))
+		<th align="right" class="results-list-head">Unit Price</th>
+	#end
+		<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
+	</tr>
+	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
+	
+#set($itemCounter = 0)
+#foreach ( $item in $order.items )
+	#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+	#set($itemCounter = $itemCounter + 1)
+	#set($bkgrnd = $itemCounter % 2)
+	#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+	#else
+		<tr class="results-list-b">
+	#end
+		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+		<td>
+			<p class="results-list">
+				<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>
+			<input type="hidden" name="sku" value="$item.sku"/>
+			<input type="hidden" name="ordernumber" value="$orderNumber"/>
+			<input type="hidden" name="origURL" value="$content.path"/></p></td>
+		<td align="center">
+			<p class="results-list">$item.sku</p></td>
+		<td align="center">
+			<p class="results-list">$item.quantity</p></td>
+		#if ($content.isPropertyTrue("showprice"))
+		<td align="right">
+				<p class="results-list">$item.yourPrice</p></td>
+		#end
+		<td align="center" nowrap>
+			<p class="results-list">
+				#if( $order.isFullyShipped() == "true" )
+					Shipped
+				#else
+					#if ( $order.getQuantityShipped($item) == $item.quantity )
+						Shipped
+					#else
+						#if ( $order.getQuantityShipped($item) > 0 )
+							Partially Shipped
+						#else
+							Waiting for Shipment
+						#end
+					#end
+				#end
+			</p></td></tr>
+    #end
+	#if ($content.isPropertyTrue("showprice"))
+	<tr>
+		<td colspan="3" align="right">Subtotal:</td>
+		<td align="right">$order.subTotal</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="right">Tax:</td>
+		<td align="right">$order.tax</td>
+	</tr>
+		#if ( ($order.shippingMethod.description && $order.shippingMethod.description != "")
+		|| $order.shippingCost != "0.00" )
+	<tr>
+		  <td colspan="3" align="right">Ship by $order.shippingMethod.description:</td>
+		  <td align="right">$order.shippingCost</td>
+	</tr>
+		#end
+	<tr>
+		<td colspan="3" align="right"><b>Grand Total:</b></td>
+		<td align="right"><b>$order.totalPrice</b></td>
+	</tr>
+	#end
+</table></p>
+<p>
+	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
+		#if( $order.getOrderState().getId() == "authorized" )
+			Authorized $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+		#elseif( $order.getOrderState().getId() == "captured" )
+			Captured $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+		#else
+			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
+		#end
+#if( $canmanageorders )
+	
+		Card number: $order.paymentMethod.cardNumber<br/>
+		CVC: $!order.paymentMethod.cardVerificationCode<br/>
+#end
+		Expiration date: $order.paymentMethod.expirationDateString<br>
+
+#if( $canmanageorders )
+
+		#if( $order.getOrderState().getId() == "authorized" )
+		<br>
+			<form action="$home$apphome/admin/orders/captureorder.html" name="capture">
+				Once the product is shipped then charges can be applied:
+				<!-- Note to customer: <br><textarea rows=5 cols=20 name="note"></textarea>
+				<br> -->
+				<input type="submit" value="Capture Order" />			
+				<input type="hidden" name="ordernumber" value="$order.getOrderNumber()" />
+			</form>
+		#end
+#end
+	#end
+	#if ( $order.paymentMethod.poNumber )
+		<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
+	#end
+	#if ( $order.paymentMethod.billMeLater )
+		<strong>Payment Method:</strong> Bill Me Later<br />
+	#end
+	#if ( $order.paymentMethod.note )
+		<stong>Notes:</stong><br/>$order.paymentMethod.note
+	#end
+</p>
+</div>
+<!-- 
+<a href="$home$apphome/views/modules/storeOrder/shippingdetails/index.html?id=$orderNumber&oemaxlevel=1" class="results-list thickbox uibutton">
+<a href="/ecommerce/views/modules/storeOrder/shippingdetails/index.html?id=WEB0000076&oemaxlevel=1" class="thickbox uibutton" target="_parent">
+<script language="JavaScript" type="text/javascript">
+function openWindow()
+{
+window.open("/ecommerce/views/modules/storeOrder/shippingdetails/index.html?id=WEB0000076&oemaxlevel=1","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
+}
+</script>
+ -->

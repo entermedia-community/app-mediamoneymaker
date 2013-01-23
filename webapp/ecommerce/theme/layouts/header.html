@@ -39,7 +39,11 @@
 #if( $user )
 Welcome $userprofile.getName()
 #if( $canviewmyaccount )
-	<a href="$home$apphome/views/modules/userprofile/edit/edit.html?id=$userprofile.id&viewid=userprofileprofile&viewpath=userprofile/userprofileprofile&searchtype=userprofile">My Account</a> |
+
+<!--	<a href="$home$apphome/views/modules/userprofile/edit/edit.html?id=$userprofile.id&viewid=userprofileprofile&viewpath=userprofile/userprofileprofile&searchtype=userprofile">My Account</a> 
+-->
+<a href="$home$apphome/views/myaccount/index.html">My Account</a> 
+|
 #end	
 <a href="$home$apphome/authentication/logout.html">Logout</a>	
 	

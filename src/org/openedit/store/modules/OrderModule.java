@@ -223,6 +223,15 @@ public class OrderModule extends BaseModule
 	
 	public Order loadOrder(WebPageRequest inRequest) throws Exception
 	{
+		String id = inRequest.getRequestParameter("id");
+		if(id != null){
+Store store = getStore(inRequest);
+			
+			Order order = (Order) store.getOrderSearcher().searchById(id);
+			inRequest.putPageValue("order", order);
+			return order;
+		}
+		
 		String path = inRequest.getPath();
 		String extension = inRequest.getCurrentAction().getConfig().getAttribute( "extension" );
 		if ( extension == null )

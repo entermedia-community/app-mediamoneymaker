@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="myassets" type="toplevel" module="user" path="/views/myaccount/myassets/index.html" ordering="5" recordstatus="deleted">My Assets</property>
+  <property id="userupload" type="toplevel" module="user" path="/views/upload/index.html" ordering="6" recordstatus="deleted">Upload</property>
+</root>
