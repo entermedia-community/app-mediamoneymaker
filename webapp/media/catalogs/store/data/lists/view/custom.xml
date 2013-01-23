@@ -26,4 +26,8 @@
   <data id="productproduct_info" module="product" systemdefined="false" ordering="1358281690814">Product Info</data>
   <data id="userprofileusername" module="userprofile" systemdefined="false" ordering="1358279791492">UserInfo</data>
   <data id="productadvancedsearch" module="product" systemdefined="false" ordering="1358521388841">advancedsearch</data>
+  <data id="wishlistwish_list" module="wishlist" systemdefined="false" ordering="1358814781935">Wish List</data>
+  <data id="wishlistitems" module="wishlist" systemdefined="false" ordering="1358814785623" rendertype="table" rendertable="wishlistitems" renderexternalid="wishlist">Items</data>
+  <data id="userprofileadditional" module="userprofile" systemdefined="false" ordering="1358871854972">Additional</data>
+  <data id="userprofilewish_list" module="userprofile" systemdefined="false" ordering="1358874068534" rendertype="table" rendertable="wishlist" renderexternalid="parentprofile">Wish List</data>
 </root>

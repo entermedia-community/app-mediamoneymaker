@@ -1,0 +1,9 @@
+<linktree>
+	<a folder="edit/wishlist" module="userprofile"  id="profilewishlist"  useajax="false" multiedit="false" name="Wish List" />
+	
+	
+	
+	<!-- 
+	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
+ -->
+</linktree>

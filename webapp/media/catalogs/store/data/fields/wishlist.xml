@@ -1,0 +1,14 @@
+
+<properties prefix="wishlist" beanname="xmlFileSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="wishlist" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="wishlist">Name</property>
+  <property id="sourcepath" searchtype="wishlist">SourcePath</property>
+  <property id="notes" index="true" stored="true" editable="true" searchtype="wishlist">Notes</property>
+  <property id="store" index="true" stored="true" editable="true" searchtype="wishlist">store</property>
+  <property id="dealer" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="wishlist" internalfield="false" datatype="list">dealer</property>
+  <property id="profileid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="wishlist" internalfield="false" listid="userprofile" datatype="list">Created By</property>
+  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="wishlist" internalfield="false" datatype="date">Created On</property>
+  <property id="userid" index="true" stored="true" editable="true" searchtype="wishlist">userid</property>
+  <property id="wishstatus" index="true" stored="true" editable="true" searchtype="wishlist" internalfield="false">Status</property>
+  <property id="parentprofile" index="true" stored="true" editable="true" searchtype="wishlist">parentprofile</property>
+</properties>

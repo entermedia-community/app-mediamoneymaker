@@ -26,9 +26,12 @@ ul.products-list li {
     list-style: none;
     font-size: 11px;
     line-height: 14px;
+    position: relative;
 }
 ul.products-list li .product-details {
-    margin-top: 5px;
+    
+     position: absolute; bottom: 5px; left: 5px;
+     width: 170px;
 }
 #emresultscontent ul.products-list li a {
     display: block;
@@ -36,6 +39,7 @@ ul.products-list li .product-details {
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: normal;
+    
 }
 ul.products-list li a:hover {
     text-decoration: underline !important;
