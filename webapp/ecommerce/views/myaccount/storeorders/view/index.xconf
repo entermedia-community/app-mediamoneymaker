@@ -4,6 +4,5 @@
 	 <path-action name="StoreOrderModule.changeOrderStatus" />
 	 <path-action name="StoreOrderModule.getOrdersForUser" />
 	 <path-action name="StoreOrderModule.loadOrder" />
-	 <inner-layout>/${applicationid}/layout/orderdetails.html</inner-layout>
 	 <property name="virtual">true</property>
 </page>

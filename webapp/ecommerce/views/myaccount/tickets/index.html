@@ -1,0 +1,15 @@
+<h1>Support Tickets</h1>
+#set($hits = $mediaarchive.getSearcher("tickets").fieldSearch("owner", $userprofile.id, "ticketstatus"))
+
+$context.putPageValue("hits", $hits)
+$context.putPageValue("searcher", $mediaarchive.getSearcher("tickets"))
+$context.putPageValue("view", "tickets/myaccount")
+$context.putPageValue("showselections", "false")
+
+
+
+
+$context.putPageValue("clink", "$apphome/views/myaccount/tickets/history.html")
+
+
+$pages.include("$apphome/components/moduleresults/results.html", $context)
