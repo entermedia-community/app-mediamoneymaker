@@ -1,0 +1,31 @@
+	<div class="ui-widget uipanel">
+		<div class="ui-widget-header">Review Change Request</div>
+		<div class="ui-widget-content ">
+			#set($ticketid = $context.getRequestParamter("ticketid"))
+			#set($productid = $context.getRequestParamter("productid"))
+			#set($product = $searcherManager.getData($catalogid, "product", $productid))
+			#set($ticket = $searcherManager.getData($catalogid, "tickets", $ticketid))
+
+
+			
+			$context.putPageValue("searcher", $searcher)	 
+			$context.putPageValue("view", "product/productsubmit_for_review")
+			$context.putPageValue("data", product)	
+			$pages.include("$apphome/components/xml/detaileditor.html?detailreadonly=true", $context)
+			
+
+			<h1>Requested Change:</h1>
+
+			<form name="submitproduct" action="$apphome/views/modules/product/edit/save.html" method="post" >
+		 		<input name="searchtype" type="hidden" value="product" />
+		 		<input name="field" type="hidden" value="approved" />
+		 		<input name="approved.value" type="hidden" value="true" />
+			   	<input name="id" type="hidden" value="$product.id" />
+			   	<input name="productid" type="hidden" value="$!product.id" />
+				$context.putPageValue("data", $ticket)	
+			   	$pages.include("$apphome/components/xml/detaileditor.html", $context)
+				<input type="submit" name="submit" value="submit"/>
+			</form>
+		</div>
+	</div>
+#end

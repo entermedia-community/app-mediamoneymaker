@@ -1,0 +1,10 @@
+#set($hits = $mediaarchive.getSearcher("tickets").fieldSearch("owner", $userprofile.id))
+
+$context.putPageValue("hits", "false")
+$context.putPageValue("searcher", $mediaarchive.getSearcher("tickets"))
+$context.putPageValue("resultshome", "$apphome/views")
+
+
+
+
+$pages.include("")

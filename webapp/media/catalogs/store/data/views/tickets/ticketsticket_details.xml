@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
   <property id="product"/>
   <property id="tickettype"/>
-  <property id="description"/>
+  <property id="ticketstatus"/>
+  <property id="owner"/>
 </root>

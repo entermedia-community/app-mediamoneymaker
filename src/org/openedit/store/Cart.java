@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.customer.Address;
@@ -22,7 +23,7 @@ import org.openedit.store.orders.Order;
  * @author dbrown
  * 
  */
-public class Cart
+public class Cart extends BaseData
 {
 	private static final Log log = LogFactory.getLog(Cart.class);
 	protected List fieldItems; // sku item map
