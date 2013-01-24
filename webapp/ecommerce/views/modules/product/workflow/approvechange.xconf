@@ -1,0 +1,5 @@
+<page>
+<path-action name="Script.run">
+<script>/${applicationid}/views/modules/product/workflow/approvechange.groovy</script>
+</path-action>
+</page>

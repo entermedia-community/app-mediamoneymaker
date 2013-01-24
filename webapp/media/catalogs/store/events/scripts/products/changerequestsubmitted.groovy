@@ -21,6 +21,7 @@ public void init(){
 	ticket.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 	ticket.setId(ticketsearcher.nextId());
 	ticket.setProperty("owner", inReq.getUserProfile().getId());
+	ticket.setProperty("product", product.getId());
 	ticket.setProperty("tickettype", "productchangerequest");
 	ticket.setSourcePath("${inReq.getUserProfile().getId()}");
 	
@@ -28,7 +29,7 @@ public void init(){
 	//THESE FIELDS ARE ACTUALLY PRODUCT FIELDS!
 	
 	String[] fields = inReq.getRequestParameters("field");
-	ticketsearcher.updateData(inReq, null, ticket);
+	ticketsearcher.updateData(inReq, fields, ticket);
 	ticketsearcher.saveData(ticket, inReq.getUser());
 	inReq.putPageValue("ticket", ticket);
 	
@@ -36,3 +37,4 @@ public void init(){
 }	
 
 
+init();

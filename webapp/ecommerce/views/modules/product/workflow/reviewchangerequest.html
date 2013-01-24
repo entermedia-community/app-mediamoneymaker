@@ -1,0 +1,46 @@
+	<div class="ui-widget uipanel">
+
+
+
+		<div class="ui-widget-header">Change Request</div>
+		<div class="ui-widget-content ">
+		
+
+<form name="submitproduct" action="$apphome/views/modules/product/workflow/approvechange.html" method="post" >
+		<table>
+			#set($ticketid = $context.getRequestParameter("ticketid"))
+			#set($productid = $context.getRequestParameter("productid"))
+			#set($product = $searcherManager.getData($catalogid, "product", $productid))
+			#set($ticket = $searcherManager.getData($catalogid, "tickets", $ticketid))
+			#set($searcher = $mediaarchive.getSearcher("product"))
+					
+			$context.putPageValue("searcher", $searcher)	 
+			$context.putPageValue("view", "product/productsubmit_for_review")
+			$context.putPageValue("data", $product)	
+			<tr><td>
+			<h3>Existing Data</h3>
+			$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
+			</td>
+			
+				<td>
+				
+			<h3>Requested Change:</h3>
+
+			
+		 		<input name="searchtype" type="hidden" value="product" />
+		 		<input name="field" type="hidden" value="approved" />
+		 		<input name="approved.value" type="hidden" value="true" />
+			   	<input name="id" type="hidden" value="$product.id" />
+			   	<input name="productid" type="hidden" value="$!product.id" />
+			   	<input name="ticketid" type="hidden" value="$!ticket.id" />
+			
+				$context.putPageValue("data", $ticket)	
+			   	$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
+				
+				</td>
+				</table>
+				
+				<input type="submit" name="submit" value="Approve this change"/>
+			</form>
+		</div>
+	</div>
