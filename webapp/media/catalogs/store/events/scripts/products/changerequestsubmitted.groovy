@@ -9,9 +9,7 @@ import org.openedit.util.DateStorageUtil
 import com.openedit.WebPageRequest
 
 
-
-
-public void init(){
+public void sendRequest(){
 	WebPageRequest inReq = context;
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Searcher ticketsearcher = archive.getSearcher("tickets");
@@ -35,4 +33,4 @@ public void init(){
 	
 }	
 
-
+sendRequest();
