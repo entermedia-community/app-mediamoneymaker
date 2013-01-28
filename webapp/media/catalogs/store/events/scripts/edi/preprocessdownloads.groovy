@@ -25,10 +25,22 @@ public class PreprocessDownloads extends EnterMediaObject {
 		private XMLFileType(String t) {
 			type = t;
 		}
-		@Override public String toString() {
+		@Override 
+		public String toString() {
 			// TODO Auto-generated method stub
 			return type.toString();
 		}
+		@Override
+		public int compareTo( arg0) {
+			// TODO Auto-generated method stub
+			final int BEFORE = -1;
+			final int EQUAL = 0;
+			final int AFTER = 1;
+			
+			if (this == arg0) {
+				return EQUAL;
+			}
+		};
 	}
 	
 	private class FileCount {

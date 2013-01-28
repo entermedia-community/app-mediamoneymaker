@@ -5,8 +5,15 @@
 
 #if (!$value)
   #set ($value = $context.getRequestParameter("manufacturerid.value"))
-  #if(!$value) 
-  	#set($productid = $context.getRequestParameter("productid"))
+  #if(!$value)
+  	#set($searchtype = $context.getRequestParameter("searchtype"))
+  	#if($searchtype == "ticket")
+		#set($ticketid = $context.getRequestParameter("id"))
+		#set($ticket = $searcherManager.getData($catalogid, "ticket", $ticketid))
+		#set($productid = $ticket.get("product"))
+  	#else
+	  	#set($productid = $context.getRequestParameter("productid"))
+	#end
   	#set($product = $productsearcher.searchById($productid))
 	#set($value = $product.get("manufacturerid"))
   #end

@@ -1,0 +1,10 @@
+
+<root>
+  <property id="date"/>
+  <property id="name"/>
+  <property id="notes"/>
+  <property id="owner"/>
+  <property id="product"/>
+  <property id="tickettype"/>
+  <property id="ticketstatus"/>
+</root>

@@ -2,8 +2,6 @@
 
 <root>
   <data id="storestore_details" module="store" systemdefined="false" ordering="1345486552321">Store Details</data>
-  <data id="ticketsticket_details" module="tickets" systemdefined="false" ordering="1346264674082">Ticket Details</data>
-  <data id="ticketsticket_history" module="tickets" systemdefined="false" ordering="1346264755713" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
   <data id="profileprofile" module="profile" systemdefined="false" ordering="1347638289389">Profile</data>
   <data id="profileaddress_list" module="profile" systemdefined="false" ordering="1347638394543" rendertable="profile_address_list" renderexternalid="profileid">Address List</data>
   <data id="storestore_headers" module="store" systemdefined="false" ordering="1351173422158">Store Headers</data>
@@ -31,4 +29,5 @@
   <data id="manufacturerdetails" module="manufacturer" systemdefined="false" ordering="1358537664744">Details</data>
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
+  <data id="ticketticket_history" module="ticket" systemdefined="false" ordering="1359387502052" rendertype="table" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
 </root>

@@ -25,14 +25,12 @@ public void init(){
 	ticket.setProperty("tickettype", "productchangerequest");
 	ticket.setSourcePath("${inReq.getUserProfile().getId()}");
 	
-	
 	//THESE FIELDS ARE ACTUALLY PRODUCT FIELDS!
 	
 	String[] fields = inReq.getRequestParameters("field");
 	ticketsearcher.updateData(inReq, fields, ticket);
 	ticketsearcher.saveData(ticket, inReq.getUser());
 	inReq.putPageValue("ticket", ticket);
-	
 	
 }	
 

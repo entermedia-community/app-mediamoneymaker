@@ -10,4 +10,5 @@
   <property id="userid"/>
   <property id="email"/>
   <property id="parentprofile"/>
+  <property id="ticketadmin"/>
 </root>

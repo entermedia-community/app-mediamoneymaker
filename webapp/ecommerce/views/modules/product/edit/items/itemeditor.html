@@ -11,6 +11,7 @@
 			Items are actual price points for ordering such as small, medium or large shoe sizes.<br>
 			Please choose an item below or add an item.
 			<form name="listitems" id="listitems" action="$home$apphome/views/modules/product/edit/items/itemeditor.html">
+			<input type="hidden" name="id" value="$product.getId()" />
 			<font color=red>$!editerror</font><br>
 			<select size="4" style="width: 200px;"  name="sku" onchange="document.listitems.submit();" >
 				#foreach($itemOption in $product.getInventoryItems() )

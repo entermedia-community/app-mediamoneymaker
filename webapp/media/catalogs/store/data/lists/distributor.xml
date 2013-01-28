@@ -5,7 +5,8 @@
   <distributor id="102" fullname="AFFINITY" idcode="NEED_ID_CODE" idQual="92" headermailbox="NEED_MAILBOX_ID">Affinity</distributor>
   <distributor id="103" fullname="NOKIA CANADA" idcode="NEED_ID_CODE" idQual="92" headermailbox="NEED_MAILBOX_ID">Nokia</distributor>
   <distributor id="104" fullname="MICROCEL CORPORATION" idcode="ANTECOMP01" idQual="92" useedi="true" headermailbox="MICROCELLACC" headermailboxprod="MICROCELLACC" headerprefix="ZZ" headermailboxtest="MICROCELLACC">Microcel</distributor>
-  <distributor id="105" fullname="CESIUM" idcode="5145715565" idQual="92" headermailbox="NEED_MAILBOX_ID" headermailboxprod="5145715565" headerprefix="12" headermailboxtest="5145715565" useedi="true">Cesium</distributor>
+  <distributor id="105" fullname="CESIUM" idcode="5145715565" idQual="92" headermailbox="NEED_MAILBOX_ID" headermailboxprod="5145715565" headerprefix="12" headermailboxtest="5145715565" useedi="true" manufacturer="3 86 63 87 45 24">Cesium</distributor>
   <distributor id="106" fullname="AVOCA" idcode="9057370088" idQual="92" headermailbox="NEED_MAILBOX_ID" headermailboxprod="9057370088" headerprefix="12" headermailboxtest="9057370088" useedi="true">Avoca</distributor>
   <distributor id="area" fullname="AREA COMMUNICATIONS" idcode="AREACOMM" idQual="ZZ" headermailboxprod="AREACOMM" headerprefix="ZZ" headermailboxtest="AREACOMMT">area</distributor>
+  <distributor id="floyd" fullname="Floyd Systems" idcode="NEED_ID_CODE" idQual="92" manufacturer="82 22 6 9 87 20">Floyd</distributor>
 </distributors>

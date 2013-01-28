@@ -8,6 +8,7 @@
   <data id="phone">Phones</data>
   <data id="manufacturer">Manufacturers</data>
   <data id="userprofile">Profile</data>
-  <corporateorder id="tickets">Support Tickets</corporateorder>
   <data id="wishlist">WishList</data>
+  <corporateorder id="tickets" recordstatus="deleted">Support Tickets</corporateorder>
+  <data id="ticket">Support Tickets</data>
 </root>

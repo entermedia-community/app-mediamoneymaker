@@ -11,7 +11,7 @@
 			#set($ticketid = $context.getRequestParameter("ticketid"))
 			#set($productid = $context.getRequestParameter("productid"))
 			#set($product = $searcherManager.getData($catalogid, "product", $productid))
-			#set($ticket = $searcherManager.getData($catalogid, "tickets", $ticketid))
+			#set($ticket = $searcherManager.getData($catalogid, "ticket", $ticketid))
 			#set($searcher = $mediaarchive.getSearcher("product"))
 					
 			$context.putPageValue("searcher", $searcher)	 
