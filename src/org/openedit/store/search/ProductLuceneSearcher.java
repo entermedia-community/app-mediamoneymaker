@@ -425,11 +425,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 				getProductPaths().put( product.getId(), product.getSourcePath()); //This might use up mem. Need to fix
 				//getProductPaths().remove( product.getId() );
 			}
-			if (inOptimize)
-			{
-				getIndexWriter().optimize();
-				log.info("Optimized");
-			}
+			
 
 			if (inOptimize)
 			{
