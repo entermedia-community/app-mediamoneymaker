@@ -29,5 +29,4 @@
   <data id="manufacturerdetails" module="manufacturer" systemdefined="false" ordering="1358537664744">Details</data>
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
-  <data id="ticketticket_history" module="ticket" systemdefined="false" ordering="1359387502052" rendertype="table" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
 </root>
