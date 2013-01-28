@@ -1,5 +1,8 @@
 <page>
-<path-action name="Script.run">
-<script>/${applicationid}/views/modules/product/workflow/approvechange.groovy</script>
-</path-action>
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${applicationid}/views/modules/product/workflow/approvechange.groovy</script>
+	</path-action>
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/products/verifyproduct.groovy</script>
+	</path-action>
 </page>

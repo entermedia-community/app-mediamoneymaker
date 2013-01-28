@@ -1,6 +1,6 @@
 <p>The following ticket has been updated: $ticket.getId()</p>
 
-#set($url = "$content.siteroot/$apphome/views/views/modules/ticket/view/index.html?id=$ticket.getId()&hitssessionid=hitsticketmedia/catalogs/store&searchtype=ticket")
+#set($url = "$content.siteroot/$apphome/views/modules/ticket/view/index.html?id=$ticket.getId()&hitssessionid=hitsticketmedia/catalogs/store&searchtype=ticket")
 
 <p>Most recent note: $ticket.get("notes")</p>
 <p><a href="${url}">You can view the ticket here.</a>  
