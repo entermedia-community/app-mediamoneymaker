@@ -1,6 +1,6 @@
 <linktree>
 	<a folder="edit/items" module="product"  id="productitems"  useajax="false" multiedit="false" name="Invemtory Items" />
-	<a folder="edit/workflow" module="product"  id="productworkflow"  useajax="false" multiedit="false" name="Product Workflow" />
+	<a folder="workflow" module="product"  id="productworkflow"  useajax="false" multiedit="false" name="Product Workflow" />
 	
 	
 	

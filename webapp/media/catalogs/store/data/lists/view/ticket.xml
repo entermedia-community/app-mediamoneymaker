@@ -4,8 +4,8 @@
   <property id="ticketsadvancedsearch" module="ticket" systemdefined="true" byassettype="false">Advanced Search</property>
   <property id="ticketsresultstable" module="ticket" systemdefined="true" byassettype="false">Results Table</property>
   <property id="ticketsbatchedit" module="ticket" systemdefined="true" byassettype="false">Batch Edit</property>
- <data id="ticketsticket_details" module="ticket" systemdefined="false" ordering="1346264674082">Ticket Details</data>
-  <data id="ticketsview_ticket" module="ticket" systemdefined="true" ordering="1359051779705" recordstatus="deleted">View Ticket</data>
-  <data id="ticketsticket_history" module="ticket" systemdefined="true" ordering="1359386208431" rendertype="table" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
+ <data id="ticketticket_details" module="ticket" systemdefined="false" ordering="1346264674082">Ticket Details</data>
+  <data id="ticketview_ticket" module="ticket" systemdefined="true" ordering="1359051779705" recordstatus="deleted">Ticket History</data>
+  <data id="ticketticket_history" module="ticket" systemdefined="true" ordering="1359386208431" rendertype="table" rendertable="tickethistory" renderexternalid="ticket">Ticket History</data>
 
 </properties>

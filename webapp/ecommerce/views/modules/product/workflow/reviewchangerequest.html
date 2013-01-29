@@ -1,4 +1,15 @@
-	<div class="ui-widget uipanel">
+<h2>Ticket History</h2>
+
+#set($ticketsearcher = $mediaarchive.getSearcher("ticket"))
+#set($productsearcher = $mediaarchive.getSearcher("product"))
+
+#set($ticketid = $context.getRequestParameter("ticketid"))
+#set($ticket = $searcherManager.getData($catalogid, "ticket", $ticketid))
+
+$context.putPageValue("caneditdata", false)
+$pages.include("$apphome/views/modules/ticket/edit/table.html?id=$ticketid&viewid=ticketticket_history&viewpath=ticket/ticketticket_history&hitssessionid=hitsticketmedia/catalogs/store&print=true", $context)
+
+<div class="ui-widget uipanel">
 
 
 
