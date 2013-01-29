@@ -27,6 +27,7 @@ public class affinity extends BaseShippingMethod {
 				return new Money(10);
 			}
 		}
+		return new Money();
 	}
 
 	private Money getDistributorTotal(Cart inCart) {
@@ -34,8 +35,9 @@ public class affinity extends BaseShippingMethod {
 		for (Iterator iterator = inCart.getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			if(item.getProduct().get('distributor').equals(distributor)){
-
-				totalformicrocel = totalformicrocel.add(item.getYourPrice());
+				Money itemprice = item.getYourPrice();
+				Money totalcost = itemprice.multiply(item.getQuantity());
+				totalformicrocel = totalformicrocel.add(totalcost);
 			}
 		}
 		return totalformicrocel;
@@ -62,7 +64,8 @@ public class affinity extends BaseShippingMethod {
 			return new ArrayList();
 		}
 		ArrayList hints = new ArrayList();
-		if(getCost(inCart).doubleValue() > 0){
+		Money cost = getCost(inCart);
+		if(cost.doubleValue() > 0){
 			Data hint = new BaseData();
 			hint.setProperty("distributor", distributor);
 			Money shortamount = new Money(100).subtract(getDistributorTotal(inCart));

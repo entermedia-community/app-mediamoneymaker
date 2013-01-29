@@ -93,8 +93,9 @@ public class avoca extends BaseShippingMethod {
 		for (Iterator iterator = inCart.getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			if(item.getProduct().get('distributor').equals(fieldDistributor)){
-
-				totalformicrocel = totalformicrocel.add(item.getYourPrice());
+				Money itemprice = item.getYourPrice();
+				Money totalcost = itemprice.multiply(item.getQuantity());
+				totalformicrocel = totalformicrocel.add(totalcost);
 			}
 		}
 		return totalformicrocel;

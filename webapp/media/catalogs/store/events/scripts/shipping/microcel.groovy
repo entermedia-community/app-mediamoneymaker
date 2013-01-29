@@ -27,8 +27,10 @@ public class microcel extends BaseShippingMethod {
 		for (Iterator iterator = inCart.getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			if(item.getProduct().get('distributor').equals("104")){
-
-				totalformicrocel = totalformicrocel.add(item.getYourPrice());
+				Money itemprice = item.getYourPrice();
+				Money totalcost = itemprice.multiply(item.getQuantity());
+				totalformicrocel = totalformicrocel.add(totalcost);
+				//totalformicrocel = totalformicrocel.add(item.getYourPrice());
 			}
 		}
 		return totalformicrocel;
