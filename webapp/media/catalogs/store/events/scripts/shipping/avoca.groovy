@@ -99,7 +99,7 @@ public class avoca extends BaseShippingMethod {
 		}
 		return totalformicrocel;
 	}
-	public List getHints(Cart inCart){
+	public Collection getHints(Cart inCart){
 	ArrayList hints = new ArrayList();
 	
 		return hints;

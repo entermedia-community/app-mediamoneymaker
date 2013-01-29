@@ -50,7 +50,7 @@ public class microcel extends BaseShippingMethod {
 
 	}
 
-	public List getHints(Cart inCart){
+	public Collection getHints(Cart inCart){
 		ArrayList hints = new ArrayList();
 		if(getCost(inCart).doubleValue() > 0){
 			Data hint = new BaseData();

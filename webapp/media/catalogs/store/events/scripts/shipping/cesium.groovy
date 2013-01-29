@@ -29,7 +29,7 @@ public class cesium extends BaseShippingMethod {
 
 	}
 
-	public List getHints(Cart inCart){
+	public Collection getHints(Cart inCart){
 		return new ArrayList();
 	}
 	
