@@ -29,13 +29,6 @@ public void init(){
 	Product product = store.getProduct(productid);
 	Data ticket = ticketsearcher.searchById(ticketid);
 	
-	ArrayList emaillist = new ArrayList();
-	HitTracker results = userprofilesearcher.fieldSearch("ticketadmin", "true");
-	for(Iterator detail = results.iterator(); detail.hasNext();) {
-		Data userInfo = (Data)detail.next();
-		emaillist.add(userInfo.get("email"));
-	}
-		
 	if (ticket != null) {
 
 		Data owner = userprofilesearcher.searchById(ticket.get("owner"))
@@ -74,7 +67,13 @@ public void init(){
 			email = null;
 		}
 		
-		templatePage = "/ecommerce/views/modules/ticket/workflow/admin-notification-template.html";
+		ArrayList emaillist = new ArrayList();
+		HitTracker results = userprofilesearcher.fieldSearch("ticketadmin", "true");
+		for(Iterator detail = results.iterator(); detail.hasNext();) {
+			Data userInfo = (Data)detail.next();
+			emaillist.add(userInfo.get("email"));
+		}
+		String templatePage = "/ecommerce/views/modules/ticket/workflow/admin-notification-template.html";
 		sendEmail(context, emaillist, templatePage);
 
 	} else {
@@ -85,6 +84,7 @@ protected void sendEmail(WebPageRequest context, List email, String templatePage
 	Page template = pageManager.getPage(templatePage);
 	WebPageRequest newcontext = context.copy(template);
 	TemplateWebEmail mailer = getMail();
+	mailer.setFrom("info@wirelessarea.ca");
 	mailer.loadSettings(newcontext);
 	mailer.setMailTemplatePath(templatePage);
 	mailer.setRecipientsFromCommas(email);

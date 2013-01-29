@@ -189,6 +189,10 @@ $order.getOrderStatus()
 	#if ( $order.paymentMethod.note )
 		<stong>Notes:</stong><br/>$order.paymentMethod.note
 	#end
+	
+</p>
+<p>
+$pages.include("$home$apphome/views/modules/storeOrder/shippingdetails/index.html?id=$orderNumber&hitssessionid=hitsnullnull&searchtype=storeOrder")
 </p>
 </div>
 <!-- 

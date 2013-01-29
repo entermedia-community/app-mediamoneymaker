@@ -11,7 +11,7 @@ import org.openedit.store.Product
 import org.openedit.store.Store
 
 public void doProcess() {
-	
+	log.info("Verifying product");
 	WebEvent webevent = context.getPageValue("webevent");
 	if(webevent == null){
 		return;
@@ -38,7 +38,8 @@ public void doProcess() {
 
 	productsearcher.saveData(product, context.getUser());
 	context.putPageValue("product", product);
-
+	log.info("Product verification complete");
+	
 }
 
 doProcess();

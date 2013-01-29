@@ -1,5 +1,5 @@
 <page>
-	<path-action name="Script.run">
+	<path-action name="Script.run" allowduplicates="true">
 		<script>/${catalogid}/events/scripts/products/verifyproduct.groovy</script>
 	</path-action>
 </page>
