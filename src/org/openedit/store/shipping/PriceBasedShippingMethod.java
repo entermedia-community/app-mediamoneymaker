@@ -3,6 +3,7 @@
  */
 package org.openedit.store.shipping;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.dom4j.Element;
@@ -60,6 +61,11 @@ public class PriceBasedShippingMethod  extends BaseShippingMethod
 	public void configure(Element inElement) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public Collection getHints(Cart inCart) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,0 +1,22 @@
+#set($searcher = $mediaarchive.getSearcher("wishlistitems"))
+#set($wishlists = $mediaarchive.getSearcher("wishlistitems"))
+
+#set($id = $context.getRequestParameter("id"))
+#set($wishlist = $wishlists.searchById($id))
+
+<h2>[[My Wish List]] <a class="btn" href="$apphome/wishlist/load.html?listid=$id">Order this</a></h2>
+
+	#set($hits = $searcher.fieldSearch("wishlist", $id))
+$context.putPageValue("data", $wishlist )
+$context.putPageValue("searcher", $wishlists)
+$context.putPageValue("view", "wishlist/wishlistresultstable")
+$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+$context.putPageValue("hits", $hits)
+$context.putPageValue("searcher",$searcher )
+$context.putPageValue("view", "wishlist/wishlistitems")
+$context.putPageValue("showselections", "false")
+$context.putPageValue("clink", "$apphome/views/myaccount/wishlist/items.html")
+
+
+$pages.include("$apphome/components/moduleresults/results.html", $context)

@@ -11,4 +11,6 @@
   <property id="email"/>
   <property id="parentprofile"/>
   <property id="ticketadmin"/>
+  <property id="dealer"/>
+  <property id="displaydesignation"/>
 </root>

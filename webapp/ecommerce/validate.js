@@ -67,13 +67,13 @@ function validateCustomer( customerForm )
 		return false;
 	}
 	
-	field = document.getElementById("shipping.state.value");
-	if ( field.value.length == 0 )
-	{
-		alert( "State or province is required" );
-		field.focus();
-		return false;
-	}
+//	field = document.getElementById("shipping.state.value");
+//	if ( field.value.length == 0 )
+//	{
+//		alert( "State or province is required" );
+//		field.focus();
+//		return false;
+//	}
 	
 	field = document.getElementById("shipping.zipCode.value");
 	if ( field.value.length == 0 )
@@ -110,13 +110,13 @@ function validateBilling( orderForm )
 		field.focus();
 		return false;
 	}
-	field = document.getElementById("billing.state.value");
-	if ( field.value.length == 0 )
-	{
-		alert( "Billing state or province is required." );
-		field.focus();
-		return false;
-	}
+//	field = document.getElementById("billing.state.value");
+//	if ( field.value.length == 0 )
+//	{
+//		alert( "Billing state or province is required." );
+//		field.focus();
+//		return false;
+//	}
 	field = document.getElementById("billing.zipCode.value");
 	if ( field.value.length == 0 )
 	{

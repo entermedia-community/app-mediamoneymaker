@@ -32,9 +32,7 @@ Select From Existing: <select id="address" name="address.value">
 </select>
 </form>
 	</center>
-	#foreach($hint in $cart.getShippingMethod().getHints($cart))
-Add another $hint.needed from $hint.distributor for free shipping
-	#end
+	
 	 
 
 	
@@ -66,7 +64,15 @@ Add another $hint.needed from $hint.distributor for free shipping
 	</tr>
 	<tr>
 	<td class=body2>City<br><input type="text" name="shipping.city.value" id="shipping.city.value" class="small-field" value="$!address.get('city')"/></td>
-	<td class=body2>State or Province<br><input type="text" name="shipping.state.value" id="shipping.state.value" class="small-field" value="$!address.get('state')" /></td>
+	<td class=body2>State or Province<br>
+	#set($provinces = $searcherManager.getList($catalogid, "province"))
+	<select name="shipping.state.value">
+		<option/>
+		#foreach($province in $provinces)
+			<option value="$province.id" #if($!address.get('state') == $province.id) selected #end>$province</option>
+		#end
+	</select>
+	</td>
 	</tr>
 	<tr><td class=body2>ZIP or Postal Code<br><input type="text" name="shipping.zipCode.value" id="shipping.zipCode.value" class="small-field" value="$!address.get('zip')"/></td>
 	<td class=body2>Country<br><input type="text" name="shipping.country.value" id="shipping.country.value" class="small-field" value="$!address.get('country')"/></td>

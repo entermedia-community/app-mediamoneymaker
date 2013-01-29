@@ -3,6 +3,8 @@
  */
 package org.openedit.store.shipping;
 
+import java.util.Collection;
+
 import org.dom4j.Element;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
@@ -23,6 +25,12 @@ public class FixedCostShippingMethod extends BaseShippingMethod
 	public void configure(Element inElement) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Collection getHints(Cart inCart) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

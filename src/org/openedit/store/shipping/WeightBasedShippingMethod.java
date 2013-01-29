@@ -4,6 +4,7 @@
 package org.openedit.store.shipping;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -85,5 +86,10 @@ public class WeightBasedShippingMethod  extends BaseShippingMethod
 	public void configure(Element inElement) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public Collection getHints(Cart inCart) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

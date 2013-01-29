@@ -1,4 +1,4 @@
-
+<h1>Shipping Details</h1>
 
 
 #set($address = $cart.getShippingAddress())
@@ -9,7 +9,7 @@
 	$pages.include("./shipping.html")
 
 #foreach($hint in $cart.getShippingMethod().getHints($cart))
-Add another $hint.needed from $hint.distributor for free shipping <br/>
+Add another $hint.needed from <a href="$apphome/search/fieldsearch.html?field=distributor&distributor.value=$hint.distributor&operation=exact">these products</a> to save $hint.savings on shipping. <br/>
 	#end
 	 
 

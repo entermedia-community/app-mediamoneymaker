@@ -99,6 +99,9 @@
       <userprofile value="true" name="viewtesting"/>
   </permission>
   
+   <permission name="dealertools">
+      <userprofile value="true" name="dealertools"/>
+  </permission>
   
   
   <path-action name="storeArchive.loadStore"/>

@@ -1,0 +1,17 @@
+<h2>[[My Wish List]]</h2>
+#set($searcher = $mediaarchive.getSearcher("wishlist"))
+#if($candealertools)
+#set($hits = $searcher.fieldSearch("dealer", $userprofile.dealer))
+#else
+#set($hits = $searcher.fieldSearch("owner", $userprofile.id))
+
+#end
+
+$context.putPageValue("hits", $hits)
+$context.putPageValue("searcher",$searcher )
+$context.putPageValue("view", "wishlist/wishlistresultstable")
+$context.putPageValue("showselections", "false")
+$context.putPageValue("clink", "$apphome/views/myaccount/wishlist/items.html")
+
+
+$pages.include("$apphome/components/moduleresults/results.html", $context)
