@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.dom4j.Element;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -18,7 +19,7 @@ import org.openedit.store.ShippingMethod;
  * @author cburkey
  *
  */
-public abstract class ScriptedShippingMethod implements ShippingMethod  
+public  class ScriptedShippingMethod implements ShippingMethod  
 {
 	protected String fieldId = "";
 	protected String fieldDescription = "";
@@ -138,6 +139,24 @@ public abstract class ScriptedShippingMethod implements ShippingMethod
 	public void setHidden(boolean inHidden)
 	{
 		fieldHidden = inHidden;
+	}
+
+	@Override
+	public Money getCost(Cart inCart) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean applies(Cart inCart) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void configure(Element inElement) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

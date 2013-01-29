@@ -124,7 +124,7 @@ Log log = LogFactory.getLog(RogersConverter.class);
 
 //					log.info(product);
 					// inStore.getProductSearcher().saveData(target, null);
-					downloadImage(inStore, product);
+				//	downloadImage(inStore, product);
 					product.setAvailable(true);
 					
 					

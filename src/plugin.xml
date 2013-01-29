@@ -52,6 +52,7 @@
 <bean id="storeArchive" class="org.openedit.store.xmldb.XmlStoreArchive" >
 	<property name="moduleManager"><ref bean="moduleManager"/></property>
   	<property name="pageManager"><ref bean="pageManager" /></property>
+  		<property name="scriptManager"><ref bean="scriptManager" /></property>
  </bean>
 
   	<bean id="store" class="org.openedit.store.Store" singleton="false">

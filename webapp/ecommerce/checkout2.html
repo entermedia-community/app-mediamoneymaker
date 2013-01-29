@@ -32,7 +32,9 @@ Select From Existing: <select id="address" name="address.value">
 </select>
 </form>
 	</center>
-	
+	#foreach($hint in $cart.getShippingMethod().getHints($cart))
+Add another $hint.needed from $hint.distributor for free shipping
+	#end
 	 
 
 	
@@ -40,7 +42,7 @@ Select From Existing: <select id="address" name="address.value">
 	</td>
 
 
-<form method="post" name="orderForm" action="checkout3.html">
+<form method="post" name="orderForm" action="shippingdetails.html">
 <input type=hidden name="userName" value="$!customer.userName" />
 <input type=hidden name="password" value="$!customer.password" />
 
@@ -84,7 +86,7 @@ Select From Existing: <select id="address" name="address.value">
 #end
 	<tr style="border-top: 1px solid #ddd;">
 	<td class=body2>	
-		$pages.include("./shipping.html")
+		
 		</td>
 	<td valign=middle><input class="btn right" style="margin-top: 25px;" type="button" name="done" value="Continue" onclick="javascript: validateCustomerAndSubmit( document.orderForm ); " /></td>
     </tr>

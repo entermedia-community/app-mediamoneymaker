@@ -3,6 +3,7 @@
  */
 package org.openedit.store;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.dom4j.Element;
@@ -28,5 +29,6 @@ public interface ShippingMethod
 	boolean isHidden();
 	public void configure(Element inElement);
 	public void addHandlingCharge(HandlingCharge inHandlingCharge);
+	public Collection getHints(Cart inCart);
 	
 }

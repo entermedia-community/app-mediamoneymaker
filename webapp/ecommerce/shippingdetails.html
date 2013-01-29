@@ -1,0 +1,16 @@
+
+
+
+#set($address = $cart.getShippingAddress())
+
+	
+
+	
+	$pages.include("./shipping.html")
+
+#foreach($hint in $cart.getShippingMethod().getHints($cart))
+Add another $hint.needed from $hint.distributor for free shipping <br/>
+	#end
+	 
+
+	<a class="btn" href="checkout3.html">I'm ready, proceed to checkout</a>

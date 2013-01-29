@@ -24,6 +24,7 @@ import org.openedit.store.StoreException;
 import org.openedit.store.TaxRate;
 import org.openedit.store.products.SegmentedProductPathFinder;
 import org.openedit.store.shipping.BaseShippingMethod;
+import org.openedit.store.shipping.CompositeShippingMethod;
 import org.openedit.store.shipping.PriceBasedShippingMethod;
 import org.openedit.store.shipping.WeightBasedShippingMethod;
 
@@ -31,6 +32,9 @@ import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.config.XMLConfiguration;
+import com.openedit.entermedia.scripts.GroovyScriptRunner;
+import com.openedit.entermedia.scripts.Script;
+import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.XmlUtil;
@@ -44,7 +48,7 @@ import com.openedit.util.XmlUtil;
 public class XmlStoreArchive implements StoreArchive
 {
 	private static final Log log = LogFactory.getLog(XmlStoreArchive.class);
-
+	protected ScriptManager fieldScriptManager;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
 	protected Map fieldStores;
@@ -253,10 +257,55 @@ public class XmlStoreArchive implements StoreArchive
 		}
 
 		
+		for (Iterator iter = rootElement.elementIterator("scripted-shipping-method"); iter.hasNext();)
+		{
+			Element element = (Element) iter.next();
+			String pathtoscript = element.attributeValue("path");
+					
+			Script script = getScriptManager().loadScript(pathtoscript);
+			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
+			ShippingMethod method  = (ShippingMethod)runner.newInstance(script);
+		
+			
+		
+
+			inStore.getAllShippingMethods().add(method);
+		}
+		
+		
+		for (Iterator iter = rootElement.elementIterator("composite-shipping-method"); iter.hasNext();)
+			
+		{
+			Element element = (Element) iter.next();
+			CompositeShippingMethod method = new CompositeShippingMethod();
+			
+			for (Iterator iterator = element.elementIterator("scripted-shipping-method"); iterator.hasNext();) {
+			Element subelement = (Element) iterator.next();
+				
+		
+			
+			String pathtoscript = subelement.attributeValue("path");
+					
+			Script script = getScriptManager().loadScript(pathtoscript);
+			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
+			ShippingMethod nextmethod  = (ShippingMethod)runner.newInstance(script);
+			method.addShippingMethod(nextmethod);
+			}
+		
+
+			inStore.getAllShippingMethods().add(method);
+		}
 		
 		
 	}
 
+	public ScriptManager getScriptManager() {
+		return fieldScriptManager;
+	}
+	public void setScriptManager(ScriptManager fieldScriptManager) {
+		this.fieldScriptManager = fieldScriptManager;
+	}
+	
 	private void configureShippingMethod(BaseShippingMethod shippingmethod, Element method)
 	{
 		shippingmethod.setDescription(method.attributeValue("description"));

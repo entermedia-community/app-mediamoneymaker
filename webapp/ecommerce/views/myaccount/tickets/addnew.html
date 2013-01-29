@@ -1,0 +1,4 @@
+<h1>Get Support</h1>
+$context.putPageValue("searcher", $mediaarchive.getSearcher("tickets"))
+$context.putPageValue("view", "tickets/addnew")
+$pages.include("$apphome/components/xml/detaileditor.html", $context)

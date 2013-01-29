@@ -1,4 +1,4 @@
-<h1>Support Tickets</h1>
+<h1>Support Tickets <a class="btn" href="addnew.html">Add New Ticket</a></h1>
 #set($hits = $mediaarchive.getSearcher("tickets").fieldSearch("owner", $userprofile.id, "ticketstatus"))
 
 $context.putPageValue("hits", $hits)
