@@ -1,9 +1,9 @@
 <h1>Support Tickets <a class="btn" href="addnew.html">Add New Ticket</a></h1>
-#set($hits = $mediaarchive.getSearcher("tickets").fieldSearch("owner", $userprofile.id, "ticketstatus"))
+#set($hits = $mediaarchive.getSearcher("ticket").fieldSearch("owner", $userprofile.id, "ticketstatus"))
 
 $context.putPageValue("hits", $hits)
-$context.putPageValue("searcher", $mediaarchive.getSearcher("tickets"))
-$context.putPageValue("view", "tickets/myaccount")
+$context.putPageValue("searcher", $mediaarchive.getSearcher("ticket"))
+$context.putPageValue("view", "ticket/myaccount")
 $context.putPageValue("showselections", "false")
 
 

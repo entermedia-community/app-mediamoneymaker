@@ -1,4 +1,11 @@
 <h1>Get Support</h1>
-$context.putPageValue("searcher", $mediaarchive.getSearcher("tickets"))
-$context.putPageValue("view", "tickets/addnew")
+$context.putPageValue("searcher", $mediaarchive.getSearcher("ticket"))
+$context.putPageValue("view", "ticket/addnew")
+<form name="submitticket" action="addnewfinish.html">
 $pages.include("$apphome/components/xml/detaileditor.html", $context)
+<input type="hidden" name="owner.value" value="$userprofile.id"/>
+<input type="hidden" name="field" value="owner"/>
+<input type="hidden" name="save" value="true"/>
+
+<input type="submit"/>
+</form>
