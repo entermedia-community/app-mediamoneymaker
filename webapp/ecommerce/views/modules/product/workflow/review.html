@@ -1,4 +1,5 @@
 #set($userprofilesearcher = $mediaarchive.getSearcher("userprofile"))
+#set($productsearcher = $mediaarchive.getSearcher("product"))
 #set($profile = $userprofilesearcher.searchById($data.profileid))
 <h2>Review Product Details</h2>
 
@@ -12,6 +13,7 @@
 	<input name="origURL"  type="hidden" value="$!origURL" />
    	<input name="to" type="hidden" value="$profile.email, pf@area.ca" />
     	
+    	$context.putPageValue("searcher", $productsearcher)
     	$context.putPageValue("view", "product/productreview")
 
 #set( $origURL = $context.getRequestParameter("origURL" ) )

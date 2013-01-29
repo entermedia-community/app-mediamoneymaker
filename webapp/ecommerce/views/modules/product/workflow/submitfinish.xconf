@@ -7,7 +7,7 @@
     <path-action name="DataEditModule.saveData"/>
     <path-action name="CartModule.loadProductDetails"/>
 	<page-action name="Email.sendEmail"/>
-	<property name="from">ian@ijsolutions.ca</property>
+	<property name="from">info@wirelessarea.ca</property>
 	<property name="subject">Submission Reviewed</property>
-	<property name="emailbody">/${applicationid}/views/modules/product/edit/workflow/notify-template.html</property>
+	<property name="emailbody">/${applicationid}/views/modules/product/workflow/notify-template.html</property>
 </page>
