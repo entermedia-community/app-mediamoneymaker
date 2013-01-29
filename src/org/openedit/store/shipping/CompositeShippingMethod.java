@@ -61,7 +61,7 @@ public class CompositeShippingMethod extends BaseShippingMethod implements
 
 	}
 
-	public List getHints(Cart inCart) {
+	public Collection getHints(Cart inCart) {
 		ArrayList hintlist = new ArrayList();
 		for (Iterator iterator = getShippingMethods().iterator(); iterator
 				.hasNext();) {
