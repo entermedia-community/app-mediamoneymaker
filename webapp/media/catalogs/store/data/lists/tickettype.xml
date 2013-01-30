@@ -5,4 +5,6 @@
   <tickettype id="order">Order Issue</tickettype>
   <tickettype id="feedback">Feedback</tickettype>
   <tickettype id="productchangerequest">Product Change Request</tickettype>
+  <tickettype id="newproductsubmission">New Product Submission</tickettype>
+  <tickettype id="updateproduct">Update Product</tickettype>
 </tickettypes>

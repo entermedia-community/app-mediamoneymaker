@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="accessoryname"/>
   <property id="name"/>
-  <property id="accessorynamefr"/>
-  <property id="manufacturerid" viewtype="manufacturerlist"/>
-  <property id="manufacturersku"/>
-  <property id="rogerssku"/>
-  <property id="categoryid"/>
-  <property id="displaydesignationid"/>
+  <property id="upc"/>
   <property id="description"/>
   <property id="descripfr" viewtype="html"/>
-  <property id="phonecompatability"/>
-  <property id="upc"/>
+  <property id="categoryid"/>
+  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="phone"/>
+  <property id="manufacturersku"/>
+  <property id="rogerssku"/>
+  <property id="displaydesignationid"/>
+  <property id="phonecompatability"/>
   <property id="msrp"/>
   <property id="fidomsrp"/>
   <property id="rogersprice"/>

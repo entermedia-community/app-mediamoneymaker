@@ -13,7 +13,10 @@
 	 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
 	 		<input name="field" type="hidden" value="approved" />
 	 		<input name="approved.value" type="hidden" value="false" />
-		   	<input name="to" type="hidden" value="dsf@area.ca, ian@ijsolutions.ca, pf@area.ca" />
+	 		#set($ticketid = $context.getRequestParameter("ticketid"))
+	 		#if($ticketid)
+	 			<input name="ticketid" type="hidden" value="$ticketid" />
+	 		#end
 		   	#if($data)
 		   		<input name="id" type="hidden" value="$!data.id" />
 		   		<input name="productid" type="hidden" value="$!data.id" />
