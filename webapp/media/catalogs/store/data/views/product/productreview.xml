@@ -4,7 +4,7 @@
   <property id="accessoryname"/>
   <property id="name"/>
   <property id="accessorynamefr"/>
-  <property id="manufacturerid"  viewtype="manufacturerlist"/>
+  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
   <property id="displaydesignationid"/>
@@ -17,4 +17,5 @@
   <property id="msrp"/>
   <property id="rogersprice"/>
   <property id="approved"/>
+  <property id="active"/>
 </root>

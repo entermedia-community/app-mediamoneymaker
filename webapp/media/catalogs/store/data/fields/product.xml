@@ -58,5 +58,6 @@
   <property id="bannerid" index="true" stored="true" searchtype="product">BannerID</property>
   <property id="updatedon" index="true" stored="true" searchtype="product">UpdatedOn</property>
   <property id="profileid" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="userprofile" datatype="list">Profile ID</property>
-  <property id="accessoryname" index="true" stored="true">AccessoryName</property>
+  <property id="accessoryname" index="true" stored="true" searchtype="product">AccessoryName</property>
+  <property id="active" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Active</property>
 </properties>
