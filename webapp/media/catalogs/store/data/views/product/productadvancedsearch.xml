@@ -4,4 +4,5 @@
   <property id="name"/>
   <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="categoryid"/>
+  <property id="clearancecentre"/>
 </root>

@@ -29,4 +29,6 @@
   <data id="manufacturerdetails" module="manufacturer" systemdefined="false" ordering="1358537664744">Details</data>
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
+  <data id="productbatch_edit" module="product" systemdefined="false" ordering="1360001870275">Batch Edit</data>
+  <data id="bannerbanner_details" module="banner" systemdefined="false" ordering="1360010854335">Banner Details</data>
 </root>

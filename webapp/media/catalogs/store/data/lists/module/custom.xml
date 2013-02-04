@@ -11,4 +11,5 @@
   <data id="wishlist">WishList</data>
   <corporateorder id="tickets" recordstatus="deleted">Support Tickets</corporateorder>
   <data id="ticket">Support Tickets</data>
+  <data id="banner">Banners</data>
 </root>

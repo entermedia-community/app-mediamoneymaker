@@ -7,4 +7,5 @@
   <property id="distributor"/>
   <property id="clearanceprice"/>
   <property id="image"/>
+  <property id="clearancecentre"/>
 </root>

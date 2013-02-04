@@ -1,13 +1,13 @@
 
 <properties beanname="dynamicSearcher">
-  <property id="description" catalogid="media/catalogs/store" searchtype="storeOrder">Keyword</property>
-  <property id="id" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" editable="true" searchtype="storeOrder">Order #</property>
-  <property id="customer" catalogid="media/catalogs/store" index="true" keyword="true" stored="true" editable="true" searchtype="storeOrder">Customer</property>
-  <property id="products" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="storeOrder">Products</property>
-  <property id="categories" catalogid="media/catalogs/store" keyword="true" stored="true" editable="true" searchtype="storeOrder">Default Category</property>
-  <property id="orderdate" catalogid="media/catalogs/store" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="storeOrder" internalfield="false" datatype="date">Order Date</property>
-  <property id="rogersponumber" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">AS400 PO Number</property>
-  <property id="orderstatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">Status</property>
-  <property id="shippingstatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">Shipping Status</property>
-  <property id="edistatus" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">EDI Status</property>
+  <property id="description" searchtype="storeOrder">Keyword</property>
+  <property id="id" index="true" keyword="true" stored="true" editable="true" searchtype="storeOrder">Order #</property>
+  <property id="customer" index="true" keyword="true" stored="true" editable="true" searchtype="storeOrder">Customer</property>
+  <property id="products" index="true" stored="true" editable="true" searchtype="storeOrder">Products</property>
+  <property id="categories" keyword="true" stored="true" editable="true" searchtype="storeOrder">Default Category</property>
+  <property id="orderdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="storeOrder" internalfield="false" datatype="date">Order Date</property>
+  <property id="rogersponumber" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">AS400 PO Number</property>
+  <property id="orderstatus" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="storeOrder" internalfield="false" datatype="list">Status</property>
+  <property id="shippingstatus" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">Shipping Status</property>
+  <property id="edistatus" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">EDI Status</property>
 </properties>
