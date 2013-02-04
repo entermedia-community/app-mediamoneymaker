@@ -104,7 +104,7 @@ $order.getOrderStatus()
 			<input type="hidden" name="ordernumber" value="$orderNumber"/>
 			<input type="hidden" name="origURL" value="$content.path"/></p></td>
 		<td align="center">
-			<p class="results-list">$item.sku</p></td>
+			<p class="results-list">$item.product.rogerssku</p></td>
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
 		#if ($content.isPropertyTrue("showprice"))
@@ -122,7 +122,7 @@ $order.getOrderStatus()
 						#if ( $order.getQuantityShipped($item) > 0 )
 							Partially Shipped
 						#else
-							Waiting for Shipment
+							Will ship in 24-48 hours
 						#end
 					#end
 				#end
