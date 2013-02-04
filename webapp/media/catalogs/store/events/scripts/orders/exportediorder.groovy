@@ -106,90 +106,101 @@ public class ExportEdiOrder extends EnterMediaObject {
 			if (order == null) {
 				throw new OpenEditException("Invalid Order");
 			}
-			String ediStatus = order.get("edistatus");
-			if (ediStatus == null || ediStatus.equals("open")) {
-
-				orderCount++;
-				String orderid = order.getId();
-
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-				HitTracker distributorList = distributorsearcher.getAllHits();
-				List generatedfiles = new ArrayList();
-
-				//Search through each distributor
-				for (Iterator distribIterator = distributorList.iterator(); distribIterator.hasNext();)
-				{
-
-					//Get all of the hits and data for searching
-					Data distributor = distribIterator.next();
-					log.info("Distributor: " + distributor.name);
-
-					if (!Boolean.parseBoolean(distributor.useedi)) {
-						continue;
-					}
-
-					boolean includedistributor = false;
-					for(Iterator i = order.getItems().iterator(); i.hasNext();){
-						CartItem item = i.next();
-						if(distributor.getId().equals(item.getProduct().getProperty("distributor"))) {
-							includedistributor = true;
+			String orderStatus = order.get("orderstatus");
+			if (orderStatus != "rejected") {
+				String ediStatus = order.get("edistatus");
+				if (ediStatus == null || ediStatus.equals("open")) {
+	
+					orderCount++;
+					String orderid = order.getId();
+	
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+					HitTracker distributorList = distributorsearcher.getAllHits();
+					List generatedfiles = new ArrayList();
+	
+					//Search through each distributor
+					for (Iterator distribIterator = distributorList.iterator(); distribIterator.hasNext();)
+					{
+	
+						//Get all of the hits and data for searching
+						Data distributor = distribIterator.next();
+	
+						if (!Boolean.parseBoolean(distributor.useedi)) {
 							continue;
 						}
-					}
-
-					if (includedistributor)
-					{
-						log.info("Processing Order ID: " + currentOrder.getId());
-			
-						//Iterate through each distributor
-
-						//Create the XML Writer object
-						def writer = new StringWriter();
-						def xml = new MarkupBuilder(writer);
-						xml.'PurchaseOrder'()
-						{
-							Attributes()
-							populateGroup(xml, storesearcher,  distributor, log, order)
-						}
-
-						if (validateXML(writer, catalogid))
-						{
-							// xml generation
-							String fileName = currentOrder.getId() + "-export-" + distributor.name.replace(" ", "-") + ".xml"
-							Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
-
-							//Get the FTP Info
-							Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
-							if (ftpInfo == null) {
-								throw new OpenEditException("Cannot get FTP Info using ${ftpID}");
+	
+						boolean includedistributor = false;
+						for(Iterator i = order.getItems().iterator(); i.hasNext();){
+							CartItem item = i.next();
+							if(distributor.getId().equals(item.getProduct().getProperty("distributor"))) {
+								includedistributor = true;
+								continue;
 							}
-
-							//Generate EDI Header
-							String ediHeader = generateEDIHeader(production, ftpInfo, distributor);
-
-							//Create the output of the XML file
-							StringBuffer bufferOut = new StringBuffer();
-							bufferOut.append(ediHeader)
-							bufferOut.append(writer);
-							page.setContentItem(new StringItem(page.getPath(), bufferOut.toString(), "UTF-8"));
-
-							//Write out the XML page.
-							pageManager.putPage(page);
-							inMsg = fileName + " has been validated and created successfully.";
-							log.info(inMsg);
-							generatedfiles.add(inMsg);
-
-							order.setProperty("edistatus", "generated");
-							store.getOrderArchive().saveOrder(store, order);
-							inMsg = "Order (" + order.getId() + ") has been updated.";
-							log.info(inMsg);
-
-						} else {
-							throw new OpenEditException("The XML did not validate.");
 						}
-
-					} // end if numDistributors
-				} // end distribIterator LOOP
+	
+						if (includedistributor)
+						{
+							log.info("Distributor: " + distributor.name);
+							log.info("Processing Order ID: " + currentOrder.getId());
+				
+							//Iterate through each distributor
+	
+							//Create the XML Writer object
+							def writer = new StringWriter();
+							def xml = new MarkupBuilder(writer);
+							xml.'PurchaseOrder'()
+							{
+								Attributes()
+								populateGroup(xml, storesearcher,  distributor, log, order)
+							}
+	
+							if (validateXML(writer, catalogid))
+							{
+								// xml generation
+								String fileName = currentOrder.getId() + "-export-" + distributor.name.replace(" ", "-") + ".xml"
+								Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${orderid}/${fileName}");
+	
+								//Get the FTP Info
+								Data ftpInfo = getFtpInfo(context, catalogid, ftpID);
+								if (ftpInfo == null) {
+									throw new OpenEditException("Cannot get FTP Info using ${ftpID}");
+								}
+	
+								//Generate EDI Header
+								String ediHeader = generateEDIHeader(production, ftpInfo, distributor);
+	
+								//Create the output of the XML file
+								StringBuffer bufferOut = new StringBuffer();
+								bufferOut.append(ediHeader)
+								bufferOut.append(writer);
+								page.setContentItem(new StringItem(page.getPath(), bufferOut.toString(), "UTF-8"));
+	
+								//Write out the XML page.
+								pageManager.putPage(page);
+								inMsg = fileName + " has been validated and created successfully.";
+								log.info(inMsg);
+								generatedfiles.add(inMsg);
+	
+								order.setProperty("edistatus", "generated");
+								store.getOrderArchive().saveOrder(store, order);
+								ordersearcher.saveData(order, inReq.getUser());
+								ordersearcher.reIndexAll();
+								inMsg = "Order (" + order.getId() + ") has been updated.";
+								log.info(inMsg);
+	
+							} else {
+								throw new OpenEditException("The XML did not validate.");
+							}
+	
+						} // end if numDistributors
+					} // end distribIterator LOOP
+				} else {
+					inMsg = "Order Passed (" + order.getId() + "): EDIStatus is " + ediStatus;
+					log.info(inMsg);
+				}
+			} else {
+				inMsg = "Order Passed (" + order.getId() + "): Status is rejected";
+				log.info(inMsg);
 			}
 		}
 		if (orderCount == 0) {

@@ -5,5 +5,7 @@
   <property id="orderdate"/>
   <property id="shippingstatus"/>
   <property id="orderstatus"/>
+
   <property id="orderstatus"/>
+  <property id="edistatus"/>
 </root>

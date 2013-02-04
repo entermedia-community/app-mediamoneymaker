@@ -228,8 +228,9 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 									//_PRO
 									def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "WY"}.ReferenceNbr.text();
 									if (!WB.isEmpty()) {
-										foundData = true;
 										waybill = WB;
+										log.info("Waybill: " + waybill);
+										foundData = true;
 									} else {
 										strMsg = "ERROR: Wyabill value was not found in INVOICE.";
 										log.info(strMsg);
@@ -342,18 +343,18 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													if (orderItem == null) {
 														throw new Exception("Could not load orderItem(" + productID + ")");
 													}
-													//Check Quantities
-													int orderItemQuantity = orderItem.getQuantity();
-													int ediItemQuantity = Integer.parseInt(quantity);
-													if (orderItemQuantity != ediItemQuantity) {
-														throw new Exception("Invalid Quantity (" + orderItemQuantity.toString() + ":" + ediItemQuantity.toString() + ")");
-													}
-													//Check Price
-													Money orderPrice = orderItem.getYourPrice();
-													Money ediPrice = new Money(linePrice);
-													if (orderPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
-														throw new Exception("Invalid Price(" + orderPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")");
-													}
+//													//Check Quantities
+//													int orderItemQuantity = orderItem.getQuantity();
+//													int ediItemQuantity = Integer.parseInt(quantity);
+//													if (orderItemQuantity != ediItemQuantity) {
+//														throw new Exception("Invalid Quantity (" + orderItemQuantity.toString() + ":" + ediItemQuantity.toString() + ")");
+//													}
+//													//Check Price
+//													Money orderPrice = orderItem.getYourPrice();
+//													Money ediPrice = new Money(linePrice);
+//													if (orderPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
+//														throw new Exception("Invalid Price(" + orderPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")");
+//													}
 
 													SearchQuery invoiceItemQuery = media.getInvoiceItemsSearcher().createSearchQuery();
 													invoiceItemQuery.addExact("invoiceid", ediInvoice.getId());
@@ -396,6 +397,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													ediInvoiceItem.setProperty("price", linePrice);
 													ediInvoiceItem.setProperty("quantity", quantity);
 													media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
+													media.getInvoiceItemsSearcher().reIndexAll();
 													strMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
 													log.info(strMsg);
 
@@ -475,6 +477,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 									try {
 										log.info("Status: Saving Invoice (" + ediInvoice.getId() +")");
 										media.getInvoiceSearcher().saveData(ediInvoice, media.getContext().getUser());
+										media.getInvoiceSearcher().reIndexAll();
 									}
 									catch (Exception e) {
 										strMsg = "ERROR: Saving Invoice: " + ediInvoice.getId() + ":" + purchaseOrder + "\n";
@@ -493,22 +496,21 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 							if (move) {
 								strMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
 								log.info(strMsg);
-								result.setCompleteMessage(result.getCompleteMessage() + "\n" + output.appendList(strMsg));
 								result.setComplete(true);
 							} else {
 								strMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(strMsg));
+								log.info(strMsg);
 							}
 						} else {
 							strMsg = "ERROR Invoice not saved.";
-							result.setErrorMessage(result.getErrorMessage() + output.appendList(strMsg));
+							log.info(strMsg);
 							boolean move = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 							if (move) {
 								strMsg = "Invoice File (" + page.getName() + ") moved to error";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(strMsg));
+								log.info(strMsg);
 							} else {
 								strMsg = "Invoice File (" + page.getName() + ") failed to move to ERROR";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(strMsg));
+								log.info(strMsg);
 							}
 						}
 					} // end XML File Exists
