@@ -11,7 +11,7 @@
   <Xhostname>Test</Xhostname>
   <coupons enabled="true" />
   <to-address>cburkey@openedit.org</to-address>
-  <from-address>store@einnovation.com</from-address>
+  <from-address>info@wirelessarea.ca</from-address>
   <email-layout>/ecommerce/thanksemail.html</email-layout>
   <order-layout>/ecommerce/orderemail.html</order-layout>
    <status-email-layout>/ecommerce/orders/statusemail.html</status-email-layout>
