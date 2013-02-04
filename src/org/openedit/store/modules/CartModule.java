@@ -611,6 +611,9 @@ public class CartModule extends BaseStoreModule {
 			target.setId(addressSearcher.nextId());
 			target.setProperty("userprofile", inPageRequest.getUserProfile()
 					.getId());
+			if(inPageRequest.getUserProfile().get("dealer") != null){
+				target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
+			}
 			addressSearcher.saveData(target, inPageRequest.getUser());
 
 		} else {
