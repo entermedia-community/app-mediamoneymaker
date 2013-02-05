@@ -19,7 +19,7 @@
                 <a href="$clink">$cell.name</a> 
             </div>
             <div class="product-cat">
-                <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer)</a> 
+                <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer) $cell.displaydesignationid</a> 
             </div>
             <div class="product-price">
 		        #if( $cell.regularprice ) 

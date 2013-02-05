@@ -8,4 +8,5 @@
   <property id="msrp"/>
   <property id="fidomsrp"/>
   <property id="rogersprice"/>
+  <property id="active"/>
 </root>

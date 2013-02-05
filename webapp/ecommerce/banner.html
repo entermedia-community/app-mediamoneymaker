@@ -1,0 +1,9 @@
+#set($banners = $searcherManager.getSearcher($catalogid, "banner"))
+#set($bannerlist = $banners.fieldSearch("active", "true", "random"))
+
+#if($bannerlist.size() > 0)
+#set($first  = $bannerlist.get(0))
+#set($asset = $mediaarchive.getAsset($first.image))
+#set($orig = $mediaarchive.asLinkToOriginal($asset))
+<img src="$apphome/views/modules/asset/downloads/preview/widescreensmall/$asset.sourcepath/thumb.jpg"/> 
+#end

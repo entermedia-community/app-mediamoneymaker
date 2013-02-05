@@ -27,6 +27,12 @@ public class StoreSearchModule extends BaseStoreModule
 {
 	private static final Log log = LogFactory.getLog(StoreSearchModule.class);
 	protected SearchQueryArchive fieldSearchQueryArchive;
+	
+	public void loadClearance(WebPageRequest inReq){
+		Store store = getStore(inReq);
+		
+	}
+	
 	public SearchQueryArchive getSearchQueryArchive() {
 		return fieldSearchQueryArchive;
 	}

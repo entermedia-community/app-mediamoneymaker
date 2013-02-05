@@ -3,14 +3,16 @@
 
 #set($address = $cart.getShippingAddress())
 
-	
+	<p>You order will normally ship in 24-48 hours.</p>
 
 	
 	$pages.include("./shipping.html")
-
+#if($cart.getShippingMethod().getHints($cart).size() > 0)
+<h1>Helpful hints to save on shipping:</h1>
+#end
 #foreach($hint in $cart.getShippingMethod().getHints($cart))
-Add another $hint.needed from <a href="$apphome/search/fieldsearch.html?field=distributor&distributor.value=$hint.distributor&operation=exact">these products</a> to save $hint.savings on shipping. <br/>
+Add another $hint.needed from <a class="btn" href="$apphome/search/fieldsearch.html?field=distributor&distributor.value=$hint.distributor&operation=exact">these products</a> to save $hint.savings on shipping. <br/>
 	#end
 	 
-
+<br/>
 	<a class="btn" href="checkout3.html">I'm ready, proceed to checkout</a>

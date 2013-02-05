@@ -19,7 +19,7 @@
     			#set ( $method = $cart.getShippingMethod() )
     			#if ( $method )
     			<tr>
-    				<td align="right" class=body2><nobr>$method.getDescription():</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
+    				<td align="right" class=body2><nobr>Shipping:</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
     			</tr>
     			#end
     			#if ( $cart.isAdditionalShippingCosts() )

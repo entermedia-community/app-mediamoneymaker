@@ -2,10 +2,11 @@
 
 <root>
   <property id="id"/>
-  <property id="accessoryname"/>
+  <property id="name"/>
   <property id="distributor"/>
   <property id="manufacturersku"/>
   <property id="msrp"/>
   <property id="rogersprice"/>
   <property id="fidomsrp"/>
+  <property id="clearancecentre"/>
 </root>

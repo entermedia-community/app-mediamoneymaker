@@ -1,0 +1,8 @@
+<h2>Additional Review needed.</h2>
+#set($productName = $data.getName())
+<p>The following product needs to be reviewed before it can be approved: $productName</p>
+#set($url = "$content.siteroot$apphome/distributors/submitforreview.html")
+#set($option = "id=$data.id&productid=$data.id&searchtype=product")
+<p>
+	<a href="${url}?${option}">Click here to review the product and make the requested updates.</a>
+</p>

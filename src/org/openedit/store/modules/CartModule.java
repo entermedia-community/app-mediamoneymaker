@@ -611,6 +611,9 @@ public class CartModule extends BaseStoreModule {
 			target.setId(addressSearcher.nextId());
 			target.setProperty("userprofile", inPageRequest.getUserProfile()
 					.getId());
+			if(inPageRequest.getUserProfile().get("dealer") != null){
+				target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
+			}
 			addressSearcher.saveData(target, inPageRequest.getUser());
 
 		} else {
@@ -753,7 +756,7 @@ public class CartModule extends BaseStoreModule {
 		wishlist.setProperty("profileid", profile.getId());
 		wishlist.setProperty("dealer", profile.get("dealer"));
 
-		wishlist.setProperty("store", user.get("store"));
+		wishlist.setProperty("store", profile.get("store"));
 		wishlist.setId(wishlistsearcher.nextId());
 		String[] fields = inReq.getRequestParameters("field");
 		wishlistsearcher.updateData(inReq, fields, wishlist);
