@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans>
+<beans default-lazy-init="true">
  	<bean id="customerDirectory" class="java.io.File">
  		<constructor-arg><ref bean="root"/></constructor-arg>
 		 <constructor-arg><value>/WEB-INF/users</value></constructor-arg>
