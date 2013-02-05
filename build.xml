@@ -55,6 +55,7 @@
 			<copy todir="${wardir}" preservelastmodified="true">
 					<fileset dir="${webapp}">
 						<include name="store/*.*" />
+						<include name="store/products/**" />
 						<include name="store/configuration/store.*" />
 						<include name="store/configuration/authorize.*" />
 						<include name="media/catalogs/store/**" />
