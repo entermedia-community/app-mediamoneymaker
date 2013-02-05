@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="name"/>
-  <property id="upc"/>
-  <property id="descrip"/>
-  <property id="descripfr" viewtype="html"/>
-  <property id="categoryid"/>
-  <property id="manufacturerid" viewtype="manufacturerlist"/>
+  <property id="name" required="true"/>
+  <property id="upc" required="true"/>
+  <property id="descrip" required="true"/>
+  <property id="descripfr" viewtype="html" required="true"/>
+  <property id="categoryid" required="true"/>
+  <property id="manufacturerid" viewtype="manufacturerlist" required="true"/>
   <property id="phone"/>
-  <property id="manufacturersku"/>
-  <property id="rogerssku"/>
-  <property id="displaydesignationid"/>
+  <property id="manufacturersku" required="true"/>
+  <property id="rogerssku" required="true"/>
+  <property id="displaydesignationid" required="true"/>
   <property id="phonecompatability"/>
-  <property id="msrp"/>
-  <property id="fidomsrp"/>
-  <property id="rogersprice"/>
+  <property id="msrp" required="true"/>
+  <property id="fidomsrp" />
+  <property id="rogersprice" required="true"/>
   <property id="active"/>
   <property id="clearancecentre"/>
 </root>

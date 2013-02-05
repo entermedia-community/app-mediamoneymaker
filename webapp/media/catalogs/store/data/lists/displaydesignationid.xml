@@ -1,5 +1,7 @@
 
-<displaydesignationids>
-  <displaydesignationid id="rogers">Rogers</displaydesignationid>
-  <displaydesignationid id="fido">Fido</displaydesignationid>
-</displaydesignationids>
+<displaydesignations>
+  <displaydesignation id="1">Rogers</displaydesignation>
+  <displaydesignation id="2">Fido</displaydesignation>
+  <displaydesignation id="3">Both</displaydesignation>
+  
+</displaydesignations>

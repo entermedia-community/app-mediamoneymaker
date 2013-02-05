@@ -22,7 +22,7 @@
 #set($isDistributor = $userprofile.get("distributor"))
 #set($distributor = $searcherManager.getData($catalogid, "distributor", $isDistributor))
 <select style="margin-top: 8px;" id="list-phone" data-placeholder=" " name="manufacturerid.value" 
-	class="choose-select autosubmited ">
+	class="choose-select autosubmited  required  ">
 	<option value=""></option>
 	#if($distributor)
 		#set($distributor = $distributorsearcher.searchById($distributor.getId()))

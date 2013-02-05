@@ -17,7 +17,7 @@
   <property id="rogerssku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers - SKU</property>
   <property id="manufacturersku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Manufacturer - SKU</property>
   <property id="categoryid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" datatype="list" defaultoperation="exact">Product Category</property>
-  <property id="displaydesignationid" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
+  <property id="displaydesignationid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
   <property id="msrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers MSRP</property>
   <property id="fidomsrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido MSRP</property>
   <property id="rogersprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers Price</property>
