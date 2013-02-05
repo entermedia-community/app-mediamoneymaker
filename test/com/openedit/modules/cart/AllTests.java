@@ -9,7 +9,6 @@ import junit.framework.TestSuite;
 import com.openedit.BaseTestCase;
 import com.openedit.modules.cart.editor.CatalogEditTest;
 import com.openedit.store.PriceSupportTest;
-import com.openedit.store.convert.ExcelConverterTest;
 import com.openedit.store.orders.OrderExportTest;
 
 /**
@@ -30,7 +29,7 @@ public class AllTests
 			System.setProperty("oe.root.path","webapp");
 		}
 		//suite.addTest(com.openedit.store.retailproconvert.AllTests.suite());
-		suite.addTestSuite(ExcelConverterTest.class);
+		//suite.addTestSuite(ExcelConverterTest.class);
 		//suite.addTestSuite(AniaraConverterTest.class);
 		suite.addTestSuite(CatalogEditTest.class);
 		//suite.addTestSuite(AuthorizeNetOrderArchiveTest.class );
