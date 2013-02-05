@@ -30,7 +30,7 @@ public class AllTests
 		suite.addTestSuite(SizeComparatorTest.class);
 		suite.addTestSuite(SegmentedProductPathFinderTest.class);
 		suite.addTestSuite(PriceSupportTest.class);
-		suite.addTestSuite(VotingTest.class);
+		//suite.addTestSuite(VotingTest.class);
 		//suite.addTestSuite(MainFrameConvertTest.class);
 		//$JUnit-END$
 		return suite;
