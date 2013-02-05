@@ -3,8 +3,8 @@
 	<div class="ui-widget-content ">
 	#if($data && $data.approved == "true")
 		<strong>This product has already been approved.</strong><br>
-		You can view the listing <a href="$apphome/distributors/products/${data.id}.html">here</a>.
-	#else
+		
+	#end
 		$context.putPageValue("searcher", $searcher)	 
 		$context.putPageValue("view", "product/productsubmit_for_review")	
 	
@@ -44,6 +44,6 @@
 			$pages.include("$apphome/components/xml/detaileditor.html", $context)
 			<input type="submit" name="submit" value="submit"/>
 		</form>
-	#end
+	
 	</div>
 </div>

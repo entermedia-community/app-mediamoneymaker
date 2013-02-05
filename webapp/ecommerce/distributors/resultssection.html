@@ -3,13 +3,9 @@
 #foreach ( $cell in $hits.getPageOfHits() )
 
 
-	#if($cell.approved == "true")
-	#set( $clink = "$home$apphome/distributors/products/${cell.sourcepath}.html" )
-	#else
-	#set( $clink = "$home$apphome/distributors/submitforreview.html?id=$cell.id" )
-	#end
-	#set ($sourcepath = $cell.sourcepath)
 	
+	#set ($sourcepath = $cell.sourcepath)
+	#set( $clink = "$home$apphome/distributors/submitforreview.html?id=$cell.id" )
 
 	#set( $tsize = "$home$cataloghome/downloads/preview/thumbsmall/productimages/$cell.sourcepath/thumb.jpg")
 

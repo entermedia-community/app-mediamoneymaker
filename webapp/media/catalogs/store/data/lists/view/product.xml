@@ -7,5 +7,11 @@
   <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">Product Details - French</data>
   <data id="productdetails_box" module="product" systemdefined="true" ordering="1355259486794">Details Box</data>
   <data id="productstore_search" module="product" systemdefined="true" ordering="1344521076435">Store Search</data>
+   <data id="productphone_compatability" module="product" systemdefined="false" ordering="1355259395878">Phone Compatability</data>
+  <data id="productbatch_edit" module="product" systemdefined="true" ordering="1360001870275">Batch Edit</data>
+  <data id="productadvancedsearch" module="product" systemdefined="true" ordering="1358521388841">Advanced Search</data>
+  
+  <data id="productdistributor_search" module="product" systemdefined="true" ordering="1357832009494">Distributor Search</data>
+   <data id="productdistributor_export" module="product" systemdefined="true" ordering="1360083596102">Distributor Export</data>
  
 </root>

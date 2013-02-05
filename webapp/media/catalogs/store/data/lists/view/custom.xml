@@ -14,21 +14,16 @@
   <data id="userprofileprofile" module="userprofile" systemdefined="false" ordering="1354037545919">Profile</data>
   <data id="userprofileaddress_list" module="userprofile" systemdefined="false" ordering="1354036872520" rendertable="address" renderexternalid="userprofile">Address List</data>
   <data id="storeOrderorder_details" module="storeOrder" systemdefined="false" ordering="1345132596871" rendertable="storeOrder" renderexternalid="id">Order Details</data>
-  <data id="productphone_compatability" module="product" systemdefined="false" ordering="1355259395878">Phone Compatability</data>
   <data id="phonephone_details" module="phone" systemdefined="false" ordering="1355335705305">Phone Details</data>
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="userprofilepassword" module="userprofile" systemdefined="false" ordering="1355345763364">Password</data>
-  <data id="productdistributor_search" module="product" systemdefined="false" ordering="1357832009494">Distributor Search</data>
   <data id="storeOrdercsvheaders" module="storeOrder" systemdefined="false" ordering="1358281088731">csvheaders</data>
   <data id="storeOrderproductdetails" module="storeOrder" systemdefined="false" ordering="1358281350106" recordstatus="deleted">productdetails</data>
-  <data id="productproduct_info" module="product" systemdefined="false" ordering="1358281690814">Product Info</data>
   <data id="userprofileusername" module="userprofile" systemdefined="false" ordering="1358279791492">UserInfo</data>
-  <data id="productadvancedsearch" module="product" systemdefined="false" ordering="1358521388841">advancedsearch</data>
   <data id="userprofiledistributor" module="userprofile" systemdefined="false" ordering="1358536765388" rendertype="table" rendertable="dsitributor" renderexternalid="id" recordstatus="deleted">Distributor</data>
   <data id="userprofilemanufacturer" module="userprofile" systemdefined="false" ordering="1358536869945" rendertype="table" rendertable="manufacturer" renderexternalid="id" recordstatus="deleted">Manufacturer</data>
   <data id="manufacturerdetails" module="manufacturer" systemdefined="false" ordering="1358537664744">Details</data>
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
-  <data id="productbatch_edit" module="product" systemdefined="false" ordering="1360001870275">Batch Edit</data>
   <data id="bannerbanner_details" module="banner" systemdefined="false" ordering="1360010854335">Banner Details</data>
 </root>

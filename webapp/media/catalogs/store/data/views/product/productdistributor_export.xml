@@ -1,17 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
   <property id="name"/>
   <property id="upc"/>
-  <property id="descrip"/>
-  <property id="descripfr" viewtype="html"/>
   <property id="categoryid"/>
-  <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="phone"/>
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
   <property id="displaydesignationid"/>
-  <property id="phonecompatability"/>
   <property id="msrp"/>
   <property id="fidomsrp"/>
   <property id="rogersprice"/>
