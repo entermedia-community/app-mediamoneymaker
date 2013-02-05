@@ -15,7 +15,7 @@
     <property name="wardir" location="${build}/wartmp"/>
     <property name="webapp" location="${basedir}/webapp"/>
 	<property name="webinf" location="${webapp}/WEB-INF"/>
-	<property name="branch" value="" />
+	<property name="branch" value="dev_" />
 
 
 	<!-- 
@@ -49,8 +49,26 @@
 	    <mkdir dir="${build}"/>
 	    <mkdir dir="${wardir}/WEB-INF/" />
 		<get dest="${build}/install.xml" src="http://dev.entermediasoftware.com/jenkins/job/${branch}entermedia-server/lastSuccessfulBuild/artifact/deploy/install.xml"/>
-				<ant antfile="${build}/install.xml" inheritAll="false" dir="${wardir}/WEB-INF/" target="default"/> 
+		<ant antfile="${build}/install.xml" inheritAll="false" dir="${wardir}/WEB-INF/" target="default"/> 
 
+		
+			<copy todir="${wardir}" preservelastmodified="true">
+					<fileset dir="${webapp}">
+						<include name="store/*.*" />
+						<include name="store/configuration/store.*" />
+						<include name="store/configuration/authorize.*" />
+						<include name="media/catalogs/store/**" />
+						<include name="ecommerce/**" />
+
+					</fileset>
+				</copy>
+				<copy todir="${wardir}/WEB-INF/base/">
+					<fileset dir="${webapp}/WEB-INF/base">
+						<include name="store/**" />
+					</fileset>
+				</copy>
+		
+		
   </target>
   
   <target name="compile" depends="clean">
@@ -117,7 +135,7 @@
   	<echo>JUnit report is located: ${report}/junit.xml</echo>
 	
   	<junit haltonfailure="true" showoutput="true" printsummary="true" fork="true" maxmemory="256m">
-  		<sysproperty key="oe.root.path" value="${basedir}/webapp"/>
+  		<sysproperty key="oe.root.path" value="${wardir}"/>
   	  <classpath>
        <fileset dir="${lib}">
         <include name="**/*.jar"/>
@@ -163,21 +181,7 @@
 		========================================================================
 	-->	
   <target name="war" >
-	<copy todir="${wardir}" preservelastmodified="true">
-		<fileset dir="${webapp}">
-			<include name="store/*.*" />
-			<include name="store/configuration/store.*" />
-			<include name="store/configuration/authorize.*" />
-			<include name="media/catalogs/store/**" />
-			<include name="ecommerce/**" />
-
-		</fileset>
-	</copy>
-	<copy todir="${wardir}/WEB-INF/base/">
-		<fileset dir="${webapp}/WEB-INF/base">
-			<include name="store/**" />
-		</fileset>
-	</copy>
+	
 	  
 	  <war warfile="${versionDir}/${appname}.war" webxml="${webinf}/web.xml" basedir="${wardir}">
   		<manifest>
