@@ -163,8 +163,6 @@
 
 
 
-  <bean id="echoOrderProcessor" class="org.openedit.store.gateway.EchoOrderArchive">
-  </bean>	
 
 
   <bean id="beanstreamOrderProcessor" class="org.openedit.store.gateway.BeanstreamOrderProcessor">
@@ -195,10 +193,7 @@
 
   <bean id="mainFrameConverter"	class="org.openedit.store.convert.MainFrameConverter"/>
 
-  <bean id="ProcessOrderModule"	class="org.openedit.modules.store.ProcessOrderModule">
-   		<property name="electronicOrderManager"><ref bean="electronicOrderManager" /></property>
-   		  	<property name="webEventListener"><ref bean="storeEventHandler"/></property>
-  </bean>
+  
   
   <bean id="electronicOrderManager" class="org.openedit.store.process.ElectronicOrderManager" >
  
@@ -212,9 +207,7 @@
   
   </bean>
   
-  <bean id="watermarkGenerator" class="org.openedit.store.images.WatermarkGenerator" />
-  <bean id="RelatedProductsModule"	class="org.openedit.store.modules.RelatedProductsModule">
-  </bean>
+ 
   
   <bean id="editLogSearcher" 
 		class="org.openedit.logger.LuceneLogSearcher" singleton="false" >
