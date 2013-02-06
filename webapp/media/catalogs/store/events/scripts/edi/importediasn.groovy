@@ -303,7 +303,6 @@ public class ImportEDIASN extends EnterMediaObject {
 													log.info(strMsg);
 													completeList.add(strMsg);
 												}
-												media.getOrderSearcher().reIndexAll();
 											} else {
 												strMsg = "Waybill entry already exists (" + waybill + ")."
 												log.info(strMsg);

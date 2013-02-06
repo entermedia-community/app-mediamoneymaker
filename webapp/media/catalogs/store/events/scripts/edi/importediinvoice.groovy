@@ -415,8 +415,6 @@ public class ImportEDIInvoice extends EnterMediaObject {
 								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
 							}
 						}
-						//Re-index the invoices
-						media.getInvoiceSearcher().reIndexAll();
 						log.info("---- END Import EDI Invoice ----");
 					} // end XML File Exists
 				} // end loop through files

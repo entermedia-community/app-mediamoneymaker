@@ -73,7 +73,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 		///////////////////////
 		// FTPID OVERRIDE FOR TESTING
 		///////////////////////
-		//ftpID = "104";
+		ftpID = "104";
 		///////////////////////
 
 		String inMsg = "";
@@ -184,7 +184,6 @@ public class ExportEdiOrder extends EnterMediaObject {
 								order.setProperty("edistatus", "generated");
 								store.getOrderArchive().saveOrder(store, order);
 								ordersearcher.saveData(order, inReq.getUser());
-								ordersearcher.reIndexAll();
 								inMsg = "Order (" + order.getId() + ") has been updated.";
 								log.info(inMsg);
 	

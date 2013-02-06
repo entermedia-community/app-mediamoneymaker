@@ -69,7 +69,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			
 			if (result) {
 				// xml generation
-				String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";
+				String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + this.orderID + ".csv";
 				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${this.orderID}/${fileName}");
 				result = writeOrderToFile(page, output, fileName);
 			}

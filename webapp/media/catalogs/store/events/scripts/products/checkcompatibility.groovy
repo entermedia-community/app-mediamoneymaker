@@ -70,9 +70,6 @@ public class CheckCompatibility extends EnterMediaObject {
 				}
 			}
 		}
-		if (counter > 0) {
-			phonesearcher.reIndexAll();
-		}
 		return export;
 	}
 

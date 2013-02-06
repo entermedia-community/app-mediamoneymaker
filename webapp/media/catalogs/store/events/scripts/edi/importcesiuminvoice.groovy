@@ -397,7 +397,6 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													ediInvoiceItem.setProperty("price", linePrice);
 													ediInvoiceItem.setProperty("quantity", quantity);
 													media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
-													media.getInvoiceItemsSearcher().reIndexAll();
 													strMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
 													log.info(strMsg);
 
@@ -477,7 +476,6 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 									try {
 										log.info("Status: Saving Invoice (" + ediInvoice.getId() +")");
 										media.getInvoiceSearcher().saveData(ediInvoice, media.getContext().getUser());
-										media.getInvoiceSearcher().reIndexAll();
 									}
 									catch (Exception e) {
 										strMsg = "ERROR: Saving Invoice: " + ediInvoice.getId() + ":" + purchaseOrder + "\n";

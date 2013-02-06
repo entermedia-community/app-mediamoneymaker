@@ -139,7 +139,6 @@ public void handleSubmission(){
 	ticket.setSourcePath("${inReq.getUserProfile().getId()}");
 	//THESE FIELDS ARE ACTUALLY PRODUCT FIELDS!
 	ticketsearcher.saveData(ticket, inReq.getUser());
-	ticketsearcher.reIndexAll();
 	inReq.putPageValue("ticket", ticket);
 
 	String ticketStatus = "closed";
@@ -225,7 +224,6 @@ protected createTicketHistory(Searcher tickethistorysearcher, Data ticket, WebPa
 	ticketHistory.setProperty("ticketstatus", ticketStatus);
 	ticketHistory.setProperty("notes", ticketNotes);
 	tickethistorysearcher.saveData(ticketHistory, inReq.getUser());
-	tickethistorysearcher.reIndexAll()
 }
 protected void sendEmail(WebPageRequest context, List email, String templatePage, String subject){
 	Page template = pageManager.getPage(templatePage);
