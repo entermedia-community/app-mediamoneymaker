@@ -232,7 +232,7 @@ protected void sendEmail(WebPageRequest context, List email, String templatePage
 	mailer.setFrom("info@wirelessarea.ca");
 	mailer.loadSettings(newcontext);
 	mailer.setMailTemplatePath(templatePage);
-	mailer.setRecipientsFromCommas(email);
+	mailer.setRecipientsFromStrings(email);
 	mailer.setSubject(subject);
 	mailer.send();
 }
