@@ -5,9 +5,9 @@
 <div class="product-left-col">  
     <h2>$product.getName()</h2>
 	   $pages.stream("$apphome/layout/productimages.html")
-		
+		<div style="clear: both;">
 		$!product.get("descrip")
-
+</div>
 		#set( $productdetails = $store.getProductDetails("productdetails", $user) )
 
 		 #foreach( $detail in $productdetails )

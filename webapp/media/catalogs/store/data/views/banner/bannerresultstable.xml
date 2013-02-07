@@ -6,4 +6,6 @@
   <property id="enddate"/>
   <property id="bannertype"/>
   <property id="active"/>
+  <property id="categoryid"/>
+  <property id="manufacturer"/>
 </root>
