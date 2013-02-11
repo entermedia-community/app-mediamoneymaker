@@ -4,6 +4,7 @@
 package org.openedit.store.orders;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PaymentMethod;
+import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -325,12 +327,30 @@ public class Order extends BaseData implements Comparable {
 		if ("orderstatus".equals(inId)) {
 			return getOrderStatus().getId();
 		}
+		
+		if ("distributor".equals(inId)) {
+		
+			StringBuffer buffer = new StringBuffer();
+			for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+				CartItem item = (CartItem) iterator.next();
+				Product p = item.getProduct();
+				String distributor = p.getProperty("distributor");
+				if(distributor != null && !buffer.toString().contains(distributor)){
+					buffer.append(p.get("distributor"));
+					buffer.append(" ");
+					
+				}
+				
+			}
+			return buffer.toString();
+		}
+		
 
 		return (String) getProperties().get(inId);
 	}
 	
 	
-
+	
 	public Map getProperties() {
 		if (fieldProperties == null) {
 			fieldProperties = ListOrderedMap.decorate(new HashMap());
@@ -339,6 +359,10 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public void setProperty(String inKey, String inVal) {
+		if("distributor".equals(inKey)){
+			return;
+		} 
+		
 		getProperties().put(inKey, inVal);
 	}
 
@@ -418,4 +442,19 @@ public class Order extends BaseData implements Comparable {
 	public boolean containsShipmentByWaybill( String inWaybill ) {
 		return getShipmentByWaybill(inWaybill) != null;
 	}
+	public List getCartItemsByProductProperty( String inKey, String inValue ) {
+		ArrayList list = new ArrayList();
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			Product p = item.getProduct();
+			if(p.getValues(inKey).size() >0){
+				Collection values = p.getValues(inKey);
+				if(values.contains(inValue)){
+					list.add(item);
+				}
+			}
+		}
+		return list;
+	}
+	
 }

@@ -1,16 +1,14 @@
 package orders;
 
-import java.io.StringWriter;
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVWriter
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
+import org.openedit.store.Product
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 
@@ -21,26 +19,30 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
-import com.sun.star.beans.GetDirectPropertyTolerantResult;
 
 
 public class ExportAffinityOrder extends EnterMediaObject {
 
 	private static String distributorName = "Affinity";
 	private String orderID;
+	private List fullOrderList;
 
 	public void setOrderID( String inOrderID ) {
 		orderID = inOrderID;
 	}
-	public String getOrderID() {
-		return this.orderID;
+	public List getOrderList() {
+		if (fullOrderList == null) {
+			this.fullOrderList = new ArrayList();
+		}
+		return this.fullOrderList;
 	}
 	
 	public boolean doExport() {
 
 		log.info("PROCESS: START Orders.exportaffinityorder");
-		
 		boolean result = false;
+		
+		fullOrderList = new ArrayList();
 				
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
@@ -53,25 +55,44 @@ public class ExportAffinityOrder extends EnterMediaObject {
 
 		// Create the Searcher Objects to read values!
 		SearcherManager searcherManager = archive.getSearcherManager();
+		Searcher ordersearcher = media.getOrderSearcher();
+		
+		SearchQuery orderQuery = ordersearcher.createSearchQuery();
+		orderQuery.addExact("csvgenerated", "false");
+		orderQuery.addMatches("distributor", "102");
+		HitTracker orderList = ordersearcher.search(orderQuery);
+		log.info("Found # of Orders:" + orderList.size());
+		for (Iterator orderIterator = orderList.iterator(); orderIterator.hasNext();) {
 
-		//Read the Order Info
-		Order order = media.searchForOrder(this.orderID);
-		if (order != null) {
+			Data currentOrder = orderIterator.next();
 
-			log.info("DATA: Order found: " + this.orderID);
+			Order order = ordersearcher.searchById(currentOrder.getId());
+			if (order == null) {
+				throw new OpenEditException("Invalid Order");
+			}
 
-			//Create the CSV Writer Objects
-			StringWriter output  = new StringWriter();
-			CSVWriter writer  = new CSVWriter(output, (char)',');
-
-			//Write the body of all of the orders
-			result = createOrderDetails(order, writer);
+			log.info("DATA: Order found: " + order.getId());
 			
-			if (result) {
-				// xml generation
-				String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + this.orderID + ".csv";
-				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${this.orderID}/${fileName}");
-				result = writeOrderToFile(page, output, fileName);
+			//Check if order has Affinity Products
+			List orderitems = order.getCartItemsByProductProperty("distributor", "102");
+			if (orderitems.size() > 0) {
+			
+				//Create the CSV Writer Objects
+				StringWriter output  = new StringWriter();
+				CSVWriter writer  = new CSVWriter(output, (char)',');
+	
+				//Write the body of all of the orders
+				result = createOrderDetails(order, writer);
+				
+				if (result) {
+					// xml generation
+					String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + order.getId() + ".csv";
+					Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${order.getId()}/${fileName}");
+					fullOrderList.add(fileName);
+					result = writeOrderToFile(page, output, fileName);
+					order.setProperty("csvgenerated", "true");
+					archive.getSearcher("storeOrder").saveData(order, context.getUser());
+				}
 			}
 		}
 		return result;
@@ -102,13 +123,14 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		}
 		if (result) {
 			headerRow.add("QUANTITY");
+			headerRow.add("PRICE");
 			log.info(headerRow.toString());
 			result = writeRowToWriter(headerRow, writer);
 		}
 		
 		if (result) {
 		// Loop through each order item.
-			for(Iterator i = order.getItems().iterator(); i.hasNext();) {
+			for(Iterator i = order.getCartItemsByProductProperty("distributor", "102").iterator(); i.hasNext();) {
 				//Get the cart Item
 				CartItem item = i.next();
 				
@@ -134,6 +156,8 @@ public class ExportAffinityOrder extends EnterMediaObject {
 				if (result) {
 					//Get Order Quantity
 					orderDetailRow.add(item.getQuantity().toString());
+					Product p = item.getProduct();
+					orderDetailRow.add(p.getProperty("rogersprice"));
 					result = writeRowToWriter(orderDetailRow, writer);
 					log.info(orderDetailRow.toString());
 					orderDetailRow = null;
@@ -144,6 +168,8 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		}
 		return result;
 	}
+	
+	
 
 	private boolean getDetailsFromView( String inSearcher, String inViewName, Data inOrder, 
 		List inListRows, boolean isHeaderRow) {
@@ -239,9 +265,9 @@ try {
 	result = affinityOrder.doExport();
 	if (result) {
 		//Output value to CSV file!
+		log.info("The following file(s) has been created. ");
+		log.info(affinityOrder.getOrderList().toString());
 		log.info("PROCESS: END Orders.exportaffinity");
-		context.putPageValue("export", "The file has been exported. Click the download link.");
-		context.putPageValue("id", affinityOrder.getOrderID());
 	} else {
 		//ERROR: Throw exception
 		context.putPageValue("errorout", "There was a problem exporting the file. Please check with your administrator.");
