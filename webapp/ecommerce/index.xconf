@@ -3,7 +3,7 @@
 <page>  
    
 	<property name="sectiontitle">Home</property>
-	 <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
+	 <inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
 	 <path-action name="MediaSearchModule.searchCategories" cancel="true"/>
 	 
 </page>

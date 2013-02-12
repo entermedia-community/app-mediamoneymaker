@@ -5,5 +5,5 @@
 #set($first  = $bannerlist.get(0))
 #set($asset = $mediaarchive.getAsset($first.image))
 #set($orig = $mediaarchive.asLinkToOriginal($asset))
-<img src="$apphome/views/modules/asset/downloads/preview/large/$asset.sourcepath/thumb.jpg"/> 
+<img src="$orig"/> 
 #end
