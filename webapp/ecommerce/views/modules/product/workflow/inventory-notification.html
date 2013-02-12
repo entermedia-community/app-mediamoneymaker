@@ -1,0 +1,31 @@
+#set($userprofilesearcher = $mediaarchive.getSearcher("userprofile"))
+#set($productsearcher = $mediaarchive.getSearcher("product"))
+
+#set($totalrows = $context.getRequestParameter("totalrows"))
+#set($goodproductlist = $context.getContentProperty("goodproductlist"))
+#set($badproductlist = $context.getContentProperty("badproductlist"))
+#set($badupclist = $context.getContentProperty("badpupclist"))
+#set($distributor = $context.getRequestParameter("distributor"))
+
+<h2>Update Inventory Report</h2>
+<h3>Distributor: $distributor</h3>
+<p>Total Rows Processed: $totalrows</p>
+<p>Total Products Properly Processed: $goodproductlist.size()</p>
+#if( $badproductlist.size() > 0)
+	<h3>Bad Product List: $badproductlist.size() Product(s)</h3>
+	<ul>
+	#foreach($product in $badproductlist)
+		<li>$product - Not found
+	#end
+	</ul>
+#end
+#if( $badupclist.size() > 0)
+	<h3>Bad UPC List: $badupclist.size() Product(s)</h3>
+	<p>Note: For these products, the UPC was found in our system BUT the 
+	Rogers/Manufacturer's SKU do not match</p>
+	<ul>
+	#foreach($product in $badupclist)
+		<li>$product
+	#end
+	</ul>
+#end
