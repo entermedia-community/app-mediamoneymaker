@@ -1,34 +1,66 @@
-$pages.include("$apphome/banner.html")
-#if($canbrowseproducts)
+<div id="home-top">
+	<div id="home-left">
+		<div style="padding-top: 10px; padding-left: 10px;">
+		$pages.include("$apphome/banner.html")
+		</div> 
+		#if($canbrowseproducts)
 
-#set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true"))
-$featured.setHitsPerPage(4)
-$context.putPageValue("hits", $featured)
-<h1 style="color: FF3019;">Top Sellers</h1>
-$pages.include("$apphome/search/resultssection.html", $context)
+		#set($featured =$store.getProductSearcher().fieldSearch("featuredonmainpage", "true", "random"))
+		$featured.setHitsPerPage(3) 
+		$context.putPageValue("hits", $featured)
+		
+		<div class="featured" >
+				<div class="featuredheader"><span style="color:#FF3019">FEATURED</span> PRODUCTS</div>
+				<div class="featured-results">
+		$pages.include("$apphome/search/resultssection.html", $context)
+				</div>
+			</div>
+		
+		
+		#end
+	</div>
+	<div id="home-right">
+	<div class="home-image">
+	<img src="$apphome/theme/images/clearance.jpg"/>
+	</div>
+	<div class="home-image">
+	<img src="$apphome/theme/images/shopdeals.png"/>
+	</div>
+	<div class="home-image">
+	<img src="$apphome/theme/images/promos.png"/>
+	</div>
+	<div class="logo-section">
+	<div class="logos"><img src="$apphome/theme/images/news.png"/></div>
+	<div class="logos"><img src="$apphome/theme/images/training.png"/></div>
+	</div>
+	</div>
+	#if($canbrowseproducts)
 
-<h1 style="color: FF3019;">Recently Added</h1>
-
-#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random"))
-$topsellers.setHitsPerPage(4)
-$context.putPageValue("hits", $topsellers)
-$pages.include("$apphome/search/resultssection.html", $context)
+	#set($searchroot = "$apphome/search")
+	#set($showsidebar = "true")
 
 
-
-
-<a style="color: FF3019;" href="http://localhost:8080/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=4&operation=exact"><h1>Batteries</h1></a>
-
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "4", "random"))
-$topsellers.setHitsPerPage(4)
-$context.putPageValue("hits", $topsellers)
-$pages.include("$apphome/search/resultssection.html", $context)
-#else
-	#if( $canviewdistributorsection )
-		<p>Welcome $userprofile</p>
-		<p>$pages.include("$apphome/distributors/myproducts.html")</p>
-	#else
-		Welcome to the portal.  Please use a link at the top to get started
+#elseif($canviewdistributorsection)
+	#set($searchroot = "$apphome/distributors")
+	#set($showsidebar = "true")
+	#if(!$canbrowseproducts)
+		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
 	#end
+#end                  
+<div id="home-categories">
+   
+          
+                 	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "categoryid").fieldSearch("id", "*", "name"))
+          	#foreach($man in $mans)
+          	#if($man.id != "12")
+			 <div class="home-logos">
+  					<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
+                	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
+                    </div>
+                	#end
+                	#end
+                	
 
-#end
+</div>
+
+</div>

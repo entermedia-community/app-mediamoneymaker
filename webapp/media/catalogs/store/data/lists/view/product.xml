@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <data id="productproduct_details" module="product" systemdefined="false" ordering="1343919573577">Product Details</data>
+  <data id="productproduct_details" module="product" systemdefined="false" ordering="1">Product Details</data>
   <data id="productsubmit_for_review" module="product" systemdefined="true" ordering="1344521076435">Distributor Submission</data>
   <data id="productreview" module="product" systemdefined="true" ordering="1345128031548">Product Review</data>
-  <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">Product Details - French</data>
+  <data id="productproduct_details_-_french" module="product" systemdefined="false" ordering="1355258723765">  French</data>
   <data id="productdetails_box" module="product" systemdefined="true" ordering="1355259486794">Details Box</data>
   <data id="productstore_search" module="product" systemdefined="true" ordering="1344521076435">Store Search</data>
    <data id="productphone_compatability" module="product" systemdefined="false" ordering="1355259395878">Phone Compatability</data>
@@ -13,5 +13,6 @@
   
   <data id="productdistributor_search" module="product" systemdefined="true" ordering="1357832009494">Distributor Search</data>
    <data id="productdistributor_export" module="product" systemdefined="true" ordering="1360083596102">Distributor Export</data>
+   <data id="productmedia" module="product" systemdefined="false" ordering="1360256364727" rendertype="table" rendertable="prodmedia" renderexternalid="product">Additional Media</data>
  
 </root>

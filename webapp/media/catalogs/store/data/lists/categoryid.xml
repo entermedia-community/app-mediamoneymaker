@@ -1,22 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<categoryids>
-  <categoryid id="1" descripfr="Écouteurs">Handsfree</categoryid>
-  <categoryid id="2" descripfr="Chargeurs">Chargers</categoryid>
-  <categoryid id="3" descripfr="Cas">Covers</categoryid>
-  <categoryid id="4" descripfr="Batteries">Batteries</categoryid>
-  <categoryid id="11" descripfr="Carry Products">Carry Products</categoryid>
-  <categoryid id="12" descripfr="Other">Other</categoryid>
-  <categoryid id="13" descripfr="Car Products">Car Products</categoryid>
-  <categoryid id="14">Wireline</categoryid>
-  <categoryid id="15">Remotes</categoryid>
-  <categoryid id="16">Digital Tv</categoryid>
-  <categoryid id="17">Cable Modem</categoryid>
-  <categoryid id="18">Portable Internet</categoryid>
-  <categoryid id="19">Cable Kit</categoryid>
-  <categoryid id="20">Home Phone</categoryid>
-  <categoryid id="21">Internet</categoryid>
-  <categoryid id="22">Memory Cards</categoryid>
-  <categoryid id="23">Portable Speakers</categoryid>
-  <categoryid id="24" descripfr="TriPack">TriPack</categoryid>
-  <categoryid id="25" descripfr="Protection D'écran">Screen Protector</categoryid>
+<categoryids> 
+  <categoryid id="1" descripfr="Écouteurs">Handsfree</categoryid>  
+  <categoryid id="2" descripfr="Chargeurs">Chargers</categoryid>  
+  <categoryid id="4" descripfr="Batteries">Batteries</categoryid>  
+  <categoryid id="12" descripfr="Other">Other</categoryid>  
+  <categoryid id="22">Memory Cards</categoryid>  
+  <categoryid id="23">Speakers</categoryid>  
+  <categoryid id="24" descripfr="TriPack">TriPack</categoryid>  
+  <categoryid id="25" descripfr="Protection D'écran">Screen Protector</categoryid>  
+  <categoryid id="bluetoothheadset">Bluetooth Headsets</categoryid>  
+  <categoryid id="cases">Cases</categoryid> 
 </categoryids>
