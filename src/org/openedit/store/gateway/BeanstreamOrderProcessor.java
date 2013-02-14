@@ -125,12 +125,16 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 
 			
 			post.addParameter("ordName", customer.getFirstName() + " " + customer.getLastName());
+			if(customer.getEmail() != null){
 			post.addParameter("ordEmailAddress", customer.getEmail());
-			post.addParameter("ordPhoneNumber", customer.getPhone1());
-
+			}
+			if(customer.getPhone1() != null){
+				post.addParameter("ordPhoneNumber", customer.getPhone1());
+			}
 			post.addParameter("ordAddress1", customer.getBillingAddress(true).getAddress1());
+			if(customer.getBillingAddress(true).getAddress2() != null){
 			post.addParameter("ordAddress2", customer.getBillingAddress(true).getAddress2());
-			
+			}
 		//	post.addParameter("ordCity", customer.getBillingAddress(true).getCity());
 			
 			//map this to the correct codes..
