@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<page>  
+   
+
+	    <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
+	 
+</page>

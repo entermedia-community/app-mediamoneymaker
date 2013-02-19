@@ -1,6 +1,6 @@
 <h2>[[My Wish List]]</h2>
 #set($searcher = $mediaarchive.getSearcher("wishlist"))
-#if($candealertools)
+#if($candealertools && $userprofile.dealer )
 #set($hits = $searcher.fieldSearch("dealer", $userprofile.dealer))
 #else
 #set($hits = $searcher.fieldSearch("owner", $userprofile.id))

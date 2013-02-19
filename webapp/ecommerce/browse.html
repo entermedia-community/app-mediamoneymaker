@@ -1,0 +1,72 @@
+#if($canbrowseproducts)
+
+#set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true"))
+$featured.setHitsPerPage(4)
+$context.putPageValue("hits", $featured)
+<div class="featured-browse">
+<h1 style="color: FF3019;">Top Sellers</h1>
+$pages.include("$apphome/search/resultssection.html", $context)
+</div>
+
+<div class="featured-browse">
+<h1 style="color: FF3019;">Recently Added</h1>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
+</div>
+
+
+<div class="featured-browse">
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=cases&operation=exact"><h1>Cases</h1></a>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "cases", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
+</div>
+
+<div class="featured-browse">
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=smartaccessories&operation=exact"><h1>Smart Accessories</h1></a>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "smartaccessories", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
+</div>
+
+<div class="featured-browse">
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=23&operation=exact"><h1>Speakers</h1></a>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
+
+</div>
+
+<div class="featured-browse">
+
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=25&operation=exact"><h1>Screen Protectors</h1></a>
+
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "25", "random"))
+$topsellers.setHitsPerPage(4)
+$context.putPageValue("hits", $topsellers)
+$pages.include("$apphome/search/resultssection.html", $context)
+
+</div>
+
+
+
+
+
+#else
+	#if( $canviewdistributorsection )
+		<p>Welcome $userprofile</p>
+		<p>$pages.include("$apphome/distributors/myproducts.html")</p>
+	#else
+		Welcome to the portal.  Please use a link at the top to get started
+	#end
+
+#end

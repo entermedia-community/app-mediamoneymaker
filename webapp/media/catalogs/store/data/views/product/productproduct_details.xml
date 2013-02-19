@@ -2,10 +2,10 @@
 
 <root>
   <property id="name"/>
-  <property id="description"/>
   <property id="displaydesignationid"/>
   <property id="distributor"/>
   <property id="clearanceprice"/>
   <property id="image"/>
   <property id="clearancecentre"/>
+  <property id="descrip"/>
 </root>

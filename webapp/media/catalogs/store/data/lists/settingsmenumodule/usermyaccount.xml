@@ -8,9 +8,9 @@
   <property id="setpassword" type="toplevel" module="user" path="/views/myaccount/setuserpassword.html" ordering="20">Change Password</property>
   <property id="orders" type="toplevel" module="user" path="/views/myaccount/storeorders/index.html" ordering="30">Order History</property>
   <property id="wishlist" type="toplevel" module="user" path="/views/myaccount/wishlist/index.html" ordering="30">Wish List </property>
-  <!-- 
-  <property id="addresses" type="toplevel" module="user" path="/views/myaccount/addresses/index.html" ordering="30">Address List </property>
-  -->
+   
+  <property id="addresses" type="toplevel" module="user" path="/views/myaccount/address/index.html" ordering="30">Address List </property>
+  
   <property id="tickets" type="toplevel" module="user" path="/views/myaccount/tickets/index.html" ordering="30">Support Tickets </property>
 
 </properties>
