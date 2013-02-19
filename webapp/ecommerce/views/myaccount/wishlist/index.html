@@ -3,7 +3,7 @@
 #if($candealertools && $userprofile.dealer )
 #set($hits = $searcher.fieldSearch("dealer", $userprofile.dealer))
 #else
-#set($hits = $searcher.fieldSearch("owner", $userprofile.id))
+#set($hits = $searcher.fieldSearch("profileid", $userprofile.id))
 
 #end
 
