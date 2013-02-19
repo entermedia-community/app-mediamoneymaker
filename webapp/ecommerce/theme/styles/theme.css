@@ -5965,6 +5965,32 @@ td[title]:hover:before {
 }
 
 
+.select-dropdown-open {
+    width: 20px;
+    height: 28px;
+    position: absolute;
+    left: 27px;
+    top: 0;
+}
+.select-dropdown-open.down {
+    background: url('../images/sort-desc.png') 5px 10px no-repeat;
+}
+.select-dropdown-open.up {
+    background: url('../images/sort-asc.png') 5px 10px no-repeat;
+}
+.select-dropdown {
+    position: absolute;
+    background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
+    border: 1px solid #bbb;
+    border-top: none;
+    box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
+    padding: 0;
+    top: 18px;
+    left: 10px;
+    z-index: 100;
+}
+
+
 #workarea .ui-draggable-dragging {
     width: inherit;
     border-top: 1px solid #aaa !important;
@@ -6094,4 +6120,6 @@ td[title]:hover:before {
     h2, h3 {
         page-break-after: avoid;
     }
+
+
 }
