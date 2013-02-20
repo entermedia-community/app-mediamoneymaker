@@ -5,4 +5,6 @@
   <property id="manufacturerid" viewtype="manufacturerlist"/>
   <property id="categoryid"/>
   <property id="clearancecentre"/>
+  <property id="manufacturersku"/>
+  <property id="rogerssku"/>
 </root>

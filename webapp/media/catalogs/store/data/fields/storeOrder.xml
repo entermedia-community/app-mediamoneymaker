@@ -10,6 +10,6 @@
   <property id="orderstatus" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="storeOrder" internalfield="false" datatype="list">Status</property>
   <property id="shippingstatus" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">Shipping Status</property>
   <property id="edistatus" index="true" stored="true" editable="true" type="list" searchtype="storeOrder" internalfield="false" datatype="list">EDI Status</property>
-  <property id="distributor" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="storeOrder" internalfield="false" datatype="list" defaultoperation="matches">Distributor</property>
+  <property id="distributor" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="storeOrder" internalfield="false" datatype="list" defaultoperation="matches">Distributor</property>
   <property id="csvgenerated" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="storeOrder" internalfield="false" datatype="boolean">CSV Generated</property>
 </properties>

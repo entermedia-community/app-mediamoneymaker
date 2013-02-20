@@ -1,7 +1,7 @@
 
 <properties beanname="dynamicSearcher">
   <property id="id" index="true" keyword="true" stored="true" searchtype="userprofile" internalfield="true">ID</property>
-  <property id="userid" index="true" stored="true" searchtype="userprofile" internalfield="false">User Id</property>
+  <property id="id" index="true" stored="true" searchtype="userprofile" internalfield="false">User Id</property>
   <property id="settingsgroup" index="true" stored="true" editable="true" type="list" searchtype="userprofile" datatype="list">Role</property>
   <property id="view_asset_resultstable" index="true" stored="true" searchtype="userprofile" internalfield="true">View Table Results</property>
   <property id="profilesearchfilters" index="true" stored="true" searchtype="userprofile" internalfield="true">Filters Used By Search</property>

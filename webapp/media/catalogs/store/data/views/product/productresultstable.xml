@@ -5,6 +5,7 @@
   <property id="name"/>
   <property id="distributor"/>
   <property id="manufacturersku"/>
+  <property id="rogerssku"/>
   <property id="msrp"/>
   <property id="rogersprice"/>
   <property id="fidomsrp"/>

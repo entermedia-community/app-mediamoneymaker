@@ -5,6 +5,7 @@
   <property id="orderdate"/>
   <property id="orderstatus"/>
   <property id="shippingstatus"/>
+  <property id="distributor"/>
   <property id="edistatus"/>
   <property id="csvgenerated"/>
 </root>
