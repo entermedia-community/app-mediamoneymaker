@@ -26,4 +26,5 @@
   <property id="manufacturerresultstable" module="manufacturer" systemdefined="true" rendertable="manufacturer" renderexternalid="id">Results Table</property>
   <data id="manufacturermanufacturers" module="manufacturer" systemdefined="false" ordering="1358799131467">Manufacturers</data>
   <data id="bannerbanner_details" module="banner" systemdefined="false" ordering="1360010854335">Banner Details</data>
+  <data id="productconflict_report" module="product" systemdefined="false" ordering="1361395769380">Conflict Report</data>
 </root>

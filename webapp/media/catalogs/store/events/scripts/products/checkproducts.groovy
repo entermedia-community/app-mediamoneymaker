@@ -10,6 +10,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
+import org.openedit.store.Product
 import org.openedit.store.util.MediaUtilities
 
 import com.openedit.WebPageRequest
@@ -135,28 +136,41 @@ public class CheckProducts  extends EnterMediaObject {
 				if (rogersSKU != "") {
 					product = productsearcher.searchByField(ROGERS_SEARCH_FIELD, rogersSKU);
 					if (product != null) {
-						String productID = product.id;
+						Product p = productsearcher.searchById(product.getId());
 						if (product.get("upc").equals(upcNumber)) {
-							addToGoodProductList("[FR]:" + rogersSKU + ":[FU]:" + upcNumber);
+							addToGoodProductList("[FR]|" + product.get(ROGERS_SEARCH_FIELD) + "|" + rogersSKU + 
+								"|[FU]|" + product.get(UPC_SEARCH_FIELD) + "|" + upcNumber);
+							p.setProperty("validitem", "true");
+							productsearcher.saveData(p, inReq.getUser());
 						} else {
-							addToBadProductList("[FR]:" + rogersSKU + ":[NFU]:" + product.get(UPC_SEARCH_FIELD) + ":" + upcNumber);
+							addToBadProductList("[FR]|" + product.get(ROGERS_SEARCH_FIELD) + "|" + rogersSKU + 
+								"|[NFU]|" + product.get(UPC_SEARCH_FIELD) + "|" + upcNumber);
+							strMsg = "Found RogersSKU - Invalid UPC";
+							p.setProperty("validerrormessage", strMsg);
+							productsearcher.saveData(p, inReq.getUser());
+
 						}
 					} else {
 						//Search for the product by the ROGERS_SEARCH_FIELD
 						if (upcNumber != "") {
 							product = productsearcher.searchByField(UPC_SEARCH_FIELD, upcNumber);
 							if (product == null) {
-								addToBadProductList("[NFR]:" + rogersSKU + ":[NFU]:" + upcNumber);
+								addToBadProductList("[NFR]||" + rogersSKU + "|[NFU]||" + upcNumber);
 							} else {
-								addToBadProductList("[NFR]:" + rogersSKU) + ":[FU]:" + upcNumber;
+								Product p = productsearcher.searchById(product.getId());
+								addToBadProductList("[NFR]||" + rogersSKU + 
+									"|[FU]|" + product.get(UPC_SEARCH_FIELD) + "|" + upcNumber);
+								strMsg = "NOT Found RogersSKU - Found UPC";
+								p.setProperty("validerrormessage", strMsg);
+								productsearcher.saveData(p, inReq.getUser());
 							}
 							product = null;
-						} else {
-							addToBadProductList("NFU:BLANK");
+						}  else {
+							addToBadProductList("[NFR]|||[NFU]||BLANK");
 						}
 			        }
 				}  else {
-					addToBadProductList("[NFR]:BLANK");
+					addToBadProductList("[NFR]||BLANK|[NFU]||");
 				}
 				increaseTotalRows();
 			}
@@ -216,4 +230,3 @@ try {
 finally {
 	logs.stopCapture();
 }
-7
