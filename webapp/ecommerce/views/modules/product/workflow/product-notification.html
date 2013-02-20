@@ -1,0 +1,18 @@
+#set($totalrows = $context.getRequestParameter("totalrows"))
+#set($goodproductlist = $context.getContentProperty("goodproductlist"))
+#set($badproductlist = $context.getContentProperty("badproductlist"))
+
+<h2>Rogers Product Import Report</h2>
+<p>Total Rows Processed: $totalrows</p>
+#if( $goodproductlist.size() > 0)
+	<h3>Correct Products ($goodproductlist.size())</h3>
+	#foreach($product in $goodproductlist)
+		$product<BR>
+	#end
+#end
+#if( $badproductlist.size() > 0)
+	<h3>Bad Products ($badproductlist.size())</h3>
+	#foreach($product in $badproductlist)
+		$product<BR>
+	#end
+#end

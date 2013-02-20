@@ -25,7 +25,8 @@
 	Rogers/Manufacturer's SKU do not match</p>
 	<ul>
 	#foreach($product in $badupclist)
-		<li>$product
+		#set($p = $productsearcher.searchByField("upc", $product))
+		<li>$product #if($p) - $p.get("rogerssku") - $p.get("manufacturersku") #end
 	#end
 	</ul>
 #end

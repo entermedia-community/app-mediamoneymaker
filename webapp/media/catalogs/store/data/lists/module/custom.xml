@@ -7,9 +7,10 @@
   <data id="invoice">Invoices</data>
   <data id="phone">Phones</data>
   <data id="manufacturer">Manufacturers</data>
-  <data id="userprofile">Profile</data>
   <data id="wishlist">WishList</data>
   <corporateorder id="tickets" recordstatus="deleted">Support Tickets</corporateorder>
   <data id="ticket">Support Tickets</data>
   <data id="banner">Banners</data>
+  <data id="userprofile" recordstatus="deleted">Profile</data>
+  <property id="division" href="/views/modules/division/index.html" recordstatus="deleted">Divisions</property>
 </root>

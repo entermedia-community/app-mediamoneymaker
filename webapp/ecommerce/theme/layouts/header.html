@@ -2,11 +2,19 @@
 <div class="subcolumns" style="border: 1px solid #CCC;">
     <div class="c25l" id="left-col">
         <div class="subcl" >
-			#if($userprofile.displaydesignation == "fido")
+			#if($user.isInGroup("fido") && !$user.isInGroup("rogers"))
 			<a href="$home$apphome/index.html">
 			
 			<img class="logo" src="$home$themeprefix/images/fido.png" alt="EnterMedia Share" style="padding-left: 35px; padding-top: 15px;" />
 			</a>
+			#elseif($user.isInGroup("rogers") && $user.isInGroup("fido"))
+
+			<a href="$home$apphome/index.html">
+			
+			<img class="logo" src="$home$themeprefix/images/both.png" alt="EnterMedia Share" style="padding-left: 20px; padding-top: 0px;" />
+			</a>
+
+
 			#else
 			<a href="$home$apphome/index.html" style="margin-left: -12px;">
 
