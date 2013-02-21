@@ -135,13 +135,14 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			if(customer.getBillingAddress(true).getAddress2() != null){
 			post.addParameter("ordAddress2", customer.getBillingAddress(true).getAddress2());
 			}
-		//	post.addParameter("ordCity", customer.getBillingAddress(true).getCity());
+			post.addParameter("ordCity", customer.getBillingAddress(true).getCity());
 			
 			//map this to the correct codes..
-		//	post.addParameter("ordProvince", customer.getBillingAddress(true).getState());
+			post.addParameter("ordProvince", customer.getBillingAddress(true).getState());
 			
-		//	post.addParameter("ordPostalCode", customer.getBillingAddress(true).getZipCode());
-	//		post.addParameter("ordCountry", customer.getBillingAddress(true).getCountry());
+			post.addParameter("ordPostalCode", customer.getBillingAddress(true).getZipCode());
+			String country = customer.getBillingAddress(true).getCountry();
+			post.addParameter("ordCountry", country);
 
 			
 			

@@ -116,6 +116,8 @@
 			 <value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
+			<value>scriptedOrderProcessor</value>
+			
 			<value>emailOrderProcessor</value>
 						
 			
