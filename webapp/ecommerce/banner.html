@@ -5,5 +5,5 @@
 #set($first  = $bannerlist.get(0))
 #set($asset = $mediaarchive.getAsset($first.image))
 #set($orig = $mediaarchive.asLinkToOriginal($asset))
-<img src="$orig"/> 
+<a target="_blank" href="$!first.url"><img src="$orig"/></a> 
 #end
