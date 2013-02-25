@@ -16,7 +16,7 @@
 		#else
 			Shipped
 		#end</h3>
-	<h3>Shipment details per Product.</h3>
+	<h3>Shipment Details per Product.</h3>
 #else
 	<h2>No shipments for this order</h2>
 #end
@@ -25,7 +25,7 @@
 		<tr class="results-list-head">
 			<th align="left" class="results-list-head">Product ID</th>
 			<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
-			<th align="center" class="results-list-head">Way Bill Number</th>
+			<th align="center" class="results-list-head">Waybill Number</th>
 	<!-- 
 			<th align="center" class="results-list-head">Courier</th>
 			<th align="center" class="results-list-head">Ship Date</th>
@@ -80,10 +80,10 @@
 		#set( $shipCounter = $shipCounter + 1 )
 	#end
 	
-	<h3>Shipment details per Waybill.</h3>
+	<h3>Shipment Details per Waybill.</h3>
 	<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
 		<tr class="results-list-head">
-			<th align="center" class="results-list-head">Way Bill Number</th>
+			<th align="center" class="results-list-head">Waybill Number</th>
 	<!--
 			<th align="center" class="results-list-head">Courier</th>
 			<th align="center" class="results-list-head">Ship Date</th>
