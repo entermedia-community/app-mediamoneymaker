@@ -1,0 +1,15 @@
+#set($goodlist = $context.getContentProperty("goodlist"))
+
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers Orders</div>
+	<div class="ui-widget-content">
+	#if( $goodlist.size() > 0)
+		<h3>Generated Orders ($goodlist.size())</h3>
+		#foreach($orders in $goodlist)
+			$orders<BR>
+		#end
+	#end
+	</div> 
+</div>
+
+

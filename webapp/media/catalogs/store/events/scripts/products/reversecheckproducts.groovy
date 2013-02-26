@@ -21,33 +21,41 @@ import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
 
-public class CheckProducts  extends EnterMediaObject {
+public class ReverseCheckProducts  extends EnterMediaObject {
 	
 	List<String> badProductList;
-	List<String> badUPCList;
 	List<String> goodProductList;
+	List<String> badUPCList;
+	List<String> foundUPCList;
 	int totalRows;
 
+	/* GET LISTS */
 	public List<String> getBadProductList() {
 		if(badProductList == null) {
 			badProductList = new ArrayList<String>();
 		}
 		return badProductList;
 	}
-
-	public List<String> getBadUPCList() {
-		if(badUPCList == null) {
-			badUPCList = new ArrayList<String>();
-		}
-		return badUPCList;
-	}
-
 	public List<String> getGoodProductList() {
 		if(goodProductList == null) {
 			goodProductList = new ArrayList<String>();
 		}
 		return goodProductList;
 	}
+	public List<String> getBadUPCList() {
+		if(badUPCList == null) {
+			badUPCList = new ArrayList<String>();
+		}
+		return badUPCList;
+	}
+	public List<String> getFoundUPCList() {
+		if(foundUPCList == null) {
+			foundUPCList = new ArrayList<String>();
+		}
+		return foundUPCList;
+	}
+
+	/* ADD TO LISTS */
 	public void addToBadProductList(String inItem) {
 		if(badProductList == null) {
 			badProductList = new ArrayList<String>();
@@ -59,6 +67,12 @@ public class CheckProducts  extends EnterMediaObject {
 			badUPCList = new ArrayList<String>();
 		}
 		badUPCList.add(inItem);
+	}
+	public void addToFoundUPCList(String inItem) {
+		if(foundUPCList == null) {
+			foundUPCList = new ArrayList<String>();
+		}
+		foundUPCList.add(inItem);
 	}
 	public void addToGoodProductList(String inItem) {
 		if(goodProductList == null) {
@@ -95,7 +109,7 @@ public class CheckProducts  extends EnterMediaObject {
 		WebPageRequest inReq = context;
 		
 		//Get the Uploaded Page
-		String filename = "checkproducts.csv";
+		String filename = "reverse.csv";
 		Page upload = archive.getPageManager().getPage(catalogID + "/temp/upload/" + filename);
 		Reader reader = upload.getReader();
 		try
@@ -122,84 +136,63 @@ public class CheckProducts  extends EnterMediaObject {
 			int colCompatibility = 6;
 			int colUpc = 7;
 			
-			//loop over rows
+			List csvSkus = new ArrayList();
+			List csvDistributor = new ArrayList();
+			List csvDescription = new ArrayList();
+			List csvUPCcodes = new ArrayList();
+			List upcCodes = new ArrayList();
+			
 			String[] cols;
 			while ((cols = read.readNext()) != null)
 			{
-				String rogersSKU = cols[colRogersSKU].trim();
-				String manufacturerSKU = cols[colManufacturer].trim();
-				String distributor = cols[colDistributor].trim();
-				String description = cols[colDescription].trim();
-				String upcNumber = cols[colUpc].trim();
-				Data product = null;
-				
-				//Search for the product by the MANUFACTURER_SEARCH_FIELD
-				if (rogersSKU != "") {
-					product = productsearcher.searchByField(ROGERS_SEARCH_FIELD, rogersSKU);
-					if (product != null) {
-						Product p = productsearcher.searchById(product.getId());
-						if (p.get("upc").equals(upcNumber)) {
-							if (p.get("validitem") != "true") {
-								addToGoodProductList("[FR]|" + p.get(ROGERS_SEARCH_FIELD) + 
-									"|" + rogersSKU + 
-									"|[FU]|" + p.get(UPC_SEARCH_FIELD) + 
-									"|" + upcNumber +
-									"|" + p.get("name") + 
-									"|" + p.get("distributor"));
-								p.setProperty("validitem", "true");
-								productsearcher.saveData(p, inReq.getUser());
-							}
-						} else {
-							addToBadProductList("[FR]|" + p.get(ROGERS_SEARCH_FIELD) + 
-								"|" + rogersSKU + 
-								"|[NFU]|" + p.get(UPC_SEARCH_FIELD) + 
-								"|" + upcNumber + 
-								"|" + p.get("name") + 
-								"|" + distributor);
-							if ((p.get("validitem") != "false") || (p.get("validitem") == null)) {
-								strMsg = "Found RogersSKU - Invalid UPC";
-								p.setProperty("validerrormessage", strMsg);
-								p.setProperty("validitem", "false");
-								productsearcher.saveData(p, inReq.getUser());
-							}
-						}
-					} else {
-						//Search for the product by the ROGERS_SEARCH_FIELD
-						if (upcNumber != "") {
-							product = productsearcher.searchByField(UPC_SEARCH_FIELD, upcNumber);
-							if (product == null) {
-								addToBadProductList("[NFR]|" +
-									"|" + rogersSKU + 
-									"|[NFU]|" +
-									"|" + upcNumber + 
-									"|" +
-									"|" + distributor);
+				csvSkus.add(cols[colRogersSKU].trim());
+				csvDistributor.addAll(cols[colDistributor].trim());
+				csvDescription.add(cols[colDescription].trim());
+				csvUPCcodes.add(cols[colUpc].trim());
+			}
+
+			boolean foundProduct = false
+			HitTracker hits = productsearcher.getAllHits();
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+				Data p = (Data) iterator.next();
+				Product product = productsearcher.searchById(p.getId());
+				foundProduct = false;
+				if (product != null) {
+					for (int indx = 0; indx < csvSkus.size(); indx++) {
+						if (product.get(ROGERS_SEARCH_FIELD) == csvSkus.get(indx)) {
+							if (product.get(UPC_SEARCH_FIELD) == csvUPCcodes.get(indx)) {
+								addToGoodProductList("[FR]|" + product.get(ROGERS_SEARCH_FIELD) + 
+									"|" + csvSkus.get(indx) + 
+									"|[FU]|" + product.get(UPC_SEARCH_FIELD) +
+									"|" + csvUPCcodes.get(indx) +
+									"|" + getDistributor(product.get("distributor"), media) +
+									"|" + product.get("name"));
+								foundProduct = true;
+								break;
 							} else {
-								Product p = productsearcher.searchById(product.getId());
-								addToBadProductList("[NFR]|" +
-									"|" + rogersSKU + 
-									"|[FU]|" + p.get(UPC_SEARCH_FIELD) + 
-									"|" + upcNumber + 
-									"|" + p.get("name") + 
-									"|" + distributor);
-								if ((p.get("validitem") != "false") || (p.get("validitem") == null)) {
-									strMsg = "NOT Found RogersSKU - Found UPC";
-									p.setProperty("validerrormessage", strMsg);
-									p.setProperty("validitem", "false");
-									productsearcher.saveData(p, inReq.getUser());
-								}
+								addToBadProductList("[FR]|" + product.get(ROGERS_SEARCH_FIELD) +
+									"|" + csvSkus.get(indx) + 
+									"|[NMU]|" + product.get(UPC_SEARCH_FIELD) +
+									"|" + csvUPCcodes.get(indx) +
+									"|" + getDistributor(product.get("distributor"), media) +
+									"|" + product.get("name"));
+								foundProduct = true;
+								break;
 							}
-							product = null;
-						}  else {
-							addToBadProductList("[NFR]|||[NFU]||BLANK");
 						}
-			        }
-				}  else {
-					addToBadProductList("[NFR]||BLANK|[NFU]||");
+					}
+				}
+				if (!foundProduct) {
+					addToBadProductList("[NFR]|" + p.get(ROGERS_SEARCH_FIELD) +
+						"|" + p.get(MANUFACTURER_SEARCH_FIELD) + 
+						"|[NFU]|" + p.get(UPC_SEARCH_FIELD) +
+						"|" + 
+						"|" + getDistributor(p.get("distributor"), media) +
+						"|" + p.get("name")); 
+					upcCodes.add(p.get(UPC_SEARCH_FIELD));
 				}
 				increaseTotalRows();
 			}
-			
 			context.putPageValue("totalrows", getTotalRows());
 			context.putPageValue("goodproductlist", getGoodProductList());
 			context.putPageValue("badproductlist", getBadProductList());
@@ -236,6 +229,14 @@ public class CheckProducts  extends EnterMediaObject {
 		PostMail mail = (PostMail)mediaarchive.getModuleManager().getBean( "postMail");
 		return mail.getTemplateWebEmail();
 	}
+	private String getDistributor(String distributor, MediaUtilities media) {
+		Data d = media.getDistributorSearcher().searchById(distributor);
+		if (d != null) { 
+			return d.get("name");
+		} else {
+			return "unknown";
+		}
+	}
 }
 
 logs = new ScriptLogger();
@@ -243,14 +244,14 @@ logs.startCapture();
 
 try {
 
-	log.info("START - ImportAffinityInventory");
-	CheckProducts checkProducts = new CheckProducts();
+	log.info("START - ReverseCheckProducts");
+	ReverseCheckProducts checkProducts = new ReverseCheckProducts();
 	checkProducts.setLog(logs);
 	checkProducts.setContext(context);
 	checkProducts.setModuleManager(moduleManager);
 	checkProducts.setPageManager(pageManager);
 	checkProducts.handleSubmission();
-	log.info("FINISH - ImportAffinityInventory");
+	log.info("FINISH - ReverseCheckProducts");
 }
 finally {
 	logs.stopCapture();

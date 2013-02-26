@@ -1,6 +1,8 @@
 #set($totalrows = $context.getRequestParameter("totalrows"))
 #set($goodproductlist = $context.getContentProperty("goodproductlist"))
 #set($badproductlist = $context.getContentProperty("badproductlist"))
+#set($foundupclist = $context.getContentProperty("foundupclist"))
+#set($badupclist = $context.getContentProperty("badupclist"))
 
 <h2>Rogers Product Import Report</h2>
 <p>Total Rows Processed: $totalrows</p>
