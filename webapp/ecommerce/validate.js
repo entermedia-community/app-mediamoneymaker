@@ -124,13 +124,13 @@ function validateBilling( orderForm )
 		field.focus();
 		return false;
 	}
-	field = document.getElementById("billing.country.value");
-	if ( field.value.length == 0 )
-	{
-		alert( "Billing country is required." );
-		field.focus();
-		return false;
-	}
+//	field = document.getElementById("billing.country.value");
+//	if ( field.value.length == 0 )
+//	{
+//		alert( "Billing country is required." );
+//		field.focus();
+//		return false;
+//	}
 	return true;
 }
 

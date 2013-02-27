@@ -4,5 +4,6 @@
   <property name="fallbackdirectory">/ecommerce/views/modules/default</property>
   <property name="module">product</property>
   <property name="showactions">true</property>
+      <property name="productshowonly"/>
   
 </page>

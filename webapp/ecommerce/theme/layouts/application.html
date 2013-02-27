@@ -23,7 +23,12 @@
 	 
 		<div id="emcontent">
 		  <div id="main">
+		  	#if($userprofile.settingsgroup == "distributor" && !$user.acceptterms == "true")
+		  	<b>Please review the following terms and conditions.  Scroll to and click OK to continue.</b>
+		  		$pages.include("$apphome/content/terms.html")
+		  	#else
 		       $pages.includeContent()
+		      #end
 		  </div>
 		</div>
 	

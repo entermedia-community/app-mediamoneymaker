@@ -9,9 +9,9 @@
      <path-action name="Date.now" />
    <property name="continueShoppingUrl">/${applicationid}/index.html</property>
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
+    <property name="productshowonly">+approved:true</property>
   
   <permission name="viewdevelopertools">
-  
   
   
     <or>
