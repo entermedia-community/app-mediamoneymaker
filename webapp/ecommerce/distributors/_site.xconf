@@ -11,5 +11,5 @@
       <userprofile value="true" name="distributorsection"/>  
   </permission>
 
-
+    <property name="productshowonly"/>
 </page>

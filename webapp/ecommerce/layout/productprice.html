@@ -20,6 +20,7 @@
 </h5>
 #end
 #if($canviewcart)
+			#if($product.isInStock())
 			<div style="margin-top:3px;float:right; width: 140px;">
 				<select name="quantity">
 				#foreach($numb in [1..100])
@@ -29,6 +30,7 @@
 				<input class="btn right" type="submit" value="Add to Cart" />
 			</div>
 			<br/><br/>
+			#end
  #end
 
 </li>
@@ -57,7 +59,21 @@
 			<strong>Product ID:</strong> $product.getId()<br>
 		#end
 		<strong>UPC:</strong> $product.get("upc")<br>
-		<strong>MSRP:</strong> $product.get("msrp")<br>
+		
+		
+		#if($product.displaydesignationid == "1")
+				<strong>ROGERS MSRP:</strong> $$product.get("msrp")<br>
+			#end
+			#if($product.displaydesignationid == "2")
+			<strong>FIDO MSRP:</strong> $$product.get("fidomsrp")<br>
+			#end
+			#if($product.displaydesignationid == "3")
+			<strong>ROGERS MSRP:</strong> $$product.get("msrp")<br>
+			<strong>FIDO MSRP:</strong> $$product.get("fidomsrp")<br>
+			<p style="text-align: center"/><img align="center" src="$apphome/theme/images/fido.png"/></p>
+			#end
+		
+		
 		#set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
         #set($mans = $mansearcher.searchById($product.get("manufacturerid")))
         #if($mans)
