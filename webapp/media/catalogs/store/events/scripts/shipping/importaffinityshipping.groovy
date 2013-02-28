@@ -1,5 +1,6 @@
 package shipping
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 import org.entermedia.email.PostMail
@@ -9,7 +10,6 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.CartItem
-import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.store.orders.Order
@@ -31,16 +31,18 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 	
 	List<String> badOrders;
 	List<String> goodOrders;
-	
 	int totalRows;
-	static int colOrderLineNumber = 0;
-	static int colShipDate = 1;
-	static int colOrderNumber = 6;
-	static int colPONumber = 8;
-	static int colWaybill = 9;
-	static int colCourier = 10;
-	static int colManufacturerSKU = 11;
-	static int colQuantity = 12;
+
+	static int colOrderNumber = 0;
+	static int colOrderDate = 9;
+	static int colShipStatus = 10;
+	static int colShipDate = 11;
+	static int colCourier = 12;
+	static int colWaybill = 13;
+	static int colManufacturerSKU = 14;
+	static int colRogersSKU = 15;
+	static int colQuantity = 16;
+	
 	static String inDistributor = "Affinity";
 	static String distributorID = "102";
 	static String ERR_MSG = "was not found in " + inDistributor + " Shipping Notice.";
@@ -115,28 +117,22 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 			String[] cols;
 			while ((cols = read.readNext()) != null)
 			{
-				if (cols[colOrderLineNumber].trim().equals("99999")) {
-					break;
-				}
-				
-				Shipment shipment = new Shipment();
 				String orderID = "";
 				String orderNumber = cols[colOrderNumber].trim();
 				
 				Order order = null;
 				order = media.searchForOrder(orderNumber);
 				if (order != null) {
-					boolean result = processOrder(orderNumber, cols, order, 
-						shipment, media)
+					boolean result = processOrder(orderNumber, cols, order, media)
 					if (result) {
 						addToGoodOrders(orderNumber);
 					} else {
-						addToBadOrders(orderNumber);
+						addToBadOrders(orderNumber + " - Line # " + (totalRows+1).toString());
 					}
 				} else {
 					strMsg = "ERROR: Order(" + orderNumber + ") " + ERR_MSG;
 					log.info(strMsg);
-					addToBadOrders(orderNumber);
+					addToBadOrders(orderNumber + " - Line # " + (totalRows+1).toString());
 				}
 				increaseTotalRows();
 			}
@@ -180,7 +176,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 	}
 	
 	private boolean processOrder(String orderNumber, String[] orderLine, Order order, 
-		Shipment shipment, MediaUtilities media ) {
+		MediaUtilities media ) {
 		
 		boolean result = false;
 		
@@ -192,74 +188,86 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 		String courier = orderLine[this.colCourier].trim();
 		String waybill = orderLine[this.colWaybill].trim();
 		String manufacturerSku = orderLine[this.colManufacturerSKU].trim();
+		String rogersSKU = orderLine[this.colRogersSKU].trim();
 		String quantity = orderLine[this.colQuantity].trim();
 		Date dateShipped = parseDate(shipDate);
 		
-		shipment.setProperty("distributor", distributorID);
-		shipment.setProperty("courier", courier);
-		
-		Data product = media.searchForProductBySku("manufacturersku", manufacturerSku);
-		if (product != null) {
+		if (!order.containsShipmentByWaybill(waybill)) {
 			
-			String productID = product.getId();
-
-			Product target = media.getProductSearcher().searchById(productID);
-			CartItem item = order.getItem(productID);
-
-			if (!shipment.containsEntryForSku(productID) && item !=  null ) {
-				ShipmentEntry entry = new ShipmentEntry();
-				entry.setCartItem(item);
-				entry.setQuantity(Integer.parseInt(quantity));
-				shipment.setProperty("waybill", waybill);
-				shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
-				shipment.addEntry(entry);
-
-				String strMsg = "Order Updated(" + orderNumber + ") and saved";
-				log.info(strMsg);
+			Shipment shipment = new Shipment();
+			shipment.setProperty("distributor", distributorID);
+			shipment.setProperty("courier", courier);
+			
+			Data product = media.searchForProductBySku("rogerssku", rogersSKU);
+			if (product != null) {
 				
-				strMsg = "Waybill (" + waybill + ")";
-				log.info(strMsg);
-				
-				strMsg = "SKU (" + manufacturerSku + ")";
-				log.info(strMsg);
-				
-				if(shipment.getShipmentEntries().size() >0) {
-					order.addShipment(shipment);
-					order.getOrderStatus();
-					if(order.isFullyShipped()){
-						order.setProperty("shippingstatus", "shipped");
-						strMsg = "Order status(" + orderNumber + ") set to shipped.";
-						log.info(strMsg);
-					}else{
-						order.setProperty("shippingstatus", "partialshipped");
-						strMsg = "Order status(" + orderNumber + ") set to partially shipped.";
+				String productID = product.getId();
+	
+				Product target = media.getProductSearcher().searchById(productID);
+				CartItem item = order.getItem(productID);
+	
+				if (!shipment.containsEntryForSku(productID) && item !=  null ) {
+					ShipmentEntry entry = new ShipmentEntry();
+					entry.setCartItem(item);
+					entry.setQuantity(Integer.parseInt(quantity));
+					shipment.setProperty("waybill", waybill);
+					shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+					shipment.addEntry(entry);
+	
+					String strMsg = "Order Updated(" + orderNumber + ") and saved";
+					log.info(strMsg);
+					
+					strMsg = "Waybill (" + waybill + ")";
+					log.info(strMsg);
+					
+					strMsg = "SKU (" + manufacturerSku + ")";
+					log.info(strMsg);
+					
+					if(shipment.getShipmentEntries().size() >0) {
+						order.addShipment(shipment);
+						order.getOrderStatus();
+						if(order.isFullyShipped()){
+							order.setProperty("shippingstatus", "shipped");
+							strMsg = "Order status(" + orderNumber + ") set to shipped.";
+							log.info(strMsg);
+						}else{
+							order.setProperty("shippingstatus", "partialshipped");
+							strMsg = "Order status(" + orderNumber + ") set to partially shipped.";
+							log.info(strMsg);
+						}
+						media.getOrderSearcher().saveData(order, media.getContext().getUser());
+						strMsg = "Order (" + orderNumber + ") saved.";
 						log.info(strMsg);
 					}
-					media.getOrderSearcher().saveData(order, media.getContext().getUser());
-					strMsg = "Order (" + orderNumber + ") saved.";
+	
+				} else {
+					String strMsg = "Cart Item cannot be found(" + manufacturerSku + ")";
 					log.info(strMsg);
-				}
-
+					throw new OpenEditException(strMsg);
+				} // end if orderitems
 			} else {
-				String strMsg = "Cart Item cannot be found(" + manufacturerSku + ")";
+				String strMsg = "Product(" + manufacturerSku + ") " + ERR_MSG;
 				log.info(strMsg);
 				throw new OpenEditException(strMsg);
-			} // end if orderitems
+			}
 		} else {
-			String strMsg = "Product(" + manufacturerSku + ") " + ERR_MSG;
+			String strMsg = "Shipment exists for Waybill (" + waybill + ")";
 			log.info(strMsg);
-			throw new OpenEditException(strMsg);
+			return false;
 		}
 		result = true;
 		return result;
 	}
-	private Date parseDate(String date)
+	private Date parseDate(String inDate)
 	{
-		SimpleDateFormat inFormat = new SimpleDateFormat("yyyyMMddmmss");
-		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date oldDate = inFormat.parse(date);
-		date = newFormat.format(oldDate);
-		return (Date)newFormat.parse(date);
+		Integer intDate = Integer.parseInt(inDate);
+		return getDate(intDate);
+	}
+	public static Date getDate(int days) { //modified to use Calendar
+		Calendar cal = Calendar.getInstance();
+		cal.set(1900, Calendar.JANUARY, 1);
+		cal.add(Calendar.DATE, days);
+		return cal.getTime();
 	}
 }
 
