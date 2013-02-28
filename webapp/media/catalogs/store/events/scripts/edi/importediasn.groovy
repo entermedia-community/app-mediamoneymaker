@@ -278,7 +278,7 @@ public class ImportEDIASN extends EnterMediaObject {
 															log.info(strMsg);
 															completeList.add(strMsg);
 														} else {
-															strMsg = "Cart Item cannot be found(" + orderID + ")";
+															strMsg = "Cart Item (" + productID + ") cannot be found(" + orderID + ")";
 															log.info(strMsg);
 															errorList.add(strMsg);
 														} // end if orderitems
@@ -356,17 +356,12 @@ public class ImportEDIASN extends EnterMediaObject {
 					if (errorList.size() > 0) {
 						String foundErrors = "";
 						for (String error : errorList) {
-							ediXMLresult.appendErrorMessage("<LI>" + error + "</LI>\n");
+							ediXMLresult.appendErrorMessage(error);
 							foundErrors += error + "\n";
 						}
 						log.info("ERROR: The folowwing errors occurred:");
 						log.info(foundErrors);
 						//Create web event to send an email.
-						WebEvent event = new WebEvent();
-						event.setSearchType("asn_processing");
-						event.setCatalogId(media.getCatalogid());
-						event.setProperty("error", foundErrors);
-						media.getArchive().getMediaEventHandler().eventFired(event);
 					}
 					errorList = null;
 					completeList = null;
