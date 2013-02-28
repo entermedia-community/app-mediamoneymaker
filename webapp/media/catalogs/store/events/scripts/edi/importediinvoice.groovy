@@ -311,10 +311,12 @@ public class ImportEDIInvoice extends EnterMediaObject {
 													if (orderItemQuantity != ediItemQuantity) {
 														throw new Exception("Invalid Quantity (" + orderItemQuantity.toString() + ":" + ediItemQuantity.toString() + ")");
 													}
+													
 													//Check Price
-													Money orderPrice = orderItem.getYourPrice();
+													//Money orderPrice = orderItem.getYourPrice();
+													Money productPrice = new Money(product.get("rogersprice"));
 													Money ediPrice = new Money(linePrice);
-													if (orderPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
+													if (productPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
 														throw new Exception("Invalid Price(" + orderPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")");
 													}
 
@@ -405,14 +407,14 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							}
 						} else {
 							String inMsg = "ERROR Invoice not saved.";
-							result.setErrorMessage(result.getErrorMessage() + output.appendList(inMsg));
+							log.info(inMsg);
 							boolean move = movePageToProcessed(pageManager, page, media.getCatalogid(), false);
 							if (move) {
 								inMsg = "Invoice File (" + page.getName() + ") moved to error";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							} else {
 								inMsg = "Invoice File (" + page.getName() + ") failed to move to ERROR";
-								result.setErrorMessage(result.getErrorMessage() + "\n" + output.appendList(inMsg));
+								log.info(inMsg);
 							}
 						}
 						log.info("---- END Import EDI Invoice ----");
