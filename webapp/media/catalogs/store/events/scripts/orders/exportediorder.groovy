@@ -107,7 +107,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 				throw new OpenEditException("Invalid Order");
 			}
 			String orderStatus = order.get("orderstatus");
-			if (orderStatus != "rejected") {
+			if (orderStatus == "authorized") {
 				String ediStatus = order.get("edistatus");
 				if (ediStatus == null || ediStatus.equals("open")) {
 	
@@ -327,8 +327,10 @@ public class ExportEdiOrder extends EnterMediaObject {
 			for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();)
 			{
 				CartItem orderItem = itemIterator.next();
-				orderCount++
-				populateDetail(xml, orderCount, orderItem)
+				if (orderItem.getProduct().getProperty("distributor") == distributor.getId()) {
+					orderCount++
+					populateDetail(xml, orderCount, orderItem);
+				}
 			} // End itemIterator loop
 		} // end POHeader
 	}
@@ -337,12 +339,12 @@ public class ExportEdiOrder extends EnterMediaObject {
 
 		xml.PODetail()
 		{
-			LineItemNumber(orderCount)
+			LineItemNumber(orderCount);
 			String productId = orderItem.getProduct().getId();
 			QuantityOrdered(orderItem.getQuantity().toString())
 
 			def SEARCH_FIELD = "id";
-			UnitPrice(orderItem.getYourPrice().toShortString())
+			UnitPrice(orderItem.getProduct().get("rogersprice"))
 			UnitOfMeasure("EA")
 			Description(orderItem.getProduct().getName())
 			Attributes()
