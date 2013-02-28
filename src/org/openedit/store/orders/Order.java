@@ -432,8 +432,9 @@ public class Order extends BaseData implements Comparable {
 	public Shipment getShipmentByWaybill( String inWaybill ) {
 		Shipment shipment = null;
 		for (Iterator iterator = getShipments().iterator(); iterator.hasNext();) {
-			shipment = (Shipment) iterator.next();
-			if (shipment.get("waybill").equals(inWaybill)) {
+			Shipment checkShipment = (Shipment) iterator.next();
+			if (checkShipment.get("waybill").equals(inWaybill)) {
+				shipment = checkShipment;
 				break;
 			}
 		}
