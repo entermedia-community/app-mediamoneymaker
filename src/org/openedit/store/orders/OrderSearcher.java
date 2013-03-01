@@ -317,4 +317,9 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		super.updateIndex(inData);
 	}
 	
+	@Override
+	public String nextId(){
+	return getStore().getOrderGenerator().nextOrderNumber(getStore());
+	}
+	
 }
