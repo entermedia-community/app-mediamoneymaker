@@ -11,6 +11,6 @@
   <corporateorder id="tickets" recordstatus="deleted">Support Tickets</corporateorder>
   <data id="ticket">Support Tickets</data>
   <data id="banner">Banners</data>
-  <data id="userprofile" recordstatus="deleted">Profile</data>
   <property id="division" href="/views/modules/division/index.html" recordstatus="deleted">Divisions</property>
+  <data id="userprofile">Profiles</data>
 </root>

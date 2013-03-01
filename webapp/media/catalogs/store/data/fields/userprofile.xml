@@ -31,4 +31,5 @@
   <property id="dealer" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="userprofile" internalfield="false" datatype="list">Dealer</property>
   <property id="displaydesignation" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="userprofile" internalfield="false" datatype="list">Display Designation</property>
   <property id="storeadmin" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="userprofile" internalfield="false" datatype="boolean">Store Admin</property>
+  <property id="address" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="userprofile" internalfield="false" datatype="list">Address</property>
 </properties>

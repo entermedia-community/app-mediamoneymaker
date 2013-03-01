@@ -11,4 +11,5 @@
   <property id="userid" index="true" stored="true" editable="true" searchtype="wishlist">userid</property>
   <property id="wishstatus" index="true" stored="true" editable="true" searchtype="wishlist" internalfield="false">Status</property>
   <property id="parentprofile" index="true" stored="true" editable="true" searchtype="wishlist">parentprofile</property>
+  <property id="address" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="wishlist" internalfield="false" datatype="list">Store Name</property>
 </properties>

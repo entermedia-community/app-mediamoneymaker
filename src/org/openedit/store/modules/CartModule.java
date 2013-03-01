@@ -755,6 +755,7 @@ public class CartModule extends BaseStoreModule {
 		wishlist.setProperty("creationdate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		wishlist.setProperty("profileid", profile.getId());
 		wishlist.setProperty("dealer", profile.get("dealer"));
+		wishlist.setProperty("address", profile.get("address"));
 
 		wishlist.setProperty("store", profile.get("store"));
 		wishlist.setId(wishlistsearcher.nextId());
