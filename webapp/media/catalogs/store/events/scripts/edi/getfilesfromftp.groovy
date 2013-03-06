@@ -192,21 +192,6 @@ public class GetFilesFromFTP extends EnterMediaObject {
 						if(FTPReply.isPositiveCompletion(reply)) {
 							replyString = ftp.getReplyString();
 							log.info("Reply: " + replyString);
-							if (downloadFile.exists()){
-								ftp.deleteFile(file.getName());
-								reply = ftp.getReplyCode();
-								if(FTPReply.isPositiveCompletion(reply)) {
-									log.info("Remote file file(${file.getName()}) deleted.");
-								} else {
-									log.info("Unable to delete file(${file.getName()}). Error code: ${reply}");
-								}
-								replyString = ftp.getReplyString();
-								log.info("Reply: " + replyString);
-								
-								strMsg += "<li>" + file.getName() + " uploaded.\n";
-								log.info("File downloaded: " + downloadFile.getName());
-								ctr++;
-							}
 						} else {
 							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
 						}

@@ -83,6 +83,21 @@ public class UpdateAllInventory extends EnterMediaObject {
 				productInventory = new InventoryItem();
 				productInventory.setSku(product.getId());
 				product.addInventoryItem(productInventory);
+			} else {
+				String sku = productInventory.getSku();
+				if (sku == null) {
+					product.clearItems();
+					productInventory = new InventoryItem();
+					productInventory.setSku(product.getId());
+					product.addInventoryItem(productInventory);
+				} else {
+					if (!sku.equals(product.getId())) {
+						product.clearItems();
+						productInventory = new InventoryItem();
+						productInventory.setSku(product.getId());
+						product.addInventoryItem(productInventory);
+					}
+				}
 			}
 			productInventory.setQuantityInStock(Integer.parseInt(quantity));
 			Date now = new Date();
@@ -96,8 +111,45 @@ public class UpdateAllInventory extends EnterMediaObject {
 				result.setComplete(false);
 			}
 		} else {
-			log.info("Product" + product.getId() + " has inventory already.");
-			result.setComplete(true);
+			InventoryItem productInventory = null;
+			productInventory = product.getInventoryItem(0);
+			if (productInventory == null) {
+				//Need to create the Inventory Item
+				productInventory = new InventoryItem();
+				productInventory.setSku(product.getId());
+				product.addInventoryItem(productInventory);
+			} else {
+				String sku = productInventory.getSku();
+				if (sku == null) {
+					product.clearItems();
+					productInventory = new InventoryItem();
+					productInventory.setSku(product.getId());
+					product.addInventoryItem(productInventory);
+				} else {
+					if (!sku.equals(product.getId())) {
+						log.info("Mismatch: " + sku + ":" + product.getId());
+						product.clearItems();
+						productInventory = new InventoryItem();
+						productInventory.setSku(product.getId());
+						product.addInventoryItem(productInventory);
+						sku = productInventory.getSku();
+						if (!sku.equals(product.getId())) {
+							return;
+						}
+					}
+				}
+			}
+			productInventory.setQuantityInStock(Integer.parseInt(quantity));
+			Date now = new Date();
+			product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(now));
+			try {
+				mediaUtilities.getProductSearcher().saveData(product, mediaUtilities.getContext().getUser());
+				result.setComplete(true);
+			} catch (Exception e) {
+				result.setErrorMessage("ERROR:" + product.getId() + ":" + e.getMessage() + ":" + e.getLocalizedMessage())
+				log.info(e.getMessage());
+				result.setComplete(false);
+			}
 		}
 		return result;
 	}

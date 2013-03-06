@@ -6,21 +6,23 @@ package rogers
  */
 
 //Import List
-import java.util.List;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.entermedia.util.CSVReader
+import org.openedit.store.Cart
 import org.openedit.store.CartItem
+import org.openedit.store.PaymentMethod
 import org.openedit.store.Product
+import org.openedit.store.PurchaseOrderMethod
 import org.openedit.store.Store
-import org.openedit.store.util.MediaUtilities;
-import org.openedit.util.DateStorageUtil
+import org.openedit.store.customer.Address
+import org.openedit.store.customer.Customer
+import org.openedit.store.orders.Order
+import org.openedit.store.orders.OrderState
 
-import com.openedit.BaseWebPageRequest
+import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
@@ -29,8 +31,10 @@ import com.openedit.util.FileUtils
 public class ImportRogersOrder extends EnterMediaObject {
 
 	List<String> goodOrderList;
+	List<String> badProductList;
+	List<String> badStoreList;
 	int totalRows;
-	
+	Map<String, Order> orderMap;
 
 	public List<String> getGoodOrderList() {
 		if(goodOrderList == null) {
@@ -44,6 +48,33 @@ public class ImportRogersOrder extends EnterMediaObject {
 		}
 		goodOrderList.add(inItem);
 	}
+
+	public List<String> getBadProductList() {
+		if(badProductList == null) {
+			badProductList = new ArrayList<String>();
+		}
+		return badProductList;
+	}
+	public void addToBadProductList(String inItem) {
+		if(badProductList == null) {
+			badProductList = new ArrayList<String>();
+		}
+		badProductList.add(inItem);
+	}
+
+	public List<String> getBadStoreList() {
+		if(badStoreList == null) {
+			badStoreList = new ArrayList<String>();
+		}
+		return badStoreList;
+	}
+	public void addToBadStoreList(String inItem) {
+		if(badStoreList == null) {
+			badStoreList = new ArrayList<String>();
+		}
+		badStoreList.add(inItem);
+	}
+
 	public int getTotalRows() {
 		if (totalRows == null) {
 			totalRows = 0;
@@ -59,21 +90,42 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 	public void orderImport(){
 		//Create Store, MediaArchive Object
+
+		log.info("PROCESS: START Orders.RogersImport");
 		
-		MediaUtilities media = new MediaUtilities();
-		media.setContext(context);
+		MediaArchive archive = context.getPageValue("mediaarchive");
+		String catalogid = getMediaArchive().getCatalogId();
+		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 		
-		MediaArchive archive = media.getArchive();
+		String strMsg = "";
+		Store store = null;
+		try {
+			store  = context.getPageValue("store");
+			if (store != null) {
+				log.info("Store loaded");
+			} else {
+				strMsg = "ERROR: Could not load store";
+				throw new Exception(strMsg);
+			}
+		}
+		catch (Exception e) {
+			strMsg += "Exception thrown:\n";
+			strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
+			strMsg += "Stack Trace: " + e.getStackTrace().toString();;
+			log.info(strMsg);
+			throw new OpenEditException(strMsg);
+		}
+		
+		// Create the Searcher Objects to read values!
+		SearcherManager manager = archive.getSearcherManager();
 
 		//Create Searcher Object
-		Searcher productsearcher = media.getProductSearcher();
-		SearcherManager manager = media.getSearcherManager();
-
-		//	Product product = productsearcher.createNewData();
-		//	String [] fields = context.getRequestParameters("field");
-		//	productsearcher.updateData(context, fields, product)
-		//	productsearcher.saveData(product, context.getUser());
-
+		Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
+		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
+		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
+		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
+		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "rogersstore");
+		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
 
 		//Define columns from spreadsheet
 		def int columnStore = 4;
@@ -99,9 +151,6 @@ public class ImportRogersOrder extends EnterMediaObject {
 		def int columnRogersOtherID = 34;
 		def String colHeadROGERSOTHERID = "IRLSDT";
 
-		String catalogid = media.getCatalogid();
-		Searcher ordersearcher = media.getOrderSearcher();
-
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
 		//detail.get("column");
 
@@ -114,6 +163,8 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 			//Create CSV reader
 			CSVReader read = new CSVReader(reader, ',', '\"');
+			
+			orderMap = new HashMap()
 
 			//Read 1 line of header
 			String[] headers = read.readNext();
@@ -158,12 +209,9 @@ public class ImportRogersOrder extends EnterMediaObject {
 				context.putPageValue("errorout", errorOut);
 
 			} else {
-			
-			
 
 				int productCount = 0;
 				int badProductCount = 0;
-				List badProductList = new ArrayList();
 				List badStoreList = new ArrayList();
 
 				String[] orderLine;
@@ -175,15 +223,8 @@ public class ImportRogersOrder extends EnterMediaObject {
 					Searcher storeList = manager.getSearcher(archive.getCatalogId(), "rogersstore");
 					Data targetStore = storeList.searchById(storeNum);
 					if(targetStore == null){
-//						targetStore = storeList.createNewData();
-//						targetStore.setId(storeList.nextId());
-//						targetStore.setProperty("store", storeNum);
-//						//TODO: pull out address details etc from spreadsheet
-//						targetStore.setProperty("name", orderLine[columnStoreName]);
-//						targetStore.setProperty("level", orderLine[columnStoreRank].replace(" ", ""));
-//						targetStore.setSourcePath("rogers");
-//						storeList.saveData(targetStore, context.getUser());
-						badStoreList.add(storeNum);
+						addToBadStoreList(storeNum);
+						break;
 					}
 
 					//Get Product Info
@@ -205,48 +246,129 @@ public class ImportRogersOrder extends EnterMediaObject {
 							log.info(" - ProductID: " + targetProduct.getId());
 							break;
 						}
-						def boolean validCheck = Boolean.parseBoolean(targetProduct.get("validitem"));
-						if (validCheck) {
-							log.info(" - Item is valid!");
-							//Everything is good... Create the cart item!
-							CartItem orderitem = new CartItem();
-							Product product = store.getProduct(targetProduct.getId());
-							orderitem.setProperty("orderid", order.getId());//foriegn key
-							orderitem.setProduct(product);
-							orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
-							
-							orderitem.setProperty("productname", targetProduct.getName());
-							
-							orderitem.setProperty("store", storeNum);
-							orderitem.setProperty("storelevel", targetStore.level.replace(" ", ""));
-							orderitem.setProperty("storename", targetStore.name);
-							Data distributor = searchForDistributor(manager, archive, orderLine[columnManfactName]);
-							orderitem.setProperty("distributor", distributor.id);
-							orderitem.setProperty("validitem", "true");
-							orderitem.setProperty("as400id", orderLine[columnAS400id]);
-	
-							itemsearcher.saveData(orderitem, context.getUser());
-						} else {
-							badProductCount++;
-							log.info(" - Item is INVALID!");
-							String errMsg = "INVALID Product ID: " + targetProduct.getId();
-							badProductList.add(errMsg);
+
+						//Everything is good... Create the cart item!
+						CartItem orderitem = new CartItem();
+						Product product = productsearcher.searchById(targetProduct.getId());
+						orderitem.setProduct(product);
+						orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
+						
+						if (orderMap == null) {
+							orderMap = new HashMap()
 						}
+
+						Order order = orderMap.get(storeNum);
+						if (order == null) {
+							order = new Order();
+							order.setId("Rogers-"+ordersearcher.nextId());
+							order.setSourcePath(order.getId());
+							orderMap.put(storeNum, order);
+						}
+						order.addItem(orderitem);
+//						Element orderElem = DocumentHelper.createDocument().addElement(
+//							"order");
+//						orderElem.addAttribute("order_number", order.getId());
+//						orderElem.addAttribute("date", DateStorageUtil.getStorageUtil()
+//								.formatForStorage(order.getDate()));
+						
+						
+						Address shipping = order.getShippingAddress();
+						if (shipping == null) {
+							Data shippingAddress = addresssearcher.searchById(storeNum);
+							shipping = new Address();
+							shipping.setId(shippingAddress.get("id"));
+							shipping.setName(shippingAddress.get("name"));
+							shipping.setAddress1(shippingAddress.get("address1"));
+							shipping.setAddress2("");
+							shipping.setCity(shippingAddress.get("city"));
+							shipping.setState(shippingAddress.get("province"));
+							shipping.setZipCode(shippingAddress.get("postalcode"));
+							shipping.setCountry(shippingAddress.get("CA"));
+							shipping.setDescription(shippingAddress.get("description"));
+							shipping.setProperty("phone", shippingAddress.get("phone1"));
+						}
+						order.setShippingAddress(shipping);
+						//store.saveOrder(order);
+						
+						Address billing = order.getBillingAddress();
+						if (billing == null) {
+							Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
+							Data billingAddress = profileAddressSearcher.searchByField("name", "Area Office");
+							if (billingAddress == null) {
+								throw new OpenEditException("Cannot find Area Office Information");
+							}
+							billing = new Address();
+							billing.setId(billingAddress.get("id"));
+							billing.setName(billingAddress.get("name"));
+							billing.setAddress1(billingAddress.get("address1"));
+							billing.setAddress2(billingAddress.get("address2"));
+							billing.setCity(billingAddress.get("city"));
+							billing.setState(billingAddress.get("state"));
+							billing.setZipCode(billingAddress.get("zipcode"));
+							billing.setCountry(billingAddress.get("country"));
+							billing.setDescription(billingAddress.get("description"));
+							billing.setProperty("phone", billingAddress.get("phone"));
+						}
+						order.setBillingAddress(billing);
+						//store.saveOrder(order);
+
+						Customer customer = order.getCustomer();
+						if (customer == null) {
+							Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
+							Data customerInfo = profileAddressSearcher.searchByField("name", "Area Office");
+							if (customerInfo == null) {
+								throw new OpenEditException("Cannot find Area Office Information");
+							}
+							customer = new Customer()
+							customer.setId(customerInfo.get("id"));
+							customer.setName(customerInfo.get("name"));
+							customer.setEmail(customerInfo.get("email"));
+							customer.setPhone1(customerInfo.get("phone"));
+							customer.setShippingAddress(shipping);
+							customer.setBillingAddress(billing);
+							customer.setUser(context.getUser());
+						}
+						order.setCustomer(customer);
+						//store.saveOrder(order);
+						
+						String purchaseorder = order.getId();
+						PurchaseOrderMethod poMethod = new PurchaseOrderMethod();
+						poMethod.setPoNumber(purchaseorder);
+						poMethod.setBillMeLater(true);
+						PaymentMethod payment = poMethod;
+						order.setPaymentMethod((PurchaseOrderMethod) payment);
+						if (order.getPaymentMethod() == null) {
+							throw new OpenEditException("Cannot set PaymentMethod()");
+						}
+
+						OrderState orderState = new OrderState();
+						orderState.setDescription("authorized");
+						orderState.setOk(true);
+										//Set other properties
+						order.setOrderState(orderState);
+						order.setProperty("status", "authorized");
+						
+						//store.saveOrder(order);
+						
 					} else {
 
 						//ID Does not exist!!! Add to badProductIDList
 						badProductCount++;
-						String errMsg = "BAD Product ID: " + orderLine[columnAS400id];
-						badProductList.add(errMsg);
+						String errMsg = "BAD Product ID: " + rogerssku;
+						addToBadProductList(errMsg);
 						log.info(errMsg);
 
 					}
 				}
-				if (badProductList.size() > 0) {
-					context.putPageValue("badlist", badProductList);
+				for (Iterator iterator = orderMap.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Order order = orderMap.get(key);
+					Cart cart = order.getCart();
+					order.setTotalPrice(cart.getTotalPrice());
+					//order.setTaxes(cart.getTaxes());
+					store.saveOrder(order);
+					addToGoodOrderList(order.getId());
 				}
-				ordersearcher.saveData(order, context.getUser());
-				context.putPageValue("order", order);
 			}
 		}
 		finally
@@ -258,9 +380,9 @@ public class ImportRogersOrder extends EnterMediaObject {
 	public String addQuotes( String s ) {
 		return "\"" + s + "\"";
 	}
-	
+
 	private Data searchForDistributor( SearcherManager manager,
-	MediaArchive archive, String searchForName) {
+			MediaArchive archive, String searchForName) {
 
 		String SEARCH_FIELD = "name";
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
@@ -274,17 +396,31 @@ logs = new ScriptLogger();
 logs.startCapture();
 
 try {
-	
+
 	ImportRogersOrder importOrder = new ImportRogersOrder();
 	importOrder.setLog(logs);
 	importOrder.setContext(context);
 	importOrder.setModuleManager(moduleManager);
 	importOrder.setPageManager(pageManager);
-	
+
 	//Read the production value
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 	importOrder.orderImport();
+	log.info("The following file(s) has been created. ");
+	context.putPageValue("orderlist", importOrder.getGoodOrderList());
+	log.info(importOrder.getGoodOrderList().toString());
+	if (importOrder.getBadProductList().size()>0) {
+		log.info("Bad Product List ");
+		log.info(importOrder.getBadProductList().toString());
+		context.putPageValue("badproductlist", importOrder.getBadProductList());
+	}
+	if (importOrder.getBadStoreList().size()>0) {
+		log.info("Bad Store List ");
+		log.info(importOrder.getBadStoreList().toString());
+		context.putPageValue("badproductlist", importOrder.getBadStoreList());
+	}
+	log.info("PROCESS: END Orders.RogersImport");
 }
 finally {
 	logs.stopCapture();

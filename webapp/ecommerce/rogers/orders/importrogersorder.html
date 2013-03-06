@@ -1,15 +1,28 @@
-#set($goodlist = $context.getContentProperty("goodlist"))
+#set($orderlist = $context.getContentProperty("orderlist"))
+#set($badproductlist = $context.getContentProperty("badproductlist"))
+#set($badstorelist = $context.getContentProperty("badstorelist"))
 
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">Rogers Orders</div>
+	<div class="ui-widget-header">Rogers Store Section</div>
 	<div class="ui-widget-content">
-	#if( $goodlist.size() > 0)
-		<h3>Generated Orders ($goodlist.size())</h3>
-		#foreach($orders in $goodlist)
-			$orders<BR>
+	#if( $orderlist.size() > 0)
+		<h3>Generated Orders ($orderlist.size())</h3>
+		#foreach($order in $orderlist)
+			$order<BR>
+		#end
+	#end
+	#if( $badproductlist.size() > 0)
+		<h3>Bad Product List ($badproductlist.size())</h3>
+		#foreach($product in $badproductlist)
+			$product<BR>
+		#end
+	#end
+	#if( $badstorelist.size() > 0)
+		<h3>Bad Store List ($badstorelist.size())</h3>
+		#foreach($store in $badstorelist)
+			$store<BR>
 		#end
 	#end
 	</div> 
 </div>
-
 
