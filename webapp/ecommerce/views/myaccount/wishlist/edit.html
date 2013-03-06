@@ -1,0 +1,17 @@
+<h2>Wishlist Details  <a class="btn" href="$apphome/wishlist/load.html?listid=$data.id">Order this now</a></h2>
+$context.putPageValue("searcher", $mediaarchive.getSearcher("wishlist"))
+$context.putPageValue("view", "wishlist/update")
+$context.putPageValue("data", $data)
+
+<form name="submitticket" action="updatedetails.html">
+$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+<input type="hidden" name="id" value="$!{data.id}"/>
+
+
+
+
+<input type="hidden" name="save" value="true"/>
+
+<input type="submit" class="btn" value="Save" />
+</form>

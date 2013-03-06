@@ -1,0 +1,5 @@
+<page>
+	<path-action name="DataEditModule.saveData" >
+	<property name="searchtype">wishlist</property>
+	</path-action>
+</page>

@@ -1,10 +1,12 @@
+$pages.include("./edit.html", $context)
+
 #set($searcher = $mediaarchive.getSearcher("wishlistitems"))
 #set($wishlists = $mediaarchive.getSearcher("wishlistitems"))
 
 #set($id = $context.getRequestParameter("id"))
 #set($wishlist = $wishlists.searchById($id))
 
-<h2>[[My Wish List]] <a class="btn" href="$apphome/wishlist/load.html?listid=$id">Order this</a></h2>
+<h2>[[List Items]] </h2>
 
 	#set($hits = $searcher.fieldSearch("wishlist", $id))
 $context.putPageValue("data", $wishlist )
