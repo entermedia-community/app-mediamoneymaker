@@ -8,4 +8,6 @@
   <property id="image"/>
   <property id="clearancecentre"/>
   <property id="descrip"/>
+  <property id="approved"/>
+  <property id="approvedcomment"/>
 </root>

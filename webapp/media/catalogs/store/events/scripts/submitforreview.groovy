@@ -111,9 +111,19 @@ public void handleSubmission(){
 	money = money.multiply(1.1);
 	Price price = new Price(money);
 	PriceSupport pricing = new PriceSupport();
+	
+	if(product.clearancecentre == "true"){
+		if(!product.clearanceprice){
+			throw new OpenEditException("Clearance price wasn't set but product is in clearance section!");
+		}
+		Money clearanceprice = new Money(product.get("clearanceprice"));
+		clearanceprice = clearanceprice.multiply(1.1);
+		price.setSalePrice(clearanceprice)				
+	}
 	pricing.addTierPrice(1, price);
 	inventoryItem.setPriceSupport(pricing);
 	product.addInventoryItem(inventoryItem);
+	
 		
 	productsearcher.saveData(product, context.getUser());
 	context.putPageValue("data", product);
@@ -192,7 +202,6 @@ public void handleSubmission(){
 					templatePage = "/ecommerce/views/modules/product/workflow/user-notification-notapproved.html";
 					subject = "Product needs to be reviewed.";
 				}
-				sendEmail(context, userEmail, templatePage, subject);
 			}
 		}
 		userEmail = null;

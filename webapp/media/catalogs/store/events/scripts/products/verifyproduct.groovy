@@ -10,6 +10,8 @@ import org.openedit.store.PriceSupport
 import org.openedit.store.Product
 import org.openedit.store.Store
 
+import com.openedit.OpenEditException
+
 public void doProcess() {
 	log.info("Verifying product");
 	WebEvent webevent = context.getPageValue("webevent");
@@ -31,6 +33,17 @@ public void doProcess() {
 	Money money = new Money(product.getProperty("rogersprice"));
 	money = money.multiply(1.1);
 	Price price = new Price(money);
+	
+	if(product.clearancecentre == "true"){
+		if(!product.clearanceprice){
+			throw new OpenEditException("Clearance price wasn't set but product is in clearance section!");
+		}
+		Money clearanceprice = new Money(product.get("clearanceprice"));
+		clearanceprice = clearanceprice.multiply(1.1);
+		price.setSalePrice(clearanceprice)
+	}
+	
+	
 	PriceSupport pricing = new PriceSupport();
 	pricing.addTierPrice(1, price);
 	inventoryItem.setPriceSupport(pricing);

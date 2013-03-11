@@ -11,4 +11,5 @@
   <property id="fidomsrp"/>
   <property id="clearancecentre"/>
   <property id="participantid"/>
+  <property id="approved"/>
 </root>

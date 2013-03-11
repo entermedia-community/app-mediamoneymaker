@@ -18,8 +18,12 @@
 	#set($value = $product.get("manufacturerid"))
   #end
 #end
+#if(!$value)
+	#set($value = $val)	
+#end
 
 #set($isDistributor = $userprofile.get("distributor"))
+
 #set($distributor = $searcherManager.getData($catalogid, "distributor", $isDistributor))
 <select style="margin-top: 8px;" id="list-phone" data-placeholder=" " name="manufacturerid.value" 
 	class="choose-select autosubmited  required  ">

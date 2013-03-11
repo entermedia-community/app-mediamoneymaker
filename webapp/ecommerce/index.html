@@ -1,4 +1,4 @@
-
+	#set($searchroot = "$apphome/search")
 #if($canbrowseproducts)
 <div id="home-top">
 	<div id="home-left">
@@ -23,7 +23,9 @@
 	</div>
 	<div id="home-right">
 	<div class="home-image">
-	<img src="$apphome/theme/images/clearance.jpg"/>
+	<a href="$searchroot/fieldsearch.html?field=clearancecentre&clearancecentre.value=true&operation=matches$!extra">	<img src="$apphome/theme/images/clearance.jpg"/></a>
+
+
 	</div>
 	<div class="home-image">
 	<img src="$apphome/theme/images/shopdeals.png"/>

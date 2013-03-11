@@ -11,8 +11,7 @@
 		<form name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
 	 		<input name="searchtype" type="hidden" value="product" />
 	 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
-	 		<input name="field" type="hidden" value="approved" />
-	 		<input name="approved.value" type="hidden" value="false" />
+	 		
 	 		#set($ticketid = $context.getRequestParameter("ticketid"))
 	 		#if($ticketid)
 	 			<input name="ticketid" type="hidden" value="$ticketid" />

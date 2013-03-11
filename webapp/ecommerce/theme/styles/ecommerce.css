@@ -306,3 +306,25 @@ border-radius:8px;
 	margin-left:-5px;
 	margin-top: 18px;
 }
+
+
+.onsale {
+	text-decoration: line-through;
+	font-size: 16px;
+	color: black;
+}
+
+.product-sidebar li.price .onsale {
+		font-size: 16px;
+	color: black;
+	
+}
+
+.saleprice {
+	 font-size: 32px;
+    font-weight: bold;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+    color: #78C042;
+}

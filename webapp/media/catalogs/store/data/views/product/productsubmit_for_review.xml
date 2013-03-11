@@ -17,4 +17,6 @@
   <property id="rogersprice" required="true"/>
   <property id="active"/>
   <property id="clearancecentre"/>
+    <property id="clearanceprice" editable="true" required="true"/>
+  
 </root>
