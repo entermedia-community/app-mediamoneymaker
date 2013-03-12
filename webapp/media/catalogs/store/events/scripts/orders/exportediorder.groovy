@@ -344,7 +344,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 
 			def SEARCH_FIELD = "id";
 			Product p = orderItem.getProduct();
-			String saleprice = p.get("saleprice"); 
+			String saleprice = p.get("clearanceprice"); 
 			if (saleprice != null && saleprice.toDouble() > 0) {
 				UnitPrice(saleprice)
 			} else {
