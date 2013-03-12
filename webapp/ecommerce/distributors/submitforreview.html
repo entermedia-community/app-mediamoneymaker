@@ -8,7 +8,7 @@
 		$context.putPageValue("searcher", $searcher)	 
 		$context.putPageValue("view", "product/productsubmit_for_review")	
 	
-		<form name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
+		<form id="submitproduct" name="submitproduct" action="$apphome/distributors/submitfinish.html" method="post" enctype="multipart/form-data">
 	 		<input name="searchtype" type="hidden" value="product" />
 	 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
 	 		
@@ -46,3 +46,25 @@
 	
 	</div>
 </div>
+<script type="text/javascript">
+
+jQuery("#submitproduct").bind("submit", function(){
+	
+	var clearance  = jQuery("input[name='clearancecentre.value']").is(":checked");
+	
+	
+	
+	if(clearance){
+		var price = jQuery("input[name='clearanceprice.value']").val();
+		if(!price){
+			alert ("You must specify the clearance price for products in the clearance center");
+			return false;
+		}
+	
+	}
+	
+}
+);
+
+
+</script>
