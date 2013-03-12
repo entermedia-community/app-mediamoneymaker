@@ -235,7 +235,7 @@ public class ImportEDIASN extends EnterMediaObject {
 													def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 													if (!vendorCode.isEmpty()) {
 														foundFlag = true;
-														Data product = media.searchForProductBySku("manufacturersku", vendorCode);
+														Data product = media.searchForProductByField("manufacturersku", vendorCode);
 														if (product != null) {
 															foundFlag = true;
 															productID = product.getId();

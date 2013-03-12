@@ -1,0 +1,29 @@
+#set($exportfiles = $context.getContentProperty("exportfiles"))
+
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers BUD Export Section</div>
+	<div class="ui-widget-content">
+		#if( $errorout )
+			$errorout
+		#else
+			<table class="emdata" id="main-results-table">
+				<thead>
+					<tr id="tableheader">
+						<th>
+							Download								
+						</th>  
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					#foreach($filename in $exportfiles)
+					<tr>
+						<td>BUD FILE</td>
+						<td><a href="{$filename}" class="btn">Download</a></td>
+					</tr>
+					#end
+				</tbody>
+			</table>
+		#end
+	</div> 
+</div>

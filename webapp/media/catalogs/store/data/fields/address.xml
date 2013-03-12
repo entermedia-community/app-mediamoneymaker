@@ -12,4 +12,7 @@
   <property id="storenumber" index="true" stored="true" editable="true" searchtype="address">Store Number</property>
   <property id="userprofile" index="true" stored="true" editable="true" searchtype="address">userprofile</property>
   <property id="phone" index="true" stored="true" editable="true" searchtype="address">Phone</property>
+  <property id="sourcepath" index="true" stored="true" editable="true" searchtype="address">sourcepath</property>
+  <property id="brand" index="true" stored="true" editable="true" searchtype="address">brand</property>
+  <property id="dealer" index="true" stored="true" editable="true" searchtype="address">dealer</property>
 </properties>

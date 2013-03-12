@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
   <property id="rogersponumber"/>
@@ -8,4 +9,5 @@
   <property id="products"/>
   <property id="shippingstatus"/>
   <property id="orderstatus"/>
+  <property id="batchid"/>
 </root>

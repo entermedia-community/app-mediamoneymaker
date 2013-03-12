@@ -6,6 +6,9 @@ package rogers
  */
 
 //Import List
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -26,6 +29,8 @@ import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
+import com.openedit.users.BaseUser
+import com.openedit.users.User
 import com.openedit.util.FileUtils
 
 public class ImportRogersOrder extends EnterMediaObject {
@@ -124,8 +129,9 @@ public class ImportRogersOrder extends EnterMediaObject {
 		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
-		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "rogersstore");
+		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "address");
 		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
+		Searcher usersearcher = manager.getSearcher("system", "user");
 
 		//Define columns from spreadsheet
 		def int columnStore = 4;
@@ -153,6 +159,8 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
 		//detail.get("column");
+		
+		String batchID = UUID.randomUUID().toString();
 
 		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/rogers_order.csv");
 		Reader reader = upload.getReader();
@@ -246,12 +254,18 @@ public class ImportRogersOrder extends EnterMediaObject {
 							log.info(" - ProductID: " + targetProduct.getId());
 							break;
 						}
-
+						
 						//Everything is good... Create the cart item!
 						CartItem orderitem = new CartItem();
 						Product product = productsearcher.searchById(targetProduct.getId());
 						orderitem.setProduct(product);
 						orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
+						
+						String as400id = product.get("as400id");
+						if (as400id == null) {
+							product.setProperty("as400id", orderLine[columnAS400id]);
+							productsearcher.saveData(product, context.getUser());
+						}
 						
 						if (orderMap == null) {
 							orderMap = new HashMap()
@@ -262,74 +276,64 @@ public class ImportRogersOrder extends EnterMediaObject {
 							order = new Order();
 							order.setId("Rogers-"+ordersearcher.nextId());
 							order.setSourcePath(order.getId());
+							order.setProperty("batchid", batchID);
 							orderMap.put(storeNum, order);
 						}
 						order.addItem(orderitem);
-//						Element orderElem = DocumentHelper.createDocument().addElement(
-//							"order");
-//						orderElem.addAttribute("order_number", order.getId());
-//						orderElem.addAttribute("date", DateStorageUtil.getStorageUtil()
-//								.formatForStorage(order.getDate()));
-						
 						
 						Address shipping = order.getShippingAddress();
 						if (shipping == null) {
-							Data shippingAddress = addresssearcher.searchById(storeNum);
+							Data shippingAddress = addresssearcher.searchByField("storenumber", storeNum);
 							shipping = new Address();
 							shipping.setId(shippingAddress.get("id"));
 							shipping.setName(shippingAddress.get("name"));
 							shipping.setAddress1(shippingAddress.get("address1"));
 							shipping.setAddress2("");
 							shipping.setCity(shippingAddress.get("city"));
-							shipping.setState(shippingAddress.get("province"));
-							shipping.setZipCode(shippingAddress.get("postalcode"));
-							shipping.setCountry(shippingAddress.get("CA"));
+							shipping.setState(shippingAddress.get("state"));
+							shipping.setZipCode(shippingAddress.get("zip"));
+							shipping.setCountry(shippingAddress.get("country"));
 							shipping.setDescription(shippingAddress.get("description"));
 							shipping.setProperty("phone", shippingAddress.get("phone1"));
+							order.setShippingAddress(shipping);
 						}
-						order.setShippingAddress(shipping);
 						//store.saveOrder(order);
 						
 						Address billing = order.getBillingAddress();
 						if (billing == null) {
-							Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
-							Data billingAddress = profileAddressSearcher.searchByField("name", "Area Office");
-							if (billingAddress == null) {
-								throw new OpenEditException("Cannot find Area Office Information");
-							}
-							billing = new Address();
-							billing.setId(billingAddress.get("id"));
-							billing.setName(billingAddress.get("name"));
-							billing.setAddress1(billingAddress.get("address1"));
-							billing.setAddress2(billingAddress.get("address2"));
-							billing.setCity(billingAddress.get("city"));
-							billing.setState(billingAddress.get("state"));
-							billing.setZipCode(billingAddress.get("zipcode"));
-							billing.setCountry(billingAddress.get("country"));
-							billing.setDescription(billingAddress.get("description"));
-							billing.setProperty("phone", billingAddress.get("phone"));
+							order.setBillingAddress(shipping);
+							billing=shipping;
 						}
-						order.setBillingAddress(billing);
-						//store.saveOrder(order);
 
 						Customer customer = order.getCustomer();
 						if (customer == null) {
+							//ADD STORE AS USER
+							
+							User user = usersearcher.searchById("rogers-"+storeNum);
+							if (user == null) {
+								user = new BaseUser();
+								user.setId("rogers-"+storeNum);
+								user.setPassword("rogers");
+								user.setFirstName(orderLine[columnStoreName]);
+								usersearcher.saveData(user, context.getUser());
+							}
+							
 							Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
-							Data customerInfo = profileAddressSearcher.searchByField("name", "Area Office");
+							Data customerInfo = profileAddressSearcher.searchByField("storenumber", storeNum);
 							if (customerInfo == null) {
-								throw new OpenEditException("Cannot find Area Office Information");
+								throw new OpenEditException("Cannot find Store Information");
 							}
 							customer = new Customer()
 							customer.setId(customerInfo.get("id"));
 							customer.setName(customerInfo.get("name"));
 							customer.setEmail(customerInfo.get("email"));
 							customer.setPhone1(customerInfo.get("phone"));
+							customer.setCompany("Rogers");
 							customer.setShippingAddress(shipping);
 							customer.setBillingAddress(billing);
-							customer.setUser(context.getUser());
+							customer.setUser(user);
+							order.setCustomer(customer);
 						}
-						order.setCustomer(customer);
-						//store.saveOrder(order);
 						
 						String purchaseorder = order.getId();
 						PurchaseOrderMethod poMethod = new PurchaseOrderMethod();
@@ -340,13 +344,21 @@ public class ImportRogersOrder extends EnterMediaObject {
 						if (order.getPaymentMethod() == null) {
 							throw new OpenEditException("Cannot set PaymentMethod()");
 						}
-
+						
+						//////////////////////////////////////////
+						/// THIS IS WRONG
+						/// CHANGE SHIPPING METHOD
+						//////////////////////////////////////////
+						
 						OrderState orderState = new OrderState();
+						orderState.setId("authorized");
 						orderState.setDescription("authorized");
 						orderState.setOk(true);
 										//Set other properties
 						order.setOrderState(orderState);
-						order.setProperty("status", "authorized");
+						order.setProperty("orderstatus", "authorized");
+						order.setProperty("id", order.getId());
+						order.setProperty("customer", customer.id);
 						
 						//store.saveOrder(order);
 						
@@ -361,12 +373,39 @@ public class ImportRogersOrder extends EnterMediaObject {
 					}
 				}
 				for (Iterator iterator = orderMap.keySet().iterator(); iterator.hasNext();) {
+/*
+		ITEMS THAT NEED TO BE DONE! 
+ 		order.setShippingMethod(inCart.getShippingMethod());
+		order.setAdjustments(inCart.getAdjustments());
+					
+ */
 					String key = (String) iterator.next();
 					Order order = orderMap.get(key);
 					Cart cart = order.getCart();
+					cart.setStore(store);
+					cart.setItems(order.getItems());
+
+					Customer customer = order.getCustomer()
+					cart.setCustomer(customer);
+					
+					List taxrates = cart.getStore().getTaxRatesFor(
+							customer.getShippingAddress().getState());
+					if (customer.getShippingAddress().getState() == null) {
+						taxrates = cart.getStore().getTaxRatesFor(
+								customer.getBillingAddress().getState());
+					}
+					customer.setTaxRates(taxrates);
+					
+					order.setTaxes(cart.getTaxes());
+					order.setSubTotal(cart.getSubTotal());
+					
+					order.setTotalShipping(cart.getTotalShipping());
 					order.setTotalPrice(cart.getTotalPrice());
-					//order.setTaxes(cart.getTaxes());
+					
+					order.setTotalTax(cart.getTotalTax());
+			
 					store.saveOrder(order);
+					store.getOrderSearcher().updateIndex(order);
 					addToGoodOrderList(order.getId());
 				}
 			}
@@ -379,16 +418,6 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 	public String addQuotes( String s ) {
 		return "\"" + s + "\"";
-	}
-
-	private Data searchForDistributor( SearcherManager manager,
-			MediaArchive archive, String searchForName) {
-
-		String SEARCH_FIELD = "name";
-		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
-		Data targetDistributor = distributorsearcher.searchByField(SEARCH_FIELD, searchForName);
-
-		return targetDistributor;
 	}
 }
 

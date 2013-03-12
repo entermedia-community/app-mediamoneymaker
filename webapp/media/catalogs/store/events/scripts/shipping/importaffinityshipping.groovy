@@ -198,7 +198,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 			shipment.setProperty("distributor", distributorID);
 			shipment.setProperty("courier", courier);
 			
-			Data product = media.searchForProductBySku("rogerssku", rogersSKU);
+			Data product = media.searchForProductByField("rogerssku", rogersSKU);
 			if (product != null) {
 				
 				String productID = product.getId();
