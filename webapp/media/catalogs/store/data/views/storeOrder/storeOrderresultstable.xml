@@ -8,4 +8,5 @@
   <property id="distributor"/>
   <property id="edistatus"/>
   <property id="csvgenerated"/>
+  <property id="batchid"/>
 </root>

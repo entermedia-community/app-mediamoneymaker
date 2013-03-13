@@ -1,13 +1,8 @@
 package testing
 
-import java.sql.ResultSet;
-
 import org.openedit.Data
 import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.store.InventoryItem
-import org.openedit.store.Product
-import org.openedit.store.Store
-import org.openedit.store.util.MediaUtilities;
+import org.openedit.store.util.MediaUtilities
 
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
@@ -23,15 +18,20 @@ class LookupProduct extends EnterMediaObject {
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 
-		def productid = media.getContext().getRequestParameter("productid");
-		def rogersSKU = media.getContext().getRequestParameter("rogerssku");
-		if (productid != null || rogersSKU != null) {
+		String productid = media.getContext().getRequestParameter("productid");
+		String rogersSKU = media.getContext().getRequestParameter("rogerssku");
+		String upcCode = media.getContext().getRequestParameter("upccode");
+		if (productid != null || rogersSKU != null || upcCode != null) {
 			Data product = null
 			if (productid != null) {			
 				product = media.getProductSearcher().searchById(productid);
 			} else {
 				if (rogersSKU != null) {
-					product = media.searchForProductbyRogersSKU(rogersSKU);
+					product = media.searchForProductByField("rogerssku",rogersSKU);
+				} else {
+					if (upcCode != null) {
+						product = media.searchForProductByField("upc",upcCode);
+					}
 				}
 			}
 			if (product != null) {
@@ -46,7 +46,20 @@ class LookupProduct extends EnterMediaObject {
 				result.setCompleteMessage(wrapTR(strMsg));
 				result.setComplete(true);
 			} else {
-				result.setErrorMessage(wrapTR("<td colspan=6>Product not found (" + productid + ")</td>"));
+				String strMsg = "<td colspan=6>Product not found ";
+				if (productid != null) {
+					strMsg += "(ProductID:" + productid + ")";
+				} else {
+					if (rogersSKU != null) {
+						strMsg += "(RogersSKU:" + rogersSKU + ")";
+					} else {
+						if (upcCode != null) {
+							strMsg += "(UPC:" + upcCode + ")";
+						}
+					}
+				}
+				strMsg += "</td>\n";
+				result.setErrorMessage(wrapTR(strMsg));
 			}
 		} else {
 			result.setErrorMessage(wrapTR("<td colspan=6>No product selected.</td>"));

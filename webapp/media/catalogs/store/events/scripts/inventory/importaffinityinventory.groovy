@@ -161,10 +161,18 @@ public class ImportAffinityInventory  extends EnterMediaObject {
 							productInventory.setQuantityInStock(qtyInStock)
 							product.addInventoryItem(productInventory);
 						} else {
-							productInventory.setQuantityInStock(qtyInStock);
+							if (productInventory.getQuantityInStock() != qtyInStock) {
+								String msg = "Product(" + product.getName() + ") inventory changed: ";
+								msg += productInventory.getQuantityInStock().toString() + ":"
+								msg += qtyInStock.toString();
+								log.info(msg);
+								productInventory.setQuantityInStock(qtyInStock);
+								productsearcher.saveData(product, context.getUser());
+							} else {
+								String msg = "Product(" + product.getName() + ") no inventory changes.";
+								log.info(msg);
+							}
 						}
-						
-						productsearcher.saveData(product, context.getUser());
 						addToGoodProductList(rogersSKU);
 				
 					} else {

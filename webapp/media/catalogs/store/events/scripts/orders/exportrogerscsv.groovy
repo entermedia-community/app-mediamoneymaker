@@ -23,7 +23,6 @@ import com.openedit.page.Page
 
 public class ExportRogersCsv extends EnterMediaObject {
 
-	private static String distributorName = "Affinity";
 	private String orderID;
 	private List fullOrderList;
 

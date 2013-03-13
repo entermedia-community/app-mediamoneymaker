@@ -306,7 +306,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 											//Create a new search query for the invoice item
 											vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 											if (!vendorCode.isEmpty()) {
-												product = media.searchForProductBySku("manufacturersku", vendorCode);
+												product = media.searchForProductByField("manufacturersku", vendorCode);
 												if (product != null) {
 													productID = product.getId();
 													log.info("Product Found: " + productID + ":" + product.getName());

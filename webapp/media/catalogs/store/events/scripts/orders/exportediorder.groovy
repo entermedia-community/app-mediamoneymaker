@@ -12,13 +12,12 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
+import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.store.customer.Address
 import org.openedit.store.orders.Order
-import org.openedit.store.orders.OrderState
 
 import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
@@ -344,7 +343,13 @@ public class ExportEdiOrder extends EnterMediaObject {
 			QuantityOrdered(orderItem.getQuantity().toString())
 
 			def SEARCH_FIELD = "id";
-			UnitPrice(orderItem.getProduct().get("rogersprice"))
+			Product p = orderItem.getProduct();
+			String saleprice = p.get("clearanceprice"); 
+			if (saleprice != null && saleprice.toDouble() > 0) {
+				UnitPrice(saleprice)
+			} else {
+				UnitPrice(p.get("rogersprice"))
+			}
 			UnitOfMeasure("EA")
 			Description(orderItem.getProduct().getName())
 			Attributes()

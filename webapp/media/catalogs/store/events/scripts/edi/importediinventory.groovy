@@ -90,7 +90,7 @@ public class ImportEDIInventory extends EnterMediaObject {
 								if (!errorFound) {
 									def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 									if (vendorCode != null && vendorCode.length() > 0) {
-										Data product = media.searchForProductBySku("manufacturersku", vendorCode);
+										Data product = media.searchForProductByField("manufacturersku", vendorCode);
 										if (product != null) {
 											def String quantity = it.Quantity.text();
 											if (quantity != null) {
