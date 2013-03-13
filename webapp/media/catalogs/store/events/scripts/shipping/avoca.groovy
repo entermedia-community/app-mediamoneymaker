@@ -32,26 +32,23 @@ public class avoca extends BaseShippingMethod {
 			return new Money(18);
 			break;
 			case "QC":
-			return new Money(14);
-			break;
-			case "GTA":
-			return new Money(8);
+			return new Money(10);
 			break;
 			case "ON":
-			return new Money(12);
+			return new Money(10);
 			break;
 			case "MB":
-			return new Money(18);
+			return new Money(16);
 			break;
 
 			case "SK":
 			return new Money(16);
 			break;
 			case "AB":
-			return new Money(16);
+			return new Money(14);
 			break;
 			case "BC":
-			return new Money(16);
+			return new Money(14);
 			break;
 			case "NT":
 			return new Money(20);
