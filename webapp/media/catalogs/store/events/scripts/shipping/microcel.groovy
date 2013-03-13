@@ -57,7 +57,7 @@ public class microcel extends BaseShippingMethod {
 		if(getCost(inCart).doubleValue() > 0){
 			Data hint = new BaseData();
 			hint.setProperty("distributor", "104");
-			Money shortamount = new Money(500).subtract(getDistributorTotal(inCart));
+			Money shortamount = new Money(200).subtract(getDistributorTotal(inCart));
 			hint.setProperty("needed", shortamount.toShortString());
 			hint.setProperty("savings",getCost(inCart).toShortString());
 			
