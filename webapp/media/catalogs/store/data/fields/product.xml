@@ -24,7 +24,6 @@
   <property id="standardprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Standard Price</property>
   <property id="wholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Wholesale Price</property>
   <property id="fidowholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido Wholesale Price</property>
-  <property id="saleprice" index="true" stored="true" searchtype="product" internalfield="false">Clearance Price</property>
   <property id="featuredonmainpage" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Featured On Main Page</property>
   <property id="approved" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Approved</property>
   <property id="approvedon" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Approved On</property>
