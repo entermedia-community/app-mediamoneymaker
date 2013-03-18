@@ -292,6 +292,12 @@ padding: 5px 18px;
  
  
  
+.featured-browse  ul.products-list li  {
+ padding: 5px;
+ text-align: center;
+ width: 155px;
+    height: 170px;
+ }
  
 .featured-browse {
 width: 98%;

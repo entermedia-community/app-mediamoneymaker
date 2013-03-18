@@ -116,7 +116,7 @@
 	               <ul id="settings-menu" class="sidebar-list">
   
           
-                #set($mans = $searcherManager.getList("media/catalogs/store", "manufacturer"))
+            #set($mans = $mansearcher.fieldSearch("id", "*", "name"))
                
           	#foreach($man in $mans)
                 	<li #if($velocityCount > 5)  class="hidden-item manu"  #end ><a href="$searchroot/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact$!extra">$man.name</a></li>
