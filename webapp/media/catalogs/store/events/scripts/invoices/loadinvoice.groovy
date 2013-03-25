@@ -69,8 +69,15 @@ public class LoadInvoice extends EnterMediaObject {
 			invoicesearcher.saveData(invoice, context.getUser());
 			
 			double shipping = Double.parseDouble(invoice.get("shipping"));
-			double taxes = Double.parseDouble(invoice.get("taxamount"));
-			double total = subTotal + shipping + taxes;
+			double fedtaxes = 0;
+			if (invoice.get("fedtaxamount") != null) {
+				fedtaxes = Double.parseDouble(invoice.get("fedtaxamount"));
+			}
+			double provtaxes = 0;
+			if (invoice.get("provtaxamount") != null) {
+				provtaxes = Double.parseDouble(invoice.get("provtaxamount"));
+			}
+			double total = subTotal + shipping + fedtaxes + provtaxes;
 			
 			SimpleDateFormat inFormat = new SimpleDateFormat("mm/dd/yyyy");
 			String oldDate = invoice.get("date");
@@ -86,6 +93,8 @@ public class LoadInvoice extends EnterMediaObject {
 			log.info("New Date: " + invoiceDate);
 			
 			//Put values 
+			context.putPageValue("fedtaxes", fedtaxes.toString());
+			context.putPageValue("provtaxes", provtaxes.toString());
 			context.putPageValue("invoiceitems", list);
 			context.putPageValue("invoice", invoice);
 			context.putPageValue("total", total.toString());

@@ -95,7 +95,7 @@
 				</tr>
 				#end
 				<tr>
-					<td colspan="4" align="right">Sub Total</td>
+					<td colspan="4" align="right"><strong>Sub Total</strong></td>
 					<td align="right">$invoice.subtotal</td>
 				</tr>
 				<tr>
@@ -103,11 +103,15 @@
 					<td align="right">$formatutil.formatString($invoice.get("shipping"))</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right">Taxes</td>
-					<td align="right">$formatutil.formatString($invoice.get("taxamount"))</td>
+					<td colspan="4" align="right">HST/GST Tax ( #$distributor.get("hstnumber") )</td>
+					<td align="right">$formatutil.formatString($fedtaxes)</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right">Total</td>
+					<td colspan="4" align="right">Provincial Tax</td>
+					<td align="right">$formatutil.formatString($provtaxes)</td>
+				</tr>
+				<tr>
+					<td colspan="4" align="right"><strong>Total</strong></td>
 					<td align="right">$formatutil.formatString($total)</td>
 				</tr>
 			</table>
