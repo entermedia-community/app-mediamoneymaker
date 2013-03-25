@@ -24,6 +24,7 @@ import org.openedit.store.customer.Address
 import org.openedit.store.customer.Customer
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.OrderState
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -160,7 +161,17 @@ public class ImportRogersOrder extends EnterMediaObject {
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
 		//detail.get("column");
 		
+		Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
+		Data as400Record = as400searcher.createNewData();
+		as400Record.setId(as400searcher.nextId());
+		as400Record.setName("Batch " + as400Record.getId());
 		String batchID = UUID.randomUUID().toString();
+		as400Record.setProperty("batchid", batchID);
+		as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		as400Record.setProperty("exportstatus", "open");
+		as400Record.setProperty("user", context.getUser().getName());
+		as400searcher.saveData(as400Record, context.getUser());
+		as400searcher.reIndexAll();
 
 		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/rogers_order.csv");
 		Reader reader = upload.getReader();
@@ -237,7 +248,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 					//Get Product Info
 					//Read the oraclesku from the as400 table
-					String rogerssku = orderLine[columnRogersID];
+					String rogerssku = orderLine[columnRogersID].trim();
 
 					//Search the product for the oracle sku(rogerssku)
 					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku);

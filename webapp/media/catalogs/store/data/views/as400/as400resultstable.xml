@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="name"/>
+  <property id="orderid"/>
+  <property id="batchid"/>
+  <property id="as400po"/>
+  <property id="date"/>
+  <property id="user"/>
+  <property id="exportstatus"/>
+</root>

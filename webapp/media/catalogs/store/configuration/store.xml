@@ -5,9 +5,21 @@
   <credit-card-type name="Master Card" id="MCARD"/>
   <credit-card-type name="Visa" id="VISA"/>
  
-  <tax statecode="ON" name="GST" applytoshipping="true" rate=".05"/>
- 	<tax statecode="ON" name="PST" rate=".08"/>
- 
+<tax statecode="ON" name="HST" applytoshipping="true" rate=".13"/>
+  <tax statecode="AB" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="BC" name="HST" applytoshipping="true" rate=".12"/>
+ <tax statecode="MB" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="NB" name="HST" applytoshipping="true" rate=".13"/>
+ <tax statecode="NL" name="HST" applytoshipping="true" rate=".13"/>
+ <tax statecode="NT" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="NS" name="HST" applytoshipping="true" rate=".15"/>
+ <tax statecode="NU" name="GST" applytoshipping="true" rate=".05"/>
+
+ <tax statecode="PE" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="QC" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="SK" name="GST" applytoshipping="true" rate=".05"/>
+ <tax statecode="TY" name="GST" applytoshipping="true" rate=".05"/>
+  
   <Xhostname>Test</Xhostname>
   <coupons enabled="true" />
   <to-address>cburkey@openedit.org</to-address>

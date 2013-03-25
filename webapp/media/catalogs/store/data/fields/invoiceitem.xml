@@ -1,10 +1,11 @@
 
 <properties prefix="invoiceitems" beanname="xmlFileSearcher">
-  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
-  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="default">Name</property>
-  <property id="sourcepath" catalogid="media/catalogs/store" searchtype="invoiceitems">SourcePath</property>
-  <property id="product" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="invoiceitems" internalfield="false" datatype="list">Product</property>
-  <property id="quantity" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="invoiceitems">Quantity</property>
-  <property id="price" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="invoiceitems">Price</property>
-  <property id="invoiceid" externalid="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" type="list" searchtype="invoiceitem" internalfield="false" listid="invoice" datatype="list">Invoice ID</property>
+  <property id="id" index="true" stored="true" editable="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="default">Name</property>
+  <property id="sourcepath" searchtype="invoiceitems">SourcePath</property>
+  <property id="product" index="true" stored="true" editable="true" type="list" searchtype="invoiceitems" internalfield="false" datatype="list">Product</property>
+  <property id="quantity" index="true" stored="true" editable="true" searchtype="invoiceitems">Quantity</property>
+  <property id="price" index="true" stored="true" editable="true" searchtype="invoiceitems">Price</property>
+  <property id="invoiceid" externalid="id" index="true" stored="true" editable="true" type="list" searchtype="invoiceitem" internalfield="false" listid="invoice" datatype="list">Invoice ID</property>
+  <property id="linetotal" index="true" stored="true" editable="true">Line Total</property>
 </properties>
