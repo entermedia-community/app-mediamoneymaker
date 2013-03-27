@@ -334,3 +334,11 @@ border-radius:8px;
     padding: 0;
     color: #78C042;
 }
+#left-col {
+	width: 236px;
+	max-width: 236px;
+}
+
+#nav li {
+	width: 136px;
+}
