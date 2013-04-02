@@ -38,8 +38,7 @@ ul.products-list li {
 ul.products-list li .product-listing {
 	width: 180px;
 }
-#emresultscontent img{
-	height: 135px;
+img.thumb {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
