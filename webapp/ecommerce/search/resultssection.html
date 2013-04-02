@@ -16,12 +16,13 @@
 		
 		<div class="product-details">
 		    <div class="product-title">
-                <a href="$clink">$cell.name</a> 
+                <a href="$clink">"$cell.name"</a> 
             </div>
             <div class="product-cat">
                 <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer) </a> 
             </div>
             <div class="product-price">
+
 		        #if( $cell.regularprice ) 
 		        	Sale: $cell.yourprice
 		    		$cell.regularprice 
