@@ -40,6 +40,9 @@ ul.products-list li .product-listing {
 }
 #emresultscontent img{
 	height: 135px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 ul.products-list li .product-details {
     
@@ -49,7 +52,7 @@ ul.products-list li .product-details {
      width: 92%;
 }
 #emresultscontent .product-title a {
-	color: blue;
+	color: #222;
 	margin-top: 10px;
 	width: 95%;
 }
