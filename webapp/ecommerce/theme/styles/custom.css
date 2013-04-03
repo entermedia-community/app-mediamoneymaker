@@ -249,3 +249,36 @@ td.results-list-center {
 a.results-list-link {
 	font-size: 12px;
 }
+/* SHIPPING DETAILS */
+table.rogers-list {
+	width: 100%;
+	font-size: 12px;
+	color: black;
+}
+table.rogers-list td.rogers-list-header {
+	background-color: red;
+	color: white;
+	font-size: 16px;
+}
+table.rogers-list td.rogers-list {
+	font-size: 14px;
+	padding: 3px;
+	margin-left: 5px;
+	margin-top: 5px;
+	border: 1px solid gray;
+	background-color: #F0F0F0;
+}
+table.rogers-list td.rogers-list:hover {
+	background-color: #E8E8E8;
+	text-decoration: none;
+}
+table.rogers-list td.rogers-list div.rogers-list {
+	width: 95%;
+}
+table.rogers-list td.rogers-list a {
+	width: 600px;
+	margin-top: 5px;
+	margin-left: 10px;
+	padding: 3px;
+}
+

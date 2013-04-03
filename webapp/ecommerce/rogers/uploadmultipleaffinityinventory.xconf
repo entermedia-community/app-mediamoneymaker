@@ -1,0 +1,10 @@
+<page>
+	<path-action name="CartModule.getCart"/>
+	<path-action name="Page.uploadFile"/>
+	<property name="unzip">true</property>
+	<property name="allowspecifiedpath">true</property>
+	
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/inventory/importmultipleaffinityinventory.groovy</script>
+	</path-action>
+</page>
