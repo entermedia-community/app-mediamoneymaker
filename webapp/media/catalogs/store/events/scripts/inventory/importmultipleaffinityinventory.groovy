@@ -56,19 +56,25 @@ public class ImportMultipleAffinityInventory extends EnterMediaObject {
 		if(badProductList == null) {
 			badProductList = new ArrayList<String>();
 		}
-		badProductList.add(inItem);
+		if (!badProductList.contains(inItem)) {
+			badProductList.add(inItem);
+		}
 	}
 	public void addToBadUPCList(String inItem) {
 		if(badUPCList == null) {
 			badUPCList = new ArrayList<String>();
 		}
-		badUPCList.add(inItem);
+		if (!badUPCList.contains(inItem)) {
+			badUPCList.add(inItem);
+		}
 	}
 	public void addToGoodProductList(String inItem) {
 		if(goodProductList == null) {
 			goodProductList = new ArrayList<String>();
 		}
-		goodProductList.add(inItem);
+		if (!goodProductList.contains(inItem)) {
+			goodProductList.add(inItem);
+		}
 	}
 	public int getTotalRows() {
 		if (totalRows == null) {
