@@ -1,14 +1,9 @@
 <ul class="products-list">
 
 #foreach ( $cell in $hits.getPageOfHits() )
-
-			#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
+	#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
 	#set ($sourcepath = $cell.sourcepath)
-	
-
 	#set( $tsize = "$home$cataloghome/downloads/preview/thumbsmall/productimages/$cell.sourcepath/thumb.jpg")
-
-	
 	#set( $msize = "$home$cataloghome/downloads/preview/medium/productimages/$cell.sourcepath/thumb.jpg")
 	<li class="product-listing">
 	    
@@ -22,16 +17,17 @@
                 <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer) </a> 
             </div>
             <div class="product-price">
-
-		        #if( $cell.regularprice ) 
-		        	Sale: $cell.yourprice
-		    		$cell.regularprice 
-		        #else
-		        	$cell.yourprice 
-		        #end
+				#if($cancheckout) 
+			        #if( $cell.regularprice ) 
+			        	Sale: $cell.yourprice
+			    		$cell.regularprice 
+			        #else
+			        	$cell.yourprice 
+			        #end
+			    #else
+					$cell.msrp
+				#end
             </div>
         </div>
     </li>
 #end
-
-</ul>
