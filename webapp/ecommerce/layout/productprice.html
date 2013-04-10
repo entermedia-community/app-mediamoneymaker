@@ -77,10 +77,18 @@
 		#set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
         #set($mans = $mansearcher.searchById($product.get("manufacturerid")))
         #if($mans)
-        	<strong>Manufacturer:</strong> $mans.getName() #if($canviewdevelopertools) ($product.get("manufacturerid")) #end 
-        #else
+        	<strong>Manufacturer:</strong> $mans.getName() 
         	#if($canviewdevelopertools)
-        		<strong>Manufacturer:</strong> Not found!($product.get("manufacturerid"))
+        		#if($product.get("manufacturerid"))
+        			($product.get("manufacturerid")) 
+        		#end 
+        	#end 
+        #else
+        	<strong>Manufacturer:</strong> Not found!
+        	#if($canviewdevelopertools)
+        		#if($product.get("manufacturerid"))
+        			($product.get("manufacturerid"))
+        		#end
         	#end 
         #end
     </li>

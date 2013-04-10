@@ -12,7 +12,7 @@ p.success{
 /* RESULTS LISTING VIEW */
 
 #right-col {
-	padding: 10px;
+	padding: 21px;
 }
 .featured-browse {
 	padding: 20px;
@@ -91,7 +91,7 @@ ul.products-list li a:hover {
 }
 .product-right-col {
     float: right;
-    width: 250px;
+    width: 245px;
     
 }
 .product-right-col ul {
