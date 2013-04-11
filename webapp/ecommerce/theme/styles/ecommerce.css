@@ -57,7 +57,7 @@ ul.products-list li .product-details {
 }
 #emresultscontent ul.products-list li a {
     display: block;
-/*    white-space: nowrap; */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: normal;
