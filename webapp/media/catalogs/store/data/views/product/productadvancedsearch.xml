@@ -8,4 +8,5 @@
   <property id="clearancecentre"/>
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
+  <property id="distributor"/>
 </root>
