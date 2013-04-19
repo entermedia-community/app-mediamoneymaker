@@ -79,10 +79,9 @@ public class NewWishList extends EnterMediaObject {
 		
 		for (Iterator listIterator = wishLists.iterator(); listIterator.hasNext();) {
 			//Get the first Item
-			Data item = (Data) listIterator.next();
+			Data wishList = (Data) listIterator.next();
 			
 			//Load the wishList
-			Data wishList = wishlistsearcher.searchById(item.getId());
 			String listID = wishList.getId();
 			log.info("ListID: " + listID);
 			//Load the wishListItems per WishList			
@@ -105,7 +104,6 @@ public class NewWishList extends EnterMediaObject {
 			User user = inReq.getUser();
 			Data wishlist = wishlistsearcher.createNewData();
 			wishlist.setProperty("userid", user.getId());
-			wishlist.setProperty("name", name);
 			wishlist.setProperty("creationdate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			wishlist.setProperty("profileid", profile.getId());
 			wishlist.setProperty("dealer", profile.get("dealer"));
@@ -113,6 +111,11 @@ public class NewWishList extends EnterMediaObject {
 	
 			wishlist.setProperty("store", profile.get("store"));
 			wishlist.setId(wishlistsearcher.nextId());
+			if (name != null) {
+				wishlist.setProperty("name", name);
+			} else {
+				wishlist.setProperty("name", "WISHLIST" + wishlist.getId());
+			}
 			String[] fields = inReq.getRequestParameters("field");
 			wishlistsearcher.updateData(inReq, fields, wishlist);
 			wishlist.setProperty("wishstatus", "pending");
