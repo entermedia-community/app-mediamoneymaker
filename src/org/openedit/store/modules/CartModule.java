@@ -759,6 +759,7 @@ public class CartModule extends BaseStoreModule {
 
 		wishlist.setProperty("store", profile.get("store"));
 		wishlist.setId(wishlistsearcher.nextId());
+		wishlist.setProperty("name", "WISHLIST" + wishlist.getId());
 		String[] fields = inReq.getRequestParameters("field");
 		wishlistsearcher.updateData(inReq, fields, wishlist);
 		wishlist.setProperty("wishstatus", "pending");

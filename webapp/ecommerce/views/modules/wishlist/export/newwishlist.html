@@ -1,0 +1,111 @@
+#set ( $searcherManager = $store.getSearcherManager() )
+#set ( $wishlistsearcher = $searcherManager.getSearcher($catalogid, "wishlist"))
+#set ( $wishlistitemsearcher = $searcherManager.getSearcher($catalogid, "wishlistitems"))
+
+#set($action = $context.getRequestParameter("action"))
+<!-- Action: $action<br/> -->
+
+<div class="ui-widget uipanel">
+#if($action=="doMerge")
+	<!-- Load the new wishlist -->
+	#set($wishlist = $context.getPageValue("newwishlist"))
+	<!-- WishLists = $wishlists<br/> -->
+	#set($sessionid = $context.getRequestParameter("sessionid"))
+	<!-- SessionID = $sessionid<br/> -->
+	
+	<div class="wish-name-top"><h2>New Wish List</h2></div>
+	<div class="wish-name">
+		<h3>Here is your new wish list. Click the <img src="$home${apphome}/theme/images/details_open.png" id="$out" 
+			height="20" width="20" alt="plus" class="plus-minus-btn" style="float:none;">to view the contents.</h3>
+		#set($counter=1)
+		#set($id = $wishlist.getId())
+		#set($name = $wishlist.getName())
+		<div class="div_head" style="height:20px;">
+			<div class="div_text" id="head1">$id: $name</div>
+			#set($out = "button"+$counter)
+			<img src="$home${apphome}/theme/images/details_open.png" id="$out" 
+			height="20" width="20" alt="plus" class="plus-minus-btn">
+		</div>
+		#set($out = "content"+$counter)
+		<div class="div_body" id="$out">
+			<table border="0" cellpadding="3" cellspacing="0" width="95%">
+			<thead>
+				<tr style="background-color: #E0E0E0;"><th>ID</th><th>Name</th><th>Quantity</th></tr>
+			</thead>
+			<tbody>
+			#set($wishListItems = $wishlistitemsearcher.fieldSearch("wishlist", $id ))
+			#foreach($item in $wishListItems)
+				<tr>
+				#set($productid = $item.get("product"))
+				<td align="center">$productid</td>
+				#set( $product = $store.getProductSearcher().searchById($productid) )
+				#set( $productname = $product.getName())
+				<td>$productname</td>
+				#set($quantity = $item.get("quantity"))
+				<td align="center">$quantity</td>
+				</tr>
+			#end
+			</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="spacer-area"></div>
+	<div class="wish-name">
+		<input type="submit" name="cancel" id="cancel" value="Return to All Wish Lists" 
+		class="wish-name" style="margin-left: 10px;">
+	</div>
+</div>
+#set($QT = '"')
+#set($NL = '\n')
+#set($js="")
+<script type=${QT}text/javascript${QT}>
+$(document).ready(function(){
+#set($ctr=0)
+#foreach($it in $wishlists)
+	#set($ctr = $ctr + 1)
+	#set($out = "$('#content"+$ctr+"').hide();")
+	$out
+#end
+});
+</script>
+<script type="text/javascript">
+	var speed = 750;
+	$(document).ready(function(){
+	#set($ctr=0)
+	#foreach($it in $wishlists)
+		#set($ctr=$ctr+1)
+		#set($outbut = "img#button"+$ctr)
+		#set($outcon = "#content"+$ctr)
+		$('$outbut').click(function() {
+			var position = $('$outbut').attr('alt');
+			if (position === "plus") {
+				$('$outcon').slideDown(speed, function() {
+					$('$outbut').attr({alt: 'minus'});
+				});
+			} else {
+				$('$outcon').slideUp(speed, function() {
+					$('$outbut').attr({alt: 'plus'});
+				});
+			}
+		});
+	#end
+		$('input#cancel').click(function() {
+			window.location = "$home/ecommerce/views/modules/wishlist/index.html?field=last_selected_module&last_selected_module.value=wishlist";
+		});
+	 });
+</script>
+#else
+	<div class="wish-name-top"><h2>Merge Wish Lists</h2></div>
+	<div class="wish-name">
+		<h2>ERROR: $errorout</h2>
+		<input type="submit" name="cancel" id="cancel" value="Return to WishLists"/ class="wish-name">
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('input#cancel').click(function() {
+				window.location = "$home/ecommerce/views/modules/wishlist/index.html?field=last_selected_module&last_selected_module.value=wishlist";
+			});
+		});
+	</script>
+	
+#end
