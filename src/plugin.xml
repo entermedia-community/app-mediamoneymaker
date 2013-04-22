@@ -269,6 +269,12 @@
 	</bean>
 	
   
-  
+	<bean id="fbSearcher" class="org.openedit.cart.fresshbooks.FreshbooksSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		
+	</bean>
+	
   
 </beans>

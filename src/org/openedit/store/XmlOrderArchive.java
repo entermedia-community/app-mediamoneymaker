@@ -538,14 +538,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		}
 		String cost = inOrderElement.attributeValue("shipping_cost");
 		if (cost != null) {
-			inOrder.setShippingCost(new Money(cost));
+	//		inOrder.setShippingCost(new Money(cost));
+			inOrder.setTotalShipping(new Money(cost));
 		}
 		String total = inOrderElement.attributeValue("total");
 		if (total != null) {
 			inOrder.setTotalPrice(new Money(total));
 		} else if (inOrder.getSubTotal() != null) {
 			Money totalp = inOrder.getSubTotal().add(inOrder.getTax());
-			totalp = totalp.add(inOrder.getShippingCost());
+			totalp = totalp.add(inOrder.getTotalShipping());
 			inOrder.setTotalPrice(totalp);
 		}
 
@@ -555,12 +556,14 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				.hasNext();) {
 			TaxRate rate = new TaxRate();
 			Element taxentry = (Element) it.next();
+			String amount = taxentry.attributeValue("amount");
+			Money money = new Money(amount);
 			rate.setFraction(new Fraction(taxentry.attributeValue("rate")));
 			rate.setName(taxentry.attributeValue("name"));
 			rate.setState(taxentry.attributeValue("state"));
 			rate.setApplyToShipping(Boolean.parseBoolean(taxentry
 					.attributeValue("shipping")));
-
+			taxes.put(rate, money);
 		}
 		inOrder.setTaxes(taxes);
 
@@ -600,7 +603,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		} catch (Exception ex) {
 			throw new StoreException(ex);
 		}
-
+ 
 		Customer customer = new Customer();
 		Element customerElem = inOrderElement.element("customer");
 		String username = customerElem.attributeValue("customerid");

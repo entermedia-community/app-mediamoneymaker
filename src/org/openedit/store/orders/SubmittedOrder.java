@@ -21,14 +21,14 @@ public class SubmittedOrder extends Order
 	{
 	}
 
-	public Money getShippingCost()
-	{
-		return fieldShippingCost;
-	}
-	public void setShippingCost(Money inShippingCost)
-	{
-		fieldShippingCost = inShippingCost;
-	}
+//	public Money getShippingCost()
+//	{
+//		return fieldShippingCost;
+//	}
+//	public void setShippingCost(Money inShippingCost)
+//	{
+//		fieldShippingCost = inShippingCost;
+//	}
 	
 	
 	public String getDateOrdered()

@@ -302,7 +302,12 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	public Object searchById(String inId)
 	{
 		Data orderinfo = (Data) super.searchById(inId);
-		return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("customer"), inId);
+		if(orderinfo != null){
+			return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("customer"), inId);	
+		}
+		else{
+			return null;
+		}
 		//return orderinfo;
 		
 	}
