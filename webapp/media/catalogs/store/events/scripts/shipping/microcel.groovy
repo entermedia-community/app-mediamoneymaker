@@ -15,7 +15,7 @@ public class microcel extends BaseShippingMethod {
 		// TODO Auto-generated method stub
 		Money totalformicrocel = getDistributorTotal(inCart);
 		
-		if(totalformicrocel .doubleValue() > 0 && totalformicrocel.doubleValue() < 100){
+		if(totalformicrocel .doubleValue() > 0 && totalformicrocel.doubleValue() < 200){
 			return new Money(10);
 		} else{
 		return new Money();
