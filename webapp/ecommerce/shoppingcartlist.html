@@ -5,6 +5,7 @@
         <tr class="sc-tableheader">
             <td class="thumbnail" style="width:70px; padding: 0; margin: 0;">&nbsp;</td>
             <td class="prodhead" style="text-align: left;">Description</td>
+            <td class="prodhead" style="text-align: left;">SKU</td>
             #if ($cart.hasItemWithOption('size') ) 
                 <td class="prodhead" style="text-align : center;">Size</td>
             #end
@@ -37,6 +38,9 @@
     	  </td>
     	  <td>
     			 $product.name
+       	  </td>  
+    	  <td>
+    			 $product.get("rogerssku")
        	  </td>  
      <ul>
           #foreach( $option in $item.getOtherOptions() )

@@ -249,3 +249,117 @@ td.results-list-center {
 a.results-list-link {
 	font-size: 12px;
 }
+/* SHIPPING DETAILS */
+table.rogers-list {
+	width: 100%;
+	font-size: 12px;
+	color: black;
+}
+table.rogers-list td.rogers-list-header {
+	background-color: red;
+	color: white;
+	font-size: 16px;
+}
+table.rogers-list td.rogers-list {
+	font-size: 14px;
+	padding: 3px;
+	margin-left: 5px;
+	margin-top: 5px;
+	border: 1px solid gray;
+	background-color: #F0F0F0;
+}
+table.rogers-list td.rogers-list:hover {
+	background-color: #E8E8E8;
+	text-decoration: none;
+}
+table.rogers-list td.rogers-list div.rogers-list {
+	width: 95%;
+}
+table.rogers-list td.rogers-list a {
+	width: 600px;
+	margin-top: 5px;
+	margin-left: 10px;
+	padding: 3px;
+}
+
+/* WISH LISTS */
+
+.div_head {
+	width: 700px;
+	height: 30px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #000;
+	margin-top: 0px;
+	margin-left: 5px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	border:2px solid #a1a1a1;
+	background:#dddddd;
+	border-radius:10px;
+	box-shadow: 4px 4px 2px #D0D0D0;
+}
+.plus-minus-btn {
+	text-align: center;
+	float: right;
+	height: 20px;
+	width: 20px;
+	margin-top: -2px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 5px;
+}
+.div_text {
+	margin-left: 5px;
+	float: left;
+	display: inline;
+}
+.div_body {
+	clear: both;
+	width: 690px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #333;
+	/* [disabled]visibility: hidden; */
+	margin-top: -10px;
+	margin-bottom: 10px;
+	margin-left: 5px;
+	margin-right: 0px;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	border-top: 0px;
+	border-left:1px solid #a1a1a1;
+	border-right:1px solid #a1a1a1;
+	border-bottom:1px solid #a1a1a1;
+	border-top-left-radius:0px;
+	border-top-right-radius:0px;
+	border-bottom-right-radius:10px;
+	border-bottom-left-radius:10px;
+	box-shadow: 4px 4px 3px #D0D0D0;
+}
+.spacer-area {
+	margin-top: 10px;
+}
+.wish-name {
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	margin-left: 10px;
+}
+.wish-name-top {
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	margin-left: 10px;
+	margin-top: 10px;
+}

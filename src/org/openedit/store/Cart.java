@@ -40,6 +40,10 @@ public class Cart extends BaseData
 		return fieldBillingAddress;
 	}
 
+	public void setItems(List inItems) {
+		fieldItems = inItems;
+	}
+
 	public void setBillingAddress(Address inBillingAddress) {
 		fieldBillingAddress = inBillingAddress;
 	}

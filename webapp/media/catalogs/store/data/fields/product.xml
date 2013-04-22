@@ -40,7 +40,7 @@
   <property id="rogersstatus" index="true" stored="true" searchtype="product">Rogers Status</property>
   <property id="distributorstatus" index="true" stored="true" searchtype="product">Distributor Status</property>
   <property id="distributor" index="true" stored="true" type="list" searchtype="product" internalfield="false" datatype="list">Distributor</property>
-  <property id="clearanceprice" index="true" stored="true" searchtype="product">ClearancePrice</property>
+  <property id="clearanceprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">ClearancePrice</property>
   <property id="clearancecentre" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Clearance Centre</property>
   <property id="clearancecentredescrip" index="true" stored="true" searchtype="product">ClearanceCentreDescrip</property>
   <property id="clearancecentredescripfr" index="true" stored="true" searchtype="product">ClearanceCentreDescripFR</property>
@@ -61,5 +61,5 @@
   <property id="active" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Active</property>
   <property id="validitem" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Valid Item</property>
   <property id="validerrormessage" index="true" stored="true" editable="true" searchtype="product">Valid Error Message</property>
-  <property id="as400id" index="true" stored="true" editable="true">AS400 ID</property>
+  <property id="as400id" index="true" stored="true" editable="true" searchtype="product">AS400 ID</property>
 </properties>

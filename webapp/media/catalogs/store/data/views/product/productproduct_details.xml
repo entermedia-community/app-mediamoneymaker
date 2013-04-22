@@ -2,12 +2,21 @@
 
 <root>
   <property id="name"/>
+  <property id="accessorynamefr"/>
+  <property id="descrip"/>
+  <property id="descripfr"/>
   <property id="displaydesignationid"/>
   <property id="distributor"/>
-  <property id="clearanceprice"/>
-  <property id="image"/>
+  <property id="rogerssku"/>
+  <property id="manufacturersku"/>
+  <property id="as400id"/>
+  <property id="fidomsrp"/>
+  <property id="msrp"/>
+  <property id="displaydesignationid"/>
+  <property id="categoryid"/>
+  <property id="manufacturerid"/>
+  <property id="phone"/>
+  <property id="featuredonmainpage"/>
   <property id="clearancecentre"/>
-  <property id="descrip"/>
-  <property id="approved"/>
-  <property id="approvedcomment"/>
+  <property id="clearanceprice"/>
 </root>

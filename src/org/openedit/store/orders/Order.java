@@ -440,9 +440,11 @@ public class Order extends BaseData implements Comparable {
 		}
 		return shipment;
 	}
+	
 	public boolean containsShipmentByWaybill( String inWaybill ) {
 		return getShipmentByWaybill(inWaybill) != null;
 	}
+	
 	public List getCartItemsByProductProperty( String inKey, String inValue ) {
 		ArrayList list = new ArrayList();
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
@@ -457,5 +459,19 @@ public class Order extends BaseData implements Comparable {
 		}
 		return list;
 	}
-	
+	public CartItem getCartItemByProductProperty( String inKey, String inValue ) {
+		CartItem item = null;
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+			CartItem foundItem = (CartItem) iterator.next();
+			Product p = foundItem.getProduct();
+			if (p.get(inKey) == inValue) {
+				item = foundItem;
+				break;
+			}
+		}
+		return item;
+	}
+	public boolean containsItemByProductProperty( String inKey, String inValue ) {
+		return getCartItemByProductProperty(inKey, inValue) != null;
+	}
 }

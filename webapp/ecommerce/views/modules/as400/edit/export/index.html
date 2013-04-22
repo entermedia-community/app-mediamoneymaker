@@ -1,0 +1,24 @@
+#set($moduleid = $context.findValue("module"))
+#set($id = $context.getRequestParameter("id"))
+#set($batchsearcher = $searcherManager.getSearcher($catalogid, "as400"))
+#set($batch = $batchsearcher.searchById($id))
+#set($batchid = $batch.get("batchid"))
+#set($batchname = $batch.get("name"))
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "storeOrder"))
+#set($orderlist = $context.getContentProperty("orderlist"))
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">AS400 Export Section</div>
+	<div class="ui-widget-content">
+		<h2>Batch Name: $batchname</h2>
+		<h3>Batch ID: $batchid</h3>
+		<p><strong>Orders in this batch</strong></p>
+		<ul>
+		#foreach($order in $orderlist)
+			<li>$order</li>
+		#end			
+		</ul>
+		<p>Actions</p>
+		<p><a href="$home$apphome/views/modules/${moduleid}/BUDDTL.csv?batchid=${batchid}" class="btn">Export orders to BUDDTL</a></p>
+		<p><a href="$home$apphome/views/modules/${moduleid}/BUDHDR.csv?batchid=${batchid}" class="btn">Export orders to BUDHDR</a></p>
+	</div>
+</div>		

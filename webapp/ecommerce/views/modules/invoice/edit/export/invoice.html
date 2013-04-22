@@ -1,0 +1,120 @@
+#set( $moduleid = $context.findValue("module") )
+#set($module = $searcherManager.getData($catalogid, "module", $moduleid))
+#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
+#set($invoiceitemsearcher = $searcherManager.getSearcher($catalogid, "invoiceitem"))
+#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($invoiceNumber = $invoice.get("invoicenumber"))
+#set($distributor = $distributorsearcher.searchById($invoice.get("distributor")))
+#set($subtotal = "0")
+<table width="90%" border="0" align="center">
+	<tr>
+		<td align="center">
+			<span style="font-size:20px"><strong>$distributor.get("fullname") INVOICE</strong></span>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<span style="font-size:20px">&nbsp;</span>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<table border="0" width="100%">
+				<tr>
+					<td align="left" valign="top" nowrap><strong>DATE :</strong></td>
+					<td valign="top" nowrap width="100%">$invoicedate</td>
+					<td align="right" nowrap><strong>Invoice #$invoiceNumber</strong></td>
+				</tr>
+				<tr>
+					<td valign="top"><strong>FROM:</strong></td>
+					<td><span style="font-size:20px"><strong>$distributor.get("fullname")</strong></span><br>
+					<span style="font-size:16px">$distributor.get("address1")<br>
+					#if($distributor.get("address2")!="")
+						$distributor.get("address2")<br>
+					#end
+					$distributor.get("city"), $distributor.get("province")<br>
+					$distributor.get("postalcode")<br>
+					#if($distributor.get("phone1")!="")
+						Phone: $distributor.get("phone1")<br>
+					#end
+					#if($distributor.get("fax")!="")
+						Fax: $distributor.get("fax")<br>
+					#end
+					#if($distributor.get("email")!="")
+						Email: $distributor.get("email")<br>
+					#end
+					</span></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td valign="top"><strong>SOLD TO:</strong></td>
+					<td><span style="font-size:20px"><strong>Area Communications</strong></span><br>
+					<span style="font-size:16px">1 Hurontario St.<BR>
+					Suite 220<br>
+					Mississauga, ON<BR>
+					L5G 0A3<br>
+					Phone: 905-271-2732<br>
+					Fax: 905-271-7724</span>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td valign="top"><strong>REFERENCE<br>ORDER/PO<BR>NUMBER :</strong></td>
+					<td valign="middle"><span style="font-size:16px">$invoice.get("ponumber")</span></td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<span style="font-size:20px">&nbsp;</span>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table border="1" width="100%">
+				<tr>
+					<td align="center"><strong>Quantity</strong></td>
+					<td align="center"><strong>Product ID</strong></td>
+					<td align="center"><strong>Description</strong></td>
+					<td align="center"><strong>Unit Price</strong></td>
+					<td align="center"><strong>Line Total</strong></td>
+				</tr>
+				#foreach($inv in $invoiceitems)
+				<tr>
+					#set($qty=$inv.get("quantity"))
+					<td align="center">$qty</td>
+					#set($product = $productsearcher.searchById($inv.get("product")))
+					<td align="center">$product.getId()</td>
+					<td align="left">$product.get("name")</td>
+					#set($price=$inv.get("price"))
+					<td align="right">$price</td>
+					<td align="right">$inv.linetotal</td>
+				</tr>
+				#end
+				<tr>
+					<td colspan="4" align="right"><strong>Sub Total</strong></td>
+					<td align="right">$invoice.subtotal</td>
+				</tr>
+				<tr>
+					<td colspan="4" align="right">Shipping</td>
+					<td align="right">$formatutil.formatString($invoice.get("shipping"))</td>
+				</tr>
+				<tr>
+					<td colspan="4" align="right">HST/GST Tax ( #$distributor.get("hstnumber") )</td>
+					<td align="right">$formatutil.formatString($fedtaxes)</td>
+				</tr>
+				<tr>
+					<td colspan="4" align="right">Provincial Tax</td>
+					<td align="right">$formatutil.formatString($provtaxes)</td>
+				</tr>
+				<tr>
+					<td colspan="4" align="right"><strong>Total</strong></td>
+					<td align="right">$formatutil.formatString($total)</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

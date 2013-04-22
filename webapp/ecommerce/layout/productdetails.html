@@ -10,8 +10,11 @@
 		
 		<h3>Phone Compatability</h3>
 		#foreach($phone in $product.getValues("phone"))
-		#set($p  = $searcherManager.getData($catalogid, "phone", $phone))
-		<img src="$apphome/theme/images/check.png"/>$p<br/>
+			#set($p  = $searcherManager.getData($catalogid, "phone", $phone))
+			#if($p != "")
+			<img src="$apphome/theme/images/check.png"/>$p<br/>
+			#end
+			#set($p  = "")
 		#end
 		
 </div>

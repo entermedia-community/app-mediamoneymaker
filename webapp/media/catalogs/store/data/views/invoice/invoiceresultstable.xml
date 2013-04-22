@@ -1,8 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
   <property id="id"/>
+  <property id="date"/>
   <property id="invoicenumber"/>
   <property id="ponumber"/>
+  <property id="shipping"/>
+  <property id="taxamount"/>
   <property id="invoicetotal"/>
   <property id="invoicestatus"/>
+  <property id="terms"/>
 </root>

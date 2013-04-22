@@ -162,7 +162,7 @@ public class MediaUtilities extends EnterMediaObject {
 		Product product = (Product) getProductSearcher().searchById(productID);
 		return product;
 	}
-	public Data searchForProductBySku( String inSearchField, String searchForName ) {
+	public Data searchForProductByField( String inSearchField, String searchForName ) {
 		Data product = (Data) getProductSearcher().searchByField(inSearchField, searchForName);
 		return product;
 	}

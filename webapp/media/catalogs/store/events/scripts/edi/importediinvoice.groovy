@@ -7,6 +7,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.money.Money
 import org.openedit.store.CartItem
+import org.openedit.store.TaxRate;
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.OrderProcessor;
 import org.openedit.store.util.MediaUtilities;
@@ -75,6 +76,9 @@ public class ImportEDIInvoice extends EnterMediaObject {
 					String invoiceNumber = "";
 					String invoiceTotal = "";
 					String purchaseOrder = "";
+					String taxAmount = "";
+					String shippingAmount = "";
+					
 					Order order = null;
 					Date newDate = null;
 					boolean foundData = false;
@@ -204,7 +208,34 @@ public class ImportEDIInvoice extends EnterMediaObject {
 										log.info(inMsg);
 									}
 								}
+								foundData = false;
+								if (!foundData) {
+									/* This works - This gets the first level store info */
+									taxAmount = it.Attributes.TblTax.TaxAmount.text();
+									if (!taxAmount.isEmpty()) {
+										log.info("Tax Amount: " + taxAmount);
+										foundData = true;
+									}
+									if (!foundData) {
+										String inMsg = "ERROR: Tax Amount value was not found in INVOICE.";
+										log.info(inMsg);
+									}
+								}
 
+								foundData = false;
+								if (!foundData) {
+									/* This works - This gets the first level store info */
+									shippingAmount = it.Attributes.TblAllowCharge.AllowChargeAmount.text();
+									if (!shippingAmount.isEmpty()) {
+										log.info("Shipping Amount: " + shippingAmount);
+										foundData = true;
+									}
+									if (!foundData) {
+										String inMsg = "ERROR: Shipping Amount value was not found in INVOICE.";
+										log.info(inMsg);
+									}
+								}
+								
 								if (foundData) {
 
 									Searcher invoiceSearcher = media.getInvoiceSearcher();
@@ -218,6 +249,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											if (ediInvoice != null) {
 												log.info("Invoice exists: " + ediInvoice.getId());
 												ediInvoice.setProperty("invoicetotal", invoiceTotal);
+												ediInvoice.setProperty("taxamount", taxAmount);
+												ediInvoice.setProperty("shipping", shippingAmount);
 												ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 												ediInvoice.setProperty("invoicestatus", "updated");
 												invoiceSearcher.saveData(ediInvoice, media.getContext().getUser());
@@ -240,6 +273,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 										ediInvoice.setProperty("ponumber", purchaseOrder);
 										ediInvoice.setProperty("invoicenumber", invoiceNumber);
 										ediInvoice.setProperty("invoicetotal", invoiceTotal);
+										ediInvoice.setProperty("taxamount", taxAmount);
+										ediInvoice.setProperty("shipping", shippingAmount);
 										ediInvoice.setProperty("invoicestatus", "new");
 										ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 
