@@ -25,23 +25,32 @@ public class ExportAffinityOrder extends EnterMediaObject {
 
 	private static String distributorName = "Affinity";
 	private String orderID;
-	private List fullOrderList;
+	private Map<String, String> orderList;
 
 	public void setOrderID( String inOrderID ) {
 		orderID = inOrderID;
 	}
-	public List getOrderList() {
-		if (fullOrderList == null) {
-			this.fullOrderList = new ArrayList();
+	public String getOrderID() {
+		return orderID;
+	}
+	public Map getOrderList() {
+		if (orderList == null) {
+			orderList = new HashMap<String, String>();
 		}
-		return this.fullOrderList;
+		return orderList;
+	}
+	public void writeOrderToList(String inOrderID, String inFilename) {
+		if (orderList == null) {
+			orderList = new HashMap<String, String>();
+		}
+		orderList.put(inOrderID, inFilename);
 	}
 	
 	public void doExport() {
 
 		log.info("PROCESS: START Orders.exportaffinityorder");
 		
-		fullOrderList = new ArrayList();
+		orderList = new HashMap<String, String>();
 				
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
@@ -71,27 +80,41 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			}
 
 			log.info("DATA: Order found: " + order.getId());
-			
-			//Check if order has Affinity Products
-			List orderitems = order.getCartItemsByProductProperty("distributor", "102");
-			if (orderitems.size() > 0) {
-			
-				//Create the CSV Writer Objects
-				StringWriter output  = new StringWriter();
-				CSVWriter writer  = new CSVWriter(output, (char)',');
-	
-				//Write the body of all of the orders
-				createOrderDetails(order, writer);
+			String orderStatus = order.get("orderstatus");
+			if (orderStatus == "authorized" || orderStatus == "accepted") {
+
+				//Check if order has Affinity Products
+				List orderitems = order.getCartItemsByProductProperty("distributor", "102");
+				if (orderitems.size() > 0) {
 				
-				// xml generation
-				String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + order.getId() + ".csv";
-				Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${order.getId()}/${fileName}");
-				fullOrderList.add(fileName);
-				writeOrderToFile(page, output, fileName) + "<BR>";
-				order.setProperty("csvgenerated", "true");
-				archive.getSearcher("storeOrder").saveData(order, context.getUser());
+					//Create the CSV Writer Objects
+					StringWriter output  = new StringWriter();
+					CSVWriter writer  = new CSVWriter(output, (char)',');
+		
+					//Write the body of all of the orders
+					createOrderDetails(order, writer);
+					
+					// xml generation
+					String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + order.getId() + ".csv";
+					Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${order.getId()}/${fileName}");
+					page.setContentItem(new StringItem(page.getPath(), output.toString(), "UTF-8"));
+					//Write out the CSV file.
+					pageManager.putPage(page);
+					//Set the order properties
+					//order.setProperty("csvgenerated", "true");
+					archive.getSearcher("storeOrder").saveData(order, context.getUser());
+					writeOrderToList(order.getId(), fileName);
+					
+				}
+			} else {
+				log.info("SKIPPING ORDER: Order not authorized.");
 			}
 		}
+		if (getOrderList().isEmpty()) {
+			context.putPageValue("errorout", "There are no Affinity orders to export at this time.");
+		}
+		context.putPageValue("export", getOrderList());
+		context.putPageValue("id", getOrderID());
 	}
 
 	private void createOrderDetails(Order order, CSVWriter writer) {
@@ -155,16 +178,6 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			} else {
 				//Get and set the Detail Row Value
 				value = inOrder.get(detail.getId());
-				if (detail.isList()) {
-					String listID = detail.getListId();
-					Data target = manager.getData(archive.getCatalogId(), listID, value);
-					if (target != null) {
-						value = target.getName();
-					} else {
-						log.info("Remote data not found: " + listID + ":" + value);
-						break;
-					}
-				}
 				inListRows.add(value);
 			}
 		}
@@ -185,16 +198,8 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		}
 	}
 	
-	private void writeOrderToFile(Page page, StringWriter output, String fileName) {
+	private void writeOrderToFile(Page page, StringWriter output) {
 		
-		page.setContentItem(new StringItem(page.getPath(), output.toString(), "UTF-8"));
-
-		//Write out the CSV file.
-		pageManager.putPage(page);
-		if (!page.exists()) {
-			String strMsg = "ERROR:" + fileName + " was not created.";
-			log.info(strMsg);
-		}
 	}
 }
 
@@ -215,7 +220,6 @@ try {
 	log.info("The following file(s) has been created. ");
 	log.info(affinityOrder.getOrderList().toString());
 	log.info("PROCESS: END Orders.exportaffinity");
-	context.putPageValue("export", affinityOrder.getOrderList().toString());
 }
 finally {
 	logs.stopCapture();

@@ -7,10 +7,8 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.money.Money
 import org.openedit.store.CartItem
-import org.openedit.store.TaxRate;
 import org.openedit.store.orders.Order
-import org.openedit.store.orders.OrderProcessor;
-import org.openedit.store.util.MediaUtilities;
+import org.openedit.store.util.MediaUtilities
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -463,6 +461,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 				result.setComplete(true);
 			}
 		}
+		log.info("---- FINISH Import EDI Invoice ----");
 		return result;
 	}
 
@@ -532,6 +531,7 @@ try {
 		//ERROR: Throw exception
 		context.putPageValue("errorout", result.getErrorMessage());
 	}
+	log.info
 }
 finally {
 	logs.stopCapture();

@@ -26,10 +26,7 @@ public class ExportAffinity extends EnterMediaObject {
 		return this.orderID;
 	}
 
-	public PublishResult doExport() {
-
-		PublishResult result = new PublishResult();
-		result.setComplete(false);
+	public void doExport() {
 
 		String finalOutput = "";
 		log.info("PROCESS: START Orders.exportaffinity");
@@ -40,25 +37,25 @@ public class ExportAffinity extends EnterMediaObject {
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 		// Create the Searcher Objects to read values!
-		def orderid = context.getRequestParameter("orderid");
+		def orderid = context.getRequestParameter("id");
+		setOrderID(orderid);
 		def String distributorName = "Affinity";
 
 		//Create the CSV Writer Objects
 		StringWriter output  = new StringWriter();
 
 		// xml generation
-		String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";
-		Page page = pageManager.getPage("/WEB-INF/data/${catalogid}/orders/exports/${this.orderID}/${fileName}");
-		output.append(page.getContent());
-		
-		result.setCompleteMessage(output.toString());
-		result.setComplete(true);
-		
-		return result;
+		String fileName = "export-" + this.distributorName.replace(" ", "-") + "-" + getOrderID() + ".csv";
+		String pageName = "/WEB-INF/data/" + catalogid + "/orders/exports/" + getOrderID() + "/" + fileName;
+		Page page = pageManager.getPage(pageName);
+		if (page != null) {
+			output.append(page.getContent());
+			context.putPageValue("exportcsv", output.toString());
+		} else {
+			throw new OpenEditException(fileName + " does not exist.");
+		}
 	}
 }
-PublishResult result = new PublishResult();
-
 logs = new ScriptLogger();
 logs.startCapture();
 
@@ -69,15 +66,7 @@ try {
 	export.setOrderID(context.getRequestParameter("orderid"));
 	export.setModuleManager(moduleManager);
 	export.setPageManager(pageManager);
-	result = export.doExport();
-	
-	if (result.isComplete()) {
-		//Output value to CSV file!
-		export.getContext().putPageValue("exportcsv", result.getCompleteMessage());
-	} else {
-		//ERROR: Throw exception
-		throw new OpenEditException("Error: " + result.getErrorMessage());
-	}
+	export.doExport();
 }
 finally {
 	logs.stopCapture();
