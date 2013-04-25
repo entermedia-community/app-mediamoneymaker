@@ -8,4 +8,6 @@
   <property id="state"/>
   <property id="country"/>
   <property id="zip"/>
+  <property id="phone"/>
+  <property id="storenumber"/>
 </root>
