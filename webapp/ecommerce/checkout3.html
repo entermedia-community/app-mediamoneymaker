@@ -7,6 +7,7 @@
 <tr>
 <td class=body2>
 
+<form method="post" name="orderForm" action="thanks.html">
 <table border=0 cellpadding=0 cellspacing=0>
 	<tr>
 		<td>
@@ -52,7 +53,6 @@
 		$pages.include("$apphome/paypal/checkoutform.html")
 	
 	#end
-	<form method="post" name="orderForm" action="thanks.html">
 	#if ( $store.usesBillMeLater() )
 	<tr>
 		<td style="padding: 0;">
@@ -65,19 +65,19 @@
 					<input type=checkbox name="billmelater" id="billmelater" value="true" /> Please invoice me 
 				</td>
 			</tr>
-			#if ($store.displayTermsConditions())
-			<tr>
-				<td colspan=1 class=body2 colspan=2>
-					<p>IMPORTANT NOTE: In order to pay later by invoice, you must agree to our Terms & Conditions of Sale (<a href="terms.html">read</a>)</p>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class=body2><input type="checkbox" name="acceptterms" value="Yes">I agree to the Terms & Conditions</td>
-			</tr>	
-			#end
 			</table>
 		</td>
 	</tr>
+	#if ($store.displayTermsConditions())
+	<tr>
+		<td style="padding: 0;" colspan="2">
+			<p>IMPORTANT NOTE: In order to pay later by invoice, you must agree to our Terms & Conditions of Sale (<a href="terms.html">read</a>)</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class=body2><input type="checkbox" name="acceptterms" value="Yes">&nbsp;I agree to the Terms & Conditions</td>
+	</tr>	
+	#end
 	#end
 	<tr>
 		<td style="padding: 0; margin: 0;">
@@ -185,6 +185,21 @@
 			</tr>
 			<tr >
 				<td style="padding-bottom: 20px;" colspan="2" class=body2>Notes:<br/><textarea rows=5 style="width: 553px;" name="ordernote" ></textarea></td>
+			</tr>
+			<tr style="border-top: 1px solid #ddd;">
+			    <td valign=top colspan="2">
+			    	<span style="color:red;">The products you have selected are subject 
+			    	to your inspection and acceptance at the delivery address listed in your order.  You must notify AREA 
+			    	in writing within 60 days of receiving the shipment of any discrepancies in the shipment, such as the 
+			    	specifications, quantity, damage, etc. (“Discrepancy”). If you notify Area within 60 days of receiving 
+			    	the shipment of a Discrepancy, Area will request its distributor to correct the Discrepancy and 
+			    	the distributor will pay the shipping charges to replace the defective or non-conforming products.</span>
+			    </td>
+			</tr>
+			<tr>
+				<td valign="top" colspan="2">
+					<p><input type="checkbox" name="discrepancy" value="agree">&nbsp;I agree to the "Discrepancy" agreement.</p>
+				</td>
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
 

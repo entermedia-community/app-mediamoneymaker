@@ -1,3 +1,5 @@
+#set($errorout = $context.getPageValue("errorout"))
+#set($orderid = $context.getPageValue("id"))
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Affinity Export Section</div>
 	<div class="ui-widget-content">
@@ -8,15 +10,16 @@
 				<thead>
 					<tr id="tableheader">
 						<th>
-							Download								
+							Confirmation								
 						</th>  
-						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>$export</td>
-						<td><a href="exportaffinity.csv?orderid=$id" class="btn">Download</a></td>
+						<td>$orderid sent to Affinity.</td>
+					</tr>
+					<tr>
+						<td><a href="$home$apphome/rogers/orders/exportaffinityorders.html" class="btn">Go Back</a></td>
 					</tr>
 				</tbody>
 			</table>

@@ -171,6 +171,13 @@ function validateCreditCardAndSubmit( form )
 			}
 		}
 	}
+	if ( !form.discrepancy.checked )
+	{
+		alert( "You must agree to the Discrepancy Conditions" );
+		field.focus();
+		return;
+	}
+
 	//validate billing
 	if (!validateBilling(form))
 	{
