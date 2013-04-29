@@ -61,17 +61,23 @@
  	  <a href="$apphome/shoppingbag.html">View Cart</a><img style="padding-top: 12px;" src="$apphome/theme/images/cart.png"/>
  </li>
 #end
+
 #if($canbrowseproducts)
 <li style="float: right; border:0px;  padding-right: 132px; padding-top: 3px;">
 	<div id="searchform" class="">
-		<form target="_parent" name="qsearch" action="$home$apphome/search/results.html">
+		<form target="_parent" name="qsearch" id="qsearch" action="$home$apphome/search/results.html">
 #if( $hits.userQuery.length() > 0 && !$hits.userQuery.contains("[") )
-<input name="query" size="18" value="$!url_util.xmlEscape($hits.userQuery)" type="text" />
+<input name="query" size="18" value="$!url_util.xmlEscape($hits.userQuery)" type="text" class="sinput" />
 #else
-<input name="query" type="text" size="18" value="Store Search" onclick="value='';" /> 
+<input name="query" type="text" size="18" value="Store Search" onclick="value='';" class="sinput" /> 
 #end
+ 
+
 </form>
+<img id="search-submit" src="/ecommerce/theme/images/search_icon.png" name="Go" value="Go"  align="right" style="margin-top: -30px;"/>
+
 	</div>
+	
 </li>
 #end
  
@@ -85,3 +91,11 @@
 
 
 </div>
+<script type="text/javascript"">
+jQuery("#search-submit").bind("click", function(){
+	jQuery("#qsearch").submit();
+		
+	
+});
+
+</script>
