@@ -1,0 +1,12 @@
+
+<properties prefix="inventoryimport" beanname="dynamicSearcher">
+  <property id="id" index="true" stored="true" type="number" searchtype="default" internalfield="true" datatype="number">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="default">Name</property>
+  <property id="sourcepath" searchtype="inventoryimport">SourcePath</property>
+  <property id="description" index="true" stored="true" editable="true" searchtype="inventoryimport">Description</property>
+  <property id="sku" index="true" stored="true" editable="true" searchtype="inventoryimport" internalfield="false">SKU</property>
+  <property id="quantity" index="true" stored="true" editable="true" searchtype="inventoryimport">Quantity</property>
+  <property id="upc" index="true" stored="true" editable="true" searchtype="inventoryimport">UPC</property>
+  <property id="distributor" index="true" stored="true" editable="true" type="list" searchtype="inventoryimport" internalfield="false" datatype="list">Distributor</property>
+  <property id="lastimportdate" index="true" stored="true" editable="true" searchtype="inventoryimport">Last Import Date</property>
+</properties>

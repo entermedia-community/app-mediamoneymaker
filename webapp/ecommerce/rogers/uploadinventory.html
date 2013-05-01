@@ -1,0 +1,18 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers Affinity Section</div>
+	<div class="ui-widget-content">
+	 <form action="$home$apphome/rogers/uploadinventoryfile.html" 
+	 	method="post" enctype="multipart/form-data">
+		 <p>Please click the browse button to upload the Affinity Inventory CSV File</p>
+		 <input type="file" name="file.0" /><br />
+		 <input type="hidden" name="path" 
+		 	value="$cataloghome/temp/upload/inventory.csv"/>
+		 <p>Please choose the type of inventory file.</p>
+		 <input type="radio" name="csvtype" value="102" checked="checked"/>&nbsp;Affinity<br/>
+		 <input type="radio" name="csvtype" value="105"/>&nbsp;Cesium<br/>
+		 <input type="submit" name="Upload" value="Upload File"/>
+		</form>
+	</div> 
+</div>
+
+
