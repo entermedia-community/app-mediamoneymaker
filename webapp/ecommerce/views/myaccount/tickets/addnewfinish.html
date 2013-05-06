@@ -1,0 +1,13 @@
+<h2>Add a New Ticket</h2>
+<p><strong>Your ticket has been created.</strong></p>
+#set($notification = $context.getRequestParameter("notification"))
+#set($productid = $context.getRequestParameter("productid"))
+#if($notification == "setup")
+	<ul>
+		<li>Email notification has been setup.</li>
+	</ul>
+#elseif($notification == "duplicate")
+	<ul>
+		<li>Email notification has not been setup. This notification already exists.</li>
+	</ul>
+#end

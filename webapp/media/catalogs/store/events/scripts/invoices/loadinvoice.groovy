@@ -79,26 +79,30 @@ public class LoadInvoice extends EnterMediaObject {
 			}
 			double total = subTotal + shipping + fedtaxes + provtaxes;
 			
-			SimpleDateFormat inFormat = new SimpleDateFormat("mm/dd/yyyy");
 			String oldDate = invoice.get("date");
 			log.info("Original Date: " + oldDate);
+			oldDate = oldDate.replace('/', '-');
+			log.info("Original Date: " + oldDate);
+			SimpleDateFormat inFormat = new SimpleDateFormat("mm-dd-yyyy");
 			Date dateOut = null;
 			try {
 				dateOut = inFormat.parse(oldDate);
+				SimpleDateFormat outFormat = new SimpleDateFormat("MMMM dd, yyyy");
+				String invoiceDate = outFormat.format(dateOut);
+				log.info("New Date: " + invoiceDate);
+
+				context.putPageValue("fedtaxes", fedtaxes.toString());
+				context.putPageValue("provtaxes", provtaxes.toString());
+				context.putPageValue("invoiceitems", list);
+				context.putPageValue("invoice", invoice);
+				context.putPageValue("total", total.toString());
+				context.putPageValue("invoicedate", invoiceDate);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			SimpleDateFormat outFormat = new SimpleDateFormat("MMMM dd, yyyy");
-			String invoiceDate = outFormat.format(dateOut);
-			log.info("New Date: " + invoiceDate);
 			
 			//Put values 
-			context.putPageValue("fedtaxes", fedtaxes.toString());
-			context.putPageValue("provtaxes", provtaxes.toString());
-			context.putPageValue("invoiceitems", list);
-			context.putPageValue("invoice", invoice);
-			context.putPageValue("total", total.toString());
-			context.putPageValue("invoicedate", invoiceDate);
 		}
 	}
 }

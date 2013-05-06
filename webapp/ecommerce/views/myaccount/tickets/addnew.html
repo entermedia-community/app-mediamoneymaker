@@ -1,11 +1,147 @@
-<h1>Get Support</h1>
+<script type="text/javascript">
+	hideAllDivs = function() {
+		$('#inputarea_notes').hide();
+		$('#stockrequest').hide();
+		$('#stockrequest-field').hide();
+		$('#stockrequest-notify').hide();
+		$('#order').hide();
+		$('#submit-form').hide();
+	};
+	handleNewSelection = function () {
+
+	    hideAllDivs();
+
+	    switch ($(this).val()) {
+	    	case 'none':
+	    		$('#notifyme').attr({value:'no'});
+	    		break;
+	        case 'stockrequest':
+	            $("#stockrequest").show();
+	            $('#stockrequest-field').show();
+	            $('#stockrequest-notify').show();
+	            $('#inputarea_notes').show();
+	            $('#notifyme').attr({value:'yes'});
+	            $('#submit-form').show();
+	        	break;
+	        case 'order':
+	            $("#order").show();
+	            $('#inputarea_notes').show();
+	            $('#notes-area').html("Please provide details about your order issue:");
+	            $('#submit-form').show();
+	            $('#notifyme').attr({value:'no'});
+	        	break;
+	        case 'feedback':
+	            $('#inputarea_notes').show();
+	            $('#notes-area').html("Please provide your feedback:");
+	            $('#notifyme').attr({value:'no'});
+	            $('#submit-form').show();
+	        	break;
+	    }
+	};	
+	function changeProduct(productid) {
+		$('#product-name').html(productid);
+	}
+	$(document).ready( function() {
+		$('#list-tickettype').change(handleNewSelection);
+		handleNewSelection.apply($('#list-tickettype'));
+		
+	});
+</script>
 $context.putPageValue("searcher", $mediaarchive.getSearcher("ticket"))
 $context.putPageValue("view", "ticket/addnew")
-<form name="submitticket" action="addnewfinish.html">
-$pages.include("$apphome/components/xml/detaileditor.html", $context)
-<input type="hidden" name="owner.value" value="$userprofile.id"/>
-<input type="hidden" name="field" value="owner"/>
-<input type="hidden" name="save" value="true"/>
-
-<input type="submit"/>
+#set($tickettype = $context.getRequestParameter("tickettype.value"))
+#set($productid = $context.getRequestParameter("product.value"))
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($product = $productsearcher.searchById($productid))
+<h1>Get Support&nbsp;
+#if($tickettype == "stockrequest")
+	:&nbsp;Stock Request
+#end
+</h1>
+<form name="submitticket" action="addnewfinish.html" method="get">
+<table class="settings-table">
+	<tr id="inputarea_tickettype">
+		<td class="emdatafield">Request Type</td>
+		<td class="emdatafieldvalue">
+			<select style="margin-top: 8px; max-width: 200px;" id="list-tickettype" data-placeholder=" " 
+				name="tickettype.value" 
+				class="choose-select autosubmited " 
+				listid="tickettype" 
+				id="tickettype.value"
+				data-listid="tickettype" 
+				data-searchtype="ticket">
+				<option value="none"></option>
+#if($tickettype == "stockrequest")
+				<option value="stockrequest" selected="selected" >Stock Request</option>
+#end
+				<option value="feedback" >Feedback</option>
+				<option value="order" >Order Issue</option>
+#if($tickettype == "productchangerequest")
+				<option value="productchangerequest" selected="selected">Product Change Request</option>
+#end
+#if($tickettype == "newproductsubmission")
+				<option value="newproductsubmission" selected="selected" >New Product Submission</option>
+#end
+#if($tickettype == "updateproduct")
+				<option value="updateproduct" selected="selected" >Update Product</option>
+#end
+			</select>
+			<input type="hidden" name="field" value="tickettype"/>		
+		</td>
+	</tr>
+	<tr id="order">
+		<td class="emdatafield">Enter Your Order Number:</td>
+		<td class="emdatafieldvalue">
+			<input type="text" name="order.value" value=""/ width="30">
+			<input type="hidden" name="field" value="order"/>		
+		</td>
+	</tr>
+	<tr id="stockrequest">
+		<td class="emdatafield">Product:</td>
+		<td class="emdatafieldvalue">
+			#if($product)
+				$productid
+			#end
+		</td>
+	</tr>
+	<tr id="stockrequest-field">
+		<td class="emdatafield">&nbsp;</td>
+		<td class="emdatafieldvalue">
+			#if($product)
+				#set($name = $product.get("name"))
+				<span id="product-name">$name</span>
+				<input type="hidden" name="product.value" value="${productid}"/>
+				<input type="hidden" name="field" value="product"/>		
+			#end
+		</td>
+	</tr>
+	<tr id="inputarea_notes">
+		<td class="emdatafield">
+#if($tickettype == "stockrequest")
+			Describe your stock request:
+#else
+			<span id="notes-area">Please describe your issue:</span>
+#end
+		</td>
+		<td id="detail_notes" class="emdatafieldvalue ">
+			<input type="hidden" value="notes" name="field"/>
+			<textarea name="notes.value" id="notes" cols="40" rows="5" class=""></textarea>
+		</td>
+	</tr>
+	<tr id="stockrequest-notify">
+		<td class="emdatafieldvalue" colspan="2">
+			<input id="notifyme" type="checkbox" name="notifyme" value="yes" checked="checked"/>&nbsp;Please notify me when the desired stock is available.
+		</td>
+	</tr>
+	<tr>
+		<td id="submit-form" colspan="2">
+			<input type="hidden" name="owner.value" value="$userprofile.id"/>
+			<input type="hidden" name="field" value="owner"/>
+			<input type="hidden" name="save" value="true"/>
+			<input type="hidden" name="ticketstatus.value" value="open"/>
+			<input type="hidden" name="field" value="ticketstatus"/>
+			<input type="submit"/>
+		</td>
+	</tr>
+</table>
 </form>
