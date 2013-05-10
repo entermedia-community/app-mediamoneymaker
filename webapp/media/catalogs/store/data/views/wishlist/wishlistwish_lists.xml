@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="name"/>
+  <property id="dealer"/>
+  <property id="address"/>
+  <property id="store"/>
+  <property id="profileid"/>
+  <property id="creationdate"/>
+  <property id="wishstatus"/>
+</root>

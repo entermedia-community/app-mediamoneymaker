@@ -30,6 +30,8 @@ public class MediaUtilities extends EnterMediaObject {
 	protected Searcher invoicesearcher;
 	protected Searcher invoiceitemssearcher;
 	protected Searcher errorsearcher;
+	protected Searcher usersearcher;
+	protected Searcher userprofilesearcher;
 	
 	public MediaUtilities() {
 	}
@@ -105,6 +107,20 @@ public class MediaUtilities extends EnterMediaObject {
 			invoiceitemssearcher = (Searcher) getManager().getSearcher(getCatalogid(), "invoiceitem");
 		}
 		return invoiceitemssearcher;
+	}
+	
+	public Searcher getUserSearcher() {
+		if (usersearcher == null) {
+			usersearcher = (Searcher) getManager().getSearcher("system", "user");
+		}
+		return usersearcher;
+	}
+	
+	public Searcher getUserProfileSearcher() {
+		if (userprofilesearcher == null) {
+			userprofilesearcher = (Searcher) getArchive().getSearcher("userprofile");
+		}
+		return userprofilesearcher;
 	}
 	
 	////////////////////////////////////////////

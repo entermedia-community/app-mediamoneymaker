@@ -1,0 +1,18 @@
+<div class="subcolumns">
+	<div class="c25l" id="left-col">
+		<div class="subcl">
+			#if($canviewtesting)
+			<div class="ui-widget-header">Dealer Quick Link Menu</div>
+			<div class="ui-widget-content categories-widget no-padding-for-real">
+				<ul class="sidebar-list">
+					<li><a href="$home$apphome/views/modules/dealers/create.html">Create New Dealer</a>
+					<li><a href="$home$apphome/views/modules/dealers/index.html">Back to Main</a>
+				</ul>
+			</div>
+			#end
+		</div>
+	</div>
+	<div id="right-col">
+		<div id="resultsdiv">$pages.includeContent()</div>
+	</div>
+</div>

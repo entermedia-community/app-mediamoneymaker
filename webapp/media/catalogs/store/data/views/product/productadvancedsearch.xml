@@ -9,4 +9,5 @@
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
   <property id="distributor"/>
+  <property id="upc"/>
 </root>

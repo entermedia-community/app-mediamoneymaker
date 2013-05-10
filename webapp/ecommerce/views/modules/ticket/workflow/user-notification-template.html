@@ -1,7 +1,14 @@
-<p>The following ticket has been updated: $ticket.getId()</p>
-
+#set($userid = $context.getRequestParameter("userid"))
+#set($outmsg = $context.getRequestParameter("outmsg"))
+#set($usersearcher = $searcherManager.getSearcher("system", "user"))
+#set($user = $usersearcher.searchById("userid"))
+#if($user)
+	#set($username = $user.firstName + " " + $user.lastName))
+#end
 #set($url = "$content.siteroot/$apphome/views/myaccount/tickets/history.html")
 #set($options = "id=$ticket.getId()")
-
+<p>Thank you $username.</p>
+<p>The following ticket has been updated: $ticket.getId()</p>
 <p>Most recent note: $ticket.get("notes")</p>
-<p><a href="${url}?${options}">You can view the ticket here.</a>  
+<p><a href="${url}?${options}">You can view the ticket here.</a> 
+ 

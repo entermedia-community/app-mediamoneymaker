@@ -531,7 +531,6 @@ try {
 		//ERROR: Throw exception
 		context.putPageValue("errorout", result.getErrorMessage());
 	}
-	log.info
 }
 finally {
 	logs.stopCapture();

@@ -1,0 +1,22 @@
+#set($total = $context.getRequestParameter("total"))
+#set($good = $context.getRequestParameter("good"))
+#set($bad = $context.getRequestParameter("bad"))
+<div class="ui-widget uipanel">
+	<p>The file has been imported.</p>
+    <table class="rogers-list">
+        <tr>
+        	<td class="rogers-list-header" colspan="3"><div class="ui-widget-header">Import Dealer Results</div>
+        	</td>
+        </tr>
+        <tr>
+        	<td class="rogers-list-a">Total Rows</td>
+        	<td class="rogers-list-a">Good Rows</td>
+        	<td class="rogers-list-a">Bad Rows</td>
+        </tr>
+        <tr>
+        	<td class="rogers-list-white" align="center">$total</td>
+        	<td class="rogers-list-white" align="center">$good</td>
+        	<td class="rogers-list-white" align="center">$bad</td>
+        </tr>
+   </table>
+</div>

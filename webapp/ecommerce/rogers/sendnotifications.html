@@ -1,0 +1,25 @@
+#set($goodlist = $context.getContentProperty("goodlist"))
+#set($badlist = $context.getContentProperty("badlist"))
+
+<div class="ui-widget uipanel">
+	#if($goodlist.size()>0)
+	<div class="ui-widget-header">Good List</div>
+	<div class="ui-widget-content">
+		<ul>
+		#foreach($item in $goodlist)
+			<li>$item</li>
+		#end
+		</ul>
+	</div>
+	#end
+	#if($badlist.size()>0)
+	<div class="ui-widget-header">Bad List</div>
+	<div class="ui-widget-content">
+		<ul>
+		#foreach($item in $badlist)
+			<li>$item</li>
+		#end
+		</ul>
+	</div> 
+	#end
+</div>

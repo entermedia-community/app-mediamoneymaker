@@ -1,8 +1,4 @@
 
-
-
-
-
 /* GENERATED CSS */
 
 .ui-widget-header {
@@ -268,6 +264,23 @@ table.rogers-list td.rogers-list {
 	border: 1px solid gray;
 	background-color: #F0F0F0;
 }
+table.rogers-list td.rogers-list-a {
+	font-size: 14px;
+	padding: 3px;
+	margin-left: 5px;
+	margin-top: 5px;
+	border: 1px solid gray;
+	background-color: #D0D0D0;
+}
+table.rogers-list td.rogers-list-white {
+	font-size: 14px;
+	padding: 3px;
+	margin-left: 5px;
+	margin-top: 5px;
+	border: 1px solid gray;
+	background-color: white;
+}
+
 table.rogers-list td.rogers-list:hover {
 	background-color: #E8E8E8;
 	text-decoration: none;

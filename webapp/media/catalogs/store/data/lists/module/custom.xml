@@ -14,4 +14,5 @@
   <property id="division" href="/views/modules/division/index.html" recordstatus="deleted">Divisions</property>
   <data id="userprofile">Profiles</data>
   <data id="as400">AS400 Exports</data>
+  <data id="dealers">Dealers</data>
 </root>

@@ -1,0 +1,22 @@
+<div class="ui-widget uipanel">
+	 <form action="$home$apphome/views/modules/dealers/importdealers.html" method="post" enctype="multipart/form-data">
+		<table class="rogers-list">
+	    <tr>
+	    	<td class="rogers-list-header" colspan="2">
+	    		<div class="ui-widget-header">Import Dealer List</div>
+	    	</td>
+	    </tr>
+		<tr>
+			<td class="rogers-list">File: <span style="font-size: 10px;"></span></td>
+			<td class="rogers-list"><input type="file" name="file.0" /></td>
+		</tr>
+		<tr id="submit">
+			<td colspan="2" class="rogers-list-white">
+				<input type="hidden" name="action" value="import"/>
+				<input type="hidden" name="path" value="$cataloghome/temp/upload/dealers.csv"/>
+				<input type="submit" name="Upload" value="Upload File" class="btn"/>
+			</td>
+		</tr>
+		</table>
+	</form>
+</div>

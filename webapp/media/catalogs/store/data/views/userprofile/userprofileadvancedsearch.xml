@@ -4,4 +4,5 @@
   <property id="userid"/>
   <property id="distributor"/>
   <property id="email"/>
+  <property id="dealer"/>
 </root>

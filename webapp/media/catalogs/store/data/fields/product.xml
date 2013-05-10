@@ -33,7 +33,7 @@
   <property id="sourcepath" searchtype="product">SourcePath</property>
   <property id="expectedendoflife" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Expected End Of Life</property>
   <property id="participantid" index="true" stored="true" searchtype="product">ParticipantID</property>
-  <property id="phone" index="true" stored="true" editable="true" type="list" viewtype="multiselect" sort="name" searchtype="product" internalfield="false" datatype="list">Phone Compatibility</property>
+  <property id="phone" index="true" stored="true" editable="true" type="list" viewtype="list" sort="name" searchtype="product" internalfield="false" datatype="list">Phone Compatibility</property>
   <property id="thumbnailimage" index="true" stored="true" searchtype="product">ThumbnailImage</property>
   <property id="x507" index="true" stored="true" editable="true" searchtype="product">X507</property>
   <property id="topseller" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Top Selling Product</property>

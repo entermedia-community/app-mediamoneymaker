@@ -2,18 +2,18 @@ package orders;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.entermedia.email.ElasticPostMail
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.data.*
 import org.openedit.entermedia.MediaArchive
 
-import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
-import com.openedit.page.manage.PageManager;
+import com.openedit.page.manage.PageManager
 
 
 public class EmailAffinity extends EnterMediaObject {
@@ -49,7 +49,7 @@ public class EmailAffinity extends EnterMediaObject {
 		Page page = pageManager.getPage(pageName);
 		if (page.exists()) {
 			List email = new ArrayList();
-			email.add("pf@area.ca");
+			email.add("peterjfloyd@gmail.com");
 			List<String> attachments = new ArrayList<String>();
 			attachments.add(page.getPath());
 			
@@ -72,14 +72,24 @@ public class EmailAffinity extends EnterMediaObject {
 	protected void sendEmail(MediaArchive archive, WebPageRequest context, List email, List attachments, String templatePage, String orderID){
 		Page template = pageManager.getPage(templatePage);
 		WebPageRequest newcontext = context.copy(template);
-		TemplateWebEmail mailer = getMail(archive);
-		mailer.setFrom("info@wirelessarea.ca");
-		mailer.setFileAttachments(attachments);
-		mailer.loadSettings(newcontext);
-		mailer.setMailTemplatePath(templatePage);
-		mailer.setRecipientsFromCommas(email);
-		mailer.setSubject("Process Web Order (" + orderID + ")");
-		mailer.send();
+		ElasticPostMail mailer = new ElasticPostMail();
+		String from = "info@wirelessarea.ca";
+		mailer.setSmtpUsername(from);
+		String passwd = "B25a7GWBub12";
+		mailer.setSmtpPassword(passwd);
+		String server = "mail.wirelessarea.ca";
+		mailer.setSmtpServer(server);
+		String port = "587";
+		mailer.setPort(Integer.parseInt(port));
+		mailer.setSmtpSecured(true);
+		
+		String[] recipients = new String[email.size()];
+		int i=0;
+		for(String s: email){
+		  recipients[i++] = s;
+		}
+		String subject = "Process Web Order (" + orderID + ")";
+		mailer.postMail(recipients, subject, template.toString(), template.toString(), from, attachments);
 	}
 	protected TemplateWebEmail getMail(MediaArchive mediaarchive) {
 		PostMail mail = (PostMail)mediaarchive.getModuleManager().getBean( "postMail");

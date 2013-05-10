@@ -3,4 +3,5 @@
 <dealers>
   <dealer id="area">Area</dealer>
   <dealer id="uptown">Uptown</dealer>
+  <dealer id="digitalcomm">Digital Communications</dealer>
 </dealers>

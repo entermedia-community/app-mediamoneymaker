@@ -33,4 +33,5 @@
   <data id="as400as400_details" module="as400" systemdefined="false" ordering="1363353462797">AS400 Details</data>
   <data id="storeOrderfull_order_details" module="storeOrder" systemdefined="false" ordering="1363720614026">Full Order Details</data>
   <data id="productfull_product_details" module="product" systemdefined="true" ordering="1363720945945">Full Product Details</data>
+  <data id="wishlistwish_lists" module="wishlist" systemdefined="false" ordering="1366052875407">Wish Lists</data>
 </root>

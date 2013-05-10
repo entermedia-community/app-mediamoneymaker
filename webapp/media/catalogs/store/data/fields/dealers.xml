@@ -1,0 +1,6 @@
+
+<properties prefix="dealers" beanname="dataSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="dealers" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="dealers">Name</property>
+  <property id="sourcepath">SourcePath</property>
+</properties>

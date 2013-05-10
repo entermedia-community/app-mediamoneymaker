@@ -26,8 +26,8 @@
  
   <Xhostname>Test</Xhostname>
   <coupons enabled="true" />
-  <to-address>cburkey@openedit.org</to-address>
-  <from-address>store@einnovation.com</from-address>
+  <to-address>pf@area.ca</to-address>
+  <from-address>store@wirelessarea.ca</from-address>
   <email-layout>/ecommerce/thanksemail.html</email-layout>
   <order-layout>/ecommerce/orderemail.html</order-layout>
    <status-email-layout>/ecommerce/orders/statusemail.html</status-email-layout>
@@ -71,7 +71,7 @@
    -->
   	  	  	  	
   <uses-po-numbers>true</uses-po-numbers>
-  <display-terms-conditions>false</display-terms-conditions>
+  <display-terms-conditions>true</display-terms-conditions>
   <uses-bill-me-later>true</uses-bill-me-later>
   <allow-duplicate-accounts>true</allow-duplicate-accounts>
   
