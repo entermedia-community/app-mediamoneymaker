@@ -36,6 +36,8 @@ public class AddNotify extends EnterMediaObject {
 		if (doAddNotify.equals("yes")) {
 			
 			String productid = inReq.getRequestParameter("product.value");
+			Data ticket = inReq.getPageValue("data");
+			String ticketid = ticket.getId();
 			
 			Searcher notifysearcher = manager.getSearcher(catalogid, "stocknotify");
 			SearchQuery query = notifysearcher.createSearchQuery();
@@ -55,6 +57,7 @@ public class AddNotify extends EnterMediaObject {
 				addNew.setProperty("tickettype", "stockrequest");
 				Date now = new Date();
 				addNew.setProperty("datesubmitted", DateStorageUtil.getStorageUtil().formatForStorage(now));
+				addNew.setProperty("ticketid", ticketid);
 				notifysearcher.saveData(addNew, inReq.getUser());
 				
 				inReq.putPageValue("notification", "setup");
