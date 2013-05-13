@@ -1,0 +1,8 @@
+#set ( $product = $storeeditor.getCurrentProduct() )
+#set ( $item = $storeeditor.getCurrentItem() )
+##$pages.include("/system/components/xml/detaileditor.html?viewpath=product/productreview&detailsreadonly=true", $context)
+
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+$context.putPageValue("searcher", $productsearcher)	 
+$context.putPageValue("view", "product/productreview")
+$pages.include("/system/components/xml/detaileditor.html?detailsreadonly=true", $context)

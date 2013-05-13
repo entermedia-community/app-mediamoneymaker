@@ -1,0 +1,13 @@
+<page>
+<!--
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/submitreview.groovy</script>
+	</path-action>
+-->
+    <path-action name="DataEditModule.saveData"/>
+    <path-action name="CartModule.loadProductDetails"/>
+	<page-action name="Email.sendEmail"/>
+	<property name="from">ian@ijsolutions.ca</property>
+	<property name="subject">Submission Reviewed</property>
+	<property name="emailbody">/${applicationid}/views/modules/product/edit/workflow/notify-template.html</property>
+</page>
