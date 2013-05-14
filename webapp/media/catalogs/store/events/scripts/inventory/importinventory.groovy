@@ -28,6 +28,7 @@ public class ImportInventory  extends EnterMediaObject {
 	
 	List<String> badProductList;
 	List<String> badUPCList;
+	List<String> badQtyList;
 	List<String> goodProductList;
 	int totalRows;
 
@@ -43,6 +44,12 @@ public class ImportInventory  extends EnterMediaObject {
 			badUPCList = new ArrayList<String>();
 		}
 		return badUPCList;
+	}
+	public List<String> getBadQTYList() {
+		if(badQtyList== null) {
+			badQtyList = new ArrayList<String>();
+		}
+		return badQtyList;
 	}
 
 	public List<String> getGoodProductList() {
@@ -62,6 +69,12 @@ public class ImportInventory  extends EnterMediaObject {
 			badUPCList = new ArrayList<String>();
 		}
 		badUPCList.add(inItem);
+	}
+	public void addToBadQTYList(String inItem) {
+		if(badQtyList == null) {
+			badQtyList = new ArrayList<String>();
+		}
+		badQtyList.add(inItem);
 	}
 	public void addToGoodProductList(String inItem) {
 		if(goodProductList == null) {
@@ -135,10 +148,18 @@ public class ImportInventory  extends EnterMediaObject {
 			String[] cols;
 			while ((cols = read.readNext()) != null)
 			{
-				String manufacturerSKU = cols[manufacturerSKUcol].trim();
-				String rogersSKU = cols[rogersSKUcol].trim();
+				String manufacturerSKU = null;
+				String rogersSKU = null;
+				if (csvType.equals("104")) {
+					manufacturerSKU = parseMicrocelData(cols);
+					rogersSKU = manufacturerSKU;
+				} else {
+					manufacturerSKU = cols[manufacturerSKUcol].trim();
+					rogersSKU = cols[rogersSKUcol].trim();
+				}
 				String upcNumber = cols[upcCol].trim();
 				String newQuantity = cols[quantityCol].trim();
+				newQuantity = trimNumber(newQuantity, rogersSKU);
 				int qtyInStock = 0;
 				if (newQuantity.equals("0") || newQuantity == null) {
 					qtyInStock = 0 
@@ -200,7 +221,8 @@ public class ImportInventory  extends EnterMediaObject {
 			context.putPageValue("totalrows", getTotalRows());
 			context.putPageValue("goodproductlist", getGoodProductList());
 			context.putPageValue("badproductlist", getBadProductList());
-			context.putPageValue("badupclist", getBadUPCList())
+			context.putPageValue("badupclist", getBadUPCList());
+			context.putPageValue("badqtylist", getBadQTYList());
 			context.putPageValue("distributor", inDistributor);
 			
 			ArrayList emaillist = new ArrayList();
@@ -218,6 +240,23 @@ public class ImportInventory  extends EnterMediaObject {
 		}
 		
 	}
+	private String trimNumber( String inNumber, String inSKU ) {
+		if (inNumber.indexOf(".") != -1) {
+			String msg = inSKU + ": Invalid Quentity Found: " + inNumber; 
+			log.info(msg);
+			addToBadQTYList(msg)
+			float n = inNumber.toFloat();
+			int c = (int) n;
+			inNumber = c.toString();
+		}
+		return inNumber;
+	}
+	
+	private String parseMicrocelData( String[] inData ) {
+		String[] split = inData[0].split("-");
+		String extract = split[2].trim();
+		return extract;
+	}
 }
 
 logs = new ScriptLogger();
@@ -225,14 +264,14 @@ logs.startCapture();
 
 try {
 
-	log.info("START - ImportAffinityInventory");
+	log.info("START - ImportInventory");
 	ImportInventory importInventory = new ImportInventory();
 	importInventory.setLog(logs);
 	importInventory.setContext(context);
 	importInventory.setModuleManager(moduleManager);
 	importInventory.setPageManager(pageManager);
 	importInventory.handleSubmission();
-	log.info("FINISH - ImportAffinityInventory");
+	log.info("FINISH - ImportInventory");
 }
 finally {
 	logs.stopCapture();
