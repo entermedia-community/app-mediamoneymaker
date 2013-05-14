@@ -25,26 +25,7 @@ $pages.include("$apphome/views/modules/ticket/edit/table.html?id=$ticketid&viewi
 
 <div class="ui-widget uipanel">
 
-#if($product)
-	<div class="ui-widget-header">Existing Product Details</div>
-	<div class="ui-widget-content ">
-
-		<table>
-			<tr>
-				<td width="50%">
-					<h3>Existing Data</h3>
-					$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
-				</td>
-				<td width="50%">
-					<h3>Requested Change:</h3>
-					$context.putPageValue("data", $ticket)	
-				   	$pages.include("$apphome/components/xml/detaileditor.html?detailsreadonly=true", $context)
-				</td>
-			</tr>
-		</table>
-		</div>
-#end
-		<div class="ui-widget-header">Update Current Ticket</div>
+<div class="ui-widget-header">Update Current Ticket</div>
 	#set($tickethistoryid = $context.getRequestParameter("tickethistoryid"))
 		#if($tickethistoryid)
 			<p>Ticket History has been updated.</p>

@@ -3,4 +3,5 @@
 <inventoryimports>
   <inventoryimport description="4" rogerssku="1" quantity="3" upc="2" distributor="102" id="1367417017604" sku="1">Affinity</inventoryimport>
   <inventoryimport description="12" rogerssku="10" quantity="13" upc="10" distributor="105" id="1367417156819" sku="10">Cesium</inventoryimport>
+  <inventoryimport sku="0" quantity="2" upc="-1" distributor="104" id="1368541877006" description="1">Microcel</inventoryimport>
 </inventoryimports>

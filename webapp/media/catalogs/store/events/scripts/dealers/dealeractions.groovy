@@ -204,6 +204,7 @@ public class DealerActions extends EnterMediaObject {
 							if (address == null) { 
 								address = addresssearcher.createNewData();
 								address.setId(userName);
+								address.setSourcePath(orderLine[colID]);
 								address.setProperty("name", userName);
 								address.setProperty("address1", orderLine[(Integer)importColumns.get("address1")]);
 								address.setProperty("address2", orderLine[(Integer)importColumns.get("address2")]);
@@ -223,6 +224,7 @@ public class DealerActions extends EnterMediaObject {
 							if (profile == null) {
 								profile = userprofilesearcher.createNewData();
 								profile.setId(userName);
+								profile.setSourcePath(orderLine[colID]);
 								profile.setProperty("userid", user.getId());
 								profile.setProperty("password", user.getPassword());
 								profile.setProperty("firstName", user.getFirstName());

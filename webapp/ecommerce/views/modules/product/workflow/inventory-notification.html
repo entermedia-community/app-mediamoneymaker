@@ -5,6 +5,7 @@
 #set($goodproductlist = $context.getContentProperty("goodproductlist"))
 #set($badproductlist = $context.getContentProperty("badproductlist"))
 #set($badupclist = $context.getContentProperty("badpupclist"))
+#set($badqtylist = $context.getContentProperty("badqtylist"))
 #set($distributor = $context.getRequestParameter("distributor"))
 
 <h2>Update Inventory Report</h2>
@@ -27,6 +28,16 @@
 	#foreach($product in $badupclist)
 		#set($p = $productsearcher.searchByField("upc", $product))
 		<li>$product #if($p) - $p.get("rogerssku") - $p.get("manufacturersku") #end
+	#end
+	</ul>
+#end
+#if( $badqtylist.size() > 0)
+	<h3>Bad QTY List: $badqtylist.size() Product(s)</h3>
+	<p>Note: For these products, the Quantity On Hand value was invalid.<br/>
+	Values were trimmed at the decimal.</p>
+	<ul>
+	#foreach($product in $badqtylist)
+		<li>$product
 	#end
 	</ul>
 #end
