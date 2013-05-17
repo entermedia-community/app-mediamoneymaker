@@ -4,6 +4,7 @@
   <property id="name"/>
   <property id="owner"/>
   <property id="product"/>
+  <property id="storeOrder"/>
   <property id="tickettype"/>
   <property id="ticketstatus"/>
 </root>

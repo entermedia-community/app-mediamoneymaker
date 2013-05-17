@@ -6,6 +6,7 @@
   <property id="owner"/>
   <property id="tickettype"/>
   <property id="product"/>
+  <property id="storeOrder"/>
   <property id="ticketstatus"/>
   <property id="description"/>
   <property id="notes"/>

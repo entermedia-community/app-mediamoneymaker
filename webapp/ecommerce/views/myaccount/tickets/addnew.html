@@ -51,11 +51,16 @@ $context.putPageValue("searcher", $mediaarchive.getSearcher("ticket"))
 $context.putPageValue("view", "ticket/addnew")
 #set($tickettype = $context.getRequestParameter("tickettype.value"))
 #set($productid = $context.getRequestParameter("product.value"))
+#set($orderid = $context.getRequestParameter("order.value"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
 #set($product = $productsearcher.searchById($productid))
 <h1>Get Support&nbsp;
 #if($tickettype == "stockrequest")
 	:&nbsp;Stock Request
+#else
+	#if($tickettype == "order")
+		:&nbsp;Order Issue
+	#end
 #end
 </h1>
 <form name="submitticket" action="addnewfinish.html" method="get">
@@ -74,8 +79,9 @@ $context.putPageValue("view", "ticket/addnew")
 #if($tickettype == "stockrequest")
 				<option value="stockrequest" selected="selected" >Stock Request</option>
 #end
-				<option value="feedback" >Feedback</option>
-				<option value="order" >Order Issue</option>
+#if($tickettype == "order")
+				<option value="order" selected="selected" >Order Issue</option>
+#end
 #if($tickettype == "productchangerequest")
 				<option value="productchangerequest" selected="selected">Product Change Request</option>
 #end
@@ -85,15 +91,19 @@ $context.putPageValue("view", "ticket/addnew")
 #if($tickettype == "updateproduct")
 				<option value="updateproduct" selected="selected" >Update Product</option>
 #end
+				<option value="feedback" >Feedback</option>
 			</select>
 			<input type="hidden" name="field" value="tickettype"/>		
 		</td>
 	</tr>
 	<tr id="order">
-		<td class="emdatafield">Enter Your Order Number:</td>
+		<td class="emdatafield">Your Order Number:</td>
 		<td class="emdatafieldvalue">
-			<input type="text" name="order.value" value=""/ width="30">
-			<input type="hidden" name="field" value="order"/>		
+			#if($orderid)
+				$orderid
+				<input type="hidden" name="storeOrder.value" value="$orderid"/>
+				<input type="hidden" name="field" value="storeOrder"/>
+			#end
 		</td>
 	</tr>
 	<tr id="stockrequest">

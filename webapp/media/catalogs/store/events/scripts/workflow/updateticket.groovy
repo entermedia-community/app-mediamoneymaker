@@ -32,12 +32,18 @@ public class UpdateTicket extends EnterMediaObject {
 		Searcher usersearcher = manager.getSearcher("system", "user");
 		
 		//HitTracker hits = inReq.getRequestParameters("")
-		
 		String productid = inReq.getRequestParameter("productid");
-		String ticketid = inReq.getRequestParameter("id");
-		
 		Product product = store.getProduct(productid);
-		Data ticket = ticketsearcher.searchById(ticketid);
+		
+		Data ticket;
+		ticket = inReq.getPageValue("data");
+		if (ticket == null) {
+			String ticketID = inReq.getRequestParameter("id");
+			ticket = ticketsearcher.searchById(ticketID);
+			if (ticket == null) {
+				throw new OpenEditException("Ticket could not be loaded!");
+			}
+		}
 		
 		if (ticket != null) {
 	
@@ -45,10 +51,10 @@ public class UpdateTicket extends EnterMediaObject {
 				
 			Data ticketHistory = tickethistorysearcher.createNewData();
 			ticketHistory.setId(tickethistorysearcher.nextId());
-			ticketHistory.setSourcePath(ticketid);
+			ticketHistory.setSourcePath(ticket.getId());
 			
 			ticketHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			ticketHistory.setProperty("ticket", ticketid);
+			ticketHistory.setProperty("ticket", ticket.getId());
 			ticketHistory.setProperty("owner", ticket.get("owner"));
 			ticketHistory.setProperty("product", ticket.get("product"));
 			ticketHistory.setProperty("tickettype", ticket.get("tickettype"));
@@ -56,7 +62,7 @@ public class UpdateTicket extends EnterMediaObject {
 			ticketHistory.setProperty("notes", ticket.get("notes"));
 			tickethistorysearcher.saveData(ticketHistory, inReq.getUser());
 			
-			inReq.putPageValue("ticketid", ticketid);
+			inReq.putPageValue("ticketid", ticket.getId());
 			inReq.putPageValue("productid", productid);
 			inReq.putPageValue("ticket", ticket);
 			inReq.putPageValue("product", product)
@@ -86,7 +92,7 @@ public class UpdateTicket extends EnterMediaObject {
 				log.info("Email sent to Ticket Admins");
 			}
 		} else {
-			throw new OpenEditException("Null Ticket: " + ticketid)
+			throw new OpenEditException("Ticket could not be loaded!");
 		}
 	}
 	protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject){

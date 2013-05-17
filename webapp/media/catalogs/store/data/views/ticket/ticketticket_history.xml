@@ -3,6 +3,7 @@
 <root>
   <property id="date"/>
   <property id="owner"/>
+  <property id="ticket"/>
   <property id="ticketstatus"/>
   <property id="tickettype"/>
   <property id="notes"/>

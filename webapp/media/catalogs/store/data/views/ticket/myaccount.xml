@@ -2,6 +2,8 @@
 
 <root>
   <property id="product"/>
+  <property id="storeOrder"/>
   <property id="tickettype"/>
   <property id="ticketstatus"/>
+  <property id="notes"/>
 </root>
