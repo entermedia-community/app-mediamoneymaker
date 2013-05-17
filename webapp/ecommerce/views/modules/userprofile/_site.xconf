@@ -3,13 +3,5 @@
 <page>
   <property name="fallbackdirectory">/ecommerce/views/modules/default</property>
   <property name="module">userprofile</property>
-  <permission name="editdata">
-    <or>
-      <group id="settingsgroup.1356977356489"/>
-      <group id="settingsgroup.1356977356489"/>
-    </or>
-  </permission>
-  <permission name="view">
-    <user/>
-  </permission>
+ 
 </page>
