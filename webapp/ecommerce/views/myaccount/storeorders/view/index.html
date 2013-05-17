@@ -8,9 +8,10 @@
 <div class="ui-widget-header">Order #$orderNumber</div>
 <div class="ui-widget-content ">
 
-
-<a class="btn" href="$apphome/reloadorder.html?orderid=${order.orderNumber}">Re-order this</a>
-
+<a class="btn" 
+href="$apphome/reloadorder.html?orderid=${order.orderNumber}">Re-order this</a><a 
+class="btn" style="margin-left: 10px;" href="$apphome/views/myaccount/tickets/addnew.html?order.value=${order.orderNumber}&tickettype.value=order">Create Support Ticket</a>
+<h2>Order Information</h2>
 <h3 >$order.dateOrdered</h3>
 #if( $canmanageorders )
 			<form name="orderstatusform" >
