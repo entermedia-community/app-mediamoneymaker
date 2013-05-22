@@ -7,7 +7,7 @@
   <property name="catalogid">media/catalogs/store</property>
   <property name="applicationid">ecommerce</property>
      <path-action name="Date.now" />
-   <property name="continueShoppingUrl">/${applicationid}/index.html</property>
+   <property name="continueShoppingUrl">/${applicationid}/browse.html</property>
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
     <property name="productshowonly">+approved:true;-distributor:106</property>
   

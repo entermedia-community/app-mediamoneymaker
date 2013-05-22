@@ -69,6 +69,9 @@ public class ExportRogersCsv extends EnterMediaObject {
 		StringWriter output  = new StringWriter();
 		CSVWriter writer  = new CSVWriter(output, (char)',');
 
+		//Write the Header Line
+		createHeader(writer);
+		
 		for (Iterator orderIterator = orderList.getSelectedHits().iterator(); orderIterator.hasNext();) {
 
 			Data currentOrder = orderIterator.next();
@@ -101,29 +104,6 @@ public class ExportRogersCsv extends EnterMediaObject {
 		MediaArchive archive = context.getPageValue("mediaarchive");
 		SearcherManager manager = archive.getSearcherManager();
 		String catalogid = archive.getCatalogId();
-		
-		//Write the Header Line
-		List headerRow = new ArrayList();
-		//Add the Order Number
-		headerRow.add("SKU");
-		headerRow.add("Item Description");
-		headerRow.add("Category");
-		headerRow.add("Order Type");
-		headerRow.add("Order Number");
-		headerRow.add("Customer Name");
-		headerRow.add("Address1");
-		headerRow.add("Address2");
-		headerRow.add("Distributor");
-		headerRow.add("Order Date");
-		headerRow.add("Brand");
-		headerRow.add("Shipped");
-		headerRow.add("Ordered Quantity");
-		headerRow.add("Area Cost");
-		headerRow.add("Dealer Cost");
-		headerRow.add("MSRP");
-		headerRow.add("ROGERS APPROVED?");
-		log.info(headerRow.toString());
-		writeRowToWriter(headerRow, writer);
 		
 		Address shipToAddress = order.getShippingAddress();
 		
@@ -179,7 +159,12 @@ public class ExportRogersCsv extends EnterMediaObject {
 			//Get Display Designation 
 			Searcher displaysearcher = manager.getSearcher(catalogid, "displaydesignationid");
 			Data displayDesignation = displaysearcher.searchById(item.getProduct().get("displaydesignationid"));
-			orderDetailRow.add(displayDesignation.get("name"));
+			if (displayDesignation != null) {
+				orderDetailRow.add(displayDesignation.get("name"));
+			}
+			else {
+				orderDetailRow.add("None");
+			}
 			
 			if (order.isFullyShipped(item)) {
 				orderDetailRow.add("Shipped")
@@ -191,8 +176,12 @@ public class ExportRogersCsv extends EnterMediaObject {
 			orderDetailRow.add(item.getQuantity().toString());
 			orderDetailRow.add('$' + item.getProduct().get("rogersprice").toString());
 			orderDetailRow.add(item.getYourPrice().toString());
-			if (displayDesignation.get("name").equalsIgnoreCase("fido")) {
-				orderDetailRow.add('$' + item.getProduct().get("fidomsrp"));
+			if (displayDesignation != null) {
+				if (displayDesignation.get("name").equalsIgnoreCase("fido")) {
+					orderDetailRow.add('$' + item.getProduct().get("fidomsrp"));
+				} else {
+					orderDetailRow.add('$' + item.getProduct().get("msrp"));
+				}
 			} else {
 				orderDetailRow.add('$' + item.getProduct().get("msrp"));
 			}
@@ -203,6 +192,30 @@ public class ExportRogersCsv extends EnterMediaObject {
 			log.info(orderDetailRow.toString());
 			orderDetailRow = null;
 		}
+	}
+
+	private createHeader(CSVWriter writer) {
+		List headerRow = new ArrayList();
+		//Add the Order Number
+		headerRow.add("SKU");
+		headerRow.add("Item Description");
+		headerRow.add("Category");
+		headerRow.add("Order Type");
+		headerRow.add("Order Number");
+		headerRow.add("Customer Name");
+		headerRow.add("Address1");
+		headerRow.add("Address2");
+		headerRow.add("Distributor");
+		headerRow.add("Order Date");
+		headerRow.add("Brand");
+		headerRow.add("Shipped");
+		headerRow.add("Ordered Quantity");
+		headerRow.add("Area Cost");
+		headerRow.add("Dealer Cost");
+		headerRow.add("MSRP");
+		headerRow.add("ROGERS APPROVED?");
+		log.info(headerRow.toString());
+		writeRowToWriter(headerRow, writer)
 	}
 
 	private void writeRowToWriter( List inRow, CSVWriter writer) {
