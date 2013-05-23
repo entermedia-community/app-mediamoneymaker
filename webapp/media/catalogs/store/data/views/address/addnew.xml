@@ -6,7 +6,7 @@
   <property id="address2" index="true" stored="true" editable="true" searchtype="address" internalfield="false">Address 2</property>
   <property id="city" index="true" stored="true" editable="true" searchtype="address" internalfield="false">City</property>
   <property id="country" index="true" stored="true" editable="true" searchtype="address" internalfield="false">Country</property>
-  <property id="state" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="address" internalfield="false" datatype="list">State/Province</property>
+  <property id="state" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="address" internalfield="false" datatype="list" listid="province">State/Province</property>
   <property id="zip" index="true" stored="true" editable="true" searchtype="address" internalfield="false">Zip/Postal Code</property>
   <property id="phone" index="true" stored="true" editable="true" searchtype="address">Phone</property>
 </properties>

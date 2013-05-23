@@ -170,11 +170,12 @@
 		 	</tr>
 		 	<tr>
 		        <td class=body2>City<br><input type="text" name="billing.city.value" id="billing.city.value" class="small-field" /></td>
-		        <td class=body2>State or Province<br>#set($provinces = $searcherManager.getList($catalogid, "province"))
+		        <td class=body2>State or Province<br>
+		        #set($provinces = $searcherManager.getList($catalogid, "province"))
 	<select name="billing.state.value">
 		<option/>
 		#foreach($province in $provinces)
-			<option value="$province.id" #if($!address.get('state') == $province.id) selected #end>$province</option>
+			<option value="$province.id" #if($!customer.shippingAddress.state == $province.id) selected #end>$province</option>
 		#end
 	</select></td>
 		 	</tr>
