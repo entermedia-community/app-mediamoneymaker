@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<categoryids> 
-  <categoryid id="1" descripfr="Écouteurs">Handsfree</categoryid>  
-  <categoryid id="2" descripfr="Chargeurs">Chargers</categoryid>  
-  <categoryid id="4" descripfr="Batteries">Batteries</categoryid>  
-  <categoryid id="12" descripfr="Other">Other</categoryid>  
-  <categoryid id="22">Memory Cards</categoryid>  
-  <categoryid id="23">Speakers</categoryid>  
-  <categoryid id="24" descripfr="TriPack">TriPack</categoryid>  
-  <categoryid id="25" descripfr="Protection D'écran">Screen Protector</categoryid>  
-  <categoryid id="bluetoothheadset">Bluetooth Headsets</categoryid>  
-  <categoryid id="cases">Cases</categoryid> 
+<categoryids>
+  <categoryid id="1" descripfr="Écouteurs" active="true">Handsfree</categoryid>
+  <categoryid id="2" descripfr="Chargeurs" active="true">Chargers</categoryid>
+  <categoryid id="4" descripfr="Batteries" active="true">Batteries</categoryid>
+  <categoryid id="12" descripfr="Other" active="true">Other</categoryid>
+  <categoryid id="22" active="true">Memory Cards</categoryid>
+  <categoryid id="23" active="true">Speakers</categoryid>
+  <categoryid id="24" descripfr="TriPack">TriPack</categoryid>
+  <categoryid id="25" descripfr="Protection D'écran" active="true">Screen Protector</categoryid>
+  <categoryid id="bluetoothheadset" active="true">Bluetooth Headsets</categoryid>
+  <categoryid id="cases" active="true">Cases</categoryid>
 </categoryids>
