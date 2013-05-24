@@ -82,6 +82,7 @@
           	#foreach($man in $mans)
            		<!-- 
            		#set($query = $phonesearcher.createSearchQuery().append("manufacturer", "${man.id}").append("active", "true"))
+           		$query.addSortBy("name")
            		 -->
            		#set($phones = $phonesearcher.search($query))
                	#if($phones.size() >0)
