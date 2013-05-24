@@ -85,6 +85,7 @@
            		#set($query = $phonesearcher.createSearchQuery())
            		$!query.append("manufacturer", "${man.id}"))
            		$!query.append("active", "true"))
+           		$!query.addSortBy("name"))
            		 -->
            		#set($phones = $phonesearcher.search($query))
                	#if($phones.size() >0)
@@ -92,7 +93,6 @@
                		
                		<li class="search-sidebar-header"> <span style="padding-top:4px;">  $man </span> </li>
           			#set($phonecount = 0)
-          			#set($phones = Collection.sort($phones))
           			
           			#foreach($phone in $phones)						
 						#set($phonecount = $phonecount+1)
