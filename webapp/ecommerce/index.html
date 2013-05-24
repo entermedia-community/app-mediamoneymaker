@@ -54,19 +54,22 @@
 	#end
 #end                  
 <div id="home-categories">
-   
-          
-                 	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "categoryid").fieldSearch("id", "*", "name"))
-          	#foreach($man in $mans)
-          	#if($man.id != "12")
-			 <div class="home-logos">
-  					<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
-                	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
-                    </div>
-                	#end
-                	#end
-                	
-
+	<!-- 
+	#set($categoryidsearcher = $searcherManager.getSearcher("media/catalogs/store", "categoryid"))
+	#set($query = $categoryidsearcher.createSearchQuery())
+	$!query.append("id", "*"))
+	$!query.append("active", "true"))
+	$!query.addSortBy("name"))
+	-->
+	#set($mans = $categoryidsearcher.search($query))
+	#foreach($man in $mans)
+		#if($man.id != "12")
+			<div class="home-logos">
+				<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
+			       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
+	        </div>
+		#end
+	#end
 </div>
 
 </div>
