@@ -81,20 +81,23 @@
             #set($mancount = 0)   
           	#foreach($man in $mans)
            		<!-- 
-           		#set($query = $phonesearcher.createSearchQuery().append("manufacturer", "${man.id}").append("active", "true"))
+           		##set($query = $phonesearcher.createSearchQuery().append("manufacturer", "${man.id}").append("active", "true").addSortBy(${man.name}))
+           		#set($query = $phonesearcher.createSearchQuery())
+           		$!query.append("manufacturer", "${man.id}"))
+           		$!query.append("active", "true"))
            		 -->
            		#set($phones = $phonesearcher.search($query))
                	#if($phones.size() >0)
                		#set($mancount = $mancount+1)
                		
                		<li class="search-sidebar-header"> <span style="padding-top:4px;">  $man </span> </li>
-          			#set($phonecount = 0)   
-          			       			
+          			#set($phonecount = 0)
+          			#set($phones = Collection.sort($phones))
+          			
           			#foreach($phone in $phones)						
 						#set($phonecount = $phonecount+1)
-						
 						<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end><a href="$searchroot/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact$!extra">$phone.name</a></li>                	
-                	#end                	
+                	#end 
 				#end
 				#if($phones.size()  > 3)
 				<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;More $man</a></li>
