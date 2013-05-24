@@ -11,7 +11,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 <div class="featured-browse">
 <h1 style="color: FF3019;">Recently Added</h1>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random"))
+#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random",  $context))
 $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
@@ -21,7 +21,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 <div class="featured-browse">
 <a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=cases&operation=exact"><h1>Cases</h1></a>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "cases", "random"))
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "cases", "random" ,$context))
 $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
@@ -30,7 +30,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 <div class="featured-browse">
 <a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=smartaccessories&operation=exact"><h1>Smart Accessories</h1></a>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "smartaccessories", "random"))
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "smartaccessories", "random", $context))
 $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
@@ -39,7 +39,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 <div class="featured-browse">
 <a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=23&operation=exact"><h1>Speakers</h1></a>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random"))
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random",  $context))
 $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
@@ -50,7 +50,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 
 <a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=25&operation=exact"><h1>Screen Protectors</h1></a>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "25", "random"))
+#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "25", "random",  $context))
 $topsellers.setHitsPerPage(4)
 $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
