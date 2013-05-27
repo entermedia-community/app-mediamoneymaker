@@ -76,6 +76,8 @@ public class DealerActions extends EnterMediaObject {
 			createDealer();
 		} else if (action.equals("import")) {
 			importDealers();
+		} else if (action.equals("importdealers")) {
+			importNewDealers();
 		}
 	}
 	
@@ -161,7 +163,7 @@ public class DealerActions extends EnterMediaObject {
 			importColumns.put("city", new Integer(13));
 			importColumns.put("state_province", new Integer(14));
 			importColumns.put("postal_code", new Integer(15));
-		
+
 			//Create CSV reader
 			CSVReader read = new CSVReader(reader, ',', '\"');
 			
@@ -193,12 +195,15 @@ public class DealerActions extends EnterMediaObject {
 									int colNumber = (Integer)item.getValue();
 									String colData = orderLine[colNumber];
 									user.setId(orderLine[colNumber]);
+									user.setSourcePath(orderLine[colNumber]);
 								}
 							}
 							FileSystemGroup group = new FileSystemGroup();
 							group.setName("users");
 							user.addGroup(group);
+							user.setSourcePath(orderLine[colID]);
 							usersearcher.saveData(user, inReq.getUser());
+							log.info("User Created: " + user.getName() + " for dealer: " + orderLine[colID]);
 							
 							Data address = addresssearcher.searchById(userName);
 							if (address == null) { 
@@ -249,7 +254,66 @@ public class DealerActions extends EnterMediaObject {
 					}
 				} else {
 					log.info("Invalid Dealer: " + orderLine[colID]);
+					increaseCounter("bad");
 				}
+				increaseCounter("total");
+			}
+		}
+		finally
+		{
+			FileUtils.safeClose(reader);
+		}
+		inReq.putPageValue("total", getTotalCounter().toString());
+		inReq.putPageValue("good", getGoodCounter().toString());
+		inReq.putPageValue("bad", getBadCounter().toString());
+	}
+
+	protected void importNewDealers() {
+		
+		Log log = LogFactory.getLog(GroovyScriptRunner.class);
+		WebPageRequest inReq = context;
+		MediaArchive archive = context.getPageValue("mediaarchive");
+
+		SearcherManager manager = archive.getSearcherManager();
+		String catalogid = archive.getCatalogId();
+		
+		MediaUtilities media = new MediaUtilities();
+		media.setContext(context);
+		
+		Searcher dealersearcher = manager.getSearcher(catalogid, "dealer");
+		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/newdealers.csv");
+		Reader reader = upload.getReader();
+		try
+		{
+			Map<String, Integer> importColumns = new HashMap<String, Integer>();
+			importColumns.put("dealerid", new Integer(0));
+			importColumns.put("dealerName", new Integer(1));
+		
+			//Create CSV reader
+			CSVReader read = new CSVReader(reader, ',', '\"');
+			
+			//Read 1 line of header
+			String[] headers = read.readNext();
+			
+			String[] orderLine;
+			while ((orderLine = read.readNext()) != null)
+			{
+				int colID = (Integer)importColumns.get("dealerid");
+				String dealerID = orderLine[colID];
+				HitTracker hits = dealersearcher.fieldSearch("id", dealerID);
+				if (hits == null || hits.size() == 0) {
+					Data newDealer = dealersearcher.createNewData();
+					newDealer.setId(dealerID);
+					int colName = (Integer)importColumns.get("dealerName");
+					String dealerName = orderLine[colName];
+					newDealer.setProperty("name", dealerName);
+					dealersearcher.saveData(newDealer, inReq.getUser());
+					increaseCounter("good");
+				} else {
+					inReq.putPageValue("result", "error");
+					inReq.putPageValue("results", "Cannot add dealer. ID already exists!");
+					increaseCounter("bad");
+				}		
 				increaseCounter("total");
 			}
 		}

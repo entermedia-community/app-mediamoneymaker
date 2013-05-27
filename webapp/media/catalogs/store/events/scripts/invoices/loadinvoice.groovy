@@ -68,7 +68,10 @@ public class LoadInvoice extends EnterMediaObject {
 			invoice.setProperty("subtotal", subTotal.toString());
 			invoicesearcher.saveData(invoice, context.getUser());
 			
-			double shipping = Double.parseDouble(invoice.get("shipping"));
+			double shipping = 0;
+			if (invoice.get("shipping") != null) {
+				shipping = Double.parseDouble(invoice.get("shipping"));
+			}
 			double fedtaxes = 0;
 			if (invoice.get("fedtaxamount") != null) {
 				fedtaxes = Double.parseDouble(invoice.get("fedtaxamount"));

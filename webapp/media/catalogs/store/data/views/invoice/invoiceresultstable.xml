@@ -2,6 +2,7 @@
 
 <root>
   <property id="id"/>
+  <property id="distributor"/>
   <property id="date"/>
   <property id="invoicenumber"/>
   <property id="ponumber"/>
