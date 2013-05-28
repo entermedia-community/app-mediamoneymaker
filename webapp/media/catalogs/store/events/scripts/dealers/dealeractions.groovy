@@ -238,6 +238,7 @@ public class DealerActions extends EnterMediaObject {
 								profile.setProperty("enabled", "true");
 								profile.setProperty("settingsgroup", settingGroupID);
 								profile.setProperty("address", userName);
+								profile.setProperty("dealer", orderLine[colID]);
 								userprofilesearcher.saveData(profile, user);
 							} else {
 								log.info("Profile Exists: " + userName);
