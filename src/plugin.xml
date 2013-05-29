@@ -277,4 +277,10 @@
 	</bean>
 	
   
+	<bean id="beanstreamUtil" class="org.openedit.store.gateway.BeanstreamUtil"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+	
+		<property name="userManager"><ref bean="userManager" /></property>
+		
+	</bean>
 </beans>
