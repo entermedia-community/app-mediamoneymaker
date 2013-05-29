@@ -3,6 +3,7 @@
  */
 package org.openedit.store.modules;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -712,10 +713,25 @@ public class CartModule extends BaseStoreModule {
 		Searcher addressSearcher = store.getSearcherManager().getSearcher(
 				store.getCatalogId(), "address");
 
-		HitTracker addresslist = addressSearcher.fieldSearch("userprofile",
-				inReq.getUserProfile().getId());
-		inReq.putPageValue("addresslist", addresslist);
-
+		HitTracker addresslist;
+		String inDealer = inReq.getUserProfile().get("dealer");
+		if (inDealer != null) {
+			addresslist = addressSearcher.fieldSearch("dealer", inDealer);
+		} else {
+			addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
+		}
+		if (addresslist != null && addresslist.size() > 0) {
+			inReq.putPageValue("addresslist", addresslist);
+		} else {
+			Data userAddress = (Data) addressSearcher.searchById(inReq.getUser().getId());
+			if (userAddress != null) {
+				ArrayList<Data> addr = new ArrayList<Data>();
+				addr.add(userAddress);
+				inReq.putPageValue("addresslist", addr);					
+			} else {
+				inReq.putPageValue("addresslist", null);
+			}
+		}
 	}
 
 	public void selectShippingAddress(WebPageRequest inReq) {
