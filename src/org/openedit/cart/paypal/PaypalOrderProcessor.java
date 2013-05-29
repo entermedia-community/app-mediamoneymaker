@@ -12,6 +12,7 @@ import org.openedit.store.StoreException;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderProcessor;
+import org.openedit.store.orders.Refund;
 
 import com.openedit.ModuleManager;
 import com.openedit.WebPageRequest;
@@ -107,6 +108,13 @@ public class PaypalOrderProcessor extends BaseOrderProcessor implements OrderPro
 
 	public void setPaypalUtil(PaypalUtil paypalUtil) {
 		this.fieldPaypalUtil = paypalUtil;
+	}
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -175,6 +175,23 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			}
 		}
 
+	
+	public void refundOrder(WebPageRequest inContext, Store inStore, 
+			Refund inRefund) throws StoreException {
+		if(inRefund.isSuccess()){
+			Order order = inRefund.getOrder();
+			
+			
+			//send an email to let them know.
+			
+			
+			
+		}
+		//Send and Email
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param inStore
 	 * @param inOrder

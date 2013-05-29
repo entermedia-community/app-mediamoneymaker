@@ -10,6 +10,7 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.WebPageRequest;
@@ -294,6 +295,13 @@ public class DirectPaymentsProcessor extends BaseOrderProcessor
 		return Boolean.parseBoolean( inContext.getPageProperty("includeshippingdata"));
 	}
 	// return getDecoder().get("ACK");
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

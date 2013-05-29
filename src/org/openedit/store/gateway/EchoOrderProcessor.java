@@ -21,6 +21,7 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
 
 import com.openecho.Echo;
 import com.openedit.WebPageRequest;
@@ -251,6 +252,13 @@ public class EchoOrderProcessor extends BaseOrderProcessor
 	public void setAddRandomAmountToTotal(boolean addRandomAmountToTotal)
 	{
 		fieldAddRandomAmountToTotal = addRandomAmountToTotal;
+	}
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -18,6 +18,7 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
 
 import com.jcommercesql.gateway.authorizenet.AuthorizeNetCC;
 import com.openedit.OpenEditException;
@@ -204,5 +205,12 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			return;
 		}
 		process(inStore, inOrder, "PRIOR_AUTH_CAPTURE");
+	}
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -102,4 +102,11 @@ public class ElectronicGoodsOrderProcessor extends BaseOrderProcessor
 	{
 		fieldModuleManager = inModuleManager;
 	}
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
+	}
 }

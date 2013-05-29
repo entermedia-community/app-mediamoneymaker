@@ -15,6 +15,7 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
@@ -200,5 +201,12 @@ public class ElevonOrderProcessor extends BaseOrderProcessor {
 			return;
 		}
 		process(inStore, inOrder, "");
+	}
+
+	@Override
+	public void refundOrder(WebPageRequest inContext, Store inStore,
+			Refund inRefund) throws StoreException {
+		// TODO Auto-generated method stub
+		
 	}
 }

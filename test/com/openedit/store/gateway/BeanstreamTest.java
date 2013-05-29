@@ -55,10 +55,10 @@ public class BeanstreamTest extends StoreTestCase {
 		order.setProperty("notes", "This is a note");
 		store.saveOrder(order);
 		
+			
 		
 		
 		
-		util.refund(store, order, new Money(4), "Ian was here");
 	}
 	
 	

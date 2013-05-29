@@ -18,6 +18,11 @@ public interface OrderProcessor
 	public static final String AUTHORIZATION_RESULT_KEY = "AuthorizationResult";
 
 	public void processNewOrder(WebPageRequest inContext, Store inStore, Order inOrder)
+	
+	
 	throws StoreException;
 
+	public void refundOrder(WebPageRequest inContext, Store inStore,  Refund refund)	throws StoreException;
+	
+	
 }
