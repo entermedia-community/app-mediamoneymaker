@@ -24,6 +24,8 @@ import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
 
+import com.openedit.hittracker.HitTracker;
+
 /**
  * An order for a number of products contained in a shopping cart at a certain
  * time.
@@ -473,5 +475,10 @@ public class Order extends BaseData implements Comparable {
 	}
 	public boolean containsItemByProductProperty( String inKey, String inValue ) {
 		return getCartItemByProductProperty(inKey, inValue) != null;
+	}
+
+	public List getRefunds() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

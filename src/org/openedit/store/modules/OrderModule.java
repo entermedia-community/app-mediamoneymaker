@@ -4,7 +4,6 @@
 package org.openedit.store.modules;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
 import org.openedit.store.orders.SubmittedOrder;
 
 import com.openedit.OpenEditException;
@@ -401,6 +401,14 @@ Store store = getStore(inRequest);
 	public void setEmailOrderProcessor(
 			EmailOrderProcessor fieldEmailOrderProcessor) {
 		this.fieldEmailOrderProcessor = fieldEmailOrderProcessor;
+	}
+	public void refundOrder(WebPageRequest inContext) {
+		Store store = getStore(inContext);
+		//get some reffunds
+		Refund refund = new Refund();
+		
+		store.getOrderProcessor().refundOrder(inContext, store, refund);
+		
 	}
 
 	
