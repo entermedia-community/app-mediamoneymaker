@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.lucene.document.Document;
+import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.InventoryItem;
@@ -293,6 +294,79 @@ public class OrderTest extends StoreTestCase {
 		
 	}
 	
+	
+	
+	
+	
+	public void testOrderRefunds() throws Exception {
+		Store store = getStore();
+		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
+		OrderModule orderModule = (OrderModule) getFixture().getModuleManager().getModule("StoreOrderModule");
+		WebPageRequest context = getFixture().createPageRequest("/store/index.html");
+		Cart cart = cartModule.getCart(context);
+		cart.setCustomer(new Customer(context.getUser()));
+
+		Product product = new Product();
+		product.setId("abcd");
+		product.addInventoryItem(new InventoryItem("abcd1"));
+
+		Product product2 = new Product();
+		product2.setId("defg");
+		product2.addInventoryItem(new InventoryItem("abcd2"));
+
+		store.saveProduct(product);
+		store.saveProduct(product2);
+		
+		CartItem item = new CartItem();
+		item.setProduct(product);
+		item.setQuantity(10);
+		item.setStatus("accepted");
+		
+		cart.addItem(item);
+
+		CartItem item2 = new CartItem();
+		item2.setProduct(product2);
+		item2.setQuantity(10);
+		item2.setStatus("accepted");
+	
+		
+		cart.addItem(item2);
+
+		Order order = store.getOrderGenerator().createNewOrder(store, cart);
+		order.setProperty("notes", "This is a note");
+		
+		
+		store.saveOrder(order);
+		
+		Money totalamount = item.getTotalPrice();
+		Money totaltaxes = order.getTax();
+		
+	
+		String orderid = order.getId();
+
+		order = null;
+		
+		context.setRequestParameter("orderid", orderid);
+		context.setRequestParameter("productid", "abcd");
+		context.setRequestParameter("quantity", "2");
+		
+		orderModule.refundOrder(context);
+		
+		
+		
+	
+		order = store.getOrderArchive().loadSubmittedOrder(store, "admin", orderid);
+		
+		
+		assertTrue(order.getRefunds().size() >0);
+		assertTrue(order.getTotalPrice().doubleValue() < totalamount.doubleValue());
+		assertTrue(order.getTax().doubleValue() < totaltaxes.doubleValue());
+		//TODO: Do we need to handle taxes 
+
+		
+		
+		
+	}
 	
 	
 	
