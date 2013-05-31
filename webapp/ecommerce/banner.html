@@ -1,9 +1,21 @@
-#set($banners = $searcherManager.getSearcher($catalogid, "banner"))
-#set($bannerlist = $banners.fieldSearch("active", "true", "random"))
-
-#if($bannerlist.size() > 0)
-#set($first  = $bannerlist.get(0))
-#set($asset = $mediaarchive.getAsset($first.image))
-#set($orig = $mediaarchive.asLinkToOriginal($asset))
-<a target="_blank" href="$!first.url"><img src="$orig"/></a> 
+#set($bannersearcher = $searcherManager.getSearcher($catalogid, "banner"))
+##set($bannerlist = $bannersearcher.fieldSearch("active", "true", "random"))
+#set($bannerlist = $bannersearcher.fieldSearch("active", "true"))
+<div id="homepage-offers" style="position: relative; width: 700px; height: 288px;">
+#if($bannerlist.size() >= 2)
+	#set($size = $bannerlist.size())
+	#set($size = $size - 1)
+	#foreach($i in [0..$size])
+		#set($first  = $bannerlist.get($i))
+		#set($asset = $mediaarchive.getAsset($first.image))
+		#set($orig = $mediaarchive.asLinkToOriginal($asset))
+		<a href="$!first.url"><img src="$orig" class="offers"></a>
+	#end 
+#else
+	#set($first  = $bannerlist.get(0))
+	#set($asset = $mediaarchive.getAsset($first.image))
+	#set($orig = $mediaarchive.asLinkToOriginal($asset))
+	<a target="_blank" href="$!first.url"><img src="$orig"/></a> 
 #end
+</div>
+<div style="clear: left;">&nbsp;</div>

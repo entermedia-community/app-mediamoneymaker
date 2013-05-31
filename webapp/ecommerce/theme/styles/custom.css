@@ -376,3 +376,15 @@ table.rogers-list td.rogers-list a {
 	margin-left: 10px;
 	margin-top: 10px;
 }
+#homepage-offers {
+	width: 700px;
+}
+.homepage-banner {
+	width: 700px;
+	float: left;
+	
+}
+.offers {
+	width: 700px;
+	border: 0px;
+}
