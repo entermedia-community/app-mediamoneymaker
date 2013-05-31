@@ -104,8 +104,10 @@
   </permission>
   
   
-  <path-action name="storeArchive.loadStore"/>
-  
+	<path-action name="storeArchive.loadStore"/>
   	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable"  class="org.openedit.util.DateStorageUtil" />
-    	<path-action bean="Date" name="PageValue.loadPageVariable" allowduplicates="true" class="java.util.Date" />
+    <path-action bean="Date" name="PageValue.loadPageVariable" allowduplicates="true" class="java.util.Date" />
+	<script id="offers" src="/${applicationid}/events/scripts/home-page-offers.js"/>
+	<script id="jquery-cycle" src="/${applicationid}/events/scripts/jquery.cycle.all.latest.js"/>
+
 </page>
