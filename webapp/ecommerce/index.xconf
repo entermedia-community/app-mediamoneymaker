@@ -3,7 +3,11 @@
 <page>  
    
 	<property name="sectiontitle">Home</property>
-	 <inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
-	 <path-action name="MediaSearchModule.searchCategories" cancel="true"/>
+	<inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
+	<path-action name="MediaSearchModule.searchCategories" cancel="true" allowduplicates="true"/>
+	<property name="allowspecifiedpath">true</property>
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/displaymedia/getbannerinfo.groovy</script>
+	</path-action>
 	 
 </page>
