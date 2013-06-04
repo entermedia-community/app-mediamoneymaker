@@ -64,10 +64,12 @@
 	#set($mans = $categoryidsearcher.search($query))
 	#foreach($man in $mans)
 		#if($man.id != "12")
-			<div class="home-logos">
-				<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
-			       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
-	        </div>
+			#if($man.active == "true")
+				<div class="home-logos">
+					<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
+				       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
+		        </div>
+		    #end
 		#end
 	#end
 </div>
