@@ -388,3 +388,15 @@ table.rogers-list td.rogers-list a {
 	width: 700px;
 	border: 0px;
 }
+.phone-compatibility {
+	clear: both;
+	margin-top: 10px;
+}
+.phone-compatibility h3 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.phone-compatibility img {
+	margin-right: 5px;
+	border: 0px;
+}

@@ -7,17 +7,17 @@
 	   $pages.stream("$apphome/layout/productimages.html")
 		<div style="clear: both;">
 		$!product.get("descrip")
-		
-		<h3>Phone Compatibility</h3>
-		#foreach($phone in $product.getValues("phone"))
-			#set($p = "")
-			#set($p = $searcherManager.getData($catalogid, "phone", $phone))
-			#if($p != "")
-				<img src="$apphome/theme/images/check.png"/>$p<br/>
-			#end
-		#end
-		
-</div>
+		</div>
+		<div class="phone-compatibility">
+			<h3>Phone Compatibility</h3>
+				#foreach($phone in $product.getValues("phone"))
+					#set($p = "")
+					#set($p = $searcherManager.getData($catalogid, "phone", $phone))
+					#if($p != "")
+						<img src="$apphome/theme/images/check.png" border="0"/>$p<br/>
+					#end
+				#end
+		</div>
 
 		#set( $productdetails = $store.getProductDetails("productdetails", $user) )
 
