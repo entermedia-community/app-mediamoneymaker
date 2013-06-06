@@ -39,7 +39,7 @@ ul.products-list li .product-details {
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: normal;
-    
+    text-align: center;
 }
 ul.products-list li a:hover {
     text-decoration: underline !important;

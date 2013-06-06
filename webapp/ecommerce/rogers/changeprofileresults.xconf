@@ -1,0 +1,7 @@
+<page>
+	<property name="allowspecifiedpath">true</property>
+	<path-action name="Page.uploadFile"/>
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/import_tools/updateuserprofile.groovy</script>
+	</path-action>
+</page>
