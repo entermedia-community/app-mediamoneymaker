@@ -293,7 +293,16 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			else
 			{
 				String[] pair = query.split(":");
-				search.addMatches(pair[0], pair[1]);
+				if (pair.length == 2) {
+					search.addMatches(pair[0], pair[1]);
+				} else {
+					for (int ctr = 0; ctr < pair.length; ctr++) {
+						if (ctr > 0) {
+							String queryValue = pair[ctr];
+							search.addMatches(pair[0], queryValue);
+						}
+					}
+				}
 			}
 		}
 
