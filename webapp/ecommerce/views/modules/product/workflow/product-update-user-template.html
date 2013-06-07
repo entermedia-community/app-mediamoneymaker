@@ -6,9 +6,11 @@
 #if($user)
 	#set($username = $user.firstName + " " + $user.lastName)
 #end
-<p>Thank you $username.</p>
+<p>Dear $username,</p>
 <p>$outmsg</p>
-<p>Your support ticket ($ticketid) associated with the product notification has been closed.</p>
+#if($ticketid)
+	<p>Your support ticket ($ticketid) associated with the product notification has been closed.</p>
+#end
 <p>Sincerely,<br/>
 Administrator</p>
  

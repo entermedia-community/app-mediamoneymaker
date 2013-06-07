@@ -54,10 +54,11 @@ $context.putPageValue("view", "ticket/addnew")
 #set($orderid = $context.getRequestParameter("order.value"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
 #set($product = $productsearcher.searchById($productid))
-<h1>Get Support&nbsp;
+
 #if($tickettype == "stockrequest")
-	:&nbsp;Stock Request
+	<h1>Notify Me When Available</h1>
 #else
+	<h1>Get Support&nbsp;
 	#if($tickettype == "order")
 		:&nbsp;Order Issue
 	#end
@@ -65,6 +66,7 @@ $context.putPageValue("view", "ticket/addnew")
 </h1>
 <form name="submitticket" action="addnewfinish.html" method="get">
 <table class="settings-table">
+#if($tickettype != "stockrequest")
 	<tr id="inputarea_tickettype">
 		<td class="emdatafield">Request Type</td>
 		<td class="emdatafieldvalue">
@@ -76,26 +78,25 @@ $context.putPageValue("view", "ticket/addnew")
 				data-listid="tickettype" 
 				data-searchtype="ticket">
 				<option value="none"></option>
-#if($tickettype == "stockrequest")
 				<option value="stockrequest" selected="selected" >Stock Request</option>
-#end
-#if($tickettype == "order")
+	#if($tickettype == "order")
 				<option value="order" selected="selected" >Order Issue</option>
-#end
-#if($tickettype == "productchangerequest")
+	#end
+	#if($tickettype == "productchangerequest")
 				<option value="productchangerequest" selected="selected">Product Change Request</option>
-#end
-#if($tickettype == "newproductsubmission")
+	#end
+	#if($tickettype == "newproductsubmission")
 				<option value="newproductsubmission" selected="selected" >New Product Submission</option>
-#end
-#if($tickettype == "updateproduct")
+	#end
+	#if($tickettype == "updateproduct")
 				<option value="updateproduct" selected="selected" >Update Product</option>
-#end
+	#end
 				<option value="feedback" >Feedback</option>
 			</select>
 			<input type="hidden" name="field" value="tickettype"/>		
 		</td>
 	</tr>
+#end
 	<tr id="order">
 		<td class="emdatafield">Your Order Number:</td>
 		<td class="emdatafieldvalue">
@@ -106,6 +107,7 @@ $context.putPageValue("view", "ticket/addnew")
 			#end
 		</td>
 	</tr>
+#if($tickettype == "stockrequest")
 	<tr id="stockrequest">
 		<td class="emdatafield">Product:</td>
 		<td class="emdatafieldvalue">
@@ -122,27 +124,29 @@ $context.putPageValue("view", "ticket/addnew")
 				<span id="product-name">$name</span>
 				<input type="hidden" name="product.value" value="${productid}"/>
 				<input type="hidden" name="field" value="product"/>		
+				<input type="hidden" name="tickettype.value" value="stockrequest"/>
+				<input type="hidden" name="field" value="tickettype"/>
 			#end
 		</td>
 	</tr>
+#end
+#if($tickettype != "stockrequest")
 	<tr id="inputarea_notes">
 		<td class="emdatafield">
-#if($tickettype == "stockrequest")
-			Describe your stock request:
-#else
 			<span id="notes-area">Please describe your issue:</span>
-#end
 		</td>
 		<td id="detail_notes" class="emdatafieldvalue ">
 			<input type="hidden" value="notes" name="field"/>
 			<textarea name="notes.value" id="notes" cols="40" rows="5" class=""></textarea>
 		</td>
 	</tr>
+#else
 	<tr id="stockrequest-notify">
 		<td class="emdatafieldvalue" colspan="2">
-			<input id="notifyme" type="checkbox" name="notifyme" value="yes" checked="checked"/>&nbsp;Please notify me when the desired stock is available.
+			<input id="notifyme" type="checkbox" name="notifyme" value="yes" checked="checked"/>&nbsp;Please notify me by email when this desired stock is available.
 		</td>
 	</tr>
+#end
 	<tr>
 		<td id="submit-form" colspan="2">
 			<input type="hidden" name="owner.value" value="$userprofile.id"/>

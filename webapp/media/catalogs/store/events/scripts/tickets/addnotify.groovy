@@ -32,7 +32,7 @@ public class AddNotify extends EnterMediaObject {
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
 		
-		String doAddNotify = inReq.getRequestParameter("notifyme");
+		String doAddNotify = inReq.getPageValue("notifyme");
 		if (doAddNotify.equals("yes")) {
 			
 			String productid = inReq.getRequestParameter("product.value");

@@ -32,6 +32,7 @@ public class MediaUtilities extends EnterMediaObject {
 	protected Searcher errorsearcher;
 	protected Searcher usersearcher;
 	protected Searcher userprofilesearcher;
+	protected Searcher ticketsearcher;
 	
 	public MediaUtilities() {
 	}
@@ -121,6 +122,13 @@ public class MediaUtilities extends EnterMediaObject {
 			userprofilesearcher = (Searcher) getArchive().getSearcher("userprofile");
 		}
 		return userprofilesearcher;
+	}
+	
+	public Searcher getTicketSearcher() {
+		if (ticketsearcher == null) {
+			ticketsearcher = (Searcher) getManager().getSearcher(getCatalogid(), "ticket");
+		}
+		return ticketsearcher;
 	}
 	
 	////////////////////////////////////////////

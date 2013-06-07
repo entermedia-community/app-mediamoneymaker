@@ -101,14 +101,13 @@ public class UpdateUserProfile extends EnterMediaObject {
 				//Create as400list Searcher
 				//Read the oraclesku from the as400 table
 				String inProductID = orderLine[columnProductID];
-				Product product = productSearcher.searchById(inProductID);
+				Data product = productSearcher.searchById(inProductID);
 				if (product != null) {
 					String inUserProfileID = orderLine[columnUserProfileID];
 					Data userProfile = userProfileSearcher.searchById(inUserProfileID);
 					if (userProfile != null) {
-						Data newInfo = productSearcher.createNewData();
-						newInfo.setProperty("profileid", inUserProfileID);
-						productSearcher.saveData(newInfo, inReq.getUser());
+						product.setProperty("profileid", inUserProfileID);
+						productSearcher.saveData(product, inReq.getUser());
 						addToGoodProductList(inProductID + " updated.");
 					} else {
 						addToBadProductList("Invalid UserProfile(" + inUserProfileID +  ") for product (" + inProductID + ")");

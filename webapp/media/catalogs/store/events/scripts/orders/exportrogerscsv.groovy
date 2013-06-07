@@ -176,6 +176,7 @@ public class ExportRogersCsv extends EnterMediaObject {
 			orderDetailRow.add(item.getQuantity().toString());
 			orderDetailRow.add('$' + item.getProduct().get("rogersprice").toString());
 			orderDetailRow.add(item.getYourPrice().toString());
+			orderDetailRow.add('$' + item.getProduct().get("wholesaleprice")).toString();
 			if (displayDesignation != null) {
 				if (displayDesignation.get("name").equalsIgnoreCase("fido")) {
 					orderDetailRow.add('$' + item.getProduct().get("fidomsrp"));
@@ -212,6 +213,8 @@ public class ExportRogersCsv extends EnterMediaObject {
 		headerRow.add("Ordered Quantity");
 		headerRow.add("Area Cost");
 		headerRow.add("Dealer Cost");
+		headerRow.add("Rogers Cost");
+		
 		headerRow.add("MSRP");
 		headerRow.add("ROGERS APPROVED?");
 		log.info(headerRow.toString());

@@ -92,26 +92,32 @@ public class CheckNotifications extends EnterMediaObject {
 					
 					String ticketID = hit.get("ticketid");
 					Data ticket = ticketsearcher.searchById(ticketID);
-					ticket.setProperty("ticketstatus","closed");
-					ticketsearcher.saveData(ticket, inReq.getUser());
-					
-					Data ticketHistory = tickethistorysearcher.createNewData();
-					ticketHistory.setId(tickethistorysearcher.nextId());
-					ticketHistory.setSourcePath(ticketID);
-					
-					ticketHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-					ticketHistory.setProperty("ticket", ticketID);
-					ticketHistory.setProperty("owner", ticket.get("owner"));
-					ticketHistory.setProperty("ticketstatus", ticket.get("ticketstatus"));
-					ticketHistory.setProperty("notes", "Stock has been updated");
-					tickethistorysearcher.saveData(ticketHistory, inReq.getUser());
-					
+					if (ticket != null) {
+						ticket.setProperty("ticketstatus","closed");
+						ticketsearcher.saveData(ticket, inReq.getUser());
+						
+						Data ticketHistory = tickethistorysearcher.createNewData();
+						ticketHistory.setId(tickethistorysearcher.nextId());
+						ticketHistory.setSourcePath(ticketID);
+						
+						ticketHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+						ticketHistory.setProperty("ticket", ticketID);
+						ticketHistory.setProperty("owner", ticket.get("owner"));
+						ticketHistory.setProperty("ticketstatus", ticket.get("ticketstatus"));
+						ticketHistory.setProperty("notes", "Stock has been updated");
+						tickethistorysearcher.saveData(ticketHistory, inReq.getUser());
+					} else {
+						log.info("Ticket does not exist: " + ticketID);
+					}
+										
 					//Inventory Item has been updated! Notify customer
 					String userID = hit.get("owner");
 					User user = usersearcher.searchById(userID);
 					String email = user.getEmail();
 					inReq.putPageValue("userid", user.getId());
-					inReq.putPageValue("ticketid", ticket.getId());
+					if (ticket != null) {
+						inReq.putPageValue("ticketid", ticket.getId());
+					}
 					
 					String subject = "Product Notification and Support Ticket Update";
 					String templatePage = "/ecommerce/views/modules/product/workflow/product-update-user-template.html";
