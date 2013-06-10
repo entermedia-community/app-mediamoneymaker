@@ -10,6 +10,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.CartItem
+import org.openedit.store.InventoryItem;
 import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.store.orders.Order
@@ -195,18 +196,18 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 		if (!order.containsShipmentByWaybill(waybill)) {
 			
 			Shipment shipment = new Shipment();
-			shipment.setProperty("distributor", distributorID);
+			shipment.setProperty("distributor", distributor.getId());
 			shipment.setProperty("courier", courier);
 			
-			Data product = media.searchForProductByField("rogerssku", rogersSKU);
-			if (product != null) {
-				
-				String productID = product.getId();
+			Data inProduct = media.searchForProductByField("rogerssku", rogersSKU);
+			if (inProduct != null) {
+				String productID = inProduct.getId();
+				Product product = media.getProductSearcher().searchById(productID);
+				InventoryItem productItem = product.getInventoryItem(0);
+				String productSku = productItem.getSku();
+				CartItem item = order.getItem(productSku);
 	
-				Product target = media.getProductSearcher().searchById(productID);
-				CartItem item = order.getItem(productID);
-	
-				if (!shipment.containsEntryForSku(productID) && item !=  null ) {
+				if (!shipment.containsEntryForSku(productSku) && item !=  null ) {
 					ShipmentEntry entry = new ShipmentEntry();
 					entry.setCartItem(item);
 					entry.setQuantity(Integer.parseInt(quantity));

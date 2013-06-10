@@ -1,0 +1,17 @@
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Ticket Request Complete.</div>
+	#set($message = $context.getRequestParameter("message"))
+	<p><strong>$message</strong></p>
+	#set($notification = $context.getRequestParameter("notification"))
+	#set($productid = $context.getRequestParameter("productid"))
+	#if($notification == "setup")
+		<ul>
+			<li>Email notification has been setup.</li>
+		</ul>
+	#elseif($notification == "duplicate")
+		<ul>
+			<li>Email notification has not been setup. This notification already exists.</li>
+		</ul>
+	#end
+	<p><a href="/ecommerce/browse.html">Return back to Browse more products.</a></p>
+</div>
