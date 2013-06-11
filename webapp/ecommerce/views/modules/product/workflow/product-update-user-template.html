@@ -1,15 +1,22 @@
 #set($userid = $context.getRequestParameter("userid"))
 #set($outmsg = $context.getRequestParameter("outmsg"))
 #set($ticketid = $context.getRequestParameter("ticketid"))
+#set($product = $context.getRequestParameter("product"))
 #set($usersearcher = $searcherManager.getSearcher("system", "user"))
 #set($user = $usersearcher.searchById("userid"))
 #if($user)
 	#set($username = $user.firstName + " " + $user.lastName)
 #end
 <p>Dear $username,</p>
-<p>$outmsg</p>
+<p>Inventory levels have been updated and the following product is now available:</p>
+<ul>
+	<li><a href="${content.siteroot}${home}${apphome}/products/${product.sourcepath}.html">${product.name}</a>
+</ul>
+<p>
 #if($ticketid)
-	<p>Your support ticket ($ticketid) associated with the product notification has been closed.</p>
+	<p>Your support ticket (<a 
+	href="${content.siteroot}${home}${apphome}/views/myaccount/tickets/history.html?id=${ticketid}">${ticketid}</a>) 
+	associated with the product notification has been closed.</p>
 #end
 <p>Sincerely,<br/>
 Administrator</p>

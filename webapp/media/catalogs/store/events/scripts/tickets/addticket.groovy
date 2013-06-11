@@ -59,28 +59,26 @@ public class AddTicket extends EnterMediaObject {
 				Date now = new Date();
 				ticketData.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(now));
 				ticketData.setProperty("owner", inReq.getUser().getId());
-				ticketData.setProperty("notes", "Request of stock for: " + product.getName() + " (" + product.getId() + ")");
+				ticketData.setProperty("notes", "Request of stock for: " + product.getName() + " (" + product.get("rogerssku") + ")");
 				ticketSearcher.saveData(ticketData, inReq.getUser());
 				ticketSearcher.reIndexAll();
 				
 				inReq.putPageValue("product.value", product.getId());
 				inReq.putPageValue("data", ticketData);
+				if (product.get("rogerssku") != "") {
+					inReq.putPageValue("rogerssku", product.get("rogerssku"));
+				}
 				String email = inReq.getUser().getEmail();
-				outMsg = "<p>A request for this product has been created.<br>Product: " + product.getName() + " (" + product.getId() + ")</p>";
 				if (email != null && email.length() > 0) {
 					inReq.putPageValue("notifyme", "yes");
 				} else {
 					inReq.putPageValue("notifyme", "no");
-					outMsg += "<p>An email notification cannot be setup because you do not have a valid email address set in your profile.</p>";
-					outMsg += "<p>To have email notifications setup in the future, ";
-					outMsg += "please go to the <a href=\"/ecommerce/views/myaccount/index.html\">My Account section</a> and update your profile.";
+					inReq.putPageValue("reason", "noemail");
 				}
-				inReq.putPageValue("message", outMsg);
 			
 			} else {
-				outMsg = "<p>You have already put in a request for this product.<br>Product: " + product.getName() + " (" + product.getId() + ")";
-				inReq.putPageValue("message", outMsg);
 				inReq.putPageValue("notifyme", "no");
+				inReq.putPageValue("reason", "duplicate");
 			}			
 		}
 	}

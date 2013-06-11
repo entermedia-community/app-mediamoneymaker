@@ -67,7 +67,13 @@ public class AddNotify extends EnterMediaObject {
 				return;
 			}		
 		} else {
-			inReq.putPageValue("notification", "notset");
+			String reason = inReq.getPageValue("reason");
+			if (reason.equals("noemail")) {
+				inReq.putPageValue("notification", "noemail");
+			}
+			if (reason.equals("duplicate")) {
+				inReq.putPageValue("notification", "duplicate");
+			}
 			return;
 		}		
 	}

@@ -86,6 +86,7 @@ public class CheckNotifications extends EnterMediaObject {
 					//Load the fully qualified hit
 					Data notify = notifysearcher.searchById(hit.getId());
 					notify.setProperty("notificationsent", "true");
+					notify.setProperty("ticketstatus", "closed");
 					Date now = new Date();
 					notify.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(now));
 					notifysearcher.saveData(notify, inReq.getUser());
@@ -94,6 +95,7 @@ public class CheckNotifications extends EnterMediaObject {
 					Data ticket = ticketsearcher.searchById(ticketID);
 					if (ticket != null) {
 						ticket.setProperty("ticketstatus","closed");
+						ticket.setProperty("notes", "Stock has been updated");
 						ticketsearcher.saveData(ticket, inReq.getUser());
 						
 						Data ticketHistory = tickethistorysearcher.createNewData();
@@ -104,8 +106,9 @@ public class CheckNotifications extends EnterMediaObject {
 						ticketHistory.setProperty("ticket", ticketID);
 						ticketHistory.setProperty("owner", ticket.get("owner"));
 						ticketHistory.setProperty("ticketstatus", ticket.get("ticketstatus"));
-						ticketHistory.setProperty("notes", "Stock has been updated");
+						ticketHistory.setProperty("notes", ticket.get("notes"));
 						tickethistorysearcher.saveData(ticketHistory, inReq.getUser());
+						log.info("Ticket (" + ticketID + ") has been updated.");
 					} else {
 						log.info("Ticket does not exist: " + ticketID);
 					}
@@ -118,13 +121,14 @@ public class CheckNotifications extends EnterMediaObject {
 					if (ticket != null) {
 						inReq.putPageValue("ticketid", ticket.getId());
 					}
-					
+					String siteroot = context.getSiteRoot();
 					String subject = "Product Notification and Support Ticket Update";
 					String templatePage = "/ecommerce/views/modules/product/workflow/product-update-user-template.html";
-					String outMsg = "Inventory levels have been updated and the following product is now available: " + prod.get("name");
-					inReq.putPageValue("outmsg", outMsg);
+					inReq.putPageValue("product", prod);
+					
 					sendEmail(archive, context, email, templatePage, subject);
 					addToGoodList(user.firstName + " " + user.lastName + " has been notified by email.");
+					log.info(user.firstName + " " + user.lastName + " has been notified by email.");
 					email = null;
 				} else {
 					String userID = hit.get("owner");
@@ -132,10 +136,13 @@ public class CheckNotifications extends EnterMediaObject {
 					String msg = user.firstName + " " + user.lastName + " has not been notified by email. ";
 					msg += "Product(" + prod.get("name") + ":" + prod.getId() + ") is still out of stock."
 					addToBadList(msg);
+					log.info(msg);
 				}
 			}
 		} else {
-			addToBadList("There are no notifications to send.");
+			String msg = "There are no notifications to send.";
+			addToBadList(msg);
+			log.info(msg);
 		}
 		inReq.putPageValue("goodlist", getGoodlist());
 		inReq.putPageValue("badlist", getBadList());
