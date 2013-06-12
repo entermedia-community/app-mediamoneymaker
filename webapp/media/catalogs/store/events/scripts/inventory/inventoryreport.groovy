@@ -38,7 +38,7 @@ public class InventoryReport extends EnterMediaObject {
 		if (sessionid == null) {
 			return;
 		}
-		HitTracker productList = inReq.getSessionValue("hits");
+		HitTracker productList = inReq.getSessionValue(sessionid);
 		if (productList == null) {
 			return;
 		}
