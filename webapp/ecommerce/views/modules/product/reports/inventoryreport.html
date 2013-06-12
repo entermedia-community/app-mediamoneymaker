@@ -1,0 +1,34 @@
+#set($size = $hits.size())
+#set($selection = $hits.getSelectedHits())
+#set($selectedsize = $selection.size())
+<div class="ui-widget uipanel">
+	#if($canviewtesting)
+    <table class="rogers-list">
+        <tr><td class="rogers-list-header"><div class="ui-widget-header">Inventory</div></td></tr>
+        <tr>
+        	<td class="rogers-list">
+        		<form action="showreport.html" method="post">
+        		<table cellpadding="5" cellspacing="0">
+        			<tr><td colspan="2">Number of Products to Process: $selectedsize</td></tr>
+        			<tr><td colspan="2">Customize your report</td></tr>
+        			<tr><td>Inventory Level</td>
+        			<td><select name="level" size="1">
+        				<option value="0" selected="selected">0 (None)</option>
+        				<option value="10">10 or less</option>
+        				<option value="20">20 or less</option>
+        				<option value="30">30 or less</option>
+        				<option value="40">40 or less</option>
+        				<option value="50">50 or less</option>
+        			</select></td></tr>
+        			<tr><td colspan="2">
+        				<input type="hidden" name="hits" value="$selection"/>
+        				<input type="hidden" name="searchtype" value="$content.module"/>
+        				<input type="submit" name="Search" class="btn"/>
+        			</td></tr>
+        		</table>
+        		</form>
+        	</td>
+        </tr>
+    </table>
+    #end
+</div>
