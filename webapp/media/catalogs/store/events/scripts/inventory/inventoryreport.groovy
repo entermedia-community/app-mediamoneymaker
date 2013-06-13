@@ -23,8 +23,8 @@ public class InventoryReport extends EnterMediaObject {
 
 	private ArrayList<Product> badProductList;
 	private ArrayList<Product> goodProductList;
+	private ArrayList<Product> fullProductList;
 	private List<String> headerRow;
-	int totalRows;
 
 	/* GET LISTS */
 	public ArrayList<Product> getBadProductList() {
@@ -38,6 +38,12 @@ public class InventoryReport extends EnterMediaObject {
 			goodProductList = new ArrayList<Product>();
 		}
 		return goodProductList;
+	}
+	public ArrayList<Product> getFullProductList() {
+		if(fullProductList == null) {
+			fullProductList = new ArrayList<Product>();
+		}
+		return fullProductList;
 	}
 
 	/* ADD TO LISTS */
@@ -53,16 +59,12 @@ public class InventoryReport extends EnterMediaObject {
 		}
 		goodProductList.add(inProduct);
 	}
-	public int getTotalRows() {
-		if (totalRows == null) {
-			totalRows = 0;
+	public void addToFullProductList(Product inProduct) {
+		if(fullProductList == null) {
+			fullProductList = new ArrayList<Product>();
 		}
-		return totalRows;
+		fullProductList.add(inProduct);
 	}
-	public void increaseTotalRows() {
-		this.totalRows++;
-	}
-
 	public void doCheck() {
 		
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
@@ -102,28 +104,55 @@ public class InventoryReport extends EnterMediaObject {
 			} else {
 				addToGoodProductList(product);
 			}
+			addToFullProductList(product);
 		}
 		
 		//Create the Header Row
 		headerRow = createHeader();
 		
-		//Create the CSV Writer Objects
-		StringWriter output  = new StringWriter();
-		CSVWriter writer  = new CSVWriter(output, (char)',');
-
-		//Write the Header Line
-		writeRowToWriter(headerRow, writer);
-		
 		if (getBadProductList().size() > 0) {
+			//Create the CSV Writer Objects
+			StringWriter output  = new StringWriter();
+			CSVWriter writer  = new CSVWriter(output, (char)',');
+			//Write the Header Line
+			writeRowToWriter(headerRow, writer);
+			//Process the Bad Product List
 			processProductList(getBadProductList(), searcherManager, archive, writer, output, "export-bad-inventory.csv");
 			inReq.putPageValue("badlistcsv", "true");
 			inReq.putPageValue("badlist", getBadProductList());
-		}			
+			writer = null;
+			output = null;
+		}
+		
+					
 		if (getGoodProductList().size() > 0) {
+			//Create the CSV Writer Objects
+			StringWriter output  = new StringWriter();
+			CSVWriter writer  = new CSVWriter(output, (char)',');
+			//Write the Header Line
+			writeRowToWriter(headerRow, writer);
+			//Process the Bad Product List
 			processProductList(getGoodProductList(), searcherManager, archive, writer, output, "export-good-inventory.csv");
 			inReq.putPageValue("goodlistcsv", "true");
 			inReq.putPageValue("goodlist", getGoodProductList());
+			writer = null;
+			output = null;
 		}
+		
+		if (getFullProductList().size() > 0) {
+			//Create the CSV Writer Objects
+			StringWriter output  = new StringWriter();
+			CSVWriter writer  = new CSVWriter(output, (char)',');
+			//Write the Header Line
+			writeRowToWriter(headerRow, writer);
+			//Process the Bad Product List
+			processProductList(getFullProductList(), searcherManager, archive, writer, output, "export-full-inventory.csv");
+			inReq.putPageValue("fulllistcsv", "true");
+			inReq.putPageValue("fulllist", getBadProductList());
+			writer = null;
+			output = null;
+		}
+		
 		inReq.putPageValue("hitssessionid", sessionid);
 		inReq.putPageValue("level", inLevel);
 	}
