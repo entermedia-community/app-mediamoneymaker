@@ -400,3 +400,55 @@ table.rogers-list td.rogers-list a {
 	margin-right: 5px;
 	border: 0px;
 }
+
+h2.product-list-header {
+	margin-left: 10px;
+}
+table.product-report {
+	width: 98%;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+table.product-report tr.product-report-header {
+	font-size: 12px;
+	color: white;
+	text-align: center;
+	background-color: red;
+}
+table.product-report tr.product-report-header td.product-report-header-item {
+	padding: 5px;
+	border: 1px solid gray;
+	text-align: center;
+}
+table.product-report td.product-report-item {
+	padding: 5px;
+	border: 1px solid gray;
+	background-color: white;
+}
+.training-main-container {
+	width: 500px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+.training-main-container .training-header-container {
+	display: block;
+	border: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+.training-main-container .training-sub-container {
+	margin-left: 20px;
+	width: 200px;
+	padding-left: 20px;
+	float: left;
+}
+.display-center {
+	display: block;
+	border: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 100px;
+}

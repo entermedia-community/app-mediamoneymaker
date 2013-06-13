@@ -1,0 +1,21 @@
+#set($level = $context.getRequestParameter("level"))
+#set($hits = $context.getRequestParameter("hitsessionid"))
+<div class="ui-widget uipanel">
+    <table class="product-report">
+        <tr class="product-report-header">
+        	<td class="product-report-header-item" colspan="2">Inventory Reports</td>
+        </tr>
+        <tr>
+        	<td class="product-report-item">Display Printable Version</td>
+        	<td class="product-report-item" style="text-align: center;"><a href="printable.html?hitssessionid=$hits.sessionId&searchtype=$content.module&level=$level&&oemaxlayout=3" class="btn" target="_blank">Download</a></td>
+        </tr>
+        <tr>
+        	<td class="product-report-item">Export Bad Report to CSV</td>
+        	<td class="product-report-item" style="text-align: center;"><a href="export-bad-inventory.csv" class="btn">Download</a></td>
+        </tr>
+        <tr>
+        	<td class="product-report-item">Export Good Report to CSV</td>
+        	<td class="product-report-item" style="text-align: center;"><a href="export-bad-inventory.csv" class="btn">Download</a></td>
+		</tr>
+	</table>
+</div>	
