@@ -11,7 +11,14 @@
 		
 		<div class="product-details">
 		    <div class="product-title">
-                <a href="$clink">$cell.name</a> 
+		    	#set($cellname = $cell.name)
+		    	#set($celllength = $cellname.length())
+		    	#if($celllength > 60)
+		    		#set($celldata = $cellname.substring(0,55) + "...")
+		    	#else
+		    		#set($celldata = $cellname)
+		    	#end
+                <a href="$clink">$celldata</a> 
             </div>
             <div class="product-cat">
                 <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer) </a> 
