@@ -1,3 +1,4 @@
+#set($maxwrap = 55)
 <ul class="products-list">
 
 #foreach ( $cell in $hits.getPageOfHits() )
@@ -13,8 +14,8 @@
 		    <div class="product-title">
 		    	#set($cellname = $cell.name)
 		    	#set($celllength = $cellname.length())
-		    	#if($celllength > 60)
-		    		#set($celldata = $cellname.substring(0,55) + "...")
+		    	#if($celllength > $maxwrap)
+		    		#set($celldata = $cellname.substring(0,$maxwrap) + "...")
 		    	#else
 		    		#set($celldata = $cellname)
 		    	#end
