@@ -54,7 +54,7 @@
       <fileset dir="./lib" includes="bsh**.jar"/>
     </delete>
     <copy todir="./lib" overwrite="false">
-      <fileset file="${build}/unpacked/WEB-INF/lib/mediamoneymaker*.jar"/>
+      <fileset file="${build}/unpacked/WEB-INF/lib/app-mediamoneymaker*.jar"/>
     </copy>
     <copy todir="./lib" overwrite="false">
       <fileset file="${build}/unpacked/WEB-INF/lib/poi*.jar"/>
