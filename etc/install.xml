@@ -40,7 +40,7 @@
   <target name="upgrade" depends="unwar">
     <delete quiet="true">
       <fileset dir="./lib" includes="openedit-cart**.jar"/>
-        <fileset dir="./lib" includes="mediamoneymaker**.jar"/>
+        <fileset dir="./lib" includes="app-mediamoneymaker**.jar"/>
 
       <fileset dir="./lib" includes="poi**.jar"/>
       <fileset dir="./lib" includes="castor**.jar"/>
