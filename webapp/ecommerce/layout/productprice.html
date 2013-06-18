@@ -59,49 +59,49 @@
 	#end
 	<li class="price">
 		#if($canviewdevelopertools)
-			<strong>Product ID:</strong> $product.getId()<br>
+			<strong>Product ID:</strong>&nbsp;$product.getId()<br>
 		#end
 		#set($rogerssku = $product.get("rogerssku"))
 		#if($rogerssku)
-			<strong>SKU:</strong>$rogerssku<br>
+			<strong>SKU:</strong>&nbsp;$rogerssku<br>
 		#end
 		#set($upccode = $product.get("upc"))
 		#if($upccode)
-			<strong>UPC:</strong><br>
+			<strong>UPC:</strong>&nbsp;$upccode<br>
 		#end
 				
 		#set($msrpprice = $product.get("msrp"))
 		#set($fidoprice = $product.get("fidomsrp"))
 		#if($product.displaydesignationid == "1")
 			#if($msrpprice)
-				<strong>ROGERS MSRP:</strong>$msrpprice<br>
+				<strong>ROGERS MSRP:</strong>&nbsp;$msrpprice<br>
 			#end
 		#end
 		#if($product.displaydesignationid == "2")
 			#if($fidomsrp)
-				<strong>FIDO MSRP:</strong> $fidomsrp<br>
+				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
 		#end
 		#if($product.displaydesignationid == "3")
 			#if($msrpprice)
-				<strong>ROGERS MSRP:</strong>$msrpprice<br>
+				<strong>ROGERS MSRP:</strong>&nbsp;$msrpprice<br>
 			#end
 			#if($fidomsrp)
-				<strong>FIDO MSRP:</strong> $fidomsrp<br>
+				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
 		#end
 
 		#set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
         #set($mans = $mansearcher.searchById($product.get("manufacturerid")))
         #if($mans)
-        	<strong>Manufacturer:</strong> $mans.getName() 
+        	<strong>Manufacturer:</strong>&nbsp;$mans.getName() 
         	#if($canviewdevelopertools)
         		#if($product.get("manufacturerid"))
         			($product.get("manufacturerid")) 
         		#end 
         	#end 
         #else
-        	<strong>Manufacturer:</strong> Not found!
+        	<strong>Manufacturer:</strong>&nbsp;Not found!
         	#if($canviewdevelopertools)
         		#if($product.get("manufacturerid"))
         			($product.get("manufacturerid"))
