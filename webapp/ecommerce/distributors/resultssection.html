@@ -23,12 +23,7 @@
                 <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer)</a> 
             </div>
             <div class="product-price">
-		        #if( $cell.regularprice ) 
-		        	Sale: $cell.yourprice
-		    		$cell.regularprice
-		        #else
-		        	$cell.yourprice
-		        #end
+	        	$cell.rogersprice
             </div>
         </div>
     </li>

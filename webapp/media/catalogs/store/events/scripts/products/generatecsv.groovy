@@ -1,6 +1,8 @@
+package products
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.entermedia.util.CSVWriter
+import org.openedit.store.InventoryItem;
 
 import com.openedit.hittracker.HitTracker
 	
@@ -40,15 +42,17 @@ details = searcher.getDetailsForView(view, context.getUser());
 StringWriter output  = new StringWriter();
 CSVWriter writer  = new CSVWriter(output);
 int count = 0;
-headers = new String[details.size()];
+headers = new String[details.size()+1];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
 {
 	PropertyDetail detail = (PropertyDetail) iterator.next();
 	headers[count] = detail.getText();		
 	count++;
 }
+headers[details.size()] = "Qty In Stock";
 writer.writeNext(headers);
-	log.info("about to start: " + hits);
+
+log.info("about to start: " + hits);
 Iterator i = null;
 if(hits.getSelectedHits().size() == 0){
 	i = hits.iterator();
@@ -63,7 +67,7 @@ for (Iterator iterator = i; iterator.hasNext();)
 	tracker = searcher.searchById(hit.get("id"));
 
 
-	nextrow = new String[details.size()];//make an extra spot for c
+	nextrow = new String[details.size()+1];//make an extra spot for c
 	int fieldcount = 0;
 	for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
 	{
@@ -85,9 +89,10 @@ for (Iterator iterator = i; iterator.hasNext();)
 	
 		fieldcount++;
 	}
-	
-	
-	
+	InventoryItem item = tracker.getInventoryItem(0);
+	Integer qtyInStock = item.getQuantityInStock();
+
+	nextrow[details.size()] = qtyInStock.toString();
 	
 	writer.writeNext(nextrow);
 }
@@ -95,5 +100,4 @@ writer.close();
 
 String finalout = output.toString();
 context.putPageValue("export", finalout);
-
 

@@ -10,4 +10,5 @@
   <property id="zip"/>
   <property id="phone"/>
   <property id="storenumber"/>
+  <property id="zip"/>
 </root>
