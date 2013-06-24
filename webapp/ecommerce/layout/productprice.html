@@ -58,6 +58,7 @@
 		#end
 	#end
 	<li class="price">
+	
 		#if($canviewdevelopertools)
 			<strong>Product ID:</strong>&nbsp;$product.getId()<br>
 		#end
@@ -70,6 +71,9 @@
 			<strong>UPC:</strong>&nbsp;$upccode<br>
 		#end
 				
+		#if($canrogersprice)
+			<strong>Rogers Price:</strong>&nbsp;$product.get("rogersprice")<br>
+		#end
 		#set($msrpprice = $product.get("msrp"))
 		#set($fidoprice = $product.get("fidomsrp"))
 		#if($product.displaydesignationid == "1")
