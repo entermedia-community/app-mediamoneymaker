@@ -60,11 +60,11 @@
                	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "categoryid").fieldSearch("id", "*", "name"))
                	
           	#foreach($man in $mans)
-			
+				#if($man.active == "true")
                 	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></li>
-                	
-                	#end
-                	#if($mans.size() > 5)
+                #end
+            #end
+            #if($mans.size() > 5)
                 	<li > <a  class="showall" data-id="categories" href="#">Show all...</a></li>
 			#end
                 </ul>

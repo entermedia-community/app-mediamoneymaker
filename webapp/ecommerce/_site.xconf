@@ -6,8 +6,8 @@
   <property name="parentapplicationid">media</property>
   <property name="catalogid">media/catalogs/store</property>
   <property name="applicationid">ecommerce</property>
-     <path-action name="Date.now" />
-   <property name="continueShoppingUrl">/${applicationid}/browse.html</property>
+  <path-action name="Date.now" />
+  <property name="continueShoppingUrl">/${applicationid}/browse.html</property>
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
     <property name="productshowonly">+approved:true;-distributor:106</property>
   
@@ -86,11 +86,14 @@
       <userprofile value="true" name="viewcart"/>
   </permission>
    
-     <permission name="checkout">
-      <userprofile value="true" name="purchase"/>
+  <permission name="checkout">
+    <userprofile value="true" name="purchase"/>
   </permission>
    
-   
+  <permission name="rogersprice">
+      <userprofile value="true" name="rogersprice"/>
+  </permission>
+  
   <permission name="createwishlist">
       <userprofile value="true" name="wishlist"/>
   </permission>
@@ -102,7 +105,18 @@
    <permission name="dealertools">
       <userprofile value="true" name="dealertools"/>
   </permission>
+
+  <permission name="viewaddresslist">
+      <userprofile value="true" name="dealertools"/>
+  </permission>
   
+  <permission name="viewwishlists">
+      <userprofile value="true" name="dealertools"/>
+  </permission>
+
+  <permission name="vieworderhistory">
+      <userprofile value="true" name="dealertools"/>
+  </permission>
   
 	<path-action name="storeArchive.loadStore"/>
   	<path-action bean="DateStorageUtil" name="PageValue.loadPageVariable"  class="org.openedit.util.DateStorageUtil" />

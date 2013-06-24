@@ -7,6 +7,7 @@
 	<permission id="powertools" permissiontype="ecommerce" name="Rogers Specific Tools" description="View advanced Rogers Tools" ordering="200"/>
 	<permission id="viewcart" permissiontype="ecommerce" name="View Shopping Cart" description="View the shopping cart" ordering="200"/>
 	<permission id="dealertools" permissiontype="ecommerce" name="Act as Dealer Principle" description="Act as dealer principle" ordering="200"/>
+	<permission id="rogersprice" permissiontype="ecommerce" name="View Rogers Price" description="View Rogers Price (wholesale)" ordering="200"/>
 
 	<permission id="viewtesting" permissiontype="ecommerce" name="View Testing Section" description="View the shopping cart" ordering="200"/>
 		
