@@ -742,7 +742,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			SearchQuery query = createSearchQuery();
 			query.addExact("id", inProductId);
 			
-			HitTracker hit = search(query.toQuery(), query.getSorts());
+			HitTracker hit = search(query);
 			if (hit.size() > 0)
 			{
 				path = (String) ((Data) hit.get(0)).get("sourcepath");
