@@ -4,6 +4,8 @@ package inventory
  * Created on Aug 24, 2005
  */
 
+import java.text.SimpleDateFormat
+
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
@@ -225,14 +227,23 @@ public class ImportInventory  extends EnterMediaObject {
 			context.putPageValue("badqtylist", getBadQTYList());
 			context.putPageValue("distributor", inDistributor);
 			
+			String subject = "Inventory Report - " + inDistributor;
+			Date newDate = new Date();
+			subject += " - " + parseDate(newDate);
+			if ((getBadProductList().size() > 0) || (getBadUPCList().size() > 0) || (getBadQTYList().size()>0)) {
+				subject += " - ERRORS FOUND!";
+			} 
 			ArrayList emaillist = new ArrayList();
-			HitTracker results = userprofilesearcher.fieldSearch("ticketadmin", "true");
-			for(Iterator detail = results.iterator(); detail.hasNext();) {
-				Data userInfo = (Data)detail.next();
-				emaillist.add(userInfo.get("email"));
+			HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+			if (results.size() > 0) {
+				for(Iterator detail = results.iterator(); detail.hasNext();) {
+					Data userInfo = (Data)detail.next();
+					emaillist.add(userInfo.get("email"));
+				}
+				String templatePage = "/ecommerce/views/modules/product/workflow/inventory-notification.html";
+				sendEmail(archive, context, emaillist, templatePage, subject);
+				log.info("Email sent to Store Admins");
 			}
-			String templatePage = "/ecommerce/views/modules/product/workflow/inventory-notification.html";
-			
 		}
 		finally
 		{
@@ -257,16 +268,38 @@ public class ImportInventory  extends EnterMediaObject {
 		String extract = split[2].trim();
 		return extract;
 	}
+	protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject){
+		Page template = pageManager.getPage(templatePage);
+		WebPageRequest newcontext = context.copy(template);
+		TemplateWebEmail mailer = getMail(archive);
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setFrom("info@wirelessarea.ca");
+		mailer.setRecipientsFromStrings(inEmailList);
+		mailer.setSubject(inSubject);
+		mailer.send();
+	}
+	
+	protected TemplateWebEmail getMail(MediaArchive archive) {
+		PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
+		return mail.getTemplateWebEmail();
+	}
+	private String parseDate(Date inDate)
+	{
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String out = newFormat.format(inDate);
+		return out;
+	}
 }
 
-logs = new ScriptLogger();
-logs.startCapture();
+log = new ScriptLogger();
+log.startCapture();
 
 try {
 
 	log.info("START - ImportInventory");
 	ImportInventory importInventory = new ImportInventory();
-	importInventory.setLog(logs);
+	importInventory.setLog(log);
 	importInventory.setContext(context);
 	importInventory.setModuleManager(moduleManager);
 	importInventory.setPageManager(pageManager);
@@ -274,5 +307,5 @@ try {
 	log.info("FINISH - ImportInventory");
 }
 finally {
-	logs.stopCapture();
+	log.stopCapture();
 }

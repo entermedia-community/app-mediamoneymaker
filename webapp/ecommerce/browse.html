@@ -36,15 +36,16 @@ $context.putPageValue("hits", $topsellers)
 $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 
+<!-- 
 <div class="featured-browse">
 <a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=23&operation=exact"><h1>Speakers</h1></a>
 
-#set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random",  $context))
-$topsellers.setHitsPerPage(4)
-$context.putPageValue("hits", $topsellers)
-$pages.include("$apphome/search/resultssection.html", $context)
-
+##set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random",  $context))
+##$topsellers.setHitsPerPage(4)
+##$context.putPageValue("hits", $topsellers)
+##$pages.include("$apphome/search/resultssection.html", $context)
 </div>
+-->
 
 <div class="featured-browse">
 
