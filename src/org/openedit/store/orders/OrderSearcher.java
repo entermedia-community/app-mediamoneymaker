@@ -123,7 +123,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	public HitTracker listOrdersForUser(Store inStore, User inUser)
 			throws StoreException {
 		File ordersFile = getOrdersDirectory(inStore);
-		HitTracker allorders = search("username:" + inUser.getUserName(),
+		HitTracker allorders = fieldSearch("username" ,inUser.getUserName(),
 				"date");
 		return allorders;
 	}

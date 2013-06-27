@@ -48,7 +48,8 @@ public class OrderTest extends StoreTestCase {
 		order.setProperty("notes", "This is a note");
 		store.saveOrder(order);
 
-		HitTracker tracker = store.getOrderSearcher().search("products:1234", "id");
+		HitTracker tracker = store.getOrderSearcher().fieldSearch("products","1234", "id");
+				
 		assertTrue(tracker.getTotal() > 0);
 		boolean found = false;
 		for (Iterator i = tracker.getAllHits(); i.hasNext();) {
@@ -64,7 +65,7 @@ public class OrderTest extends StoreTestCase {
 
 		store.getOrderSearcher().reIndexAll();
 
-		Collection hits = store.getOrderSearcher().search("customer","admin");
+		Collection hits = store.getOrderSearcher().fieldSearch("customer","admin");
 		assertTrue(hits.size() > 0);
 	}
 
@@ -196,12 +197,12 @@ public class OrderTest extends StoreTestCase {
 
 		}
 
-		HitTracker tracker = store.getOrderSearcher().search("products:1234", "id");
+		HitTracker tracker = store.getOrderSearcher().fieldSearch("products","1234", "id");
 		assertTrue(tracker.getTotal() > 0);
 
 		store.getOrderSearcher().reIndexAll();
 
-		Collection hits = store.getOrderSearcher().search("customer","admin");
+		Collection hits = store.getOrderSearcher().fieldSearch("customer","admin");
 		assertTrue(hits.size() > 0);
 
 	}
