@@ -1,9 +1,11 @@
-#set( $moduleid = $context.findValue("module") )
+#set($id = $context.getPageValue("id"))
+#set($moduleid = $context.findValue("module") )
 #set($module = $searcherManager.getData($catalogid, "module", $moduleid))
 #set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 #set($invoiceitemsearcher = $searcherManager.getSearcher($catalogid, "invoiceitem"))
 #set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($invoice = $invoicesearcher.searchById($id))
 #set($invoiceNumber = $invoice.get("invoicenumber"))
 #set($invoicedate = $invoice.get("date"))
 #set($fedtaxid = $invoice.get("fedtaxid"))
@@ -12,7 +14,7 @@
 <table width="90%" border="0" align="center">
 	<tr>
 		<td align="center">
-			<span style="font-size:20px"><strong>$distributor.get("fullname") INVOICE</strong></span>
+			<span style="font-size:20px"><strong>AREA COMMUNICATIONS INVOICE</strong></span>
 		</td>
 	</tr>
 	<tr>
@@ -30,8 +32,20 @@
 				</tr>
 				<tr>
 					<td valign="top"><strong>FROM:</strong></td>
-					<td><span style="font-size:20px"><strong>$distributor.get("fullname")</strong></span><br>
-					<span style="font-size:16px">$distributor.get("address1")<br>
+					<td><span style="font-size:20px"><strong>Area Communications</strong></span><br>
+					<span style="font-size:16px">1 Hurontario St.<BR>
+					Suite 220<br>
+					Mississauga, ON<BR>
+					L5G 0A3<br>
+					Phone: 905-271-2732<br>
+					Fax: 905-271-7724</span>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td valign="top"><strong>FROM:</strong></td>
+					<td><span style="font-size:20px"><strong>$invoice.getName()</strong></span><br>
+					<span style="font-size:16px">$invoice.get("address1")<br>
 					#if ($distributor.get("address2") && $distributor.get("address2")!="")
 						$!distributor.get("address2")<br>
 					#end
@@ -45,18 +59,6 @@
 						Email: $!distributor.get("email")<br>
 					#end
 					</span></td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td valign="top"><strong>SOLD TO:</strong></td>
-					<td><span style="font-size:20px"><strong>Area Communications</strong></span><br>
-					<span style="font-size:16px">1 Hurontario St.<BR>
-					Suite 220<br>
-					Mississauga, ON<BR>
-					L5G 0A3<br>
-					Phone: 905-271-2732<br>
-					Fax: 905-271-7724</span>
-					</td>
 					<td>&nbsp;</td>
 				</tr>
 				<tr>

@@ -2,15 +2,22 @@ package edi;
 
 import java.text.SimpleDateFormat
 
+import org.entermedia.email.PostMail
+import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
+import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.money.Money
 import org.openedit.store.CartItem
+import org.openedit.store.InventoryItem
+import org.openedit.store.Product
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 import org.openedit.util.DateStorageUtil
 
+import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
@@ -27,13 +34,17 @@ public class ImportEDIInvoice extends EnterMediaObject {
 	private static final String CESIUM_ID = "105";
 	private static String strMsg = "";
 
-	public PublishResult importEdiXml() {
-
-		PublishResult result = new PublishResult();
-		result.setComplete(false);
+	public void importEdiXml() {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
+
+		WebPageRequest inReq = context;
+		MediaArchive archive = inReq.getPageValue("mediaarchive");
+		String catalogID = archive.getCatalogId();
+
+		SearcherManager manager = archive.getSearcherManager();
+		Searcher userprofilesearcher = archive.getSearcher("userprofile");
 
 		log.info("---- START Import EDI Invoice ----");
 
@@ -75,7 +86,12 @@ public class ImportEDIInvoice extends EnterMediaObject {
 					String invoiceTotal = "";
 					String purchaseOrder = "";
 					String taxAmount = "";
+					String taxType = "";
+					String taxFedID = "";
 					String shippingAmount = "";
+					
+					Money invoiceAmount;
+					Boolean checkShipping = true;
 					
 					Order order = null;
 					Date newDate = null;
@@ -185,6 +201,10 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									invoiceTotal = it.InvoiceAmount.text();
 									if (!invoiceTotal.isEmpty()) {
 										log.info("Invoice Total: " + invoiceTotal);
+										invoiceAmount = new Money(invoiceTotal);
+										if (invoiceAmount.getMoneyValue() > 200.00) {
+											checkShipping = false;
+										}
 										foundData = true;
 									}
 									if (!foundData) {
@@ -213,6 +233,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									if (!taxAmount.isEmpty()) {
 										log.info("Tax Amount: " + taxAmount);
 										foundData = true;
+										taxType = it.Attributes.TblTax.TaxType.text();
+										taxFedID = it.Attributes.TblTax.TaxID.text();
 									}
 									if (!foundData) {
 										String inMsg = "ERROR: Tax Amount value was not found in INVOICE.";
@@ -227,6 +249,11 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									if (!shippingAmount.isEmpty()) {
 										log.info("Shipping Amount: " + shippingAmount);
 										foundData = true;
+									} else {
+										if (!checkShipping) {
+											shippingAmount = "0";
+											foundData = true;
+										}
 									}
 									if (!foundData) {
 										String inMsg = "ERROR: Shipping Amount value was not found in INVOICE.";
@@ -246,12 +273,19 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											ediInvoice = media.getInvoiceSearcher().searchById(invoices.get(0).getId());
 											if (ediInvoice != null) {
 												log.info("Invoice exists: " + ediInvoice.getId());
+												ediInvoice.setProperty("distributor", distributorID);
 												ediInvoice.setProperty("invoicetotal", invoiceTotal);
-												ediInvoice.setProperty("taxamount", taxAmount);
+												if (taxType == "GS") {
+													ediInvoice.setProperty("fedtaxamount", taxAmount);
+													ediInvoice.setProperty("fedtaxid", taxFedID);
+												} else {
+													ediInvoice.setProperty("provtaxamount", taxAmount);
+												}
 												ediInvoice.setProperty("shipping", shippingAmount);
 												ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 												ediInvoice.setProperty("invoicestatus", "updated");
 												invoiceSearcher.saveData(ediInvoice, media.getContext().getUser());
+												invoiceSearcher.reIndexAll();
 												log.info("Invoice (" + ediInvoice.getId() + ") has been updated.");
 												foundData = true;
 											}
@@ -268,16 +302,23 @@ public class ImportEDIInvoice extends EnterMediaObject {
 										ediInvoice = invoiceSearcher.createNewData();
 										ediInvoice.setId(invoiceSearcher.nextId());
 										ediInvoice.setSourcePath(ediInvoice.getId());
+										ediInvoice.setProperty("distributor", distributorID);
 										ediInvoice.setProperty("ponumber", purchaseOrder);
 										ediInvoice.setProperty("invoicenumber", invoiceNumber);
 										ediInvoice.setProperty("invoicetotal", invoiceTotal);
-										ediInvoice.setProperty("taxamount", taxAmount);
+										if (taxType == "GS") {
+											ediInvoice.setProperty("fedtaxamount", taxAmount);
+											ediInvoice.setProperty("fedtaxid", taxFedID);
+										} else {
+											ediInvoice.setProperty("provtaxamount", taxAmount);
+										}
 										ediInvoice.setProperty("shipping", shippingAmount);
 										ediInvoice.setProperty("invoicestatus", "new");
 										ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 
 										try {
 											invoiceSearcher.saveData(ediInvoice, media.getContext().getUser());
+											invoiceSearcher.reIndexAll();
 											log.info("New invoice created: " + ediInvoice.getId());
 										}
 										catch (Exception e) {
@@ -334,7 +375,10 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											}
 											if (foundData) {
 												try {
-													CartItem orderItem = order.getItem(productID);
+													Product p = media.searchForProduct(productID);
+													InventoryItem i = p.getInventoryItem(0);
+													String productSku = i.getSku();
+													CartItem orderItem = order.getItem(productSku);
 													if (orderItem == null) {
 														throw new Exception("Could not load orderItem(" + productID + ")");
 													}
@@ -350,7 +394,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 													Money productPrice = new Money(product.get("rogersprice"));
 													Money ediPrice = new Money(linePrice);
 													if (productPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
-														throw new Exception("Invalid Price(" + orderPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")");
+														throw new Exception("Invalid Price(" + productPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")");
 													}
 
 													SearchQuery invoiceItemQuery = media.getInvoiceItemsSearcher().createSearchQuery();
@@ -379,7 +423,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 															foundData = false;
 														}
 													} else if (invoiceItems.size() == 0) {
-														log.info("Invoice Item not found!");
+														log.info("Invoice Item not found! Add new Invoice Line Item");
 														ediInvoiceItem = media.getInvoiceItemsSearcher().createNewData();
 														ediInvoiceItem.setId(media.getInvoiceItemsSearcher().nextId());
 														ediInvoiceItem.setSourcePath(ediInvoice.getId());
@@ -394,6 +438,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 													ediInvoiceItem.setProperty("price", linePrice);
 													ediInvoiceItem.setProperty("quantity", quantity);
 													media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
+													media.getInvoiceItemsSearcher().reIndexAll();
 													String inMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
 													log.info(inMsg);
 													foundData = true;
@@ -416,6 +461,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 									try {
 										log.info("Status: Saving Invoice (" + ediInvoice.getId() +")");
 										media.getInvoiceSearcher().saveData(ediInvoice, media.getContext().getUser());
+										media.getInvoiceSearcher().reIndexAll();
 									}
 									catch (Exception e) {
 										strMsg = "ERROR: Saving Invoice: " + ediInvoice.getId() + ":" + purchaseOrder + "\n";
@@ -433,7 +479,21 @@ public class ImportEDIInvoice extends EnterMediaObject {
 							if (move) {
 								String inMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
 								log.info(inMsg);
-								result.setComplete(true);
+
+								ArrayList emaillist = new ArrayList();
+								HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+								if (results.size() > 0) {
+									for(Iterator detail = results.iterator(); detail.hasNext();) {
+										Data userInfo = (Data)detail.next();
+										emaillist.add(userInfo.get("email"));
+									}
+									inReq.putPageValue("id", ediInvoice.getId());
+									String templatePage = "/ecommerce/views/modules/invoice/workflow/invoice-notification.html";
+									String subject = "INVOICE has been generated: " + ediInvoice.get("invoicenumber");
+									sendEmail(archive, context, emaillist, templatePage, subject);
+									log.info("Email sent to Store Admins");
+								}
+
 							} else {
 								String inMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
 								log.info(inMsg);
@@ -457,12 +517,9 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			if (iterCounter == 0) {
 				String inMsg = "There are no files to process at this time.";
 				log.info(inMsg);
-				result.setCompleteMessage(inMsg);
-				result.setComplete(true);
 			}
 		}
 		log.info("---- FINISH Import EDI Invoice ----");
-		return result;
 	}
 
 	private Date parseDate(String date)
@@ -506,10 +563,30 @@ public class ImportEDIInvoice extends EnterMediaObject {
 			return move;
 		}
 	}
+	protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject){
+		PageManager pageManager = archive.getPageManager();
+		Page template = pageManager.getPage(templatePage);
+		WebPageRequest newcontext = context.copy(template);
+		TemplateWebEmail mailer = getMail(archive);
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setFrom("info@wirelessarea.ca");
+		mailer.setRecipientsFromStrings(inEmailList);
+		mailer.setSubject(inSubject);
+		mailer.send();
+	}
+	
+	protected TemplateWebEmail getMail(MediaArchive archive) {
+		PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
+		return mail.getTemplateWebEmail();
+	}
+	private String parseDate(Date inDate)
+	{
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String out = newFormat.format(inDate);
+		return out;
+	}
 }
-PublishResult result = new PublishResult();
-result.setComplete(false);
-
 logs = new ScriptLogger();
 logs.startCapture();
 
@@ -519,18 +596,7 @@ try {
 	ImportEDIInvoice.setLog(logs);
 	ImportEDIInvoice.setContext(context);
 	ImportEDIInvoice.setPageManager(pageManager);
-
-	result = ImportEDIInvoice.importEdiXml();
-	if (result.isComplete()) {
-		//Output value to CSV file!
-		context.putPageValue("export", result.getCompleteMessage());
-		if (result.isError()) {
-			context.putPageValue("errorout", result.getErrorMessage());
-		}
-	} else {
-		//ERROR: Throw exception
-		context.putPageValue("errorout", result.getErrorMessage());
-	}
+	ImportEDIInvoice.importEdiXml();
 }
 finally {
 	logs.stopCapture();

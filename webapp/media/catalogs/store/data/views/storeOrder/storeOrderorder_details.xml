@@ -6,7 +6,7 @@
   <property id="shippingstatus"/>
   <property id="orderstatus"/>
   <property id="edistatus"/>
-  <property id="distributor"/>
   <property id="csvgenerated"/>
+  <property id="distributor"/>
   <property id="batchid"/>
 </root>

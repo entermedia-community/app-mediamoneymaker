@@ -1,0 +1,6 @@
+#set($url = "$content.siteroot$apphome/views/modules/invoice/edit/edit.html")
+#set($id = $context.getRequestParameter("id"))
+#set($options = "id=$id&viewid=invoiceinvoice&viewpath=invoice/invoiceinvoice&searchtype=invoice")
+<h2>Invoice Notification</h2>
+<p>The following invoice has been created!</p>
+<p><a href="${url}?${options}">Please click here to view.</a></p>

@@ -62,6 +62,7 @@ $order.getOrderStatus()
 #if ( $order.shippingAddress && $order.shippingAddress.address1 && $order.billingAddress && $order.billingAddress.address1 )
 	<p>
 		<b>Ship to:</b><br>
+		$order.shippingAddress.name<br>
 		$order.shippingAddress.address1<br>
 		#if ( $order.shippingAddress.address2 && $order.shippingAddress.address2 != "" )
 			$order.shippingAddress.address2<br>
@@ -80,6 +81,7 @@ $order.getOrderStatus()
 		<th align="right" class="results-list-head">Unit Price</th>
 	#end
 		<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
+		<th align="center" width="100" nowrap class="results-list-head">Distributor</th>
 	</tr>
 	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 	
@@ -123,7 +125,17 @@ $order.getOrderStatus()
 						#end
 					#end
 				#end
-			</p></td></tr>
+			</p>
+		</td>
+		<td align="center" nowrap>
+			<p class="results-list">
+			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+			#set($d = $distributorsearcher.searchById($item.get("distributor")))
+			#set($dname = $d.getName())
+			$dname
+			</p>
+		</td>
+		</tr>
     #end
 	#if ($content.isPropertyTrue("showprice"))
 	<tr>

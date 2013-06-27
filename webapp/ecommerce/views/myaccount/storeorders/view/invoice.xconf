@@ -1,0 +1,9 @@
+<page>
+	<path-action name="StoreOrderModule.loadOrderById"/>
+	<page-action name="PageValue.loadPageVariable" class="org.openedit.store.util.MathUtilities" bean="mathutil" />
+	<page-action name="PageValue.loadPageVariable" class="org.openedit.store.util.Format" bean="formatutil" />
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/orders/loadorder.groovy</script>
+	</path-action>
+	 
+</page>

@@ -81,7 +81,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 
 			log.info("DATA: Order found: " + order.getId());
 			String orderStatus = order.get("orderstatus");
-			if (orderStatus == "authorized" || orderStatus == "accepted") {
+			if (orderStatus == "authorized") {
 
 				//Check if order has Affinity Products
 				List orderitems = order.getCartItemsByProductProperty("distributor", "102");
@@ -131,7 +131,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		//Add the Order Number
 		headerRow.add("ORDER_NUMBER");
 		getDetailsFromView("userprofile", "userprofile/userprofileusername", order, headerRow, true);
-		getDetailsFromView("userprofile", "userprofile/userprofileaddress_list", order, headerRow, true);
+		getDetailsFromView("address", "userprofile/userprofileaddress_list", order, headerRow, true);
 		getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, headerRow, true);
 		getDetailsFromView("product", "product/productproduct_info", order, headerRow, true);
 		headerRow.add("QUANTITY");

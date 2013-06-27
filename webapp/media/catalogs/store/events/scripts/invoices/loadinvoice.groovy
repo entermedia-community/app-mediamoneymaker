@@ -98,6 +98,7 @@ public class LoadInvoice extends EnterMediaObject {
 				context.putPageValue("provtaxes", provtaxes.toString());
 				context.putPageValue("invoiceitems", list);
 				context.putPageValue("invoice", invoice);
+				context.putPageValue("id", invoice.getId());
 				context.putPageValue("total", total.toString());
 				context.putPageValue("invoicedate", invoiceDate);
 				

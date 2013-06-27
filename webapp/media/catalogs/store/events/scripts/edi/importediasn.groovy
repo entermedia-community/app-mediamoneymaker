@@ -3,8 +3,6 @@ package edi;
 import java.text.SimpleDateFormat
 
 import org.openedit.Data
-import org.openedit.entermedia.publishing.PublishResult
-import org.openedit.event.WebEvent
 import org.openedit.store.CartItem
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
@@ -12,7 +10,7 @@ import org.openedit.store.Store
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.Shipment
 import org.openedit.store.orders.ShipmentEntry
-import org.openedit.store.util.MediaUtilities;
+import org.openedit.store.util.MediaUtilities
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -37,12 +35,7 @@ public class ImportEDIASN extends EnterMediaObject {
 	private String productID;
 	private Date dateShipped;
 
-	public PublishResult importEdiXml() {
-
-		PublishResult ediXMLresult = new PublishResult();
-		ediXMLresult.setErrorMessage("");
-		ediXMLresult.setCompleteMessage("");
-		ediXMLresult.setComplete(false);
+	public void importEdiXml() {
 
 		MediaUtilities media = new MediaUtilities();
 		media.setContext(context);
@@ -212,51 +205,54 @@ public class ImportEDIASN extends EnterMediaObject {
 											errorList.add(strMsg);
 										}
 										if (foundFlag) {
-											if (!order.containsShipmentByWaybill(waybill)) {
-												def SUBHEADERS = it.depthFirst().grep {
-													it.name() == 'ASNHeader';
+											def SUBHEADERS = it.depthFirst().grep {
+												it.name() == 'ASNHeader';
+											}
+											log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
+
+											//Reset the found flag
+											foundFlag = false;
+											SUBHEADERS.each {
+												
+												def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
+												if (!QS.isEmpty()) {
+													quantityShipped = QS;
+													log.info("Quantity Shipped: " + quantityShipped);
 												}
-												log.info("Found SUBHEADERS: " + SUBHEADERS.size().toString());
-	
-												//Reset the found flag
-												foundFlag = false;
-												SUBHEADERS.each {
-													
-													def String QS = it.Attributes.TblAmount.find {it.Qualifier == "QS"}.Amount.text();
-													if (!QS.isEmpty()) {
-														quantityShipped = QS;
-													}
-													def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
-													if (!DS.isEmpty()) {
-														def newDate = parseDate(DS);
-														dateShipped = newDate;
-													}
-	
-													def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
-													if (!vendorCode.isEmpty()) {
+												def String DS = it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text();
+												if (!DS.isEmpty()) {
+													def newDate = parseDate(DS);
+													dateShipped = newDate;
+													log.info("Date Shipped: " + dateShipped.toString());
+												}
+
+												def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+												if (!vendorCode.isEmpty()) {
+													foundFlag = true;
+													Data product = media.searchForProductByField("manufacturersku", vendorCode);
+													if (product != null) {
 														foundFlag = true;
-														Data product = media.searchForProductByField("manufacturersku", vendorCode);
-														if (product != null) {
-															foundFlag = true;
-															productID = product.getId();
-														} else {
-															strMsg = "Product(" + vendorCode + ") was not found from ASN.";
-															log.info(strMsg);
-															errorList.add(strMsg);
-														}
-														if (!foundFlag) {
-															strMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
-															log.info(strMsg);
-															errorList.add(strMsg);
-														}
+														productID = product.getId();
+														log.info("ProductID: " + productID);
+													} else {
+														strMsg = "Product(" + vendorCode + ") was not found from ASN.";
+														log.info(strMsg);
+														errorList.add(strMsg);
 													}
+													if (!foundFlag) {
+														strMsg = "Product cannot be found in ASN XML File(" + page.getName() + ")";
+														log.info(strMsg);
+														errorList.add(strMsg);
+													}
+												}
+
+												if ((foundFlag) && (errorList.size() == 0)) {
 	
-													if ((foundFlag) && (errorList.size() == 0)) {
-		
-														Product target = media.getProductSearcher().searchById(productID);
-														InventoryItem productInventory = target.getInventoryItem(0);
-														CartItem item = order.getItem(productInventory.getSku());
-		
+													Product target = media.getProductSearcher().searchById(productID);
+													InventoryItem productInventory = target.getInventoryItem(0);
+													CartItem item = order.getItem(productInventory.getSku());
+	
+													if (!order.containsShipmentByWaybill(waybill)) {
 														if (!shipment.containsEntryForSku(productInventory.getSku()) && item !=  null ) {
 															ShipmentEntry entry = new ShipmentEntry();
 															entry.setCartItem(item);
@@ -277,38 +273,95 @@ public class ImportEDIASN extends EnterMediaObject {
 															strMsg = "SKU (" + productInventory.getSku() + ")";
 															log.info(strMsg);
 															completeList.add(strMsg);
+															
+															if(shipment.getShipmentEntries().size() >0) {
+																order.addShipment(shipment);
+																order.getOrderStatus();
+																if(order.isFullyShipped()){
+																	order.setProperty("shippingstatus", "shipped");
+																	strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+																	log.info(strMsg);
+																	completeList.add(strMsg);
+																}else{
+																	order.setProperty("shippingstatus", "partialshipped");
+																	strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
+																	log.info(strMsg);
+																	completeList.add(strMsg);
+																}
+																store.getOrderArchive().saveOrder(store, order);
+																strMsg = "Order (" + purchaseOrder + ") saved.";
+																log.info(strMsg);
+																completeList.add(strMsg);
+																
+																//reset FoundFlag
+																foundFlag = false;
+															}
 														} else {
 															strMsg = "Cart Item (" + productID + ") cannot be found(" + orderID + ")";
 															log.info(strMsg);
 															errorList.add(strMsg);
 														} // end if orderitems
-													}
-												} // END SUB-HEADERS
-												if(shipment.getShipmentEntries().size() >0) {
-													order.addShipment(shipment);
-													order.getOrderStatus();
-													if(order.isFullyShipped()){
-														order.setProperty("shippingstatus", "shipped");
-														strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
-														log.info(strMsg);
-														completeList.add(strMsg);
-													}else{
-														order.setProperty("shippingstatus", "partialshipped");
-														strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
-														log.info(strMsg);
-														completeList.add(strMsg);
-													}
-													store.getOrderArchive().saveOrder(store, order);
-													strMsg = "Order (" + purchaseOrder + ") saved.";
-													log.info(strMsg);
-													completeList.add(strMsg);
-												}
-											} else {
-												strMsg = "Waybill entry already exists (" + waybill + ")."
-												log.info(strMsg);
-												strMsg = "Skipping ASN Entry."
-												log.info(strMsg);
-											}
+													} else {
+														// If waybill exists, check quantity in shipment compared to the order
+														int totalShipped = 0;
+														ArrayList<Shipment> shipments = order.getShipments();
+														for (Shipment eShipment in shipments) {
+															ArrayList<ShipmentEntry> entries = eShipment.getShipmentEntries();
+															for (ShipmentEntry eEntry in entries) {
+																totalShipped += eEntry.getQuantity();
+															}
+														}
+														int cartQty = item.getQuantity();
+														int qtyShipped = Integer.parseInt(quantityShipped);
+														if (qtyShipped <= (cartQty - totalShipped)) {
+															ShipmentEntry entry = new ShipmentEntry();
+															entry.setCartItem(item);
+															entry.setQuantity(qtyShipped);
+															shipment.setProperty("waybill", waybill);
+															shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
+															shipment.addEntry(entry);
+															foundFlag = true;
+	
+															strMsg = "Order Updated(" + purchaseOrder + ") and saved";
+															log.info(strMsg);
+															completeList.add(strMsg);
+															
+															strMsg = "Waybill (" + waybill + ")";
+															log.info(strMsg);
+															completeList.add(strMsg);
+															
+															strMsg = "SKU (" + productInventory.getSku() + ")";
+															log.info(strMsg);
+															completeList.add(strMsg);
+															
+															if(shipment.getShipmentEntries().size() >0) {
+																if (!order.getShipments().contains(shipment)) {
+																	order.addShipment(shipment);
+																}
+																order.getOrderStatus();
+																if(order.isFullyShipped()){
+																	order.setProperty("shippingstatus", "shipped");
+																	strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+																	log.info(strMsg);
+																	completeList.add(strMsg);
+																}else{
+																	order.setProperty("shippingstatus", "partialshipped");
+																	strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
+																	log.info(strMsg);
+																	completeList.add(strMsg);
+																}
+																store.getOrderArchive().saveOrder(store, order);
+																strMsg = "Order (" + purchaseOrder + ") saved.";
+																log.info(strMsg);
+																completeList.add(strMsg);
+																
+																//reset FoundFlag
+																foundFlag = false;
+															}
+														}
+													} // END CONTAINS WAYBILL
+												} // END FOUND FLAG
+											} // END SUB-HEADERS
 										}
 									}
 								}
@@ -350,13 +403,12 @@ public class ImportEDIASN extends EnterMediaObject {
 					}
 					if (completeList.size() > 0) {
 						for (String complete : completeList) {
-							ediXMLresult.appendCompleteMessage("<LI>" + complete + "</LI>\n");
+							log.info(complete);
 						}
 					}
 					if (errorList.size() > 0) {
 						String foundErrors = "";
 						for (String error : errorList) {
-							ediXMLresult.appendErrorMessage(error);
 							foundErrors += error + "\n";
 						}
 						log.info("ERROR: The folowwing errors occurred:");
@@ -369,22 +421,12 @@ public class ImportEDIASN extends EnterMediaObject {
 				if (iterCounter == 0) {
 					String inMsg = "There are no files to process at this time.";
 					log.info(inMsg);
-					ediXMLresult.setCompleteMessage(inMsg);
-					ediXMLresult.setComplete(true);
-				} else {
-					ediXMLresult.setComplete(true);
 				}
 			} else {
 				String inMsg = "There are no files to process at this time.";
 				log.info(inMsg);
-				ediXMLresult.setCompleteMessage(inMsg);
-				ediXMLresult.setComplete(true);
 			}
-		} else {
-			ediXMLresult.setErrorMessage("ERROR: An error was found.");
-			ediXMLresult.setComplete(false);
 		}
-		return ediXMLresult;
 	}
 
 	private Date parseDate(String date)
@@ -426,41 +468,20 @@ public class ImportEDIASN extends EnterMediaObject {
 		return equal;
 	}
 }
-PublishResult result = new PublishResult();
-result.setComplete(false);
-
-logs = new ScriptLogger();
-logs.startCapture();
+log = new ScriptLogger();
+log.startCapture();
 
 try {
 
 	ImportEDIASN ImportEDIASN = new ImportEDIASN();
-	ImportEDIASN.setLog(logs);
+	ImportEDIASN.setLog(log);
 	ImportEDIASN.setContext(context);
 	ImportEDIASN.setPageManager(pageManager);
 
 	log.info("---- START Import EDI ASN ----");
-	result = ImportEDIASN.importEdiXml();
-	if (result.isComplete()) {
-		//Output value to CSV file!
-		log.info("Return is complete.");
-		context.putPageValue("export", result.getCompleteMessage());
-		if (result.isError()) {
-			String errMsg = result.getErrorMessage();
-			if (errMsg.length() > 0) {
-				log.info("ErrorOut: " + errMsg);
-				context.putPageValue("errorout", errMsg);
-			}
-		}
-	} else {
-		if (result.isError()) {
-			String errMsg = result.getErrorMessage();
-			log.info("ErrorOut: " + errMsg);
-			context.putPageValue("errorout", errMsg);
-		}
-	}
+	ImportEDIASN.importEdiXml();
 	log.info("---- END Import EDI ASN ----");
 }
 finally {
-	logs.stopCapture();
+	log.stopCapture();
 }

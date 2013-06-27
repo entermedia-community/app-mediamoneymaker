@@ -3,14 +3,18 @@
 #set ( $billingAddress = $order.getBillingAddress() )
 #set ( $customer = $order.customer )
 #set($searcherManager = $store.getSearcherManager())
+$context.putPageValue("hits", $hits)
 
 
 <div class="ui-widget-header">Order #$orderNumber</div>
 <div class="ui-widget-content ">
 
 <a class="btn" 
-href="$apphome/reloadorder.html?orderid=${order.orderNumber}">Re-order this</a><a 
-class="btn" style="margin-left: 10px;" href="$apphome/views/myaccount/tickets/addnew.html?order.value=${order.orderNumber}&tickettype.value=order">Create Support Ticket</a>
+href="$apphome/reloadorder.html?orderid=${order.orderNumber}">Re-order this</a>
+<a class="btn" style="margin-left: 10px;" 
+href="$apphome/views/myaccount/tickets/addnew.html?order.value=${order.orderNumber}&tickettype.value=order">Create Support Ticket</a>
+<a class="btn" style="margin-left: 10px;" 
+href="$apphome/views/myaccount/storeorders/view/invoice.html?id=${order.orderNumber}&oemaxlayout=3" target="_blank">View Invoice</a>
 <h2>Order Information</h2>
 <h3 >$order.dateOrdered</h3>
 #if( $canmanageorders )
