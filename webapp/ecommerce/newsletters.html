@@ -3,23 +3,17 @@
 <div id="home-top">
 	<div id="home-left">
 		<div style="padding-top: 10px; padding-left: 10px;">
-		$pages.include("$apphome/banner.html")
-		</div> 
-		#if($canbrowseproducts)
-
-		#set($featured =$store.getProductSearcher().fieldSearch("featuredonmainpage", "true", "random"))
-		$featured.setHitsPerPage(3) 
-		$context.putPageValue("hits", $featured)
-		
-		<div class="featured" >
-				<div class="featuredheader"><span style="color:#FF3019">FEATURED</span> PRODUCTS</div>
-				<div class="featured-results">
-		$pages.include("$apphome/search/resultssection.html", $context)
+		</div>
+		<div class="training-main-container">
+			<div class="training-header-container">
+				<h1>Rogers Portal Newsletters</h1>
+			</div>
+			<div class="training-sub-container" style="clear: left;">
+				<div class="display-center">
+					<a href="$apphome/newsletters/DealerNewsletterJune_ 27_2013.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
 				</div>
 			</div>
-		
-		
-		#end
+		</div>
 	</div>
 	<div id="home-right">
 	<div class="home-image">
@@ -82,3 +76,17 @@ Please wait..
 <meta http-equiv="refresh" content="0;url=/ecommerce/distributors/index.html">
 #end
 #end
+<div class="ui-widget uipanel">
+    <table class="rogers-list">
+        <tr><td class="rogers-list-header"><div class="ui-widget-header">Rogers Portal Training</div></td></tr>
+        <tr>
+        	<td class="rogers-list" style="background-color: white;">Click on the training guide that you would like to view.</td>
+        </tr>
+        <tr>
+        	<td class="rogers-list" style="margin-left: 10px;"><a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank">Quick Start Guide (PDF File)</a></td>
+        </tr>
+        <tr>
+        	<td class="rogers-list" style="margin-left: 10px;"><a href="$apphome/RogersPortalTutorial.pdf" target="_blank">Portal Tutorial (PDF File)</a></td>
+        </tr>
+    </table>
+</div>

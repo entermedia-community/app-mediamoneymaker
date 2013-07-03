@@ -4,11 +4,14 @@
 #set($invoiceitemsearcher = $searcherManager.getSearcher($catalogid, "invoiceitem"))
 #set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "storeOrder"))
 #set($invoiceNumber = $invoice.get("invoicenumber"))
 #set($invoicedate = $invoice.get("date"))
 #set($fedtaxid = $invoice.get("fedtaxid"))
 #set($distributor = $distributorsearcher.searchById($invoice.get("distributor")))
 #set($subtotal = "0")
+#set($orderNumber = $invoice.get("ponumber"))
+#set($order = $ordersearcher.searchById($orderNumber))
 <table width="90%" border="0" align="center">
 	<tr>
 		<td align="center">
@@ -60,10 +63,33 @@
 					<td>&nbsp;</td>
 				</tr>
 				<tr>
-					<td valign="top"><strong>REFERENCE<br>ORDER/PO<BR>NUMBER :</strong></td>
-					<td valign="middle"><span style="font-size:16px">$invoice.get("ponumber")</span></td>
-					<td>&nbsp;</td>
-				</tr>
+					<td colspan="3">
+						<table border="1" width="100%" style="margin-top: 20px;">
+							<tr style="text-align: center; margin-top: 10px;">
+								<td valign="top" colspan="2"><strong>REFERENCE</strong></td>
+							</tr>
+							<tr style="text-align: center;">
+								<td><span style="font-size:18px"><strong>ORDER/PO NUMBER</strong></span></td>
+								<td><span style="font-size:18px"><strong>SHIP TO:</strong></span></td>
+							</tr>
+							<tr>
+								<td valign="middle" style="text-align: center;">
+									<span style="font-size:14px">$invoice.get("ponumber")</span>
+								</td>
+								<td valign="top">
+									#set($address = $order.getShippingAddress())
+									<span style="font-size:14px"><strong>$address.getName()</strong><br>
+									$address.get("address1")<br>
+									#if ($address.get("address2") && $address.get("address2")!="")
+										$!address.get("address2")<br>
+									#end
+									$address.get("city"), $distributor.get("province")<br>
+									$address.get("zip")<br>
+									</span>
+								</td>
+							</tr>
+						</table>
+					</td>
 			</table>
 		</td>
 	</tr>

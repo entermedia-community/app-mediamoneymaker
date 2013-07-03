@@ -12,4 +12,5 @@
   <property id="categoryid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="banner" internalfield="false" datatype="list">Category</property>
   <property id="manufacturer" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="banner" internalfield="false" datatype="list">Manufacturer</property>
   <property id="phone" index="true" stored="true" editable="true" type="list" searchtype="banner" internalfield="false" datatype="list">Phone</property>
+  <property id="newwindow" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="banner" internalfield="false" datatype="boolean">New Window</property>
 </properties>

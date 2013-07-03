@@ -6,18 +6,30 @@
 		#set($size = $size - 1)
 		#foreach($i in [0..$size])
 			#set($first  = $bannerlist.get($i))
-			#set($o = $bannersearcher.searchById($first))
+			#set($o = $bannersearcher.searchById($first.getId()))
 			#set($startdate = $DateStorageUtil.parseFromStorage($i.get("startdate")))
 			#set($enddate = $DateStorageUtil.parseFromStorage($i.get("enddate")))
 			#set($asset = $mediaarchive.getAsset($first.image))
 			#set($orig = $mediaarchive.asLinkToOriginal($asset))
-			<a href="$!first.url"><img src="$orig" class="offers"></a>
+			#set($newwindow = $first.get("newwindow"))
+			#if($newwindow == "true")
+				#set($target = "_blank")
+			#else
+				#set($target = "_self")
+			#end
+			<a href="$!first.url" target="$target"><img src="$orig"/ class="offers"></a> 
 		#end 
 	#else
 		#set($first  = $bannerlist.get(0))
 		#set($asset = $mediaarchive.getAsset($first.image))
 		#set($orig = $mediaarchive.asLinkToOriginal($asset))
-		<a href="$!first.url"><img src="$orig"/></a> 
+		#set($newwindow = $first.get("newwindow"))
+		#if($newwindow == "true")
+			#set($target = "_blank")
+		#else
+			#set($target = "_self")
+		#end
+		<a href="$!first.url" target="$target"><img src="$orig" class="offers"/></a> 
 	#end
 #else
 #end

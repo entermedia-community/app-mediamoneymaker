@@ -2,19 +2,26 @@ package edi;
 
 import java.text.SimpleDateFormat
 
+import org.entermedia.email.PostMail
+import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.entermedia.MediaArchive
 import org.openedit.store.CartItem
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.store.customer.Customer
 import org.openedit.store.orders.Order
 import org.openedit.store.orders.Shipment
 import org.openedit.store.orders.ShipmentEntry
 import org.openedit.store.util.MediaUtilities
 import org.openedit.util.DateStorageUtil
 
+import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
+import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
@@ -34,6 +41,14 @@ public class ImportEDIASN extends EnterMediaObject {
 	private String quantityShipped;
 	private String productID;
 	private Date dateShipped;
+	private Order order;
+	
+	public void setOrder( Order inOrder ) {
+		order = inOrder;
+	}
+	public Order getOrder() {
+		return order;
+	}
 
 	public void importEdiXml() {
 
@@ -55,7 +70,7 @@ public class ImportEDIASN extends EnterMediaObject {
 			}
 		}
 		catch (Exception e) {
-			strMsg = "ERROR: Invalid Order: " + purchaseOrder + "\n";
+			strMsg = "ERROR: Could not load store.\n";
 			strMsg += "Exception thrown:\n";
 			strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
 			strMsg += "Stack Trace: " + e.getStackTrace().toString();;
@@ -149,14 +164,12 @@ public class ImportEDIASN extends EnterMediaObject {
 										order = media.searchForOrder(purchaseOrder);
 										if (order != null) {
 											foundFlag = true;
-											if (order != null) {
-												orderID = purchaseOrder;
-												shipment.setProperty("distributor", distributorID);
-											} else {
-												strMsg = "ERROR: Order(" + purchaseOrder + ") was not found from ASN.";
-												log.info(strMsg);
-												errorList.add(strMsg);
-											}
+											orderID = purchaseOrder;
+											setOrder(order);
+										} else {
+											strMsg = "ERROR: Order(" + purchaseOrder + ") was not found from ASN.";
+											log.info(strMsg);
+											errorList.add(strMsg);
 										}
 									}
 									catch (Exception e) {
@@ -177,7 +190,6 @@ public class ImportEDIASN extends EnterMediaObject {
 												if (!courier.isEmpty()) {
 													foundFlag = true;
 													carrier = courier;
-													shipment.setProperty("courier", courier);
 												}
 											}
 										}
@@ -257,7 +269,9 @@ public class ImportEDIASN extends EnterMediaObject {
 															ShipmentEntry entry = new ShipmentEntry();
 															entry.setCartItem(item);
 															entry.setQuantity(Integer.parseInt(quantityShipped));
+															shipment.setProperty("courier", carrier);
 															shipment.setProperty("waybill", waybill);
+															shipment.setProperty("distributor", distributorID);
 															shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
 															shipment.addEntry(entry);
 															foundFlag = true;
@@ -308,7 +322,9 @@ public class ImportEDIASN extends EnterMediaObject {
 														for (Shipment eShipment in shipments) {
 															ArrayList<ShipmentEntry> entries = eShipment.getShipmentEntries();
 															for (ShipmentEntry eEntry in entries) {
-																totalShipped += eEntry.getQuantity();
+																if(eEntry.getItem().getSku() == productInventory.getSku()) {
+																	totalShipped += eEntry.getQuantity();
+																}
 															}
 														}
 														int cartQty = item.getQuantity();
@@ -317,7 +333,9 @@ public class ImportEDIASN extends EnterMediaObject {
 															ShipmentEntry entry = new ShipmentEntry();
 															entry.setCartItem(item);
 															entry.setQuantity(qtyShipped);
+															shipment.setProperty("courier", carrier);
 															shipment.setProperty("waybill", waybill);
+															shipment.setProperty("distributor", distributorID);
 															shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
 															shipment.addEntry(entry);
 															foundFlag = true;
@@ -377,7 +395,12 @@ public class ImportEDIASN extends EnterMediaObject {
 						log.info(strMsg);
 						errorList.add(strMsg);
 					}
+					
+					strMsg = "Processing of ASN XML file complete. Perform post processing.";
+					log.info(strMsg);
+					
 					if (errorList.size() == 0) {
+						sendEmailToCustomer(purchaseOrder, getOrder(), store, media)
 						if (movePageToProcessed(pageManager, page, media.getCatalogid(), true)) {
 							strMsg = "COMPLETE: ASN File (" + page.getName() + ") moved to processed";
 							log.info(strMsg);
@@ -467,6 +490,45 @@ public class ImportEDIASN extends EnterMediaObject {
 		}
 		return equal;
 	}
+	
+	protected void sendEmailToCustomer(String orderNumber, Order order, Store store, MediaUtilities media ) {
+		
+		Customer customer = order.getCustomer();
+		ArrayList<Shipment> shipments = order.getShipments();
+
+		context.putPageValue("orderid", order.getId());
+		context.putPageValue("ordernumber", orderNumber);
+		context.putPageValue("order", order);
+		context.putPageValue("customer", customer);
+		context.putPageValue("shipments", shipments);
+
+		ArrayList emaillist = new ArrayList();
+		emaillist.add(customer.getEmail());
+		
+		String subject = "Order Shipping Notification";
+		String templatePage = "/ecommerce/views/modules/storeOrder/workflow/order-shipping-notification.html";
+		log.info("Sending email to emaillist: " + subject);
+		sendEmail(media.getArchive(), context, emaillist, templatePage, subject);
+
+	}
+	protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject){
+		PageManager pageManager = archive.getPageManager();
+		Page template = pageManager.getPage(templatePage);
+		WebPageRequest newcontext = context.copy(template);
+		TemplateWebEmail mailer = getMail(archive);
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setFrom("info@wirelessarea.ca");
+		mailer.setRecipientsFromStrings(inEmailList);
+		mailer.setSubject(inSubject);
+		mailer.send();
+	}
+	
+	protected TemplateWebEmail getMail(MediaArchive archive) {
+		PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
+		return mail.getTemplateWebEmail();
+	}
+
 }
 log = new ScriptLogger();
 log.startCapture();

@@ -38,7 +38,7 @@ $order.getOrderStatus()
 	#set ( $customerAddress = $order.getShippingAddress() )
 #end
 
-<p>
+<p style="margin-top: 10px;">
 	<b>Customer:</b><br>
 	$!customer.getFirstName() $!customer.getLastName()
 	#if( $user.hasPermission("oe.cart.admin" ) )
@@ -60,7 +60,7 @@ $order.getOrderStatus()
 </p>
 
 #if ( $order.shippingAddress && $order.shippingAddress.address1 && $order.billingAddress && $order.billingAddress.address1 )
-	<p>
+	<p style="margin-top: 10px;">
 		<b>Ship to:</b><br>
 		$order.shippingAddress.name<br>
 		$order.shippingAddress.address1<br>
@@ -77,9 +77,8 @@ $order.getOrderStatus()
 		<th align="left" class="results-list-head">Product ID</th>
 		<th align="left" class="results-list-head">Item SKU</th>
 		<th align="center" width="100"  class="results-list-head">Quantity</th>
-	#if ($content.isPropertyTrue("showprice"))
 		<th align="right" class="results-list-head">Unit Price</th>
-	#end
+		<th align="right" class="results-list-head">Line<br>Total</th>
 		<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
 		<th align="center" width="100" nowrap class="results-list-head">Distributor</th>
 	</tr>
@@ -106,10 +105,10 @@ $order.getOrderStatus()
 			<p class="results-list">$item.sku</p></td>
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
-		#if ($content.isPropertyTrue("showprice"))
 		<td align="right">
 				<p class="results-list">$item.yourPrice</p></td>
-		#end
+		<td align="right">
+				<p class="results-list">$item.getTotalPrice()</p></td>
 		<td align="center" nowrap>
 			<p class="results-list">
 				#if( $order.isFullyShipped() == "true" )
@@ -121,7 +120,7 @@ $order.getOrderStatus()
 						#if ( $order.getQuantityShipped($item) > 0 )
 							Partially Shipped
 						#else
-							Waiting for Shipment
+							Waiting<br>for Shipment
 						#end
 					#end
 				#end
@@ -137,27 +136,29 @@ $order.getOrderStatus()
 		</td>
 		</tr>
     #end
-	#if ($content.isPropertyTrue("showprice"))
-	<tr>
-		<td colspan="3" align="right">Subtotal:</td>
-		<td align="right">$order.subTotal</td>
+	<tr style="border-top: 1px solid black;">
+		<td colspan="4" align="right">Subtotal:&nbsp;&nbsp;</td>
+		<td align="right">$order.getSubTotal()</td>
 	</tr>
+#if ( $order.getTotalShipping() && $order.getTotalShipping() != "0.00" )
 	<tr>
-		<td colspan="3" align="right">Tax:</td>
+		  <td colspan="4" align="right">Shipping:&nbsp;&nbsp;</td>
+		  <td align="right">$order.getTotalShipping()</td>
+	</tr>
+#else
+	<tr>
+		  <td colspan="4" align="right">Shipping:&nbsp;&nbsp;</td>
+		  <td align="right">$0.00</td>
+	</tr>
+#end
+	<tr>
+		<td colspan="4" align="right">Tax:&nbsp;&nbsp;</td>
 		<td align="right">$order.tax</td>
 	</tr>
-		#if ( ($order.shippingMethod.description && $order.shippingMethod.description != "")
-		|| $order.shippingCost != "0.00" )
 	<tr>
-		  <td colspan="3" align="right">Ship by $order.shippingMethod.description:</td>
-		  <td align="right">$order.shippingCost</td>
-	</tr>
-		#end
-	<tr>
-		<td colspan="3" align="right"><b>Grand Total:</b></td>
+		<td colspan="4" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
 		<td align="right"><b>$order.totalPrice</b></td>
 	</tr>
-	#end
 </table></p>
 <p>
 	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
@@ -168,14 +169,19 @@ $order.getOrderStatus()
 		#else
 			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
 		#end
-#if( $canmanageorders )
-	
-		Card number: $order.paymentMethod.cardNumber<br/>
-		CVC: $!order.paymentMethod.cardVerificationCode<br/>
-#end
-		Expiration date: $order.paymentMethod.expirationDateString<br>
 
-#if( $canmanageorders )
+		#set($cardNumber = $order.paymentMethod.cardNumber)
+		#set($l = $cardNumber.length())
+		#if($l == "16")
+			#set($cardend = $cardNumber.substring(12, 16))
+			Card number: XXXXXXXXXXX$cardend<br>
+		#else
+			Card number: Not possible to display.<br>
+		#end
+	
+		CVC: $!order.paymentMethod.cardVerificationCode<br/>
+		Expiration date: $order.paymentMethod.expirationDateString<br>
+		#if( $canmanageorders )
 
 		#if( $order.getOrderState().getId() == "authorized" )
 		<br>

@@ -1,0 +1,115 @@
+<!-- 
+context.putPageValue("ordernumber", orderNumber);
+context.putPageValue("order", order);
+context.putPageValue("customer", customer);
+context.putPageValue("shipments", shipments);
+-->
+#set ( $customer = $order.customer ) 
+#set ( $orderid = $order.getId() )
+#set ( $shippingAddress = $order.getShippingAddress() ) 
+#set ( $billingAddress = $order.getBillingAddress() ) 
+#set ( $searcherManager = $store.getSearcherManager() ) 
+#set ( $orderNumber = $order.orderNumber )
+#set ( $shipments = $order.getShipments() ) 
+#set ( $isFullyShipped = $order.isFullyShipped() )
+#set ( $sSize = $shipments.size() )
+#set ( $url = "$content.siteroot$apphome/views/myaccount/storeorders/view/index.html?id=$orderid")
+<h2>Order Shipping History</h2>
+<h3>Order #: <a href="$url" target="_blank">$orderNumber</a></h3>
+#if ( $sSize > 0)
+	<h3>Order Status: 
+		#if ($isFullyShipped == "false")
+			Partially Shipped
+		#else
+			Shipped
+		#end</h3>
+	<h3>Shipment Details per Product.</h3>
+#else
+	<h2>No shipments for this order</h2>
+#end
+#if ( $sSize > 0)
+	<table cellspacing="2" class="oestandard-table" cellpadding="10">
+		<tr class="results-list-head">
+			<th align="left" class="results-list-head">Product ID</th>
+			<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
+			<th align="center" class="results-list-head">Waybill Number</th>
+<!-- 
+			<th align="center" class="results-list-head">Courier</th>
+			<th align="center" class="results-list-head">Ship Date</th>
+-->
+			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
+		</tr>
+		#set($itemCounter = 0)
+		#foreach ( $item in $order.items ) 
+			#set( $itemCounter = $itemCounter + 1 )
+		<tr>
+			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+			<td>$product.getName()</td>
+			<td class="results-list-center">$item.quantity</td>
+			<td class="results-list-left">&nbsp;</td>
+	<!-- 
+			<td class="results-list-left">&nbsp;</td>
+			<td class="results-list-left">&nbsp;</td>
+	-->
+			<td class="results-list">&nbsp;</td>
+			#foreach ( $shipmentEntry in $shipments )
+				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+				#set( $waybill = $shipmentEntry.get("waybill") )
+				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+		</tr>
+		<tr>
+			<td colspan="2" class="results-list-left">&nbsp;</td>
+			<td class="results-list-left">$waybill</a></td>
+	<!-- 
+			<td class="results-list">$shipmentEntry.get("courier")</td>
+			<td class="results-list">$shipmentEntry.get("shipdate")</td>
+	-->
+			<td class="results-list-center">$entry.getQuantity()</td>
+		</tr>
+				#end
+			#end
+		#end
+		</tr>
+	</table>
+	
+	#foreach ( $shipmentEntry in $shipments )
+		#set( $shipCounter = $shipCounter + 1 )
+	#end
+	
+	<h3>Shipment Details per Waybill.</h3>
+	<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
+		<tr class="results-list-head">
+			<th align="center" class="results-list-head">Courier</th>
+			<th align="center" class="results-list-head">Waybill Number</th>
+			<th align="center" class="results-list-head">Ship Date</th>
+			<th align="left" class="results-list-head">Product ID</th>
+			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
+		</tr>
+		
+		#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
+		#set( $shipCounter = 0)
+		#foreach ( $shipmentEntry in $shipments )
+			#set( $shipCounter = $shipCounter + 1 )
+			#set( $courier = $shipmentEntry.get("courier") )
+			#set( $waybill = $shipmentEntry.get("waybill") )
+			#set( $shipdate = $shipmentEntry.get("shipdate") )
+		<tr>
+	 		<td class="results-list-center">$!courier</td>
+			<td class="results-list">$waybill</td>
+			<td class="results-list-center">$shipdate</td>
+			<td colspan="2" class="results-list-left">&nbsp;</td>
+		</tr>
+			#foreach ( $item in $order.items ) 
+				#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+		<tr>
+			<td colspan="3">&nbsp;</td>
+			<td class="results-list-left">$product.getName()</td>
+			<td class="results-list-center">$entry.getQuantity()</td>
+		</tr>
+				#end
+			#end
+		#end
+	</table>
+#end

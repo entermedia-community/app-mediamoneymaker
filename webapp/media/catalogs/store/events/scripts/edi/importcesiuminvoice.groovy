@@ -242,7 +242,6 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 								}
 								if (foundData) {
 									foundData = false;
-									//_PRO
 									def String WB = it.Attributes.TblReferenceNbr.find {it.Qualifier == "WY"}.ReferenceNbr.text();
 									if (!WB.isEmpty()) {
 										waybill = WB;
@@ -484,7 +483,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 																ShipmentEntry entry = new ShipmentEntry();
 																entry.setCartItem(item);
 																entry.setQuantity(Integer.parseInt(quantity));
-																shipment.setProperty("waybill", waybill);
+																entry.setProperty("waybill", waybill);
 																shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 																shipment.addEntry(entry);
 																foundData = true;
@@ -522,7 +521,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 																ShipmentEntry entry = new ShipmentEntry();
 																entry.setCartItem(item);
 																entry.setQuantity(Integer.parseInt(quantity));
-																shipment.setProperty("waybill", waybill);
+																entry.setProperty("waybill", waybill);
 																shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));
 																shipment.addEntry(entry);
 		
