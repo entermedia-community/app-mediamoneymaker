@@ -4,13 +4,19 @@
 package org.openedit.store.modules;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.openedit.event.WebEventListener;
+import org.openedit.money.Fraction;
+import org.openedit.money.Money;
 import org.openedit.store.CartItem;
+import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
+import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Address;
 import org.openedit.store.orders.EmailOrderProcessor;
 import org.openedit.store.orders.Order;
@@ -18,6 +24,8 @@ import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
+import org.openedit.store.orders.RefundItem;
+import org.openedit.store.orders.RefundState;
 import org.openedit.store.orders.SubmittedOrder;
 
 import com.openedit.OpenEditException;
@@ -225,8 +233,7 @@ public class OrderModule extends BaseModule
 	{
 		String id = inRequest.getRequestParameter("id");
 		if(id != null){
-Store store = getStore(inRequest);
-			
+			Store store = getStore(inRequest);
 			Order order = (Order) store.getOrderSearcher().searchById(id);
 			inRequest.putPageValue("order", order);
 			return order;
@@ -402,17 +409,236 @@ Store store = getStore(inRequest);
 			EmailOrderProcessor fieldEmailOrderProcessor) {
 		this.fieldEmailOrderProcessor = fieldEmailOrderProcessor;
 	}
-	public void refundOrder(WebPageRequest inContext) {
+	
+	public void prepareNewRefund(WebPageRequest inContext)
+	{
+		String ordernumber = inContext.getRequestParameter("ordernumber");
 		Store store = getStore(inContext);
-		//get some reffunds
-		Refund refund = new Refund();
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
 		
-		store.getOrderProcessor().refundOrder(inContext, store, refund);
-		
+		inContext.putPageValue("data",order);
+		inContext.putPageValue("order",order);
 	}
-
 	
+	public void prepareRefund(WebPageRequest inContext){
+		String ordernumber = inContext.getRequestParameter("ordernumber");
+		Store store = getStore(inContext);
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
+		
+		resetPendingRefundStates(order);
+		
+		Money subtotal = new Money("0");
+		Money shipping = new Money("0");
+		
+		Money totaltaxes = new Money("0");
+		Money total = new Money("0");
+		
+		String [] skus = inContext.getRequestParameters("sku");
+		for (String sku:skus)
+		{
+			//shipping-refund
+			if (inContext.getRequestParameter(sku+"-refund")==null ||
+					!inContext.getRequestParameter(sku+"-refund").equals("on") ||
+					inContext.getRequestParameter(sku+"-refund-quantity") == null)
+			{
+				continue;
+			}
+			
+			String quantity = inContext.getRequestParameter(sku+"-refund-quantity");
+			if (sku.equals("shipping"))
+			{
+				ShippingMethod shippingmethod = order.getShippingMethod();
+				Money shippingcost = shippingmethod.getCost();
+				Money shippingrefund = new Money(quantity);
+				if (shippingcost.doubleValue() < shippingrefund.doubleValue())
+				{
+					System.out.println(" Shipping cost to large - skipping");
+					continue;
+				}
+				shipping = shippingrefund;
+			}
+			else
+			{
+				int intQuantity = Integer.parseInt(quantity);
+				CartItem cartItem = order.getItem(sku);
+				cartItem.getRefundState().setPendingQuantity(intQuantity);
+				cartItem.getRefundState().setRefundStatus(RefundState.REFUND_PENDING);
+				
+				Money price = cartItem.getYourPrice();
+				Money totalPrice = price.multiply(intQuantity);
+				cartItem.getRefundState().setPendingPrice(totalPrice);
+				
+				subtotal = subtotal.add(totalPrice);
+				
+			}
+		}
+		
+		total = total.add(subtotal);
+		ArrayList<String[]> taxes = new ArrayList<String[]>();
+		//list of taxes applied to order
+		Map<TaxRate,Money> taxMap = order.getTaxes();//map of TaxRate,Money
+		Iterator<TaxRate> keys = taxMap.keySet().iterator();
+		while(keys.hasNext())
+		{
+			TaxRate taxRate = keys.next();
+			Fraction fraction = taxRate.getFraction();//actual tax rate, like 0.1300 for HST
+			Money tally = new Money(subtotal.toShortString());
+			if (!shipping.isZero() && taxRate.isApplyToShipping())
+			{
+				tally = tally.add(shipping);
+			}
+			Money amount = tally.multiply(fraction);
+			totaltaxes = totaltaxes.add(amount);
+			String [] taxinfo =  {taxRate.getName(),amount.toString(),fraction.toString()};
+			taxes.add(taxinfo);
+			
+			total = total.add(amount);
+		}
+		
+		if(!shipping.isZero())
+		{
+			subtotal = subtotal.add(shipping);// add the shipping cost to the subtotal
+			total = total.add(shipping);//add the shipping cost to the total
+		}
+		
+		inContext.putPageValue("data",order);
+		inContext.putPageValue("order",order);
+		inContext.putPageValue("subtotal", subtotal);
+		inContext.putPageValue("taxes",taxes);//taxes for the items refunded (+ shipping)
+		inContext.putPageValue("totaltaxes",totaltaxes);//total taxes for the items refunded (+ shipping)
+		if (!shipping.isZero())
+		{
+			inContext.putPageValue("shipping", shipping);
+		}
+		inContext.putPageValue("total", total);
+	}
 	
+	protected void resetPendingRefundStates(Order inOrder)
+	{
+		updateRefundStates(inOrder,null,true);
+	}
 	
+	protected void updateRefundStates(Order inOrder, Refund inRefund, boolean reset)
+	{
+		Iterator<?> itr = inOrder.getItems().iterator();
+		while(itr.hasNext())
+		{
+			CartItem cartItem = (CartItem) itr.next();
+			if (reset)
+			{
+				if (cartItem.getRefundState().getRefundStatus().equals(RefundState.REFUND_PENDING))
+				{
+					cartItem.getRefundState().setPendingPrice(new Money("0"));
+					cartItem.getRefundState().setPendingQuantity(0);
+					cartItem.getRefundState().setRefundStatus(RefundState.REFUND_NIL);
+				}
+			}
+			else if (inRefund!=null)
+			{
+				String sku = cartItem.getSku();
+				Iterator<RefundItem> itr2 = inRefund.getItems().iterator();
+				while (itr2.hasNext())
+				{
+					RefundItem refundItem = itr2.next();
+					if (!refundItem.isShipping() && refundItem.getId()!=null && refundItem.getId().equals(sku))
+					{
+						
+						if (inRefund.isSuccess())//refund has to be successful to update the quantities of the cart items
+						{
+							int pendingQuantity = cartItem.getRefundState().getPendingQuantity();
+							int quantity = cartItem.getRefundState().getQuantity();
+							cartItem.getRefundState().setQuantity(pendingQuantity+quantity);
+							cartItem.getRefundState().setRefundStatus(RefundState.REFUND_SUCCESS);
+						}
+						else
+						{
+							cartItem.getRefundState().setRefundStatus(RefundState.REFUND_NIL);
+						}
+						cartItem.getRefundState().setPendingPrice(new Money("0"));
+						cartItem.getRefundState().setPendingQuantity(0);
+						break;
+					}
+				}
+			}
+		}
+	}
 	
+	public void refundOrder(WebPageRequest inContext) {
+		
+		String ordernumber = inContext.getRequestParameter("ordernumber");
+		Store store = getStore(inContext);
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
+		
+		String subtotalstr = inContext.getRequestParameter("subtotal");
+		String taxstr = inContext.getRequestParameter("tax");
+		String totalstr = inContext.getRequestParameter("total");
+		String shippingstr = inContext.getRequestParameter("shipping");
+		
+		Money subtotal = new Money(subtotalstr);
+		Money tax = new Money(taxstr);
+		Money total = new Money(totalstr);
+		Money shipping = new Money("0");
+		
+		if (shippingstr != null && !shippingstr.isEmpty())
+		{
+			shipping = new Money(shippingstr);
+		}
+		
+		
+		//build refund
+		Refund refund = new Refund();
+		refund.setSubTotal(subtotal);
+		refund.setTaxAmount(tax);
+		refund.setTotalAmount(total);
+		Iterator<CartItem> itr = order.getItems().iterator();
+		while(itr.hasNext())
+		{
+			CartItem cartItem = itr.next();
+			if (cartItem.getRefundState().getRefundStatus().equals(RefundState.REFUND_PENDING))
+			{
+				RefundState state = cartItem.getRefundState();
+				int quantity = state.getPendingQuantity();
+				Money totalprice = state.getPendingPrice();//unitprice * quantity
+				
+				RefundItem refundItem = new RefundItem();
+				refundItem.setShipping(false);
+				refundItem.setId(cartItem.getSku());
+				refundItem.setQuantity(quantity);
+				refundItem.setUnitPrice(cartItem.getYourPrice());
+				refundItem.setTotalPrice(totalprice);
+				refund.getItems().add(refundItem);
+			}
+		}
+		//if we want shipping, need to create a RefundItem
+		if (!shipping.isZero())
+		{
+			RefundItem shippingrefund = new RefundItem();
+			shippingrefund.setShipping(true);
+			shippingrefund.setQuantity(1);
+			shippingrefund.setUnitPrice(shipping);
+			shippingrefund.setTotalPrice(shipping);
+			refund.getItems().add(shippingrefund);
+		}
+		
+		store.getOrderProcessor().refundOrder(inContext, store, order, refund);
+		
+		updateRefundStates(order,refund,false);
+		//update shipping total if successful
+		if (!shipping.isZero() && refund.isSuccess())
+		{
+			String current = order.get("shippingrefundtally");
+			if (current != null && !current.isEmpty())
+			{
+				shipping = shipping.add(new Money(current));
+			}
+			order.setProperty("shippingrefundtally", shipping.toShortString());
+		}
+		
+		order.getRefunds().add(refund);
+		store.saveOrder(order);
+		
+		inContext.putPageValue("data",order);
+		inContext.putPageValue("order",order);
+		inContext.putPageValue("refund",refund);
+	}
 }

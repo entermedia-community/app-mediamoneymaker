@@ -89,15 +89,15 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			mailer.send();
 			
 			//inOrder.getOrderState().setDescription("Order accepted");
-			inOrder.getOrderState().setOk(true);
+			inOrder.getOrderStatus().setOk(true);
 			
 		}
 		catch ( Exception e )
 		{
 			log.error( "Could not email this order request:\n"
 				+ inOrder.getCustomer(), e );
-			inOrder.getOrderState().setDescription("Order could not be sent " + e.getMessage());
-			inOrder.getOrderState().setOk(false);
+			inOrder.getOrderStatus().setDescription("Order could not be sent " + e.getMessage());
+			inOrder.getOrderStatus().setOk(false);
 			throw new StoreException( e );
 		}
 	}
@@ -169,17 +169,23 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			{
 				log.error( "Could not email this order request:\n"
 					+ inOrder.getCustomer(), e );
-				inOrder.getOrderState().setDescription("Order could not be sent " + e.getMessage());
-				inOrder.getOrderState().setOk(false);
+				inOrder.getOrderStatus().setDescription("Order could not be sent " + e.getMessage());
+				inOrder.getOrderStatus().setOk(false);
 				throw new StoreException( e );
 			}
 		}
 
 	
-	public void refundOrder(WebPageRequest inContext, Store inStore, 
+	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, 
 			Refund inRefund) throws StoreException {
+		
+		System.out.println(" &&& success? "+inRefund.isSuccess());
 		if(inRefund.isSuccess()){
-			Order order = inRefund.getOrder();
+//			Order order = inRefund.getOrder();
+			
+			//an order has a list of refunds
+			// maybe change refundOrder signature to 
+			// refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund)
 			
 			
 			//send an email to let them know.
@@ -187,9 +193,6 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			
 			
 		}
-		//Send and Email
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**

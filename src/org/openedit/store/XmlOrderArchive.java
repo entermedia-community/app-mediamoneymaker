@@ -34,6 +34,9 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
 import org.openedit.store.orders.OrderState;
+import org.openedit.store.orders.Refund;
+import org.openedit.store.orders.RefundItem;
+import org.openedit.store.orders.RefundState;
 import org.openedit.store.orders.Shipment;
 import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
@@ -209,6 +212,40 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 							String.valueOf(rate.isApplyToShipping()));
 				}
 			}
+			
+			//add refunds
+			Iterator<Refund> itr = inOrder.getRefunds().iterator();
+			while(itr.hasNext())
+			{
+				Refund refund = itr.next();
+				Element entry = orderElem.addElement("refund");
+				entry.addAttribute("date", DateStorageUtil.getStorageUtil().formatForStorage(refund.getDate()));
+				entry.addAttribute("success",String.valueOf(refund.isSuccess()));
+				if (refund.isSuccess())
+				{
+					entry.addAttribute("transactionid",refund.getTransactionId());
+					entry.addAttribute("subtotal", refund.getSubTotal().toShortString());
+					entry.addAttribute("tax", refund.getTaxAmount().toShortString());
+					entry.addAttribute("total", refund.getTotalAmount().toShortString());
+				}
+				else
+				{
+					entry.addAttribute("message",refund.getMessage());
+				}
+				Iterator<RefundItem> itr2 = refund.getItems().iterator();
+				while(itr2.hasNext())
+				{
+					RefundItem ritem = itr2.next();
+					Element refunditem = entry.addElement("refunditem");
+					refunditem.addAttribute("shipping", ""+ritem.isShipping());
+					refunditem.addAttribute("sku", ritem.isShipping() ? "" : ritem.getId());
+					refunditem.addAttribute("quantity", String.valueOf(ritem.getQuantity()));
+					refunditem.addAttribute("totalprice", ritem.getTotalPrice().toShortString());
+					refunditem.addAttribute("unitprice", ritem.getUnitPrice().toShortString());
+				}
+			}
+			
+			
 			List adjustments = inOrder.getAdjustments();
 			if (adjustments != null) {
 				for (Iterator iterator = adjustments.iterator(); iterator
@@ -220,7 +257,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				}
 			}
 			// add customer information, including address
-			// add saveing code for entries
+			// add saving code for entries
 
 			Element shippingdetails = orderElem.addElement("shipping");
 			for (Iterator iterator = inOrder.getShipments().iterator(); iterator
@@ -394,6 +431,16 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			optionElem.addAttribute("value", option.getValue());
 			optionElem.addAttribute("name", option.getName());
 			optionElem.addAttribute("datatype", option.getDataType());
+		}
+		
+		//if there is a refund state then persist it
+		//when a refund is issued, it goes from pending to success or nil (meaning failure or rejected)
+		//so update the quantity when a refund success is found
+		if (inItem.getRefundState().getRefundStatus().equals(RefundState.REFUND_SUCCESS))
+		{
+			Element entry = itemElem.addElement("refundstate");
+			int quantity = inItem.getRefundState().getQuantity();
+			entry.addAttribute("quantity", String.valueOf(quantity));
 		}
 
 		if (inItem.getProperties() != null) {
@@ -603,6 +650,39 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		} catch (Exception ex) {
 			throw new StoreException(ex);
 		}
+		
+		//load refunds
+		for (Iterator<?> it = inOrderElement.elementIterator("refund"); it.hasNext();) {
+			Element entry = (Element) it.next();
+			Refund refund = new Refund();
+			String formated = entry.attributeValue("date");
+			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(formated);
+			refund.setDate(date);
+			refund.setSuccess(entry.attributeValue("success").equals("true"));
+			if (refund.isSuccess())
+			{
+				refund.setTransactionId(entry.attributeValue("transactionid"));
+				refund.setSubTotal(new Money(entry.attributeValue("subtotal")));
+				refund.setTaxAmount(new Money(entry.attributeValue("tax")));
+				refund.setTotalAmount(new Money(entry.attributeValue("total")));
+			}
+			else
+			{
+				refund.setMessage(entry.attributeValue("message"));
+			}
+			for (Iterator<?> it2 = entry.elementIterator("refunditem"); it2.hasNext(); )
+			{
+				Element entry2 = (Element) it2.next();
+				RefundItem refunditem = new RefundItem();
+				refunditem.setShipping(entry2.attributeValue("shipping")!=null && entry2.attributeValue("shipping").equals("true") ? true : false);
+				refunditem.setId( entry2.attributeValue("sku"));
+				refunditem.setQuantity(Integer.parseInt(entry2.attributeValue("quantity")));
+				refunditem.setTotalPrice(new Money(entry2.attributeValue("totalprice")));
+				refunditem.setUnitPrice(new Money(entry2.attributeValue("unitprice")));
+				refund.getItems().add(refunditem);
+			}
+			inOrder.addRefund(refund);
+		}
  
 		Customer customer = new Customer();
 		Element customerElem = inOrderElement.element("customer");
@@ -811,6 +891,20 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 			item.setProduct(stub);
 			item.setInventoryItem(inventory);
+		}
+		
+		//append refundstate
+		Element refundentry = inItemElem.element("refundstate");
+		System.out.println(" &&& refund state for "+item.getSku()+": "+refundentry);
+		
+		if (refundentry != null)
+		{
+			String quantitystr = refundentry.attributeValue("quantity");
+			if (quantitystr!=null && !quantitystr.isEmpty())
+			{
+				int quantity = Integer.parseInt(quantitystr);
+				item.getRefundState().setQuantity(quantity);
+			}
 		}
 		return item;
 	}

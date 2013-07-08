@@ -9,4 +9,5 @@
   <property id="csvgenerated"/>
   <property id="distributor"/>
   <property id="batchid"/>
+  <property id="transactionid"/>
 </root>

@@ -1,0 +1,157 @@
+#set ( $orderNumber = $order.orderNumber )
+#set ( $customer = $order.customer )
+
+#set($title = "Refund details for $orderNumber")
+#set($description = "Confirm the following refund details the press <strong>Submit</strong>.")
+
+<h3>$title</h3>
+<br>
+<p class="refund-description">$description</p>
+<br>
+
+<form id="usereditform" method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/submitrefunds.html">
+	<input type="hidden" name="ordernumber" value="$orderNumber"/>
+	<input type="hidden" name="total" value="${total.toShortString()}"/>
+	<input type="hidden" name="subtotal" value="${subtotal.toShortString()}"/>
+	<input type="hidden" name="tax" value="${totaltaxes.toShortString()}"/>
+	<input type="hidden" name="shipping" value="$!{shipping.toShortString()}"/>
+	
+	<table cellspacing="5" cellpadding="3" border="0">
+		<thead>
+			<tr class="results-list-head">
+				<th align="center" width="300" class="results-list-head">Product ID</th>
+				<th align="center" width="100" nowrap class="results-list-head">Quantity</th>
+				<th align="center" width="100" nowrap class="results-list-head">Unit Price</th>
+				<th align="center" width="100" nowrap class="results-list-head">Price</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr height="30"></tr>
+			<tr>
+				<td><input class="btn small" style="float: left" type="button" value="Edit" onclick="window.history.back()"/></td>
+				<td colspan="2"></td>
+				<td><input class="btn small" style="float: right" type="submit" value="Submit" /></td>
+			</tr>
+		</tfoot>
+		
+#set($itemCounter = 0)
+#foreach ( $item in $order.items )
+	#set( $refundstate = $item.getRefundState() )
+	#if( $refundstate.getRefundStatus() == "Pending" )
+	
+		#set($itemCounter = $itemCounter + 1)
+		#set($bkgrnd = $itemCounter % 2)
+		#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+		#else
+		<tr class="results-list-b">
+		#end
+				
+		#set($price = $refundstate.getPendingPrice())
+		#set($quantity = $refundstate.getPendingQuantity())
+		#set($unitprice = $price.divide("$quantity"))
+		
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" style="font-size: 11px; font-weight: bold; color: #222222;">
+					$item
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$quantity
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$unitprice
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$price
+				</p>
+			</td>
+		</tr>
+	#end
+#end
+	
+	#if($shipping)
+		#set($shippingmethod = $order.getShippingMethod())
+		#set($itemCounter = $itemCounter + 1)
+		#set($bkgrnd = $itemCounter % 2)
+		#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+		#else
+		<tr class="results-list-b">
+		#end
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" style="font-size: 11px; font-weight: bold; color: #222222;">
+					Shipping Method: $shippingmethod.getDescription()
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					1
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$shipping
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$shipping
+				</p>
+			</td>
+		</tr>
+	
+	#end
+	
+		<tr><td colspan="4"><hr></td></tr>
+		<tr>
+			<td colspan="2"></td>
+			<td align="right" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					<strong>Subtotal:</strong>
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$subtotal
+				</p>
+			</td>
+		</tr>
+		
+	#foreach ($info in $taxes)
+		<tr>
+			<td colspan="2"></td>
+			<td align="right" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					<strong>$info.get(0):</strong>
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$info.get(1)
+				</p>
+			</td>
+		</tr>
+	#end
+	
+	<tr><td colspan="4"><hr></td></tr>
+		<tr>
+			<td colspan="2"></td>
+			<td align="right" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					<strong>Total:</strong>
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$total
+				</p>
+			</td>
+		</tr>
+	</table>
+</form>

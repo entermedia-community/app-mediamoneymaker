@@ -61,7 +61,9 @@ public class Order extends BaseData implements Comparable {
 	protected Cart fieldCart;
 	protected Address fieldShippingAddress;
 	protected Address fieldBillingAddress;
-
+	
+	protected List<Refund> fieldRefunds;
+	
 	public Address getShippingAddress() {
 		return fieldShippingAddress;
 	}
@@ -480,8 +482,16 @@ public class Order extends BaseData implements Comparable {
 		return getCartItemByProductProperty(inKey, inValue) != null;
 	}
 
-	public List getRefunds() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Refund> getRefunds() {
+		if (fieldRefunds == null)
+		{
+			fieldRefunds = new ArrayList<Refund>();
+		}
+		return fieldRefunds;
+	}
+	
+	public void addRefund(Refund r)
+	{
+		getRefunds().add(r);
 	}
 }

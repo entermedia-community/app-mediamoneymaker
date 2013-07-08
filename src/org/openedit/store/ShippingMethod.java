@@ -31,4 +31,6 @@ public interface ShippingMethod
 	public void addHandlingCharge(HandlingCharge inHandlingCharge);
 	public Collection getHints(Cart inCart);
 	
+	public boolean isRefundable();
+	
 }

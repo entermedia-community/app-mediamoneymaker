@@ -33,6 +33,7 @@ public class InventoryItem
 	protected PriceSupport fieldPriceSupport;
 	protected String fieldDescription;
 	protected double fieldWeight;
+	protected boolean fieldRefundable;
 	
 	public double getHeight() {
 		return fieldHeight;
@@ -598,6 +599,16 @@ public class InventoryItem
 			return getProduct().getOption(inId);
 		}
 		return option;
+	}
+	
+	public boolean isRefundable()
+	{
+		return fieldRefundable;
+	}
+	
+	public void setRefundable(boolean inRefundable)
+	{
+		this.fieldRefundable = inRefundable;
 	}
 
 	public InventoryItem copy() {

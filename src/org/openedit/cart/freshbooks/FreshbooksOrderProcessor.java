@@ -208,7 +208,7 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 	}
 
 	@Override
-	public void refundOrder(WebPageRequest inContext, Store inStore,
+	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder,
 			Refund inRefund) throws StoreException {
 		// TODO Auto-generated method stub
 		

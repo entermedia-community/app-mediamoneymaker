@@ -17,12 +17,7 @@ public interface OrderProcessor
 	// result of approval, returned as Boolean
 	public static final String AUTHORIZATION_RESULT_KEY = "AuthorizationResult";
 
-	public void processNewOrder(WebPageRequest inContext, Store inStore, Order inOrder)
+	public void processNewOrder(WebPageRequest inContext, Store inStore, Order inOrder) throws StoreException;
 	
-	
-	throws StoreException;
-
-	public void refundOrder(WebPageRequest inContext, Store inStore,  Refund refund)	throws StoreException;
-	
-	
+	public void refundOrder(WebPageRequest inContext, Store inStore,  Order inOrder, Refund refund)	throws StoreException;
 }

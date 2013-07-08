@@ -4,7 +4,8 @@
 #set($address = $cart.getShippingAddress())
 
 	<p>You order will normally ship in 24-48 hours.</p>
-
+	
+	<form method="post" action="$home$apphome/checkout3.html">
 	
 	$pages.include("./shipping.html")
 #if($cart.getShippingMethod().getHints($cart).size() > 0)
@@ -15,4 +16,7 @@ Add another $hint.needed from <a class="btn" href="$apphome/search/fieldsearch.h
 	#end
 	 
 <br/>
-	<a class="btn" href="checkout3.html">I'm ready, proceed to checkout</a>
+	<input type="submit" class="btn"  value="I'm ready, proceed to checkout">
+		
+	
+	</form>

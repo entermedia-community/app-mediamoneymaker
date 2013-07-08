@@ -1,0 +1,12 @@
+
+#set($orderNumber = $data.orderNumber )
+#set($status = $data.getOrderStatus())
+
+#if($status == "Authorized")
+	$pages.include("$home$apphome/views/modules/storeOrder/edit/refund/refundtable.html", $context)
+#else
+
+<h3>Refund Status for $orderNumber</h3>
+<br>
+<p>The order has not been processed and is not available for refunds.</p>	
+#end

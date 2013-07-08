@@ -145,15 +145,14 @@ public class CompositeOrderProcessor implements OrderProcessor
 		fieldOrderProcessorObjects = inOrderArchiveObjects;
 	}
 
-	public void refundOrder(WebPageRequest inContext, Store inStore,
+	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder,
 			Refund inRefund) throws StoreException {
 		
 		
 		for (Iterator iter = getOrderProcessorObjects().iterator(); iter.hasNext();)
 		{
 			OrderProcessor op = (OrderProcessor) iter.next();
-			op.refundOrder(inContext, inStore, inRefund);
-			
+			op.refundOrder(inContext, inStore, inOrder, inRefund);
 		}
 		
 		

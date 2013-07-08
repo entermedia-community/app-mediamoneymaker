@@ -20,6 +20,8 @@ import org.openedit.store.ShippingMethod;
  */
 public abstract class BaseShippingMethod implements ShippingMethod  
 {
+	public static final boolean DEFAULT_REFUNDABLE = true;
+	
 	protected String fieldId = "";
 	protected String fieldDescription = "";
 	protected Map fieldHandlingCharges;
@@ -32,6 +34,9 @@ public abstract class BaseShippingMethod implements ShippingMethod
 	protected Money fieldUpperThreshold = null;
 	
 	protected boolean fieldHidden;
+	
+	// add refundable field
+	protected boolean fieldRefundable = DEFAULT_REFUNDABLE;//initialize it with something
 	
 	public Money getCost()
 	{
@@ -138,6 +143,16 @@ public abstract class BaseShippingMethod implements ShippingMethod
 	public void setHidden(boolean inHidden)
 	{
 		fieldHidden = inHidden;
+	}
+
+	public boolean isRefundable()
+	{
+		return fieldRefundable;
+	}
+
+	public void setRefundable(boolean inRefundable)
+	{
+		fieldRefundable = inRefundable;
 	}
 
 }

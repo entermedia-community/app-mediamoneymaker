@@ -1,0 +1,187 @@
+#set( $order = $data )
+#set ( $orderNumber = $order.orderNumber )
+#set ( $customer = $order.customer )
+
+#set($title = "Create a refund for  $orderNumber")
+#set($description = "To refund an entire or partial order, select an item on the left, provide a quantity, then select <strong>Next</strong>.")
+
+<h3>$title</h3>
+<br>
+<p class="refund-description">$description</p>
+<br>
+
+<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/step2.html">
+	<input type="hidden" name="ordernumber" value="$orderNumber"/>
+	
+	<table cellspacing="5" cellpadding="3" border="0">
+		<thead>
+			<tr class="results-list-head">
+				<th align="center" width="100"  class="results-list-head">Refund</th>
+				<th align="center" class="results-list-head">Product ID</th>
+				<th align="center" class="results-list-head">Item SKU</th>
+				<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
+				<th align="center" width="100" nowrap class="results-list-head">Price</th>
+				<th align="center" width="100" nowrap class="results-list-head">Available Quantity</th>
+				<th align="center" width="100" nowrap class="results-list-head">Refund Quantity</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr height="30"></tr>
+			<tr>
+				#set($goback="$home$apphome/views/modules/storeOrder/edit/edit.html?id=${orderNumber}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details")
+		    	<td><input class="btn small" style="float: left" type="button" value="Cancel" onclick="window.location='${goback}'"/></td>
+		    	<td colspan="5"></td>
+		    	<td><input class="btn small" style="float: right" type="submit" value="Next" /></td>
+	   		</tr>
+		</tfoot>
+		
+	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
+	#set($itemCounter = 0)
+	#foreach ( $item in $order.items )
+		#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+		#set($itemCounter = $itemCounter + 1)
+		#set($bkgrnd = $itemCounter % 2)
+		#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+		#else
+		<tr class="results-list-b">
+		#end
+		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+		#set($disablerefund = false)
+		#set($refundstate = $item.getRefundState())
+		#set($availablenum = $numberutils.toInt("${item.quantity}"))
+		#if($refundstate)
+				#set($refundnum = $refundstate.getQuantity())
+				#set($refundnum = $numberutils.toInt("$refundnum"))
+				#set($totalnum = $numberutils.toInt("${item.quantity}"))
+				#if($totalnum < $refundnum)
+					#set($disablerefund = true)
+				#end
+				#set($availablenum = $totalnum - $refundnum)
+		#end
+				<input type="checkbox" class="checkbox-entry" name="${item.sku}-refund" #if($disablerefund) disable #end>
+			</td>
+			<td  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>	
+				</p>
+				<input type="hidden" name="sku" value="$item.sku"/>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">$item.sku</p>
+			</td>
+			<td align="center" nowrap  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					#if( $order.isFullyShipped() == "true" )
+						Shipped
+					#else
+						#if ( $order.getQuantityShipped($item) == $item.quantity )
+							Shipped
+						#else
+							#if ( $order.getQuantityShipped($item) > 0 )
+								Partially Shipped
+							#else
+								Waiting for Shipment
+							#end
+						#end
+					#end
+				</p>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">$item.getYourPrice()</p>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">$availablenum</p>
+				<input type="hidden" id="${item.sku}-refund-available" value="$availablenum"/>
+			</td>
+			<td align="center">
+				<input type="text" id="${item.sku}-refund-quantity" name="${item.sku}-refund-quantity" value="$availablenum" onchange="validateInput('${item.sku}-refund',$availablenum);" disabled>
+			</td>
+		</tr>
+	    #end
+	    
+	    <!-- 
+	    <tr><td colspan="7"><hr></td></tr>
+	    -->
+	    
+	    #set($shippingmethod = $order.getShippingMethod())
+	    #if($shippingmethod.isRefundable() == "true")
+	    	#set($itemCounter = $itemCounter + 1)
+			#set($bkgrnd = $itemCounter % 2)
+			#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+			#else
+		<tr class="results-list-b">
+			#end
+			
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<input type="checkbox" class="checkbox-entry" name="shipping-refund">
+			</td>
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" style="font-size: 11px; font-weight:bold;">
+					Shipping Method: $shippingmethod.getDescription()
+				</p>
+				<input type="hidden" name="sku" value="shipping"/>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" >n/a</p>
+			</td>
+			<td align="center" nowrap  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" >n/a</p>
+				</p>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					
+					#set($shippingrefundtally = $order.get("shippingrefundtally"))
+					#if($shippingrefundtally)
+						#set($temp = $numberutils.toDouble("$shippingrefundtally"))
+						#set($shippingcost = $shippingmethod.getCost().doubleValue() )
+						#set($shippingcost = $shippingcost - $temp)
+					#else
+						#set($shippingcost = $shippingmethod.getCost().toShortString())
+					#end
+					
+					<input type="text" id="shipping-refund-quantity" name="shipping-refund-quantity" value="$shippingcost" onchange="validateInput('shipping-refund',$shippingcost);" disabled>
+					<input type="hidden" id="shipping-refund-available" value="$shippingcost"/>
+				</p>
+			</td>
+			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">1</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">1</p>
+			</td>
+	    </tr>
+	    #end
+	</table>
+</form>
+
+<script type="text/javascript"">
+	$(".checkbox-entry").change(function(){
+		var checked = $(this).attr('checked');
+		var source = $(this).attr('name');
+		var available = $("#"+source+"-available").val();
+		if (checked == undefined)
+		{
+			$("#"+source+"-quantity").attr('disabled', 'disabled');
+			$("#"+source+"-quantity").val(available);
+		}
+		else
+		{
+			$("#"+source+"-quantity").removeAttr('disabled');
+			$("#"+source+"-quantity").val(available);
+		}
+	});
+	function validateInput(id,available)
+	{
+		var quantity = $("#"+id+"-quantity").val();
+		if ( !jQuery.isNumeric(quantity)){
+			console.log("not a number");
+		} else if (available < quantity){
+			console.log("too high");
+		}
+		return false;
+	}
+</script>

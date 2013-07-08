@@ -17,6 +17,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.openedit.data.BaseData;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.store.orders.RefundState;
 import org.openedit.store.orders.Shipment;
 
 
@@ -25,7 +26,7 @@ import org.openedit.store.orders.Shipment;
  *
  */
 public class CartItem extends BaseData
-{
+{	
 	protected int fieldQuantity = 1;
 	protected Money fieldYourPrice;
 	protected InventoryItem fieldInventoryItem;
@@ -36,6 +37,8 @@ public class CartItem extends BaseData
 	protected String fieldShippingPrefix = "shipping";
 	protected String fieldStatus;
 	protected List fieldShipments;
+	protected RefundState fieldRefundState;
+	
 	public CartItem()
 	{
 		super();
@@ -427,5 +430,19 @@ public class CartItem extends BaseData
 
 	public void setShipments(List<Shipment> inShipments) {
 		fieldShipments = inShipments;
+	}
+
+	public RefundState getRefundState()
+	{
+		if (fieldRefundState == null)
+		{
+			fieldRefundState = new RefundState();
+		}
+		return fieldRefundState;
+	}
+
+	public void setRefundState(RefundState inRefundState)
+	{
+		fieldRefundState = inRefundState;
 	}
 }

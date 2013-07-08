@@ -14,4 +14,5 @@
   <property id="csvgenerated" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="storeOrder" internalfield="false" datatype="boolean">CSV Generated</property>
   <property id="batchid" index="true" stored="true" editable="true" searchtype="storeOrder">Batch ID</property>
   <property id="freshstatus" index="true" stored="true" editable="true" searchtype="storeOrder" internalfield="false">Freschbooks Status</property>
+  <property id="transactionid" index="true" stored="true" editable="true">transactionid</property>
 </properties>

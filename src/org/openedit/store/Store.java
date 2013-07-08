@@ -1064,112 +1064,112 @@ public class Store {
 	public void setOrderProcessor(OrderProcessor inOrderProcessor) {
 		fieldOrderProcessor = inOrderProcessor;
 	}
-		public boolean isUseSearchSecurity() {
-			return fieldUseSearchSecurity;
-		}
+	public boolean isUseSearchSecurity() {
+		return fieldUseSearchSecurity;
+	}
 
-		public void setUseSearchSecurity(boolean inUseSearchSecurity) {
-			fieldUseSearchSecurity = inUseSearchSecurity;
-		}
-		
-		public void reloadSearchIndex(){
-			getProductSearch().clearIndex();
-		}
-
-		public SearcherManager getSearcherManager()
-		{
-			return fieldSearcherManager;
-		}
-
-		public void setSearcherManager(SearcherManager inSearcherManager)
-		{
-			fieldSearcherManager = inSearcherManager;
-		}
-		/**
-		 * Returns a list of potential (not actual) images, valid for any catalog.
-		 * 
-		 * @return A {@link List} of {@link Image}s
-		 */
-		public List getImageList()
-		{
-			if (fieldImageList == null)
-			{
-
-				List arrayList = new ArrayList();
-				try
-				{
-					String path = "/" + getCatalogId() + "/data/imagelist.xml";
-					XmlFile config = getXmlArchive().getXml(path,"image");
-					if( config.isExist())
-					{
-						Element root = config.getRoot();
-						for (Iterator iter = root.elementIterator("image"); iter.hasNext();)
-						{
-							Element type = (Element) iter.next();
-							String name = type.attributeValue("name");
-							String id = type.attributeValue("id");
+	public void setUseSearchSecurity(boolean inUseSearchSecurity) {
+		fieldUseSearchSecurity = inUseSearchSecurity;
+	}
 	
-							String postfix = type.attributeValue("postfix");
-							int width = Integer.parseInt(type.attributeValue("width"));
-							int height;
-							String heightString = type.attributeValue("height");
-							if (heightString != null && heightString.length() > 0)
-							{
-								height = Integer.parseInt(heightString);
+	public void reloadSearchIndex(){
+		getProductSearch().clearIndex();
+	}
 
-							}
-							else
-							{
-								height = 10000;
-							}
-							String sizetype = type.attributeValue("type");
-							Image thumb = new Image(name, width, height, postfix);
-							thumb.setId(id);
-							thumb.setType(sizetype);
-							arrayList.add(thumb);
+	public SearcherManager getSearcherManager()
+	{
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
+	/**
+	 * Returns a list of potential (not actual) images, valid for any catalog.
+	 * 
+	 * @return A {@link List} of {@link Image}s
+	 */
+	public List getImageList()
+	{
+		if (fieldImageList == null)
+		{
+
+			List arrayList = new ArrayList();
+			try
+			{
+				String path = "/" + getCatalogId() + "/data/imagelist.xml";
+				XmlFile config = getXmlArchive().getXml(path,"image");
+				if( config.isExist())
+				{
+					Element root = config.getRoot();
+					for (Iterator iter = root.elementIterator("image"); iter.hasNext();)
+					{
+						Element type = (Element) iter.next();
+						String name = type.attributeValue("name");
+						String id = type.attributeValue("id");
+
+						String postfix = type.attributeValue("postfix");
+						int width = Integer.parseInt(type.attributeValue("width"));
+						int height;
+						String heightString = type.attributeValue("height");
+						if (heightString != null && heightString.length() > 0)
+						{
+							height = Integer.parseInt(heightString);
+
 						}
+						else
+						{
+							height = 10000;
+						}
+						String sizetype = type.attributeValue("type");
+						Image thumb = new Image(name, width, height, postfix);
+						thumb.setId(id);
+						thumb.setType(sizetype);
+						arrayList.add(thumb);
 					}
 				}
-				catch (Exception ex)
-				{
-					throw new OpenEditRuntimeException(ex);
-				}
-				fieldImageList = arrayList;
 			}
-			return fieldImageList;
-		}
-
-		public List getImageList(String inType) throws StoreException
-		{
-			List r = new ArrayList();
-			List items = getImageList();
-			for (Iterator iter = items.iterator(); iter.hasNext();)
+			catch (Exception ex)
 			{
-				Image image = (Image) iter.next();
-				if (image.getType().equals(inType))
-				{
-					r.add(image);
-				}
+				throw new OpenEditRuntimeException(ex);
 			}
-			return r;
-		} 
-		public String getLinkToProduct(String inSourcePath)
-		{
-			return getLinkToProduct(inSourcePath, "/" + getCatalogId() + "/products");
+			fieldImageList = arrayList;
 		}
-		public String getLinkToProduct(String inSourcePath, String productrooot)
+		return fieldImageList;
+	}
+
+	public List getImageList(String inType) throws StoreException
+	{
+		List r = new ArrayList();
+		List items = getImageList();
+		for (Iterator iter = items.iterator(); iter.hasNext();)
 		{
-			//TODO: 
-		 	if (inSourcePath.endsWith("/"))
-		 	{
-				return productrooot + "/" + inSourcePath + "index.html";
-		 	}
-		 	else
-		 	{
-				return productrooot + "/" + inSourcePath + ".html";
-		 	}
+			Image image = (Image) iter.next();
+			if (image.getType().equals(inType))
+			{
+				r.add(image);
+			}
 		}
-		
+		return r;
+	} 
+	public String getLinkToProduct(String inSourcePath)
+	{
+		return getLinkToProduct(inSourcePath, "/" + getCatalogId() + "/products");
+	}
+	public String getLinkToProduct(String inSourcePath, String productrooot)
+	{
+		//TODO: 
+	 	if (inSourcePath.endsWith("/"))
+	 	{
+			return productrooot + "/" + inSourcePath + "index.html";
+	 	}
+	 	else
+	 	{
+			return productrooot + "/" + inSourcePath + ".html";
+	 	}
+	}
+	
 //		public String getLinkToThumb(String inSourcePath)
 //		{
 //			return getImageCreator().getLinkToThumb(getCatalogId(), inSourcePath);
@@ -1178,135 +1178,135 @@ public class Store {
 //		{
 //			return getImageCreator().getLinkToMedium(getCatalogId(), inSourcePath, null);
 //		}
-		
-		/**
-		 * 
-		 * @param inSourcePath
-		 * @param inFileName
-		 * @param inExtension
-		 * @deprecated use getLinkToThumb(String)
-		 * @return
-		 */
-		
-		
-
-		public Collection listAllKnownProductIds()
-		{
-			return getProductSearcher().getAllHits();
-		}
-
+	
+	/**
+	 * 
+	 * @param inSourcePath
+	 * @param inFileName
+	 * @param inExtension
+	 * @deprecated use getLinkToThumb(String)
+	 * @return
+	 */
+	
 	
 
-		public String getSourcePathForPage(WebPageRequest inPage)
-		{
-			String sourcePath = null;
-			String productrootfolder = inPage.getPage().get("productrootfolder");
-			//log.info(inPage.getPathUrl());
-			if( productrootfolder != null)
-			{
-				sourcePath = inPage.getPath().substring(productrootfolder.length() + 1);
+	public Collection listAllKnownProductIds()
+	{
+		return getProductSearcher().getAllHits();
+	}
 
-				String orig = inPage.getPage().get("sourcepathhasfilename");
-				if( Boolean.parseBoolean(orig))
-				{
-					//Take off the extra test.eps part
-					sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
-				}
-				else
-				{
-					//Take off the extra extension
-					sourcePath = PathUtilities.extractPagePath(sourcePath);
-				}
-			}
-			if(sourcePath.endsWith("folder")){
-			 sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
-			 sourcePath = sourcePath + "/"; 
-			}
-			return sourcePath;
-		}
 
-		public Product getProductBySourcePath(String inSourcePath)
+
+	public String getSourcePathForPage(WebPageRequest inPage)
+	{
+		String sourcePath = null;
+		String productrootfolder = inPage.getPage().get("productrootfolder");
+		//log.info(inPage.getPathUrl());
+		if( productrootfolder != null)
 		{
-			return getProductArchive().getProductBySourcePath(inSourcePath);
-		}
-		
-		/*
-		 * Creates a product at the specified sourcePath, but does not save or index.
-		 */
-		
-		public Product createProduct(String inSourcePath)
-		{
-			Product product = new Product();
-			product.setCatalogId(getCatalogId());
-			String id = inSourcePath.toLowerCase(); 
-			id = id.replace('/', '_'); //For ian
-			id = PathUtilities.extractId( id , true); 
-			product.setId(id);
-			product.setSourcePath(inSourcePath);
-			String name;
-			if (inSourcePath.endsWith("/"))
+			sourcePath = inPage.getPath().substring(productrootfolder.length() + 1);
+
+			String orig = inPage.getPage().get("sourcepathhasfilename");
+			if( Boolean.parseBoolean(orig))
 			{
-				name = PathUtilities.extractDirectoryName(inSourcePath);
+				//Take off the extra test.eps part
+				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 			}
 			else
 			{
-				name = PathUtilities.extractFileName(inSourcePath);
-			}
-			product.setName(name);
-			String xconfpath = getProductArchive().buildXconfPath(product);
-			Page page = getPageManager().getPage(xconfpath);
-			product.setSourcePage(page);
-			return product;
-		}
-
-		public Product getProductBySourcePath(Page inPage)
-		{
-			String productrootfolder = inPage.get("productrootfolder");
-			//log.info(inPage.getPathUrl());
-			if( productrootfolder == null || productrootfolder.length() >= inPage.getPath().length() )
-			{
-				return null;
-			}
-			if( !inPage.getPath().startsWith(productrootfolder))
-			{
-				return null;
-			}
-			String	sourcePath = inPage.getPath().substring(productrootfolder.length() + 1);
-			if (sourcePath.endsWith("index.html"))
-			{
-				sourcePath = PathUtilities.extractDirectoryPath(sourcePath) + "/"; //folder product
-			}
-			else
-			{
+				//Take off the extra extension
 				sourcePath = PathUtilities.extractPagePath(sourcePath);
 			}
-			
-			
-			Product product = getProductBySourcePath(sourcePath);
-			return product;
 		}
-
-		public ModuleManager getModuleManager()
-		{
-			return fieldModuleManager;
+		if(sourcePath.endsWith("folder")){
+		 sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
+		 sourcePath = sourcePath + "/"; 
 		}
+		return sourcePath;
+	}
 
-		public void setModuleManager(ModuleManager inModuleManager)
-		{
-			fieldModuleManager = inModuleManager;
-		}
-
+	public Product getProductBySourcePath(String inSourcePath)
+	{
+		return getProductArchive().getProductBySourcePath(inSourcePath);
+	}
 	
+	/*
+	 * Creates a product at the specified sourcePath, but does not save or index.
+	 */
 	
-		public List getTaxRatesFor(String inState) {
-			ArrayList list = new ArrayList();
-			for (Iterator iterator = getTaxRates().iterator(); iterator.hasNext();) {
-				TaxRate rate = (TaxRate) iterator.next();
-				if(rate.getState().equalsIgnoreCase(inState)){
-					list.add(rate);
-				}
-			}
-			return list;
+	public Product createProduct(String inSourcePath)
+	{
+		Product product = new Product();
+		product.setCatalogId(getCatalogId());
+		String id = inSourcePath.toLowerCase(); 
+		id = id.replace('/', '_'); //For ian
+		id = PathUtilities.extractId( id , true); 
+		product.setId(id);
+		product.setSourcePath(inSourcePath);
+		String name;
+		if (inSourcePath.endsWith("/"))
+		{
+			name = PathUtilities.extractDirectoryName(inSourcePath);
+		}
+		else
+		{
+			name = PathUtilities.extractFileName(inSourcePath);
+		}
+		product.setName(name);
+		String xconfpath = getProductArchive().buildXconfPath(product);
+		Page page = getPageManager().getPage(xconfpath);
+		product.setSourcePage(page);
+		return product;
+	}
+
+	public Product getProductBySourcePath(Page inPage)
+	{
+		String productrootfolder = inPage.get("productrootfolder");
+		//log.info(inPage.getPathUrl());
+		if( productrootfolder == null || productrootfolder.length() >= inPage.getPath().length() )
+		{
+			return null;
+		}
+		if( !inPage.getPath().startsWith(productrootfolder))
+		{
+			return null;
+		}
+		String	sourcePath = inPage.getPath().substring(productrootfolder.length() + 1);
+		if (sourcePath.endsWith("index.html"))
+		{
+			sourcePath = PathUtilities.extractDirectoryPath(sourcePath) + "/"; //folder product
+		}
+		else
+		{
+			sourcePath = PathUtilities.extractPagePath(sourcePath);
+		}
 		
+		
+		Product product = getProductBySourcePath(sourcePath);
+		return product;
+	}
+
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+
+
+
+	public List getTaxRatesFor(String inState) {
+		ArrayList list = new ArrayList();
+		for (Iterator iterator = getTaxRates().iterator(); iterator.hasNext();) {
+			TaxRate rate = (TaxRate) iterator.next();
+			if(rate.getState().equalsIgnoreCase(inState)){
+				list.add(rate);
+			}
 		}
+		return list;
+	
+	}
 }

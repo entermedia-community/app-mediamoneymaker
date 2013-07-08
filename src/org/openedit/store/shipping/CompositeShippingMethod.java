@@ -73,5 +73,4 @@ public class CompositeShippingMethod extends BaseShippingMethod implements
 		}
 		return hintlist;
 	}
-
 }

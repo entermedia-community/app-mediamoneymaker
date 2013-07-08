@@ -116,10 +116,7 @@
 			 <value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
-			<value>scriptedOrderProcessor</value>
-			
 			<value>emailOrderProcessor</value>
-						
 			
 		</list>
 	</property>
@@ -170,7 +167,15 @@
 
 
   <bean id="beanstreamOrderProcessor" class="org.openedit.store.gateway.BeanstreamOrderProcessor">
-    	<property name="pageManager"><ref bean="pageManager" /></property>
+    	<property name="pageManager">
+    		<ref bean="pageManager" />
+    	</property>
+    	<property name="beanstreamUtil">
+    		<ref bean="beanstreamUtil" />
+    	</property>
+    	<property name="userManager">
+    		<ref bean="userManager" />
+    	</property>
   
   </bean>	
 
@@ -278,9 +283,10 @@
 	
   
 	<bean id="beanstreamUtil" class="org.openedit.store.gateway.BeanstreamUtil"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-	
-		<property name="userManager"><ref bean="userManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" />
+		</property>
+		<property name="userManager"><ref bean="userManager" />
+		</property>
 		
 	</bean>
 </beans>

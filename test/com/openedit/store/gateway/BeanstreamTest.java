@@ -55,7 +55,7 @@ public class BeanstreamTest extends StoreTestCase {
 		order.setProperty("notes", "This is a note");
 		store.saveOrder(order);
 		
-			
+		
 		
 		
 		

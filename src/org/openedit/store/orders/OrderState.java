@@ -3,6 +3,8 @@
  */
 package org.openedit.store.orders;
 
+import java.util.ArrayList;
+
 /**
  * @author dbrown
  *
@@ -11,8 +13,8 @@ public class OrderState
 {
 	protected boolean fieldOk;
 	protected String fieldId;
-	
 	protected String fieldDescription;
+
 	public String getDescription()
 	{
 		if ( fieldDescription == null)
@@ -49,7 +51,7 @@ public class OrderState
 	public OrderState copy()
 	{
 		OrderState state = new OrderState();
-		state.setId( getId());
+		state.setId(getId());
 		state.setOk(isOk());
 		state.setDescription(getDescription());
 		return state;

@@ -1,5 +1,6 @@
 package org.openedit.store.gateway;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -23,6 +24,8 @@ import org.openedit.store.orders.Refund;
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
+import com.openedit.users.User;
+import com.openedit.users.UserManager;
 import com.openedit.util.XmlUtil;
 
 public class BeanstreamOrderProcessor extends BaseOrderProcessor {
@@ -31,7 +34,9 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			.getLog(BeanstreamOrderProcessor.class);
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
-
+	protected BeanstreamUtil fieldBeanstreamUtil;
+	protected UserManager fieldUserManager;
+	
 	public XmlUtil getXmlUtil() {
 		if (fieldXmlUtil == null) {
 			fieldXmlUtil = new XmlUtil();
@@ -41,6 +46,24 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 
 	public void setXmlUtil(XmlUtil inXmlUtil) {
 		fieldXmlUtil = inXmlUtil;
+	}
+
+	public BeanstreamUtil getBeanstreamUtil()
+	{
+		return fieldBeanstreamUtil;
+	}
+
+	public void setBeanstreamUtil(BeanstreamUtil inBeanstreamUtil)
+	{
+		fieldBeanstreamUtil = inBeanstreamUtil;
+	}
+	
+	public UserManager getUserManager() {
+		return fieldUserManager;
+	}
+	
+	public void setUserManager(UserManager inUserManager) {
+		fieldUserManager = inUserManager;
 	}
 
 	public PageManager getPageManager() {
@@ -55,6 +78,8 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 
 		Page page = getPageManager().getPage(
 				inStore.getStoreHome() + "/configuration/beanstream.xml");
+		
+		
 		if (page.exists()) {
 			return inOrder.getPaymentMethod().requiresValidation();
 		}
@@ -88,7 +113,15 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			
 			
 			String merchant = conf.element("merchantid").getText();
+			String userid = conf.element("user").getText();
+			String password = conf.element("password") != null && !conf.element("password").getText().isEmpty() ? conf.element("password").getText() : null;
+			if (password == null)
+			{
+				User user = getUserManager().getUser(userid);
+				password = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
+			}
 			
+			System.out.println(" &&&&&& using "+userid+" "+password);
 
 			Customer customer = inOrder.getCustomer();
 
@@ -106,8 +139,10 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			
 			post.addParameter("requestType", "BACKEND");
 			post.addParameter("merchant_id", merchant);
+			post.addParameter("username", userid);
+			post.addParameter("password", password);
+			System.out.println(" &&& updated parameters ");
 			post.addParameter("trnOrderNumber", inOrder.getId());
-			post.addParameter("trnAmount", inOrder.getTotalPrice().toShortString());
 			post.addParameter("trnAmount", inOrder.getTotalPrice().toShortString());
 			post.addParameter("trnCardOwner", customer.getFirstName() + " " + customer.getLastName());
 			
@@ -170,16 +205,16 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			}
 			
 			
-			if("1".equals(pairs.get("trnApproved"))){
+			if("1".equals(pairs.get("trnApproved")) && pairs.containsKey("trnId")){
 				// super.exportNewOrder(inContext, inStore, inOrder);
 				 orderState = inStore.getOrderState(Order.AUTHORIZED);
-					orderState.setDescription("Your transaction has been authorized.");
-					orderState.setOk(true);
+				 inOrder.setProperty("transactionid", pairs.get("trnId").toString());
+				orderState.setDescription("Your transaction has been authorized.");
+				orderState.setOk(true);
 					
 			} else{
 				orderState = inStore.getOrderState(Order.REJECTED);
 				orderState.setOk(false);
-
 				orderState.setDescription((String) pairs.get("error"));
 				
 			}
@@ -223,9 +258,11 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 	}
 
 	@Override
-	public void refundOrder(WebPageRequest inContext, Store inStore,
+	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder,
 			Refund inRefund) throws StoreException {
-		// TODO Auto-generated method stub
-		
+		getBeanstreamUtil().refund(inStore, inOrder, inRefund);
+//		inRefund.setDate(new Date());
+//		inRefund.setSuccess(true);
+//		inRefund.setTransactionId("OK TRANS ID");
 	}
 }
