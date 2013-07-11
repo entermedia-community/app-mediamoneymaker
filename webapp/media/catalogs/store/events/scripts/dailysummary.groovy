@@ -1,4 +1,3 @@
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive

@@ -121,7 +121,7 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 				password = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
 			}
 			
-			System.out.println(" &&&&&& using "+userid+" "+password);
+//			System.out.println(" &&&&&& using "+userid+" "+password);
 
 			Customer customer = inOrder.getCustomer();
 
@@ -141,7 +141,7 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			post.addParameter("merchant_id", merchant);
 			post.addParameter("username", userid);
 			post.addParameter("password", password);
-			System.out.println(" &&& updated parameters ");
+//			System.out.println(" &&& updated parameters ");
 			post.addParameter("trnOrderNumber", inOrder.getId());
 			post.addParameter("trnAmount", inOrder.getTotalPrice().toShortString());
 			post.addParameter("trnCardOwner", customer.getFirstName() + " " + customer.getLastName());
@@ -261,8 +261,5 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder,
 			Refund inRefund) throws StoreException {
 		getBeanstreamUtil().refund(inStore, inOrder, inRefund);
-//		inRefund.setDate(new Date());
-//		inRefund.setSuccess(true);
-//		inRefund.setTransactionId("OK TRANS ID");
 	}
 }

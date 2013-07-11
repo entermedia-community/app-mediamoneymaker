@@ -452,7 +452,7 @@ public class OrderModule extends BaseModule
 				Money shippingrefund = new Money(quantity);
 				if (shippingcost.doubleValue() < shippingrefund.doubleValue())
 				{
-					System.out.println(" Shipping cost to large - skipping");
+					System.out.println("OrderModule - Shipping cost to large - skipping!");
 					continue;
 				}
 				shipping = shippingrefund;
