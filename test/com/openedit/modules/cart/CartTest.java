@@ -275,7 +275,7 @@ public class CartTest extends StoreTestCase {
 		int quantityInStock = firstItem.getInventoryItem().getQuantityInStock();
 
 		Order order = cartModule.processOrder(context);
-		assertTrue(order.getOrderState().isOk());
+		assertTrue(order.getOrderStatus().isOk());
 		CartItem item = (CartItem) order.getItems().get(0);
 
 		assertEquals(item.getInventoryItem().getQuantityInStock(),

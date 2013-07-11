@@ -29,7 +29,7 @@ public class AuthorizeNetOrderArchiveTest extends StoreTestCase
 		WebPageRequest context = getFixture().createPageRequest();
 		Order order = createOrder();
 		archiver.exportNewOrder( context, getStore(), order );
-		assertFalse( order.getOrderState().isOk() );
+		assertFalse( order.getOrderStatus().isOk() );
 	}
 	public void XtestRealOrder() throws Exception
 	{
