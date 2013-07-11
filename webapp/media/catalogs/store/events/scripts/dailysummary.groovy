@@ -26,13 +26,14 @@ import java.util.concurrent.TimeUnit
 
 public void init()
 {
-	
+	log.info("Starting daily summary of pending orders");
 	//Create the MediaArchive object
 	Store store = context.getPageValue("store");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
-	//Create the ordersearcher object
+	//Create the searcher objects
 	OrderSearcher ordersearcher = store.getOrderSearcher();
+	Searcher userprofilesearcher = archive.getSearcher("userprofile");
 	
 	SearchQuery query = ordersearcher.createSearchQuery();
 	query.setAndTogether(false);
@@ -82,14 +83,34 @@ public void init()
 	newcontext.putPageValue("rows", list);
 	newcontext.putPageValue("headers",headers);
 	
+	//get list of storeadmins
+	ArrayList emails = new ArrayList();
+	HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+	if (results.size() > 0) {
+		for(Iterator detail = results.iterator(); detail.hasNext();) {
+			Data userInfo = (Data)detail.next();
+			emails.add(userInfo.get("email"));
+		}
+	}
+	
+	log.info("Sending emails to ${emails}");
+	
+	if (emails.isEmpty())
+	{
+		log.info("No store administrators found on the system, aborting");
+		return;
+	}
+	
 	PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
 	TemplateWebEmail mailer = mail.getTemplateWebEmail();
-	mailer.setFrom("noreply@entermediasoftware.com");//change this
+	mailer.setFrom("info@wirelessarea.ca");
 	mailer.loadSettings(newcontext);
 	mailer.setMailTemplatePath(templatePage);
-	mailer.setTo("info@shawnbest.com");//make this configurable
+	mailer.setRecipientsFromStrings(emails);
 	mailer.setSubject("Daily Orders Summary");
 	mailer.send();
+	
+	log.info("Finishing sending daily summary to store admins");
 }
 
 init();
