@@ -1,6 +1,7 @@
 #set($userprofilesearcher = $mediaarchive.getSearcher("userprofile"))
 #set($productsearcher = $mediaarchive.getSearcher("product"))
 
+#set($url = $context.getRequestParameter("url"))
 #set($totalrows = $context.getRequestParameter("totalrows"))
 #set($goodproductlist = $context.getContentProperty("goodproductlist"))
 #set($badproductlist = $context.getContentProperty("badproductlist"))
@@ -10,6 +11,9 @@
 
 <h2>Update Inventory Report</h2>
 <h3>Distributor: $distributor</h3>
+#if($url)
+	<p>Import URL: $url</p>
+#end
 <p>Total Rows Processed: $totalrows</p>
 <p>Total Products Properly Processed: $goodproductlist.size()</p>
 #if( $badproductlist.size() > 0)
