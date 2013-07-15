@@ -1,0 +1,9 @@
+<page>
+	<path-action name="DataEditModule.loadSearcherForEdit" >
+		<property name="searchtype">${module}</property>
+	</path-action>
+
+
+		<path-action name="ReportModule.loadReportGenerator" />
+	
+</page>

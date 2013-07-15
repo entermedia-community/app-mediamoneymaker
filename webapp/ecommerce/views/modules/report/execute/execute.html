@@ -1,0 +1,8 @@
+$data
+$context.putPageValue("details", $reportdetails)     
+$context.putPageValue("data", $defaults) 
+<form action="executefinish.html">
+<input type= "hidden" name="id" value="$data.id"/>
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+<input type="submit" name="Run Report" value="Run Report"/>
+</form>

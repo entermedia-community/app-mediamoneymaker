@@ -9,4 +9,5 @@
   <property id="msrp"/>
   <property id="rogersprice"/>
   <property id="fidomsrp"/>
+  <property id="image"/>
 </root>

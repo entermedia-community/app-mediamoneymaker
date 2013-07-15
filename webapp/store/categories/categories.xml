@@ -10,8 +10,6 @@
   <catalog id="mugs" name="Mugs"/>
   <catalog id="cups" name="Cups"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff">
     <option id="one" name="Another"/>
   </catalog>
@@ -126,7 +124,6 @@
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="AFFIXME" name="Add Some Affixes"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff">
     <option id="one" name="Another"/>
@@ -151,7 +148,6 @@
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
-  <catalog id="AFFIXME" name="Add Some Affixes"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff">
     <option id="one" name="Another"/>
@@ -190,6 +186,54 @@
     </related-categories>
   </catalog>
   <catalog id="SEARCHME" name="Ready for Searching"/>
+  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <property id="image1big">/images/small.jpg</property>
+    <property id="image1small">/images/small.jpg</property>
+    <property id="otherdownload">/pdfs/other.pdf</property>
+    <property id="includequickship">true</property>
+  </catalog>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="AFFIXME" name="Add Some Affixes"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <option id="one" name="Another"/>
+  </catalog>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <related-categories>
+      <category id="RELATED"/>
+    </related-categories>
+  </catalog>
+  <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <property id="image1big">/images/small.jpg</property>
+    <property id="image1small">/images/small.jpg</property>
+    <property id="otherdownload">/pdfs/other.pdf</property>
+    <property id="includequickship">true</property>
+  </catalog>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="AFFIXME" name="Add Some Affixes"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff"/>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <option id="one" name="Another"/>
+  </catalog>
+  <catalog id="GOODSTUFF" name="Some Good Stuff">
+    <related-categories>
+      <category id="RELATED"/>
+    </related-categories>
+  </catalog>
   <catalog id="SEA_R,Ch-ME.txt" name="Weird ID"/>
   <catalog id="GOODSTUFF" name="Some Good Stuff">
     <property id="image1big">/images/small.jpg</property>

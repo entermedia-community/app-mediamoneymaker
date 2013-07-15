@@ -15,4 +15,6 @@
   <data id="userprofile">Profiles</data>
   <data id="as400">AS400 Exports</data>
   <data id="dealers">Dealers</data>
+  <data id="report">Reports</data>
+  <data id="reporthistory">Report History</data>
 </root>
