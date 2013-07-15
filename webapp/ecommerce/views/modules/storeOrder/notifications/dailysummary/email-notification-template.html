@@ -13,7 +13,7 @@
 <p>Daily summary of orders that have yet to be processed.</p>
 
 <table cellspacing="1" cellpadding="3" border="0">
-	<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent;color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
+	<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent; color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
 		<tr>
 			#foreach($header in $headers)
 			<th align="center" nowrap>$header</th>
@@ -24,7 +24,7 @@
 		#set($color = $row.get(0))
 		#set($date = $row.get(1))
 		#set($number = $row.get(2))
-		#set($url = "$home$apphome/views/modules/storeOrder/edit/edit.html?id=${number}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details&hitssessionid=&searchtype=storeOrder")
+		#set($url = "$content.siteroot$home$apphome/views/modules/storeOrder/edit/edit.html?id=${number}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details&hitssessionid=&searchtype=storeOrder")
 		#set($customerid = $row.get(3))
 		#set($customer = $row.get(4))
 		#set($company = $row.get(5))

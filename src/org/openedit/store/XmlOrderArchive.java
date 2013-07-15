@@ -895,8 +895,6 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		
 		//append refundstate
 		Element refundentry = inItemElem.element("refundstate");
-		System.out.println(" &&& refund state for "+item.getSku()+": "+refundentry);
-		
 		if (refundentry != null)
 		{
 			String quantitystr = refundentry.attributeValue("quantity");
