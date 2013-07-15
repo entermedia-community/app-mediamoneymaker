@@ -1,0 +1,10 @@
+
+<properties prefix="report" beanname="xmlFolderSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="report" internalfield="false">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="report">Name</property>
+  <property id="sourcepath" searchtype="report">SourcePath</property>
+  <property id="reportdescription" index="true" stored="true" editable="true" searchtype="report">Report Description</property>
+  <property id="reportfile" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="report" sourcepath="reports" internalfield="false" datatype="list">Report File</property>
+  <property id="outputname" index="true" stored="true" editable="true" searchtype="report">outputname</property>
+  <property id="formats" index="true" stored="true" editable="true">formats</property>
+</properties>

@@ -1,0 +1,5 @@
+<properties beanname="fbSearcher">
+<property id="id">Freshbooks ID</property>
+<property id="name" index="true" stored="true" editable="true" >Name</property>
+
+</properties>

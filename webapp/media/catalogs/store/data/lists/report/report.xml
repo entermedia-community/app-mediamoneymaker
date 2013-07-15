@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<reports>
+
+  <report id="1" reportname="productsbydistributor.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="generic">Product Distributor Report</report>
+
+</reports>
