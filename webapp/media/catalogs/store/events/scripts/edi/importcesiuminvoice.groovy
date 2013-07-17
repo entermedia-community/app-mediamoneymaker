@@ -413,64 +413,69 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													int orderItemQuantity = orderItem.getQuantity();
 													int ediItemQuantity = Integer.parseInt(quantity);
 													if (orderItemQuantity != ediItemQuantity) {
-														strMsg = "Invalid Quantity (" + orderItemQuantity.toString() + ":" + ediItemQuantity.toString() + ")";
+														strMsg = "ERROR: Invalid Quantity (" + orderItemQuantity.toString() + ":" + ediItemQuantity.toString() + ")";
 														log.info(strMsg);
 														errorList.add(strMsg);
+														foundData = false;
 													}
 													
 													//Check Price
 													//Money orderPrice = orderItem.getYourPrice();
 													Money productPrice = new Money(product.get("rogersprice"));
 													Money ediPrice = new Money(linePrice);
-													if (productPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
-														strMsg = "Invalid Price(" + productPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")";
+													if (productPwaybillrice.getMoneyValue() != ediPrice.getMoneyValue()) {
+														strMsg = "ERROR: Invalid Price(" + productPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")";
 														log.info(strMsg);
 														errorList.add(strMsg);
+														foundData = false;
 													}
 
-													SearchQuery invoiceItemQuery = media.getInvoiceItemsSearcher().createSearchQuery();
-													invoiceItemQuery.addExact("invoiceid", ediInvoice.getId());
-													invoiceItemQuery.addExact("product", productID);
-													HitTracker invoiceItems = media.getInvoiceItemsSearcher().search(invoiceItemQuery);
-													if (invoiceItems.size() == 1) {
-														try {
-															ediInvoiceItem = media.getInvoiceItemsSearcher().searchById(invoiceItems.get(0).getId());
-															if (ediInvoice != null) {
-																ediInvoiceItemID = ediInvoiceItem.getId();
-																log.info("Invoice Item exists: " + ediInvoiceItemID);
-																foundData = true;
-															} else {
-																strMsg = "ERROR: Invalid Invoice Item.";
+													if (foundData) {
+														SearchQuery invoiceItemQuery = media.getInvoiceItemsSearcher().createSearchQuery();
+														invoiceItemQuery.addExact("invoiceid", ediInvoice.getId());
+														invoiceItemQuery.addExact("product", productID);
+														HitTracker invoiceItems = media.getInvoiceItemsSearcher().search(invoiceItemQuery);
+														if (invoiceItems.size() == 1) {
+															try {
+																ediInvoiceItem = media.getInvoiceItemsSearcher().searchById(invoiceItems.get(0).getId());
+																if (ediInvoice != null) {
+																	ediInvoiceItemID = ediInvoiceItem.getId();
+																	log.info("Invoice Item exists: " + ediInvoiceItemID);
+																	foundData = true;
+																} else {
+																	strMsg = "ERROR: Invalid Invoice Item.";
+																	log.info(strMsg);
+																	foundData = false;
+																}
+															}
+															catch (Exception e) {
+																strMsg = "ERROR: Invalid InvoiceItem Search: " + ediInvoice.getId() + ":" + purchaseOrder + "\n";
+																strMsg += "Exception thrown:\n";
+																strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
+																strMsg += "Stack Trace: " + e.getStackTrace().toString();;
 																log.info(strMsg);
 																foundData = false;
 															}
+														} else if (invoiceItems.size() == 0) {
+															log.info("Invoice Item not found!");
+															ediInvoiceItem = media.getInvoiceItemsSearcher().createNewData();
+															ediInvoiceItem.setId(media.getInvoiceItemsSearcher().nextId());
+															ediInvoiceItem.setSourcePath(ediInvoice.getId());
+	
+															ediInvoiceItemID = ediInvoiceItem.getId();
+															ediInvoiceItem.setProperty("invoiceid", ediInvoice.getId());
+															foundData = true;
 														}
-														catch (Exception e) {
-															strMsg = "ERROR: Invalid InvoiceItem Search: " + ediInvoice.getId() + ":" + purchaseOrder + "\n";
-															strMsg += "Exception thrown:\n";
-															strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
-															strMsg += "Stack Trace: " + e.getStackTrace().toString();;
-															log.info(strMsg);
-															foundData = false;
-														}
-													} else if (invoiceItems.size() == 0) {
-														log.info("Invoice Item not found!");
-														ediInvoiceItem = media.getInvoiceItemsSearcher().createNewData();
-														ediInvoiceItem.setId(media.getInvoiceItemsSearcher().nextId());
-														ediInvoiceItem.setSourcePath(ediInvoice.getId());
 
-														ediInvoiceItemID = ediInvoiceItem.getId();
-														ediInvoiceItem.setProperty("invoiceid", ediInvoice.getId());
-														foundData = true;
+														//add properties and save
+														ediInvoiceItem.setProperty("product", product.getId());
+														ediInvoiceItem.setProperty("price", linePrice);
+														ediInvoiceItem.setProperty("quantity", quantity);
+														media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
+														strMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
+														log.info(strMsg);
+														
 													}
-
-													//add properties and save
-													ediInvoiceItem.setProperty("product", product.getId());
-													ediInvoiceItem.setProperty("price", linePrice);
-													ediInvoiceItem.setProperty("quantity", quantity);
-													media.getInvoiceItemsSearcher().saveData(ediInvoiceItem, media.getContext().getUser());
-													strMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
-													log.info(strMsg);
 
 													if ((foundData) && (errorList.size() == 0)) {
 
@@ -555,31 +560,34 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 												}
 											} // end FOUND DATA
 										} // allInvoiceDetails
-										if(shipment.getShipmentEntries().size() >0) {
+										if ((foundData) && (errorList.size() == 0)) {
 											if (!order.getShipments().contains(shipment)) {
 												order.addShipment(shipment);
 											}
-											order.getOrderStatus();
-											if(order.isFullyShipped()){
-												order.setProperty("shippingstatus", "shipped");
-												strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+											if(shipment.getShipmentEntries().size() >0) {
+												order.getOrderStatus();
+												if(order.isFullyShipped()){
+													order.setProperty("shippingstatus", "shipped");
+													strMsg = "Order status(" + purchaseOrder + ") set to shipped.";
+													log.info(strMsg);
+													completeList.add(strMsg);
+												}else{
+													order.setProperty("shippingstatus", "partialshipped");
+													strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
+													log.info(strMsg);
+													completeList.add(strMsg);
+												}
+												store.getOrderArchive().saveOrder(store, order);
+												store.getOrderSearcher().reIndexAll();
+												strMsg = "Order (" + purchaseOrder + ") saved.";
 												log.info(strMsg);
 												completeList.add(strMsg);
-											}else{
-												order.setProperty("shippingstatus", "partialshipped");
-												strMsg = "Order status(" + purchaseOrder + ") set to partially shipped.";
-												log.info(strMsg);
-												completeList.add(strMsg);
+												foundData = true;
 											}
-											store.getOrderArchive().saveOrder(store, order);
-											strMsg = "Order (" + purchaseOrder + ") saved.";
-											log.info(strMsg);
-											completeList.add(strMsg);
-											foundData = true;
 										}
 									} // end FOUND DATA
 								} // end FOUND DATA
-								if (foundData) {
+								if ((foundData) && (errorList.size() == 0)) {
 									//Write the Invoice Details
 									try {
 										log.info("Status: Saving Invoice (" + ediInvoice.getId() +")");
@@ -599,7 +607,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 								}
 							} // end INVOICE HEADERS
 						} // end InvoiceGroups
-						if (foundData) {
+						if ((foundData) && (errorList.size() == 0)) {
 							boolean move = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
 							if (move) {
 								strMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
@@ -621,8 +629,8 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 								}
 					
 							} else {
-							strMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
-							log.info(strMsg);
+								strMsg = "INVOICE FILE(" + page.getName() + ") FAILED MOVE TO PROCESSED";
+								log.info(strMsg);
 							}
 						} else {
 							strMsg = "ERROR Invoice not saved.";

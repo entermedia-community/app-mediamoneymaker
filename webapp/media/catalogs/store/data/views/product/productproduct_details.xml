@@ -9,6 +9,7 @@
   <property id="distributor"/>
   <property id="rogerssku"/>
   <property id="manufacturersku"/>
+  <property id="upc"/>
   <property id="as400id"/>
   <property id="fidomsrp"/>
   <property id="msrp"/>

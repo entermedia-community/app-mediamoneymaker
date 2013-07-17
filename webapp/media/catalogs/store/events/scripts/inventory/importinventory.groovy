@@ -120,11 +120,6 @@ public class ImportInventory  extends EnterMediaObject {
 		//Get the Uploaded Page
 		String filename = "inventory.csv";
 		Page upload = archive.getPageManager().getPage(catalogID + "/temp/upload/" + filename);
-		
-		Page archive = archive.getPageManager().getPage(catalogID + "/temp/upload/" + filename);
-		
-		
-		
 		Reader reader = upload.getReader();
 		try
 		{

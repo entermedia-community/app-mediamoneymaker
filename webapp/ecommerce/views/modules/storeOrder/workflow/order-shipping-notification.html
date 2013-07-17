@@ -13,7 +13,7 @@ context.putPageValue("shipments", shipments);
 #set ( $shipments = $order.getShipments() ) 
 #set ( $isFullyShipped = $order.isFullyShipped() )
 #set ( $sSize = $shipments.size() )
-#set ( $url = "$content.siteroot$apphome/views/myaccount/storeorders/view/index.html?id=$orderid")
+#set ( $url = "$content.siteroot/ecommerce/views/myaccount/storeorders/view/index.html?id=$orderid")
 <h2>Order Shipping History</h2>
 <h3>Order #: <a href="$url" target="_blank">$orderNumber</a></h3>
 #if ( $sSize > 0)
@@ -32,38 +32,21 @@ context.putPageValue("shipments", shipments);
 		<tr class="results-list-head">
 			<th align="left" class="results-list-head">Product ID</th>
 			<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
-			<th align="center" class="results-list-head">Waybill Number</th>
-<!-- 
-			<th align="center" class="results-list-head">Courier</th>
-			<th align="center" class="results-list-head">Ship Date</th>
--->
 			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
 		</tr>
 		#set($itemCounter = 0)
-		#foreach ( $item in $order.items ) 
+		#foreach ( $item in $order.getItems() ) 
 			#set( $itemCounter = $itemCounter + 1 )
 		<tr>
 			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
 			<td>$product.getName()</td>
 			<td class="results-list-center">$item.quantity</td>
-			<td class="results-list-left">&nbsp;</td>
-	<!-- 
-			<td class="results-list-left">&nbsp;</td>
-			<td class="results-list-left">&nbsp;</td>
-	-->
-			<td class="results-list">&nbsp;</td>
 			#foreach ( $shipmentEntry in $shipments )
-				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
-				#set( $waybill = $shipmentEntry.get("waybill") )
 				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+					#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
 		</tr>
 		<tr>
 			<td colspan="2" class="results-list-left">&nbsp;</td>
-			<td class="results-list-left">$waybill</a></td>
-	<!-- 
-			<td class="results-list">$shipmentEntry.get("courier")</td>
-			<td class="results-list">$shipmentEntry.get("shipdate")</td>
-	-->
 			<td class="results-list-center">$entry.getQuantity()</td>
 		</tr>
 				#end
@@ -99,10 +82,10 @@ context.putPageValue("shipments", shipments);
 			<td class="results-list-center">$shipdate</td>
 			<td colspan="2" class="results-list-left">&nbsp;</td>
 		</tr>
-			#foreach ( $item in $order.items ) 
+			#foreach ( $item in $order.getItems() ) 
 				#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-				#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
 				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
+					#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
 		<tr>
 			<td colspan="3">&nbsp;</td>
 			<td class="results-list-left">$product.getName()</td>
