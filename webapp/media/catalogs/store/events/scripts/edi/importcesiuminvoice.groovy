@@ -423,7 +423,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													//Money orderPrice = orderItem.getYourPrice();
 													Money productPrice = new Money(product.get("rogersprice"));
 													Money ediPrice = new Money(linePrice);
-													if (productPwaybillrice.getMoneyValue() != ediPrice.getMoneyValue()) {
+													if (productPrice.getMoneyValue() != ediPrice.getMoneyValue()) {
 														strMsg = "ERROR: Invalid Price(" + productPrice.getMoneyValue().toString() + ":" + ediPrice.getMoneyValue().toString() + ")";
 														log.info(strMsg);
 														errorList.add(strMsg);
