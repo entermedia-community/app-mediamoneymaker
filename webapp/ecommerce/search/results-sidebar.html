@@ -1,19 +1,29 @@
 #set($showsidebar = false)
+#set($extra = "")
+#set($distrib = $userprofile.distributor)
+#set($distributorid = $userprofile.get("distributor"))
+#if (!$distrib || $distributorid.equals("") || $distributorid.equals("true"))
+	#set($distrib = "")
+#end
 #if($canbrowseproducts)
 
 	#set($searchroot = "$apphome/search")
 	#set($showsidebar = "true")
 	#if($canviewdistributorsection)
-		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
+		#if(!$distrib.equals(""))
+			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
+		#end
 	#end
 
 #elseif($canviewdistributorsection)
-	#set($searchroot = "$apphome/distributors")
-	#set($showsidebar = "true")
-	#if(!$canbrowseproducts)
-		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
-	#else 
-		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor")
+	#if(!$distrib.equals(""))
+		#set($searchroot = "$apphome/distributors")
+		#set($showsidebar = "true")
+		#if(!$canbrowseproducts)
+			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
+		#else 
+			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor")
+		#end
 	#end
 #end                                    
 
@@ -24,23 +34,25 @@
 	<a href="$home$apphome/search/clearance.html?field=clearancecentre&clearancecentre.value=true&operation=exact"><img src="$home$apphome/theme/images/clearance.jpg"></a>
 -->
 	#if($canviewdistributorsection)
-       <div class="ui-widget-header">Distributor Menu</div>
-		<div class="ui-widget-content categories-widget no-padding-for-real">
-        	<ul  class="sidebar-list">
-			<li>
-			<a href="$home$apphome/distributors/submitforreview.html">Submit a product</a>
-			<a href="$home$apphome/distributors/myproducts.html">My Products</a>
-			<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Approved Products</a>
-			<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Pending Products</a>
-			<a href="$home$apphome/distributors/help/index.html">Help</a>
-			<a href="$home$apphome/distributors/help/terms.html">Terms and Conditions</a>
-			#if($hits)
-				<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">CSV Export</a>
-			#end
-			<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">Upload Inventory File</a>
-			</li>
-			</ul>
-       	</div>
+		#if(!$distrib.equals(""))
+	       <div class="ui-widget-header">Distributor Menu</div>
+			<div class="ui-widget-content categories-widget no-padding-for-real">
+	        	<ul  class="sidebar-list">
+				<li>
+				<a href="$home$apphome/distributors/submitforreview.html">Submit a product</a>
+				<a href="$home$apphome/distributors/myproducts.html">My Products</a>
+				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Approved Products</a>
+				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Pending Products</a>
+				<a href="$home$apphome/distributors/help/index.html">Help</a>
+				<a href="$home$apphome/distributors/help/terms.html">Terms and Conditions</a>
+				#if($hits)
+					<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">CSV Export</a>
+				#end
+				<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">Upload Inventory File</a>
+				</li>
+				</ul>
+	       	</div>
+	    #end
 	#end        
 		<div class="ui-widget uipanel" id="left-col-search" >
 			<div  class="ui-widget-header">Search
