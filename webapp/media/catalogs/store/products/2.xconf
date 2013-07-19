@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <product name="Quantity discount product" id="2" ordering="-1" available="FALSE">
+    <item sku="2001" inventory="1000">
+      <color id="red"/>
+      <size id="NB"/>
+      <weight value="3.2" />
+    </item>
+    <item sku="2002" inventory="50">
+      <color id="black"/>
+      <size id="large"/>
+      <price quantity="1">20.00</price>
+      <price quantity="3">18.75</price>
+    </item>
+    <item sku="2003" inventory="50">
+      <color id="red"/>
+      <size id="1"/>
+    </item>
+    <item sku="2004" inventory="50">
+      <color id="blue"/>
+      <size id="1"/>
+    </item>
+    <item sku="2005" inventory="50">
+      <color id="green"/>
+      <size id="1"/>
+    </item>
+    <price quantity="1">19.95</price>
+    <price quantity="3">18.50</price>
+    <handling-charge-level>A</handling-charge-level>
+  </product>
+</page>
