@@ -104,6 +104,7 @@
 				<tr>
 					<td align="center"><strong>Quantity</strong></td>
 					<td align="center"><strong>Product ID</strong></td>
+					<td align="center"><strong>Manufacturer SKU</strong>
 					<td align="center"><strong>Description</strong></td>
 					<td align="center"><strong>Unit Price</strong></td>
 					<td align="center"><strong>Line Total</strong></td>
@@ -114,30 +115,31 @@
 					<td align="center">$qty</td>
 					#set($product = $productsearcher.searchById($inv.get("product")))
 					<td align="center">$product.getId()</td>
+					<td align="center">$product.get("manufacturersku")</td>
 					<td align="left">$product.get("name")</td>
 					#set($price=$inv.get("price"))
-					<td align="right">$price</td>
-					<td align="right">$inv.linetotal</td>
+					<td align="center">$formatutil.formatString($price)</td>
+					<td align="right">$formatutil.formatString($inv.linetotal)</td>
 				</tr>
 				#end
 				<tr>
-					<td colspan="4" align="right"><strong>Sub Total</strong></td>
-					<td align="right">$invoice.subtotal</td>
+					<td colspan="5" align="right"><strong>Sub Total</strong></td>
+					<td align="right">$formatutil.formatString($invoice.subtotal)</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right">Shipping</td>
+					<td colspan="5" align="right">Shipping</td>
 					<td align="right">$formatutil.formatString($invoice.get("shipping"))</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right">HST/GST Tax ( $fedtaxid )</td>
+					<td colspan="5" align="right">HST/GST Tax ( $fedtaxid )</td>
 					<td align="right">$formatutil.formatString($fedtaxes)</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right">Provincial Tax</td>
+					<td colspan="5" align="right">Provincial Tax</td>
 					<td align="right">$formatutil.formatString($provtaxes)</td>
 				</tr>
 				<tr>
-					<td colspan="4" align="right"><strong>Total</strong></td>
+					<td colspan="5" align="right"><strong>Total</strong></td>
 					<td align="right">$formatutil.formatString($total)</td>
 				</tr>
 			</table>

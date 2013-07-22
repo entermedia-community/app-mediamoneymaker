@@ -129,9 +129,18 @@ $order.getOrderStatus()
 		<td align="center" nowrap>
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 			#set($d = $distributorsearcher.searchById($item.get("distributor")))
+			#set($i = $invoicesearcher.searchByField("ponumber", $orderNumber))
 			#set($dname = $d.getName())
-			$dname
+			#if ($i.id != "" && $d.id == $i.distributor)
+				#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=${i.id}&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+				<a href="$url" style="font-size: 14px; text-decoration: underline; color: blue;">
+			#end
+				$dname
+			#if ($i != "")
+				</a>
+			#end
 			</p>
 		</td>
 		</tr>
