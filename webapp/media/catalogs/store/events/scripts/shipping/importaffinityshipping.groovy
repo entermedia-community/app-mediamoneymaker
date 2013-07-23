@@ -188,7 +188,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 
 		ArrayList emaillist = new ArrayList();
 		emaillist.add(customer.getEmail());
-		String subject = "Order Shipping Notification";
+		String subject = "Wirelessarea.ca Order Shipping Notification - Order #: " + orderNumber;
 		String templatePage = "/ecommerce/views/modules/storeOrder/workflow/order-shipping-notification.html";
 		sendEmail(media.getArchive(), context, emaillist, templatePage, subject);
 
