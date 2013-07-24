@@ -33,6 +33,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 	List<String> badProductList;
 	List<String> badUPCList;
 	List<String> badQtyList;
+	List<String> badRowList; 
 	List<String> goodProductList;
 	int totalRows;
 
@@ -54,6 +55,12 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 			badQtyList = new ArrayList<String>();
 		}
 		return badQtyList;
+	}
+	public List<String> getBadRowList() {
+		if (badRowList == null) {
+			badRowList = new ArrayList<String>();
+		}
+		return badRowList;
 	}
 
 	public List<String> getGoodProductList() {
@@ -80,6 +87,12 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		}
 		badQtyList.add(inItem);
 	}
+	public void addToBadRowList(String inItem) {
+		if (badRowList == null) {
+			badRowList = new ArrayList<String>();
+		}	
+		badRowList.add(inItem);
+	}
 	public void addToGoodProductList(String inItem) {
 		if(goodProductList == null) {
 			goodProductList = new ArrayList<String>();
@@ -104,7 +117,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		String catalogID = archive.getCatalogId();
 		
-		String inURL = inReq.getRequestParameter("url");
+		String inURL = inReq.findValue("url");
 		if (inURL == null || inURL.equals("")) {
 			context.putPageValue("errorout", "URL does not exist!");
 			log.info("URL does not exist!");
@@ -120,14 +133,15 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		Searcher userprofilesearcher = archive.getSearcher("userprofile");
 		
 		//Get CSV Type
-		String inDistributor = inReq.getRequestParameter("distributor");
+		String inDistributor = inReq.findValue("distributor");
 		Data distributor = distributorsearcher.searchById(inDistributor);
 		if (distributor == null) {
 			context.putPageValue("errorout", "Distributor does not exist.");
 			log.info("Distributor does not exist.");
 			return;
 		}
-		
+		log.info("Distributor: " + distributor.getName());
+				
 		//Get the Uploaded Page
 		String filename = "inventory.csv";
 		Page upload = archive.getPageManager().getPage(catalogID + "/temp/upload/" + filename);
@@ -136,6 +150,10 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		File file = new File(upload.getContentItem().getAbsolutePath());
 		if (file.exists()) {
 			file.delete();
+			if (!file.exists()) {
+				String msg = " - Existing file has been removed.";
+				log.info(msg);
+			}
 		}
 
 		Downloader dl = new Downloader();
@@ -144,8 +162,8 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		if (upload.exists()) {
 			log.info("File exists: " + upload.getPath())
 		} else {
-			context.putPageValue("errorout", "File does not exist: " + upload.getPath());
-			log.info("File does not exist: " + upload.getPath())
+			String msg = "File does not exist: " + upload.getPath();
+			log.info(msg);
 			return;
 		}
 		
@@ -155,7 +173,8 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		{
 			Data csvFields = inventorysearcher.searchByField("distributor", inDistributor);
 			if (csvFields == null) {
-				inReq.putPageValue("errorout", "Invalid Distributor");
+				String msg = "Invalid Distributor in InventoryImport Table";
+				log.info(msg);
 				return;
 			}
 			
@@ -180,79 +199,120 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 			String[] cols;
 			while ((cols = read.readNext()) != null)
 			{
-				String manufacturerSKU = null;
-				String rogersSKU = null;
-				if (inDistributor.equals("104")) {
-					manufacturerSKU = parseMicrocelData(cols);
-					rogersSKU = manufacturerSKU;
-				} else {
-					manufacturerSKU = cols[manufacturerSKUcol].trim();
-					rogersSKU = cols[rogersSKUcol].trim();
-				}
-				String upcNumber = cols[upcCol].trim();
-				String newQuantity = cols[quantityCol].trim();
-				newQuantity = trimNumber(newQuantity, rogersSKU);
-				int qtyInStock = 0;
-				if (newQuantity.equals("0") || newQuantity == null) {
-					qtyInStock = 0 
-				} else {
-					qtyInStock = Integer.parseInt(newQuantity);
-				}
-				Data productHit = null;
-				if (rogersSKU.trim() != "" ) {
-					//Search for the product by the MANUFACTURER_SEARCH_FIELD
-					productHit = productsearcher.searchByField(MANUFACTURER_SEARCH_FIELD, manufacturerSKU);
-			        if (productHit == null) {
-						//Search for the product by the ROGERS_SEARCH_FIELD
-						productHit = productsearcher.searchByField(ROGERS_SEARCH_FIELD, rogersSKU);
-						if (productHit == null) {
-							//Search for the product by UPC
-							productHit = productsearcher.searchByField(UPC_SEARCH_FIELD, upcNumber);
-							if (productHit == null) {
-								addToBadProductList(rogersSKU);
-							} else {
-								addToBadUPCList(upcNumber);
-							}
-							productHit = null;
-						}
-			        }
-				}
-				if (productHit) {
-						//lookup product with product searcher
-					Product product = productsearcher.searchById(productHit.id);
-					if (product) {
-						InventoryItem productInventory = null
-						productInventory = product.getInventoryItem(0);
-						if (productInventory == null) {
-							//Need to create the Inventory Item
-							productInventory = new InventoryItem();
-							productInventory.setQuantityInStock(qtyInStock)
-							product.addInventoryItem(productInventory);
-						} else {
-							if (productInventory.getQuantityInStock() != qtyInStock) {
-								String msg = "Product(" + product.getName() + ") inventory changed: ";
-								msg += productInventory.getQuantityInStock().toString() + ":"
-								msg += qtyInStock.toString();
-								log.info(msg);
-								productInventory.setQuantityInStock(qtyInStock);
-								productsearcher.saveData(product, context.getUser());
-							} else {
-								String msg = "Product(" + product.getName() + ") no inventory changes.";
-								log.info(msg);
-							}
-						}
-						addToGoodProductList(rogersSKU);
-				
+				try {
+					String manufacturerSKU;
+					String rogersSKU;
+					if (inDistributor.equals("104")) {
+						manufacturerSKU = parseMicrocelData(cols);
+						rogersSKU = manufacturerSKU;
 					} else {
-						throw new OpenEditException("Could not open product!");
+						manufacturerSKU = cols[manufacturerSKUcol];
+						rogersSKU = cols[rogersSKUcol];
+					}
+					if (manufacturerSKU != null && manufacturerSKU.length() > 0) {
+					
+						manufacturerSKU = manufacturerSKU.trim();
+						rogersSKU = rogersSKU.trim();
+						
+						String upcNumber = cols[upcCol].trim();
+						String newQuantity = cols[quantityCol].trim();
+						newQuantity = trimNumber(newQuantity, rogersSKU);
+						int qtyInStock = 0;
+						if (newQuantity.equals("0") || newQuantity == null) {
+							qtyInStock = 0 
+						} else {
+							qtyInStock = Integer.parseInt(newQuantity);
+						}
+						Data productHit = null;
+						if (rogersSKU.trim() != "" ) {
+							//Search for the product by the MANUFACTURER_SEARCH_FIELD
+							productHit = productsearcher.searchByField(MANUFACTURER_SEARCH_FIELD, manufacturerSKU);
+					        if (productHit == null) {
+								//Search for the product by the ROGERS_SEARCH_FIELD
+								productHit = productsearcher.searchByField(ROGERS_SEARCH_FIELD, rogersSKU);
+								if (productHit == null) {
+									//Search for the product by UPC
+									productHit = productsearcher.searchByField(UPC_SEARCH_FIELD, upcNumber);
+									if (productHit == null) {
+										addToBadProductList(rogersSKU);
+									} else {
+										addToBadUPCList(upcNumber);
+									}
+									productHit = null;
+								}
+					        }
+						}
+						if (productHit) {
+								//lookup product with product searcher
+							Product product = productsearcher.searchById(productHit.id);
+							if (product) {
+								InventoryItem productInventory = null
+								productInventory = product.getInventoryItem(0);
+								if (productInventory == null) {
+									//Need to create the Inventory Item
+									productInventory = new InventoryItem();
+									productInventory.setQuantityInStock(qtyInStock)
+									product.addInventoryItem(productInventory);
+								} else {
+									if (productInventory.getQuantityInStock() != qtyInStock) {
+										String msg = "Product(" + manufacturerSKU + ":" + product.getName() + ") inventory changed: ";
+										msg += productInventory.getQuantityInStock().toString() + ":"
+										msg += qtyInStock.toString();
+										log.info(msg);
+										productInventory.setQuantityInStock(qtyInStock);
+										productsearcher.saveData(product, context.getUser());
+									} else {
+										String msg = "Product(" + manufacturerSKU + ":" + product.getName() + ") no inventory changes.";
+										log.info(msg);
+									}
+								}
+								addToGoodProductList(rogersSKU);
+						
+							} else {
+								throw new OpenEditException("Could not open product!");
+							}
+						}
+						increaseTotalRows();
+					} else {
+						String msg = "Blank Row Found in CSV file:Row:" + getTotalRows().toString();
+						addToBadRowList(msg);
+						log.info(msg);
+						increaseTotalRows();
 					}
 				}
-				increaseTotalRows();
+				catch (ArrayIndexOutOfBoundsException aex) {
+					log.info("ArrayIndexOutOfBounds Exception caught:" + aex.getMessage());
+					String msg = "Blank Row Found in CSV file:Row:" + getTotalRows().toString();
+					addToBadRowList(msg);
+					log.info(msg);
+					increaseTotalRows();
+				}
+				catch (NullPointerException ne) {
+					log.info("Null Pointer Exception caught:" + ne.getMessage());
+					log.info("Cause:" + ne.getCause().toString());
+					log.info("Trace:" + ne.getStackTrace().toString());
+				}
+				catch (OpenEditException oeex) {
+					log.info("OpenEdit Exception caught:" + oeex.getMessage());
+					log.info("Cause:" + oeex.getCause().toString());
+					log.info("Path:" + oeex.getPathWithError());
+				}
+				catch (Exception e) {
+					log.info("Exception caught:" + e.getMessage());
+					log.info("Cause:" + e.getCause().toString());
+					log.info("Trace:" + e.getStackTrace().toString());
+				}
 			}
+			read.close();
+			
+			String inText = "Import complete: ";
+			inText += "totalrows:" + getTotalRows().toString();
+			log.info(inText);
 			
 			context.putPageValue("export", inURL);
 			context.putPageValue("url", inURL);
 			context.putPageValue("totalrows", getTotalRows());
+			context.putPageValue("badrows", getBadRowList())
 			context.putPageValue("goodproductlist", getGoodProductList());
 			context.putPageValue("badproductlist", getBadProductList());
 			context.putPageValue("badupclist", getBadUPCList());
