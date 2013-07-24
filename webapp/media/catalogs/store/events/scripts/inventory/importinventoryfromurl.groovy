@@ -104,6 +104,14 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		String catalogID = archive.getCatalogId();
 		
+		String inURL = inReq.getRequestParameter("url");
+		if (inURL == null || inURL.equals("")) {
+			context.putPageValue("errorout", "URL does not exist!");
+			log.info("URL does not exist!");
+			return;
+		}
+		log.info("URL : " + inURL);
+		
 		//Create the searcher objects.	 
 		SearcherManager manager = archive.getSearcherManager();
 		Searcher inventorysearcher = manager.getSearcher(archive.getCatalogId(), "inventoryimport");
@@ -115,6 +123,8 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		String inDistributor = inReq.getRequestParameter("distributor");
 		Data distributor = distributorsearcher.searchById(inDistributor);
 		if (distributor == null) {
+			context.putPageValue("errorout", "Distributor does not exist.");
+			log.info("Distributor does not exist.");
 			return;
 		}
 		
@@ -129,9 +139,6 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		}
 
 		Downloader dl = new Downloader();
-		String inURL = inReq.getRequestParameter("url");
-		
-		log.info("URL : " + inURL);
 		dl.download(inURL, file);
 		
 		if (upload.exists()) {
