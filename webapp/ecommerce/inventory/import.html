@@ -1,0 +1,17 @@
+<div class="ui-widget uipanel">
+	#if ($export)
+	<div class="ui-widget-header">Test Import URL Section</div>
+	<div class="ui-widget-content">
+		<p>The following files were processed:</p>
+		$pages.include("/ecommerce/views/modules/product/workflow/inventory-notification.html", $context)
+	</div>
+	#end
+	#if ($errorout)
+	<div class="ui-widget-header">Test Import URL Section</div>
+	<div class="ui-widget-content">
+		<p>The following errors occurred.</p>
+		<p><ul>$errorout</ul></p>
+	</div>
+	#end
+</div>
+		

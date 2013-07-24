@@ -1,3 +1,4 @@
+<h2>Thank you for your order! Your order or part of your order has shipped.  Please see below for the waybill numbers.</h2>
 <!-- 
 context.putPageValue("ordernumber", orderNumber);
 context.putPageValue("order", order);
@@ -32,24 +33,29 @@ context.putPageValue("shipments", shipments);
 		<tr class="results-list-head">
 			<th align="left" class="results-list-head">Product ID</th>
 			<th align="center" width="100" class="results-list-head">Quantity Ordered</th>
+			<th class="results-list" class="results-list-head">Waybill</th>
 			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
 		</tr>
 		#set($itemCounter = 0)
 		#foreach ( $item in $order.getItems() ) 
 			#set( $itemCounter = $itemCounter + 1 )
 		<tr>
-			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+			#set( $productid = $item.getProduct().getId()) 
+			#set( $product = $store.getProductSearcher().searchById($productid) )
 			<td>$product.getName()</td>
 			<td class="results-list-center">$item.quantity</td>
-			#foreach ( $shipmentEntry in $shipments )
-				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
-					#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+			#foreach ( $shipment in $shipments )
+				#if ( $shipment.containsEntryForSku($product.get("manufacturersku")) )
+					#set( $entry = $shipment.getEntryForSku($product.get("manufacturersku")) )
+					#set( $waybill = $shipment.get("waybill") )
 		</tr>
 		<tr>
 			<td colspan="2" class="results-list-left">&nbsp;</td>
+			<td class="results-list-center">$waybill</td>
 			<td class="results-list-center">$entry.getQuantity()</td>
 		</tr>
 				#end
+				#set( $waybill = "" )
 			#end
 		#end
 		</tr>
@@ -63,29 +69,30 @@ context.putPageValue("shipments", shipments);
 	<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
 		<tr class="results-list-head">
 			<th align="center" class="results-list-head">Courier</th>
-			<th align="center" class="results-list-head">Waybill Number</th>
-			<th align="center" class="results-list-head">Ship Date</th>
-			<th align="left" class="results-list-head">Product ID</th>
-			<th align="center" class="results-list-head">Quantity<br/>Shipped</th>
+			<th align="center" class="results-list-head" style="padding-left: 10px;">Waybill Number</th>
+			<th align="center" class="results-list-head" style="padding-left: 10px;">Ship Date</th>
+			<th align="left" class="results-list-head" style="padding-left: 10px;">Product ID</th>
+			<th align="center" class="results-list-head" style="padding-left: 10px;">Quantity<br/>Shipped</th>
 		</tr>
 		
 		#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 		#set( $shipCounter = 0)
-		#foreach ( $shipmentEntry in $shipments )
+		#foreach ( $shipment in $shipments )
 			#set( $shipCounter = $shipCounter + 1 )
-			#set( $courier = $shipmentEntry.get("courier") )
-			#set( $waybill = $shipmentEntry.get("waybill") )
-			#set( $shipdate = $shipmentEntry.get("shipdate") )
+			#set( $courier = $shipment.get("courier") )
+			#set( $waybill = $shipment.get("waybill") )
+			#set( $shipdate = $shipment.get("shipdate") )
 		<tr>
 	 		<td class="results-list-center">$!courier</td>
 			<td class="results-list">$waybill</td>
 			<td class="results-list-center">$shipdate</td>
 			<td colspan="2" class="results-list-left">&nbsp;</td>
 		</tr>
-			#foreach ( $item in $order.getItems() ) 
-				#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-				#if ( $shipmentEntry.containsEntryForSku($item.product.id) )
-					#set( $entry = $shipmentEntry.getEntryForSku($item.product.id) )
+			#foreach ( $item in $order.getItems() )
+				#set( $productid = $item.getProduct().getId()) 
+				#set( $product = $store.getProductSearcher().searchById($productid) )
+				#if ( $shipment.containsEntryForSku($product.get("manufacturersku")) )
+					#set( $entry = $shipment.getEntryForSku($product.get("manufacturersku")) )
 		<tr>
 			<td colspan="3">&nbsp;</td>
 			<td class="results-list-left">$product.getName()</td>
@@ -93,6 +100,8 @@ context.putPageValue("shipments", shipments);
 		</tr>
 				#end
 			#end
+			#set( $waybill = "" )
+			#set( $courier = "" )
 		#end
 	</table>
 #end

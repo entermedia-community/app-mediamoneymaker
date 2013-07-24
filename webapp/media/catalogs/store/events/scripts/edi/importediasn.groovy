@@ -505,7 +505,7 @@ public class ImportEDIASN extends EnterMediaObject {
 		ArrayList emaillist = new ArrayList();
 		emaillist.add(customer.getEmail());
 		
-		String subject = "Order Shipping Notification";
+		String subject = "Wirelessarea.ca Order Shipping Notification - Order #: " + orderNumber;
 		String templatePage = "/ecommerce/views/modules/storeOrder/workflow/order-shipping-notification.html";
 		log.info("Sending email to emaillist: " + subject);
 		sendEmail(media.getArchive(), context, emaillist, templatePage, subject);

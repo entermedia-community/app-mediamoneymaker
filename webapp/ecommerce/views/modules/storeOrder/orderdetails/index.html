@@ -74,8 +74,9 @@ $order.getOrderStatus()
 <b>Order Details:</b><br>
 <table cellspacing="5" class="standard-table" cellpadding="3" border="0">
 	<tr class="results-list-head">
-		<th align="left" class="results-list-head">Product ID</th>
-		<th align="left" class="results-list-head">Item SKU</th>
+		<th align="left" class="results-list-head">Acc.<br>ID</th>
+		<th align="left" class="results-list-head" style="padding-left: 10px;">Product Name</th>
+		<th align="center" class="results-list-head">Manufacturer<br>SKU</th>
 		<th align="center" width="100"  class="results-list-head">Quantity</th>
 		<th align="right" class="results-list-head">Unit Price</th>
 		<th align="right" class="results-list-head">Line<br>Total</th>
@@ -95,14 +96,16 @@ $order.getOrderStatus()
 		<tr class="results-list-b">
 	#end
 		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+		<td>$product.getId()</td>
 		<td>
-			<p class="results-list">
-				<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>
+			<p class="results-list" style="margin-left: 10px;">
+				<a class="results-list" href="$home$path" target="_blank" 
+				style="font-size: 14px; color: blue;">$product.getName()</a>
 			<input type="hidden" name="sku" value="$item.sku"/>
 			<input type="hidden" name="ordernumber" value="$orderNumber"/>
 			<input type="hidden" name="origURL" value="$content.path"/></p></td>
 		<td align="center">
-			<p class="results-list">$item.sku</p></td>
+			<p class="results-list">$product.get("manufacturersku")</p></td>
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
 		<td align="right">
@@ -129,34 +132,43 @@ $order.getOrderStatus()
 		<td align="center" nowrap>
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 			#set($d = $distributorsearcher.searchById($item.get("distributor")))
+			#set($i = $invoicesearcher.searchByField("ponumber", $orderNumber))
 			#set($dname = $d.getName())
-			$dname
+			#if ($i.id != "" && $d.id == $i.distributor)
+				#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=${i.id}&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+				<a href="$url" style="font-size: 14px; color: blue;">
+			#end
+				$dname
+			#if ($i != "")
+				</a>
+			#end
 			</p>
 		</td>
 		</tr>
     #end
 	<tr style="border-top: 1px solid black;">
-		<td colspan="4" align="right">Subtotal:&nbsp;&nbsp;</td>
+		<td colspan="5" align="right">Subtotal:&nbsp;&nbsp;</td>
 		<td align="right">$order.getSubTotal()</td>
 	</tr>
 #if ( $order.getTotalShipping() && $order.getTotalShipping() != "0.00" )
 	<tr>
-		  <td colspan="4" align="right">Shipping:&nbsp;&nbsp;</td>
+		  <td colspan="5" align="right">Shipping:&nbsp;&nbsp;</td>
 		  <td align="right">$order.getTotalShipping()</td>
 	</tr>
 #else
 	<tr>
-		  <td colspan="4" align="right">Shipping:&nbsp;&nbsp;</td>
+		  <td colspan="5" align="right">Shipping:&nbsp;&nbsp;</td>
 		  <td align="right">$0.00</td>
 	</tr>
 #end
 	<tr>
-		<td colspan="4" align="right">Tax:&nbsp;&nbsp;</td>
+		<td colspan="5" align="right">Tax:&nbsp;&nbsp;</td>
 		<td align="right">$order.tax</td>
 	</tr>
 	<tr>
-		<td colspan="4" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
+		<td colspan="5" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
 		<td align="right"><b>$order.totalPrice</b></td>
 	</tr>
 </table></p>

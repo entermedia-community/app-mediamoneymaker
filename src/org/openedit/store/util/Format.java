@@ -1,6 +1,8 @@
 package org.openedit.store.util;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class Format {
 	
@@ -23,8 +25,9 @@ public class Format {
 	}
 	
 	private static String priceWithDecimal (Double price) {
-	    DecimalFormat formatter = new DecimalFormat("###,###,###.00");
-	    return formatter.format(price);
+	    DecimalFormat formatter = new DecimalFormat("###,###,##0.00", new DecimalFormatSymbols(Locale.ENGLISH));
+	    String output = formatter.format(price);
+	    return output;
 	}
 
 //	private static String priceWithoutDecimal (Double price) {
