@@ -169,6 +169,22 @@ public class CartModule extends BaseStoreModule {
 			cart.removeProduct(product);
 		}
 	}
+	
+	
+	public void toggleProduct(WebPageRequest inPageRequest) throws Exception {
+		String productId = inPageRequest.getRequestParameter("productid");
+		if (productId != null) {
+			Store store = getStore(inPageRequest);
+			Product product = store.getProduct(productId);
+			Cart cart = getCart(inPageRequest);
+			if(cart.containsProduct(productId)){
+				cart.removeProduct(product);	
+			} else{
+				updateCart(inPageRequest);
+			}
+			
+		}
+	}
 
 	protected ProductAdder getProductAdder() {
 		ProductAdder adder = (ProductAdder) getBeanFactory().getBean(
