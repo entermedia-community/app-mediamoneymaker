@@ -3,8 +3,8 @@
 #set ( $shippingAddress = $order.getShippingAddress() )
 #set ( $billingAddress = $order.getBillingAddress() )
 #set ( $customer = $order.customer )
-#set($searcherManager = $store.getSearcherManager())
-
+#set ( $searcherManager = $store.getSearcherManager())
+#set ( $orderitems = $order.getItems() )
 <h2 >Order #$orderNumber</h2>
 (<a class="btn" href="$apphome/views/modules/storeOrder/actions/recreatecart.html?orderid=${order.orderNumber}">Re-order this</a>)
 
@@ -86,17 +86,18 @@ $order.getOrderStatus()
 	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 	
 #set($itemCounter = 0)
-#foreach ( $item in $order.items )
-	#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
-	#set($itemCounter = $itemCounter + 1)
-	#set($bkgrnd = $itemCounter % 2)
+#foreach ( $item in $orderitems )
+	#set( $productid = $item.getProduct().getId() )
+	#set( $product = $store.getProductSearcher().searchById($productid) )
+	#set( $path ="$apphome/products/$product.getSourcePath().html")
+	#set( $itemCounter = $itemCounter + 1)
+	#set( $bkgrnd = $itemCounter % 2)
 	#if ( $bkgrnd == 0 )
 		<tr class="results-list-a">
 	#else
 		<tr class="results-list-b">
 	#end
-		#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-		<td>$product.getId()</td>
+		<td>$productid</td>
 		<td>
 			<p class="results-list" style="margin-left: 10px;">
 				<a class="results-list" href="$home$path" target="_blank" 
@@ -133,16 +134,26 @@ $order.getOrderStatus()
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
 			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
-			#set($d = $distributorsearcher.searchById($item.get("distributor")))
-			#set($i = $invoicesearcher.searchByField("ponumber", $orderNumber))
-			#set($dname = $d.getName())
-			#if ($i.id != "" && $d.id == $i.distributor)
-				#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=${i.id}&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
-				<a href="$url" style="font-size: 14px; color: blue;">
-			#end
-				$dname
-			#if ($i != "")
-				</a>
+			#set($d = $distributorsearcher.searchById($product.get("distributor")))
+			#set($invoices = $invoicesearcher.fieldSearch("ponumber", $orderNumber))
+			#if ($invoices.size() > 1)
+				#set($breakflag = "false")
+				#foreach( $inv in $invoices)
+					#set($invoiceID = $inv.getId())
+					#set($dID = $d.getId())
+					#set($idist = $inv.get("distributor"))
+					#set($dname = $d.getName())
+					#if ($invoiceID != "" && $dID == $idist)
+						#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+						<a href="$url" style="font-size: 14px; color: blue;">$dname</a>
+						#set($breakflag = "true")
+						#break
+					#end
+				#end
+				#if($breakflag == "false")
+					$dname
+				#end
+			#else
 			#end
 			</p>
 		</td>
