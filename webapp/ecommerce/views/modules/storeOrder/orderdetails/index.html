@@ -154,6 +154,17 @@ $order.getOrderStatus()
 					$dname
 				#end
 			#else
+				#set($inv = $invoices[0])
+				#set($invoiceID = $inv.getId())
+				#set($dID = $d.getId())
+				#set($idist = $inv.get("distributor"))
+				#set($dname = $d.getName())
+				#if ($invoiceID != "" && $dID == $idist)
+					#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+					<a href="$url" style="font-size: 14px; color: blue;">$dname</a>
+					#set($breakflag = "true")
+					#break
+				#end
 			#end
 			</p>
 		</td>
