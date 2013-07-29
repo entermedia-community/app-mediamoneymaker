@@ -1,6 +1,27 @@
 <!-- 
 	$hits.setHitsPerPage(32)
 -->
+#set($category = $context.getPageValue("category"))
+#set($categoryvalue = $context.getPageValue("categoryvalue"))
+#set($searchfield = $context.getPageValue("searchfield"))
+#set($searchfor = $context.getPageValue("searchfor"))
+#set($query = $context.getPageValue("query"))
+#set($action = $context.getPageValue("action"))
+<div class="breadcrumb">
+	<ul>
+		<li><a href="$apphome/index.html">Home</a></li>
+		#if($searchfor && $searchfor.length() > 0)
+			<li><a href="/ecommerce/browse.html">Browse</a><li>
+<!--			
+			<li><a href="/ecommerce/search/fieldsearch.html?field=${category}&${category}.value=${categoryvalue}&operation=exact">$searchfield</a>
+-->
+			<li>$searchfor</li>
+		#end
+		#if($query && $query.length() > 0)
+			<li>Query<img src="/ecommerce/theme/images/breadcrumb.gif"/>$query</li>
+		#end
+	</ul>
+</div>
 <h2>&nbsp;</h2>
 $pages.include("$apphome/search/results-navigation.html")
 

@@ -17,8 +17,7 @@
         
                 border-bottom: 1px solid #ccc;
                                 border-right: 1px solid #ccc;
-                
-        
+                        
     }
 #nav li a {
         color: #49494B;
@@ -451,4 +450,48 @@ table.product-report td.product-report-item {
 	margin-right: auto;
 	text-align: center;
 	width: 100px;
+}
+
+.breadcrumb {
+	width: 100%;
+	overflow: hidden;
+}
+
+.breadcrumb ul {
+	margin: 0;
+	padding: 0;
+	margin-left: 10px;
+	list-style-type: none;
+}
+
+.breadcrumb li {
+	display: inline;
+	margin: 0;
+	font-size: 11px;
+}
+
+.breadcrumb li a {
+	font-size: 16px;
+	font-weight: bold;
+	float: left;
+	background: transparent url(/ecommerce/theme/images/breadcrumb.gif) no-repeat center right;
+	text-decoration: none;
+	padding-right: 18px; /*adjust bullet image padding*/
+	color: navy;
+	margin-top: 3px;
+	margin-right: 5px;
+}
+
+.breadcrumb li a:visited, .breadcrumb li a:active {
+	color: navy;
+}
+
+.breadcrumb li a:hover{
+	text-decoration: underline;
+}
+
+.breadcrumb li img {
+	padding-right: 7px; /*adjust bullet image padding*/
+	padding-left: 7px; /*adjust bullet image padding*/
+	margin-top: -2px;
 }

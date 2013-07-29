@@ -1,3 +1,26 @@
+#set($manufacturerid = $product.get("manufacturerid"))
+#set($categoryid = $product.get("categoryid"))
+#set($searcherManager = $store.getSearcherManager())
+#set($manufacturersearcher = $searcherManager.getSearcher($catalogid, "manufacturer"))
+#set($manu = $manufacturersearcher.searchById($manufacturerid))
+#set($categorysearcher = $searcherManager.getSearcher($catalogid, "categoryid"))
+#set($category = $categorysearcher.searchById($categoryid))
+#set($manuname = $manu.getName())
+#set($catname = $category.getName())
+<div class="breadcrumb">
+	<ul>
+		<li><a href="$apphome/index.html">Home</a></li>
+		<li><a href="/ecommerce/browse.html">Browse</a><li>
+		#if ($catname && $catname.length() > 0)
+		<li><a href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=${categoryid}&operation=exact">$catname</a></li>
+		#end
+		#if ($manuname && $manuname.length() > 0)
+		<li><a href="/ecommerce/search/fieldsearch.html?field=manufacturerid&manufacturerid.value=${manufacturerid}&operation=exact">$manuname</a></li>
+		#end
+		<li>$product.getName()</li>
+	</ul>
+</div>
+<h2>&nbsp;</h2>
 #if($canbrowseproducts)
 
 <form action="$home$apphome/shoppingbag.html" name="shop" id="shop" >
