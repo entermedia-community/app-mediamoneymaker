@@ -11,11 +11,12 @@
 	<ul>
 		<li><a href="$apphome/index.html">Home</a></li>
 		#if($searchfor && $searchfor.length() > 0)
-			<li><a href="/ecommerce/browse.html">Browse</a><li>
-<!--			
-			<li><a href="/ecommerce/search/fieldsearch.html?field=${category}&${category}.value=${categoryvalue}&operation=exact">$searchfield</a>
--->
-			<li>$searchfor</li>
+			#if(!$searchfor.contains(","))
+				<li><a href="/ecommerce/browse.html">Browse</a><li>
+			#else
+				<li><a href="/ecommerce/browse.html">Searching</a><li>
+			#end
+				<li>$searchfor</li>
 		#end
 		#if($query && $query.length() > 0)
 			<li>Query<img src="/ecommerce/theme/images/breadcrumb.gif"/>$query</li>
