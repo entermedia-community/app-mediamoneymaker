@@ -1,7 +1,5 @@
 package pages
 
-import java.lang.reflect.Field;
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
@@ -9,7 +7,6 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 
-import com.caucho.quercus.env.ArrayValue.GetValue;
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
