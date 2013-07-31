@@ -474,7 +474,7 @@ table.product-report td.product-report-item {
 	font-size: 16px;
 	font-weight: bold;
 	float: left;
-	background: transparent url(/ecommerce/theme/images/breadcrumb.gif) no-repeat center right;
+	background: transparent url(/ecommerce/theme/images/small-red-arrow.png) no-repeat center right;
 	text-decoration: none;
 	padding-right: 18px; /*adjust bullet image padding*/
 	color: navy;
@@ -493,5 +493,4 @@ table.product-report td.product-report-item {
 .breadcrumb li img {
 	padding-right: 7px; /*adjust bullet image padding*/
 	padding-left: 7px; /*adjust bullet image padding*/
-	margin-top: -2px;
 }

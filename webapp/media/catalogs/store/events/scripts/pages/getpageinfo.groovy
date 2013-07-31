@@ -111,11 +111,13 @@ public class GetPageInfo extends EnterMediaObject {
 				String searchValue = entry.getValue();
 				Searcher categorysearcher = manager.getSearcher(catalogid, searchField)
 				Data cat = categorysearcher.searchById(searchValue);
-				log.info(cat.getName());
-				inReq.putPageValue("searchfor", cat.getName());
-				inReq.putPageValue("category", searchField);
-				inReq.putPageValue("categoryvalue", searchValue);
-				inReq.putPageValue("action", "single");
+				if (cat != null) {
+					log.info(cat.getName());
+					inReq.putPageValue("searchfor", cat.getName());
+					inReq.putPageValue("category", searchField);
+					inReq.putPageValue("categoryvalue", searchValue);
+					inReq.putPageValue("action", "single");
+				}
 			}
 		} else {
 			Iterator searchEntries = getSearchValues().iterator();
@@ -129,7 +131,7 @@ public class GetPageInfo extends EnterMediaObject {
 					log.info("key: " + key);
 					log.info("value: " + entryValue);
 					switch (key) {
-						case "manufacturer": 
+						case "manufacturerid": 
 							searchField += "Manufacturer";
 							break;
 						case "categoryid": 
@@ -148,7 +150,9 @@ public class GetPageInfo extends EnterMediaObject {
 					if (key != "name") {
 						Searcher datasearcher = manager.getSearcher(catalogid, key)
 						Data dataResults = datasearcher.searchById(entryValue);
-						searchFor += dataResults.getName();
+						if (dataResults != null) {
+							searchFor += dataResults.getName();
+						}
 					} else {
 						searchFor += "\"" + entryValue + "\"";
 					}
