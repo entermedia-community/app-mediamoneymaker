@@ -135,6 +135,18 @@ public class ImportInventory  extends EnterMediaObject {
 		
 			//Read 1 line for headers
 			String[] headers = read.readNext();
+			if (distributor.getId() == "104") {
+				if (headers[0] != "ITEM_NO") {
+					inReq.putPageValue("errorout", "HEADER row is missing from the Inventory File! Please update and re-upload.");
+					return;
+				}
+			}
+			if (distributor.getId() == "102") {
+				if (headers[0] != "Affinity Item") {
+					inReq.putPageValue("errorout", "HEADER row is missing from the Inventory File! Please update and re-upload.");
+					return;
+				}
+			}
 			
 			int manufacturerSKUcol = Integer.parseInt(csvFields.get("sku"));
 			int rogersSKUcol = Integer.parseInt(csvFields.get("sku"));
@@ -215,7 +227,8 @@ public class ImportInventory  extends EnterMediaObject {
 						addToGoodProductList(rogersSKU);
 				
 					} else {
-						throw new OpenEditException("Could not open product!");
+						log.info("Could not open product! (" + productHit.id + ")");
+						addToBadProductList(productHit.id);
 					}
 				}
 				increaseTotalRows();
