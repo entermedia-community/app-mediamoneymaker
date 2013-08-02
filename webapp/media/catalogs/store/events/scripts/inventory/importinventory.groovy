@@ -163,6 +163,12 @@ public class ImportInventory  extends EnterMediaObject {
 			String[] cols;
 			while ((cols = read.readNext()) != null)
 			{
+				if (csvType.equals("104")) {
+					if (!cols[0].contains("-")) {
+						inReq.putPageValue("errorout", "Inventory update ABORTED! Invalid line in CSV file. Invalid line around line " + getTotalRows().toString() );
+						return;
+					}
+				}
 				String manufacturerSKU = null;
 				String rogersSKU = null;
 				if (csvType.equals("104")) {
