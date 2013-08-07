@@ -370,6 +370,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 				context.putPageValue("badupclist", getBadUPCList());
 				context.putPageValue("badqtylist", getBadQTYList());
 				context.putPageValue("distributor", distributor.getName());
+				context.putPageValue("errorout", "[NONE]");
 				
 				String subject = "Inventory Report - " + distributor.getName();
 				Date newDate = new Date();
@@ -378,7 +379,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 					subject += " - ERRORS FOUND!";
 				} 
 				ArrayList emaillist = new ArrayList();
-				HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+				HitTracker results = userprofilesearcher.fieldSearch("productadmin", "true");
 				if (results.size() > 0) {
 					for(Iterator detail = results.iterator(); detail.hasNext();) {
 						Data userInfo = (Data)detail.next();
