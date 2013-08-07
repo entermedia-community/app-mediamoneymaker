@@ -8,4 +8,6 @@
   <property id="email"/>
   <property id="dealer"/>
   <property id="distributor"/>
+  <property id="productadmin"/>
+  <property id="storeadmin"/>
 </root>

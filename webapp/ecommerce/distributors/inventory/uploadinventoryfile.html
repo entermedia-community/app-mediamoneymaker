@@ -2,7 +2,7 @@
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Rogers Inventory Section</div>
 	<div class="ui-widget-content">
-	#if ($errorout == "" && $errorout.length() == 0)
+	#if ($errorout == "[NONE]")
 		$pages.include("/ecommerce/views/modules/product/workflow/inventory-notification.html", $context)
 	#else
 		<h3>$errorout</h3>
