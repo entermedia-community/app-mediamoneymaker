@@ -156,7 +156,7 @@ public void handleSubmission(){
 	createTicketHistory(tickethistorysearcher, ticket, inReq, ticketStatus, ticketNotes );
 
 	ArrayList emailList = new ArrayList();
-	HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+	HitTracker results = userprofilesearcher.fieldSearch("ticketadmin", "true");
 	if (results.size() > 0) {
 		for(Iterator detail = results.iterator(); detail.hasNext();) {
 			Data userInfo = (Data)detail.next();
