@@ -1,8 +1,8 @@
  
  <ul class="emheaderbuttons" >
-<li><a id="home"  href="$home$apphome/index.html"> Home </a></li>
+<li><a id="home"  href="$home$apphome/index.html"> [[Home]] </a></li>
 #if($canbrowseproducts)
-<li style="border-right: 1px solid #CCCCCC;"><a id="home"  href="$home$apphome/browse.html"> Browse </a></li>
+<li style="border-right: 1px solid #CCCCCC;"><a id="home"  href="$home$apphome/browse.html">[[ Browse ]]</a></li>
 #end
 #set ($lastselected = $content.module )
  	#if(!$lastselected)
@@ -21,11 +21,11 @@
 
 	#if($canviewdistributorsection)
 
-<li><a href="$apphome/distributors/myproducts.html">My Products</a></li>
+<li><a href="$apphome/distributors/myproducts.html">[[My Products]]</a></li>
 
     #end
 	#if($canviewrogerstools)
-                	<li><a href="$apphome/rogers/">Rogers Tools</a></li>
+                	<li><a href="$apphome/rogers/">[[Rogers Tools]]</a></li>
     #end
 
 
@@ -50,7 +50,7 @@
 
 #elseif( $canviewhomelink )
 
-<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
+<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html">[[ Home ]]</a></li>
 #end
 
 
