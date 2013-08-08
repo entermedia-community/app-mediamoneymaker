@@ -1,0 +1,6 @@
+
+<properties prefix="translation" >
+  <property id="id" index="true" stored="true" editable="true" searchtype="translation" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="translation">Name</property>
+  <property id="sourcepath">SourcePath</property>
+</properties>
