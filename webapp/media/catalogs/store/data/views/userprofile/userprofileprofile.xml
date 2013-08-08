@@ -15,5 +15,6 @@
   <property id="displaydesignation"/>
   <property id="ticketadmin"/>
   <property id="storeadmin"/>
+  <property id="productadmin"/>
   <property id="address"/>
 </root>
