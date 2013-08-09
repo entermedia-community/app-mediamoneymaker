@@ -136,7 +136,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		try {
 			Document doc = new Document();
 			PropertyDetails details = getPropertyDetailsArchive()
-					.getPropertyDetails("order");
+					.getPropertyDetails("storeOrder");
 			updateIndex(inOrder, doc, details);
 			Term term = new Term("id", inOrder.getId());
 			getIndexWriter().updateDocument(term, doc, getAnalyzer());
