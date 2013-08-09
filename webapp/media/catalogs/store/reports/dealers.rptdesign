@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">fixed layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <list-property name="libraries">
+        <structure>
+            <property name="fileName">webapp/media/catalogs/store/reports/ecommerce.rptlibrary</property>
+            <property name="namespace">ecommerce</property>
+        </structure>
+    </list-property>
+    <data-sources>
+        <script-data-source name="EntermediaData Source" id="7" extends="ecommerce.EntermediaData Source"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="OrderItems" id="203" extends="ecommerce.OrderItems"/>
+        <script-data-set name="userprofile" id="333" extends="ecommerce.userprofile"/>
+        <script-data-set name="distributor" id="357" extends="ecommerce.distributor"/>
+        <joint-data-set name="userprofiledistributor" id="358">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">userprofile::dealer</property>
+                    <property name="alias">dealer</property>
+                    <text-property name="displayName">userprofile::dealer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofile::id</property>
+                    <property name="alias">userprofile::id</property>
+                    <text-property name="displayName">userprofile::id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">distributor::id</property>
+                    <property name="alias">distributor::id</property>
+                    <text-property name="displayName">distributor::id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">distributor::name</property>
+                    <property name="alias">name</property>
+                    <text-property name="displayName">distributor::name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofile::distributor</property>
+                    <property name="alias">distributor</property>
+                    <text-property name="displayName">userprofile::distributor</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">distributor::fullname</property>
+                    <property name="alias">fullname</property>
+                    <text-property name="displayName">distributor::fullname</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">distributor::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">distributor::name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">distributor::fullname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">userprofile::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">userprofile::distributor</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">userprofile::dealer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>distributor</value>
+                <value>userprofile</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">distributor</property>
+                    <property name="rightDataSet">userprofile</property>
+                    <expression name="leftExpression">dataSetRow["id"]</expression>
+                    <expression name="rightExpression">dataSetRow["distributor"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+        <script-data-set name="dealer" id="399" extends="ecommerce.dealer"/>
+        <joint-data-set name="userprofiledistributordealer" id="400">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">dealer::id</property>
+                    <property name="alias">id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">dealer::id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::userprofile::id</property>
+                    <property name="alias">userprofile::id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::userprofile::id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::distributor::name</property>
+                    <property name="alias">distributor::name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::distributor::name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::userprofile::dealer</property>
+                    <property name="alias">userprofile::dealer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::userprofile::dealer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::distributor::id</property>
+                    <property name="alias">distributor::id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::distributor::id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">dealer::name</property>
+                    <property name="alias">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">dealer::name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::userprofile::distributor</property>
+                    <property name="alias">userprofile::distributor</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::userprofile::distributor</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributor::distributor::fullname</property>
+                    <property name="alias">distributor::fullname</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">userprofiledistributor::distributor::fullname</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">userprofiledistributor::distributor::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">userprofiledistributor::distributor::name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">userprofiledistributor::distributor::fullname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">userprofiledistributor::userprofile::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">userprofiledistributor::userprofile::distributor</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">userprofiledistributor::userprofile::dealer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">dealer::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">dealer::name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>userprofiledistributor</value>
+                <value>dealer</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">userprofiledistributor</property>
+                    <property name="rightDataSet">dealer</property>
+                    <expression name="leftExpression">dataSetRow["userprofile::dealer"]</expression>
+                    <expression name="rightExpression">dataSetRow["id"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+        <joint-data-set name="OrderItemsDealer" id="547">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">OrderItems::totaltax</property>
+                    <property name="alias">totaltax</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Tax</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::dealer::name</property>
+                    <property name="alias">dealer::name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Dealer Name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::shippingstatus</property>
+                    <property name="alias">shippingstatus</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Shipping</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::orderdate</property>
+                    <property name="alias">orderdate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::totalprice</property>
+                    <property name="alias">totalprice</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Total Cost</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::dealer::id</property>
+                    <property name="alias">dealer::id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Dealer#</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::customer</property>
+                    <property name="alias">customer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Customer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::subtotal</property>
+                    <property name="alias">subtotal</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Subtotal</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::sku</property>
+                    <property name="alias">sku</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">SKU</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::userprofile::dealer</property>
+                    <property name="alias">userprofiledistributor::userprofile::dealer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">User Dealer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::rogersponumber</property>
+                    <property name="alias">rogersponumber</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PO#</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::userprofile::id</property>
+                    <property name="alias">userprofiledistributor::userprofile::id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">User Id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::distributor::name</property>
+                    <property name="alias">userprofiledistributor::distributor::name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Distributor Name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::id</property>
+                    <property name="alias">id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Order#</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::price</property>
+                    <property name="alias">price</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Price</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::productid</property>
+                    <property name="alias">productid</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Product ID</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::distributor::id</property>
+                    <property name="alias">userprofiledistributor::distributor::id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Distributor#</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::totalshipping</property>
+                    <property name="alias">totalshipping</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Shipping Cost</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::quantity</property>
+                    <property name="alias">quantity</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">Quantity</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::distributor</property>
+                    <property name="alias">distributor</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Distributor</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::userprofile::distributor</property>
+                    <property name="alias">userprofiledistributor::userprofile::distributor</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">User Distributor</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">userprofiledistributordealer::userprofiledistributor::distributor::fullname</property>
+                    <property name="alias">userprofiledistributor::distributor::fullname</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Distributor Full Name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::productname</property>
+                    <property name="alias">productname</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Product Name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundquantity</property>
+                    <property name="alias">OrderItems::refundquantity</property>
+                    <text-property name="displayName">Refund Quantity</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundamount</property>
+                    <property name="alias">OrderItems::refundamount</property>
+                    <text-property name="displayName">Refund Price</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundsubtotal</property>
+                    <property name="alias">OrderItems::refundsubtotal</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundshipping</property>
+                    <property name="alias">OrderItems::refundshipping</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundtax</property>
+                    <property name="alias">OrderItems::refundtax</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::refundtotal</property>
+                    <property name="alias">OrderItems::refundtotal</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::totalafterrefunds</property>
+                    <property name="alias">OrderItems::totalafterrefunds</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OrderItems::brand</property>
+                    <property name="alias">OrderItems::brand</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">OrderItems::orderdate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">OrderItems::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">OrderItems::customer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">OrderItems::rogersponumber</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">OrderItems::shippingstatus</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">OrderItems::distributor</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">OrderItems::subtotal</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">OrderItems::totaltax</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">OrderItems::totalshipping</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">OrderItems::totalprice</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">OrderItems::sku</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">OrderItems::productid</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">OrderItems::productname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">OrderItems::quantity</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">OrderItems::price</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">OrderItems::refundquantity</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">OrderItems::refundamount</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">OrderItems::refundsubtotal</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">OrderItems::refundshipping</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">OrderItems::refundtax</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">OrderItems::refundtotal</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">OrderItems::totalafterrefunds</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">OrderItems::brand</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::fullname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::distributor</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::dealer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">userprofiledistributordealer::dealer::id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">31</property>
+                        <property name="name">userprofiledistributordealer::dealer::name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>OrderItems</value>
+                <value>userprofiledistributordealer</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">OrderItems</property>
+                    <property name="rightDataSet">userprofiledistributordealer</property>
+                    <expression name="leftExpression">dataSetRow["customer"]</expression>
+                    <expression name="rightExpression">dataSetRow["userprofiledistributor::userprofile::id"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="Currency" id="331">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">$ #,##0.00{RoundingMode=HALF_UP}</property>
+            </structure>
+        </style>
+        <style name="Date" id="332">
+            <structure name="dateTimeFormat">
+                <property name="category">Long Date</property>
+                <property name="pattern">Long Date</property>
+            </structure>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="1079">
+            <property name="dataSet">OrderItemsDealer</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">OrderItems::orderdate</property>
+                    <text-property name="displayName">Date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::orderdate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::id</property>
+                    <text-property name="displayName">Order#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::customer</property>
+                    <text-property name="displayName">Customer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::customer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::rogersponumber</property>
+                    <text-property name="displayName">PO#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::rogersponumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::shippingstatus</property>
+                    <text-property name="displayName">Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::shippingstatus"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::distributor</property>
+                    <text-property name="displayName">Distributor</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::distributor"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::subtotal</property>
+                    <text-property name="displayName">Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::subtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::totaltax</property>
+                    <text-property name="displayName">Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::totaltax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::totalshipping</property>
+                    <text-property name="displayName">Shipping Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::totalshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::totalprice</property>
+                    <text-property name="displayName">Total Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::totalprice"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::sku</property>
+                    <text-property name="displayName">SKU</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::sku"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::productid</property>
+                    <text-property name="displayName">Product ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::productid"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::productname</property>
+                    <text-property name="displayName">Product Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::productname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::quantity</property>
+                    <text-property name="displayName">Quantity</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::quantity"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::price</property>
+                    <text-property name="displayName">Price</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::price"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundquantity</property>
+                    <text-property name="displayName">Refund Quantity</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundquantity"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundamount</property>
+                    <text-property name="displayName">Refund Price</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundamount"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundsubtotal</property>
+                    <text-property name="displayName">OrderItems::refundsubtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundsubtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundshipping</property>
+                    <text-property name="displayName">OrderItems::refundshipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundtax</property>
+                    <text-property name="displayName">OrderItems::refundtax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundtax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::refundtotal</property>
+                    <text-property name="displayName">OrderItems::refundtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::refundtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::totalafterrefunds</property>
+                    <text-property name="displayName">OrderItems::totalafterrefunds</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::totalafterrefunds"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">OrderItems::brand</property>
+                    <text-property name="displayName">OrderItems::brand</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OrderItems::brand"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::id</property>
+                    <text-property name="displayName">Distributor#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::distributor::id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::name</property>
+                    <text-property name="displayName">Distributor Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::distributor::name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::distributor::fullname</property>
+                    <text-property name="displayName">Distributor Full Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::distributor::fullname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::id</property>
+                    <text-property name="displayName">User Id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::userprofile::id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::distributor</property>
+                    <text-property name="displayName">User Distributor</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::userprofile::distributor"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::userprofiledistributor::userprofile::dealer</property>
+                    <text-property name="displayName">User Dealer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::userprofiledistributor::userprofile::dealer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::dealer::id</property>
+                    <text-property name="displayName">Dealer#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::dealer::id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">userprofiledistributordealer::dealer::name</property>
+                    <text-property name="displayName">Dealer Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userprofiledistributordealer::dealer::name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">date</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">MIN</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::orderdate"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">date</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">MAX</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::orderdate"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNTDISTINCT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::id"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_3</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::quantity"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_4</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::price"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_5</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::refundquantity"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_6</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["OrderItems::refundamount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_7</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">AVE</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">BirtMath.subtract(row["Aggregation_3"],row["Aggregation_5"])</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_8</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">AVE</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">BirtMath.subtract(row["Aggregation_4"],row["Aggregation_6"])</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="1238"/>
+            <column id="1239"/>
+            <column id="1240"/>
+            <column id="1241"/>
+            <column id="1242"/>
+            <column id="1243"/>
+            <column id="1244"/>
+            <column id="1245"/>
+            <column id="1246"/>
+            <column id="1247"/>
+            <header>
+                <row id="1080">
+                    <cell id="1081">
+                        <label id="1082">
+                            <text-property name="text">Dealer</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1083">
+                        <label id="1084">
+                            <text-property name="text">From</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1085">
+                        <label id="1086">
+                            <text-property name="text">To</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1087">
+                        <label id="1088">
+                            <text-property name="text">No. of Orders</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1089">
+                        <label id="1090">
+                            <text-property name="text">Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1091">
+                        <label id="1092">
+                            <text-property name="text">Price</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1093">
+                        <label id="1094">
+                            <text-property name="text">Refund Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1095">
+                        <label id="1096">
+                            <text-property name="text">Refund Price</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1097">
+                        <label id="1098">
+                            <text-property name="text">Total Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1099">
+                        <label id="1100">
+                            <text-property name="text">Total Price</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="1269">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">row["userprofiledistributordealer::dealer::name"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["userprofiledistributordealer::dealer::name"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="1270">
+                        <cell id="1271">
+                            <data id="1334">
+                                <property name="resultSetColumn">userprofiledistributordealer::dealer::name</property>
+                            </data>
+                        </cell>
+                        <cell id="1272">
+                            <data id="1335">
+                                <property name="style">Date</property>
+                                <property name="resultSetColumn">Aggregation</property>
+                            </data>
+                        </cell>
+                        <cell id="1273">
+                            <data id="1336">
+                                <property name="style">Date</property>
+                                <property name="resultSetColumn">Aggregation_1</property>
+                            </data>
+                        </cell>
+                        <cell id="1274">
+                            <data id="1337">
+                                <property name="resultSetColumn">Aggregation_2</property>
+                            </data>
+                        </cell>
+                        <cell id="1275">
+                            <data id="1338">
+                                <property name="resultSetColumn">Aggregation_3</property>
+                            </data>
+                        </cell>
+                        <cell id="1276">
+                            <data id="1339">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_4</property>
+                            </data>
+                        </cell>
+                        <cell id="1277">
+                            <data id="1341">
+                                <property name="resultSetColumn">Aggregation_5</property>
+                            </data>
+                        </cell>
+                        <cell id="1278">
+                            <data id="1342">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_6</property>
+                            </data>
+                        </cell>
+                        <cell id="1279">
+                            <data id="1343">
+                                <property name="resultSetColumn">Aggregation_7</property>
+                            </data>
+                        </cell>
+                        <cell id="1280">
+                            <data id="1344">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_8</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="1302">
+                        <cell id="1303"/>
+                        <cell id="1304"/>
+                        <cell id="1305"/>
+                        <cell id="1306"/>
+                        <cell id="1307"/>
+                        <cell id="1308"/>
+                        <cell id="1309"/>
+                        <cell id="1310"/>
+                        <cell id="1311"/>
+                        <cell id="1312"/>
+                    </row>
+                </footer>
+            </group>
+            <footer>
+                <row id="1206">
+                    <cell id="1207"/>
+                    <cell id="1208"/>
+                    <cell id="1209"/>
+                    <cell id="1210"/>
+                    <cell id="1211"/>
+                    <cell id="1212"/>
+                    <cell id="1213"/>
+                    <cell id="1214"/>
+                    <cell id="1215"/>
+                    <cell id="1216"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

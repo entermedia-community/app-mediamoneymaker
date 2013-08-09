@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="eventHandlerClass">org.openedit.store.reporting.OrderItemEventHandler</property>
+    <property name="layoutPreference">fixed layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <list-property name="libraries">
+        <structure>
+            <property name="fileName">webapp/media/catalogs/store/reports/ecommerce.rptlibrary</property>
+            <property name="namespace">ecommerce</property>
+        </structure>
+    </list-property>
+    <data-sources>
+        <script-data-source name="EntermediaData Source" id="822" extends="ecommerce.EntermediaData Source"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="OrderItems" id="1177" extends="ecommerce.OrderItems"/>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderTopStyle">none</property>
+            <structure name="dateTimeFormat">
+                <property name="category">Long Date</property>
+                <property name="pattern">Long Date</property>
+            </structure>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thick</property>
+        </style>
+        <style name="Currency" id="1073">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">$ #,##0.00{RoundingMode=UNNECESSARY}</property>
+            </structure>
+            <structure name="stringFormat">
+                <property name="category">Unformatted</property>
+            </structure>
+            <property name="textAlign">right</property>
+        </style>
+        <style name="GroupHeader" id="1176">
+            <property name="fontSize">large</property>
+            <property name="fontWeight">bold</property>
+            <property name="fontStyle">normal</property>
+            <property name="textUnderline">none</property>
+            <property name="borderBottomStyle">none</property>
+            <structure name="numberFormat">
+                <property name="category">Unformatted</property>
+            </structure>
+        </style>
+        <style name="Date" id="1306">
+            <structure name="dateTimeFormat">
+                <property name="category">Long Date</property>
+                <property name="pattern">Long Date</property>
+            </structure>
+        </style>
+        <style name="Number" id="2210">
+            <structure name="numberFormat">
+                <property name="category">General Number</property>
+                <property name="pattern">General Number</property>
+            </structure>
+            <property name="textAlign">center</property>
+        </style>
+        <style name="CenteredText" id="2211">
+            <property name="textAlign">center</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="2018">
+            <property name="dataSet">OrderItems</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">orderdate</property>
+                    <text-property name="displayName">Date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["orderdate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">Order#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer</property>
+                    <text-property name="displayName">Customer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">rogersponumber</property>
+                    <text-property name="displayName">PO#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["rogersponumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingstatus</property>
+                    <text-property name="displayName">Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingstatus"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">distributor</property>
+                    <text-property name="displayName">Distributor</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["distributor"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">subtotal</property>
+                    <text-property name="displayName">Order Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totaltax</property>
+                    <text-property name="displayName">Order Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totaltax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalshipping</property>
+                    <text-property name="displayName">Order Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalprice</property>
+                    <text-property name="displayName">Order Total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalprice"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">sku</property>
+                    <text-property name="displayName">SKU</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sku"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">productid</property>
+                    <text-property name="displayName">Product ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["productid"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">productname</property>
+                    <text-property name="displayName">Product Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["productname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">quantity</property>
+                    <text-property name="displayName">Quantity</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">price</property>
+                    <text-property name="displayName">Product Price</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["price"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundquantity</property>
+                    <text-property name="displayName">Product Refund Quantity</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundquantity"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">refundamount</property>
+                    <text-property name="displayName">Product Refund</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundamount"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundsubtotal</property>
+                    <text-property name="displayName">Refund Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundsubtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundshipping</property>
+                    <text-property name="displayName">Refund Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundtax</property>
+                    <text-property name="displayName">Refund Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundtax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundtotal</property>
+                    <text-property name="displayName">Refund Total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalafterrefunds</property>
+                    <text-property name="displayName">Total After Refunds</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalafterrefunds"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">brand</property>
+                    <text-property name="displayName">Brand</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["brand"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNTDISTINCT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["id"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["quantity"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["price"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_3</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["refundquantity"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_4</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["refundamount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_5</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">BirtMath.subtract(row["Aggregation_2"],row["Aggregation_4"])</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_6</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">LAST</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">BirtMath.subtract(row["Aggregation_1"],row["Aggregation_3"])</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_7</property>
+                    <property name="dataType">date</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">MIN</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["orderdate"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_8</property>
+                    <property name="dataType">date</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">MAX</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["orderdate"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="2137"/>
+            <column id="2303"/>
+            <column id="2307"/>
+            <column id="2138"/>
+            <column id="2140"/>
+            <column id="2141"/>
+            <column id="2146"/>
+            <column id="2149"/>
+            <column id="2296"/>
+            <column id="2150"/>
+            <header>
+                <row id="2019">
+                    <cell id="2020">
+                        <label id="2299">
+                            <text-property name="text">SKU</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2300">
+                        <label id="2308">
+                            <text-property name="text">From</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2304">
+                        <label id="2309">
+                            <text-property name="text">To</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2022">
+                        <label id="2283">
+                            <text-property name="text">No. of Orders</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2026">
+                        <label id="2284">
+                            <text-property name="text">Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2028">
+                        <label id="2285">
+                            <text-property name="text">Price</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2038">
+                        <label id="2286">
+                            <text-property name="text">Refund Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2044">
+                        <label id="2287">
+                            <text-property name="text">Refund Price</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2293">
+                        <label id="2297">
+                            <text-property name="text">Total Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="2046">
+                        <label id="2288">
+                            <text-property name="text">Total Price</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="2160">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">row["sku"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["sku"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="2161">
+                        <cell id="2162">
+                            <data id="2209">
+                                <property name="resultSetColumn">sku</property>
+                            </data>
+                        </cell>
+                        <cell id="2301">
+                            <data id="2310">
+                                <property name="style">Date</property>
+                                <property name="resultSetColumn">Aggregation_7</property>
+                            </data>
+                        </cell>
+                        <cell id="2305">
+                            <data id="2311">
+                                <property name="style">Date</property>
+                                <property name="resultSetColumn">Aggregation_8</property>
+                            </data>
+                        </cell>
+                        <cell id="2163">
+                            <data id="2251">
+                                <property name="style">Number</property>
+                                <property name="resultSetColumn">Aggregation</property>
+                            </data>
+                        </cell>
+                        <cell id="2165">
+                            <data id="2252">
+                                <property name="style">Number</property>
+                                <property name="resultSetColumn">Aggregation_1</property>
+                            </data>
+                        </cell>
+                        <cell id="2166">
+                            <data id="2253">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_2</property>
+                            </data>
+                        </cell>
+                        <cell id="2171">
+                            <data id="2254">
+                                <property name="style">Number</property>
+                                <property name="resultSetColumn">Aggregation_3</property>
+                            </data>
+                        </cell>
+                        <cell id="2174">
+                            <data id="2281">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_4</property>
+                            </data>
+                        </cell>
+                        <cell id="2294">
+                            <data id="2298">
+                                <property name="style">Number</property>
+                                <property name="resultSetColumn">Aggregation_6</property>
+                            </data>
+                        </cell>
+                        <cell id="2175">
+                            <data id="2282">
+                                <property name="style">Currency</property>
+                                <property name="resultSetColumn">Aggregation_5</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+            </group>
+            <footer>
+                <row id="2113">
+                    <cell id="2114"/>
+                    <cell id="2302"/>
+                    <cell id="2306"/>
+                    <cell id="2115"/>
+                    <cell id="2117"/>
+                    <cell id="2118"/>
+                    <cell id="2123"/>
+                    <cell id="2126"/>
+                    <cell id="2295"/>
+                    <cell id="2127"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

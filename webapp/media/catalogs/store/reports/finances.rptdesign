@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <list-property name="libraries">
+        <structure>
+            <property name="fileName">webapp/media/catalogs/store/reports/ecommerce.rptlibrary</property>
+            <property name="namespace">ecommerce</property>
+        </structure>
+    </list-property>
+    <data-sources>
+        <script-data-source name="EntermediaData Source" id="7" extends="ecommerce.EntermediaData Source"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="Finances" id="391" extends="ecommerce.Finances"/>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="Currency" id="504">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">$###0.00{RoundingMode=HALF_UP}</property>
+            </structure>
+        </style>
+        <style name="Date" id="505">
+            <structure name="dateTimeFormat">
+                <property name="category">Long Date</property>
+                <property name="pattern">Long Date</property>
+            </structure>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="392">
+            <property name="dataSet">Finances</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">Order#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer</property>
+                    <text-property name="displayName">Customer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">orderdate</property>
+                    <text-property name="displayName">Date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["orderdate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">rogersponumber</property>
+                    <text-property name="displayName">PO#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["rogersponumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingstatus</property>
+                    <text-property name="displayName">Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingstatus"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">distributor</property>
+                    <text-property name="displayName">Distributor</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["distributor"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">subtotal</property>
+                    <text-property name="displayName">Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subtotal"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">totaltax</property>
+                    <text-property name="displayName">Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totaltax"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">totalshipping</property>
+                    <text-property name="displayName">Shipping Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalshipping"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">totalprice</property>
+                    <text-property name="displayName">Total Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalprice"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">sku</property>
+                    <text-property name="displayName">SKU</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sku"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">productid</property>
+                    <text-property name="displayName">Product ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["productid"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">productname</property>
+                    <text-property name="displayName">Product Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["productname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">quantity</property>
+                    <text-property name="displayName">Quantity</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">price</property>
+                    <text-property name="displayName">Price</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["price"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">storenumber</property>
+                    <text-property name="displayName">Store#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["storenumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingaddressname</property>
+                    <text-property name="displayName">Address Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingaddressname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingaddress</property>
+                    <text-property name="displayName">Address</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingaddress"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="488">
+                <property name="repeat">1</property>
+                <property name="style">Date</property>
+            </column>
+            <column id="489"/>
+            <column id="490"/>
+            <column id="491"/>
+            <column id="495">
+                <property name="style">Currency</property>
+            </column>
+            <column id="496"/>
+            <column id="497"/>
+            <column id="498"/>
+            <column id="499"/>
+            <column id="500">
+                <property name="style">Currency</property>
+            </column>
+            <column id="501"/>
+            <column id="502"/>
+            <column id="503"/>
+            <header>
+                <row id="393">
+                    <cell id="398">
+                        <label id="399">
+                            <text-property name="text">Date</text-property>
+                        </label>
+                    </cell>
+                    <cell id="400">
+                        <label id="401">
+                            <text-property name="text">PO#</text-property>
+                        </label>
+                    </cell>
+                    <cell id="402">
+                        <label id="403">
+                            <text-property name="text">Shipping</text-property>
+                        </label>
+                    </cell>
+                    <cell id="404">
+                        <label id="405">
+                            <text-property name="text">Distributor</text-property>
+                        </label>
+                    </cell>
+                    <cell id="412">
+                        <label id="413">
+                            <text-property name="text">Total Cost</text-property>
+                        </label>
+                    </cell>
+                    <cell id="414">
+                        <label id="415">
+                            <text-property name="text">SKU</text-property>
+                        </label>
+                    </cell>
+                    <cell id="416">
+                        <label id="417">
+                            <text-property name="text">Product ID</text-property>
+                        </label>
+                    </cell>
+                    <cell id="418">
+                        <label id="419">
+                            <text-property name="text">Product Name</text-property>
+                        </label>
+                    </cell>
+                    <cell id="420">
+                        <label id="421">
+                            <text-property name="text">Quantity</text-property>
+                        </label>
+                    </cell>
+                    <cell id="422">
+                        <label id="423">
+                            <text-property name="text">Price</text-property>
+                        </label>
+                    </cell>
+                    <cell id="424">
+                        <label id="425">
+                            <text-property name="text">Store#</text-property>
+                        </label>
+                    </cell>
+                    <cell id="426">
+                        <label id="427">
+                            <text-property name="text">Address Name</text-property>
+                        </label>
+                    </cell>
+                    <cell id="428">
+                        <label id="429">
+                            <text-property name="text">Address</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="546">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">row["id"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["id"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="547">
+                        <cell id="548">
+                            <data id="585">
+                                <property name="resultSetColumn">id</property>
+                            </data>
+                        </cell>
+                        <cell id="551"/>
+                        <cell id="552"/>
+                        <cell id="553"/>
+                        <cell id="557"/>
+                        <cell id="558"/>
+                        <cell id="559"/>
+                        <cell id="560"/>
+                        <cell id="561"/>
+                        <cell id="562"/>
+                        <cell id="563"/>
+                        <cell id="564"/>
+                        <cell id="565"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="566">
+                        <cell id="567"/>
+                        <cell id="570"/>
+                        <cell id="571"/>
+                        <cell id="572"/>
+                        <cell id="576"/>
+                        <cell id="577"/>
+                        <cell id="578"/>
+                        <cell id="579"/>
+                        <cell id="580"/>
+                        <cell id="581"/>
+                        <cell id="582"/>
+                        <cell id="583"/>
+                        <cell id="584"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="430">
+                    <cell id="435">
+                        <data id="436">
+                            <property name="resultSetColumn">orderdate</property>
+                        </data>
+                    </cell>
+                    <cell id="437">
+                        <data id="438">
+                            <property name="resultSetColumn">rogersponumber</property>
+                        </data>
+                    </cell>
+                    <cell id="439">
+                        <data id="440">
+                            <property name="resultSetColumn">shippingstatus</property>
+                        </data>
+                    </cell>
+                    <cell id="441">
+                        <data id="442">
+                            <property name="resultSetColumn">distributor</property>
+                        </data>
+                    </cell>
+                    <cell id="449">
+                        <data id="450">
+                            <property name="resultSetColumn">totalprice</property>
+                        </data>
+                    </cell>
+                    <cell id="451">
+                        <data id="452">
+                            <property name="resultSetColumn">sku</property>
+                        </data>
+                    </cell>
+                    <cell id="453">
+                        <data id="454">
+                            <property name="resultSetColumn">productid</property>
+                        </data>
+                    </cell>
+                    <cell id="455">
+                        <data id="456">
+                            <property name="resultSetColumn">productname</property>
+                        </data>
+                    </cell>
+                    <cell id="457">
+                        <data id="458">
+                            <property name="resultSetColumn">quantity</property>
+                        </data>
+                    </cell>
+                    <cell id="459">
+                        <data id="460">
+                            <property name="resultSetColumn">price</property>
+                        </data>
+                    </cell>
+                    <cell id="461">
+                        <data id="462">
+                            <property name="resultSetColumn">storenumber</property>
+                        </data>
+                    </cell>
+                    <cell id="463">
+                        <data id="464">
+                            <property name="resultSetColumn">shippingaddressname</property>
+                        </data>
+                    </cell>
+                    <cell id="465">
+                        <data id="466">
+                            <property name="resultSetColumn">shippingaddress</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="467">
+                    <cell id="470"/>
+                    <cell id="471"/>
+                    <cell id="472"/>
+                    <cell id="473"/>
+                    <cell id="477"/>
+                    <cell id="478"/>
+                    <cell id="479"/>
+                    <cell id="480"/>
+                    <cell id="481"/>
+                    <cell id="482"/>
+                    <cell id="483"/>
+                    <cell id="484"/>
+                    <cell id="485"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

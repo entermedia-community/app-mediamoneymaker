@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <list-property name="libraries">
+        <structure>
+            <property name="fileName">webapp/media/catalogs/store/reports/ecommerce.rptlibrary</property>
+            <property name="namespace">ecommerce</property>
+        </structure>
+    </list-property>
+    <data-sources>
+        <script-data-source name="EntermediaData Source" id="7" extends="ecommerce.EntermediaData Source"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="SupplyChain" id="174" extends="ecommerce.SupplyChain"/>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="Currency" id="257">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">$ #,##0.00{RoundingMode=HALF_UP}</property>
+            </structure>
+        </style>
+        <style name="Date" id="258">
+            <structure name="dateTimeFormat">
+                <property name="category">Long Date</property>
+                <property name="pattern">Long Date</property>
+            </structure>
+        </style>
+        <style name="Number" id="379">
+            <structure name="numberFormat">
+                <property name="category">General Number</property>
+                <property name="pattern">General Number</property>
+            </structure>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="380">
+            <property name="dataSet">SupplyChain</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">orderdate</property>
+                    <text-property name="displayName">Date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["orderdate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">Order#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer</property>
+                    <text-property name="displayName">Customer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">rogersponumber</property>
+                    <text-property name="displayName">PO#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["rogersponumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingstatus</property>
+                    <text-property name="displayName">Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingstatus"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">distributor</property>
+                    <text-property name="displayName">Distributor</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["distributor"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">subtotal</property>
+                    <text-property name="displayName">Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totaltax</property>
+                    <text-property name="displayName">Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totaltax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalshipping</property>
+                    <text-property name="displayName">Shipping Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalprice</property>
+                    <text-property name="displayName">Total Cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalprice"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">storenumber</property>
+                    <text-property name="displayName">Store#</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["storenumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingaddressname</property>
+                    <text-property name="displayName">Address Name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingaddressname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">shippingaddress</property>
+                    <text-property name="displayName">Address</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shippingaddress"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">refundsubtotal</property>
+                    <text-property name="displayName">Refund Subtotal</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundsubtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundshipping</property>
+                    <text-property name="displayName">Refund Shipping</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundshipping"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundtax</property>
+                    <text-property name="displayName">Refund Tax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundtax"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">refundtotal</property>
+                    <text-property name="displayName">Refund Total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["refundtotal"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">totalafterrefunds</property>
+                    <text-property name="displayName">Total After Refunds</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalafterrefunds"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+            </list-property>
+            <column id="474"/>
+            <column id="475"/>
+            <column id="476"/>
+            <column id="484"/>
+            <column id="485"/>
+            <column id="486"/>
+            <header>
+                <row id="381">
+                    <cell id="382">
+                        <label id="383">
+                            <text-property name="text">Date</text-property>
+                        </label>
+                    </cell>
+                    <cell id="384">
+                        <label id="385">
+                            <text-property name="text">Order#</text-property>
+                        </label>
+                    </cell>
+                    <cell id="386">
+                        <label id="387">
+                            <text-property name="text">Customer</text-property>
+                        </label>
+                    </cell>
+                    <cell id="402">
+                        <label id="403">
+                            <text-property name="text">Store#</text-property>
+                        </label>
+                    </cell>
+                    <cell id="404">
+                        <label id="405">
+                            <text-property name="text">Address Name</text-property>
+                        </label>
+                    </cell>
+                    <cell id="406">
+                        <label id="407">
+                            <text-property name="text">Address</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="492">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">row["shippingstatus"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["shippingstatus"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="493">
+                        <cell id="494">
+                            <data id="531">
+                                <property name="resultSetColumn">shippingstatus</property>
+                            </data>
+                        </cell>
+                        <cell id="495"/>
+                        <cell id="496"/>
+                        <cell id="504"/>
+                        <cell id="505"/>
+                        <cell id="506"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="512">
+                        <cell id="513"/>
+                        <cell id="514"/>
+                        <cell id="515"/>
+                        <cell id="523"/>
+                        <cell id="524"/>
+                        <cell id="525"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="418">
+                    <cell id="419">
+                        <data id="420">
+                            <property name="resultSetColumn">orderdate</property>
+                        </data>
+                    </cell>
+                    <cell id="421">
+                        <data id="422">
+                            <property name="resultSetColumn">id</property>
+                        </data>
+                    </cell>
+                    <cell id="423">
+                        <data id="424">
+                            <property name="resultSetColumn">customer</property>
+                        </data>
+                    </cell>
+                    <cell id="439">
+                        <data id="440">
+                            <property name="resultSetColumn">storenumber</property>
+                        </data>
+                    </cell>
+                    <cell id="441">
+                        <data id="442">
+                            <property name="resultSetColumn">shippingaddressname</property>
+                        </data>
+                    </cell>
+                    <cell id="443">
+                        <data id="444">
+                            <property name="resultSetColumn">shippingaddress</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="455">
+                    <cell id="456"/>
+                    <cell id="457"/>
+                    <cell id="458"/>
+                    <cell id="466"/>
+                    <cell id="467"/>
+                    <cell id="468"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>
