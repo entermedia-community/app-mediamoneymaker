@@ -457,6 +457,7 @@ public class Order extends BaseData implements Comparable {
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			Product p = item.getProduct();
+			
 			if(p.getValues(inKey).size() >0){
 				Collection values = p.getValues(inKey);
 				if(values.contains(inValue)){
@@ -493,5 +494,150 @@ public class Order extends BaseData implements Comparable {
 	public void addRefund(Refund r)
 	{
 		getRefunds().add(r);
+	}
+	
+	public Money calculateRefundTotal(){
+		return calculateRefund("total");
+	}
+	
+	public Money calculateRefundTax(){
+		return calculateRefund("tax");
+	}
+	
+	public Money calculateRefundSubtotal(){
+		return calculateRefund("subtotal");
+	}
+	
+	public Money calculateRefundShipping(){
+		String ship = get("shippingrefundtally");
+		Money amount = new Money("0");
+		if (ship != null && !ship.isEmpty())
+		{
+			amount = new Money(ship);
+		}
+		return amount;
+	}
+	
+	protected Money calculateRefund(String inType){
+		Money amount = new Money("0");
+		List<Refund> refunds = getRefunds();
+		for (Refund refund:refunds){
+			if (!refund.isSuccess())
+			{
+				continue;
+			}
+			if (inType.equals("total"))
+			{
+				amount = amount.add(refund.getTotalAmount());
+			}
+			else if (inType.equals("tax"))
+			{
+				amount = amount.add(refund.getTaxAmount());
+			}
+			else if (inType.equals("subtotal"))
+			{
+				amount = amount.add(refund.getSubTotal());
+			}
+		}
+		return amount;
+	}
+	
+	public Money calculateTotalAfterRefunds()
+	{
+		Money refunds = calculateRefundTotal();
+		Money total = getTotalPrice();
+		if (refunds.isZero())
+		{
+			return total;
+		}
+		return total.subtract(refunds);
+	}
+	
+//	public static Money calculateRefundTotalForCartItem(Order inOrder, CartItem inItem)
+//	{
+//		Money amount = new Money("0");
+//		List<Refund> refunds = inOrder.getRefunds();
+//		if (inItem.getSku() != null && refunds != null){
+//			for (Refund refund:refunds){
+//				if (!refund.isSuccess())
+//				{
+//					continue;
+//				}
+//				Iterator<RefundItem> itr = refund.getItems().iterator();
+//				while(itr.hasNext())
+//				{
+//					RefundItem item  = itr.next();
+//					String refundId = item.getId();
+//					if (refundId!=null && inItem.getSku().equals(refundId))
+//					{
+//						amount = amount.add(item.getTotalPrice());
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		return amount;
+//	}
+//	
+//	public static void calculateRefundInfoForCartItem(Order inOrder, CartItem inItem, Money inAmount, Integer inQuantity){
+//		if (inAmount == null || inQuantity == null){
+//			return;
+//		}
+//		int quantity = 0;
+//		List<Refund> refunds = inOrder.getRefunds();
+//		if (inItem.getSku() != null && refunds != null){
+//			for (Refund refund:refunds){
+//				if (!refund.isSuccess())
+//				{
+//					continue;
+//				}
+//				Iterator<RefundItem> itr = refund.getItems().iterator();
+//				while(itr.hasNext())
+//				{
+//					RefundItem item  = itr.next();
+//					String refundId = item.getId();
+//					if (refundId!=null && inItem.getSku().equals(refundId))
+//					{
+//						inAmount = inAmount.add(item.getTotalPrice());
+//						quantity += item.getQuantity();
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		inQuantity = new Integer(quantity);
+//	}
+	
+	public static RefundItem calculateRefundInfoForCartItem(Order inOrder, CartItem inItem){
+		RefundItem refundItem = new RefundItem();
+		refundItem.setId(inItem.getSku());
+		Money tally = new Money("0");
+		int quantity = 0;
+		List<Refund> refunds = inOrder.getRefunds();
+		if (inItem.getSku() != null && refunds != null){
+			for (Refund refund:refunds){
+				if (!refund.isSuccess())
+				{
+					continue;
+				}
+				Iterator<RefundItem> itr = refund.getItems().iterator();
+				while(itr.hasNext())
+				{
+					RefundItem item  = itr.next();
+					String refundId = item.getId();
+					if (refundId!=null && inItem.getSku().equals(refundId))
+					{
+						tally = tally.add(item.getTotalPrice());
+						quantity += item.getQuantity();
+						//can't include unit price because it would vary
+						//can however calculate an average??
+						break;
+					}
+				}
+			}
+		}
+		refundItem.setQuantity(quantity);
+		refundItem.setTotalPrice(tally);
+		return refundItem;
 	}
 }

@@ -117,6 +117,20 @@ public class PriceSupport
 		PriceTier tier = (PriceTier)getTiers().get(0);
 		return tier.getPrice().isOnSale();
 	}
+	
+	public void removeSalePrice()
+	{
+		// This code assumes that the tier prices must be entered in ascending price order.
+		for (Iterator iter = getTiers().iterator(); iter.hasNext();)
+		{
+			PriceTier tier = (PriceTier)iter.next();
+			if( 1 >= tier.getThresholdQuantity())
+			{
+				tier.getPrice().setSalePrice(null);
+				return;
+			}
+		}
+	}
 
 
 	/**

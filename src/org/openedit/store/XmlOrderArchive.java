@@ -297,15 +297,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			customerElem.addAttribute("email", customer.getEmail());
 			customerElem.addAttribute("fax", customer.getFax());
 
-			Element ta = orderElem.addElement("customer");
-			customerElem.addAttribute("customerid", customer.getUserName());
-			customerElem.addAttribute("title", customer.getTitle());
-			customerElem.addAttribute("first_name", customer.getFirstName());
-			customerElem.addAttribute("last_name", customer.getLastName());
-			customerElem.addAttribute("company", customer.getCompany());
-			customerElem.addAttribute("phone1", customer.getPhone1());
-			customerElem.addAttribute("email", customer.getEmail());
-			customerElem.addAttribute("fax", customer.getFax());
+//			Element ta = orderElem.addElement("customer");
+//			customerElem.addAttribute("customerid", customer.getUserName());
+//			customerElem.addAttribute("title", customer.getTitle());
+//			customerElem.addAttribute("first_name", customer.getFirstName());
+//			customerElem.addAttribute("last_name", customer.getLastName());
+//			customerElem.addAttribute("company", customer.getCompany());
+//			customerElem.addAttribute("phone1", customer.getPhone1());
+//			customerElem.addAttribute("email", customer.getEmail());
+//			customerElem.addAttribute("fax", customer.getFax());
 
 			String user1 = customer.getUserField1();
 			if (user1 != null) {
