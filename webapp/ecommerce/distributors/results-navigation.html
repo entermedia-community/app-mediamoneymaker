@@ -11,7 +11,7 @@
 			<div id="pages">
 				<ul>
 					#if( $hits.prevPage() )
-					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >Previous</a></li>
+					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >[[Previous]]</a></li>
 					#end
 					#set( $befores = $hits.linksBefore() )					
 						#if($befores.size()!=0)
@@ -37,7 +37,7 @@
 						#end
 					#end
 					#if ( $hits.nextPage() )
-					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">Next</a>
+					<li><a  targetdivinner="$targetdivinner" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">[[Next]]</a>
 					#end
 				</ul>
 			</div>

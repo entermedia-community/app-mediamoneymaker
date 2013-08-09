@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <reports>
-
-  <report id="1" reportname="productsbydistributor.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="generic">Product Distributor Report</report>
-
+	<report id="1" reportname="productsbydistributor.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="productbydistributor">Product Distributor Report</report>
+  	<report id="salesbysku" reportname="salesbysku.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="salesbysku">Sales By Sku</report>
+	<report id="salesbycategory" reportname="salesbycategory.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="salesbycategory">Sales By Category</report>
+	<report id="deviceassociation" reportname="deviceassociation.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="deviceassociation">Device Association</report>
+	<report id="manufacturers" searchtype="product" view="productreports" reportname="manufacturers.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="manufacturers">Manufacturers</report>
+	<report id="dealers" reportname="dealers.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="dealers">Dealers</report>
+	<report id="channels" reportname="channels.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="channels">Channels</report>	
+	<report id="brands" reportname="brands.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="brands">Brands</report>
+	<report id="revenue" reportname="revenue.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="revenue">Revenue</report>
+	<report id="finances" reportname="finances.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="finances">Finances</report>
+	<report id="supplychain" reportname="supplychain.rptdesign" reportdescription="This is a generic report grouping products into tables based on distributor" outputname="supplychain">Supply Chain</report>
 </reports>

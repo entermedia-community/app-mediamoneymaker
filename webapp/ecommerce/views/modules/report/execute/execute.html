@@ -1,8 +1,17 @@
-$data
-$context.putPageValue("details", $reportdetails)     
-$context.putPageValue("data", $defaults) 
+<h2>$data</h2>
+
+##$context.putPageValue("details", $reportdetails)     
+##$context.putPageValue("data", $defaults) 
+
+#set($searcher = $mediaarchive.getSearcher("storeOrder"))
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("searchtype", "storeOrder")
+$context.putPageValue("view", "storeOrder/report")
+#set($details = $searcher.getDetailsForView("storeOrder/report"))
+$context.putPageValue("details", $details)
+
 <form action="executefinish.html">
-<input type= "hidden" name="id" value="$data.id"/>
-$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-<input type="submit" name="Run Report" value="Run Report"/>
+	<input type= "hidden" name="id" value="$data.id"/>
+	$pages.include("/${applicationid}/components/xml/searchfields.html", $context)
+	<input type="submit" name="Run Report" value="Run Report"/>
 </form>

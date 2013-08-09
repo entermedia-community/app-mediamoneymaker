@@ -11,21 +11,21 @@
 <table border=0 cellpadding=0 cellspacing=0>
 	<tr>
 		<td>
-		    <span style="vertical-align: top; height: 30px; font-size: 16px; margin-bottom: 0px; display: block;"><b>The cost of your order is:</b></span>
+		    <span style="vertical-align: top; height: 30px; font-size: 16px; margin-bottom: 0px; display: block;"><b>[[The cost of your order is]]:</b></span>
 		    <div style=" background: #fff; border: 1px solid #ddd; padding: 10px 20px;">
     			<table style="width: 100%; font-size: 14px;">
     			<tr>
-    				<td align="right" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td>
+    				<td align="right" class=body2>[[Subtotal]]:</td><td align="right" class=body2> $cart.getSubTotal()</td>
     			</tr>
     			#set ( $method = $cart.getShippingMethod() )
     			#if ( $method )
     			<tr>
-    				<td align="right" class=body2><nobr>Shipping:</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
+    				<td align="right" class=body2><nobr>[[Shipping]]:</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td>
     			</tr>
     			#end
     			#if ( $cart.isAdditionalShippingCosts() )
     			<tr>
-    				<td align="right" class=body2 colspan=2 ><font color="#ff0000"><b>Additional shipping costs will be added.</b></font></td>
+    				<td align="right" class=body2 colspan=2 ><font color="#ff0000"><b>[[Additional shipping costs will be added]].</b></font></td>
     			</tr>
     			#end
     			#if($customer.getTaxRates().size() >0)
@@ -45,7 +45,7 @@
     			</table>
     		</div>
     		<div style="margin-top: 10px;">
-                <b>Please choose a payment method below.</b>
+                <b>[[Please choose a payment method below]].</b>
             </div>
 		</td>
 	</tr>
@@ -58,11 +58,11 @@
 		<td style="padding: 0;">
 			<table>
 			<tr>
-				<td colspan=2 class=body2><br><b><u>Pay Later (we will invoice you)</u></b><td>
+				<td colspan=2 class=body2><br><b><u>[[Pay Later]] ([[we will invoice you]])</u></b><td>
 			</tr>
 			<tr>
 				<td colspan=2 class=body2 style="padding-bottom: 20px;">
-					<input type=checkbox name="billmelater" id="billmelater" value="true" /> Please invoice me 
+					<input type=checkbox name="billmelater" id="billmelater" value="true" /> [[Please invoice me]] 
 				</td>
 			</tr>
 			</table>
@@ -71,11 +71,11 @@
 	#if ($store.displayTermsConditions())
 	<tr>
 		<td style="padding: 0;" colspan="2">
-			<p>IMPORTANT NOTE: In order to pay later by invoice, you must agree to our Terms & Conditions of Sale (<a href="terms.html">read</a>)</p>
+			<p>[[IMPORTANT NOTE: In order to pay later by invoice, you must agree to our Terms & Conditions of Sale]] (<a href="terms.html">[[read]]</a>)</p>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" class=body2><input type="checkbox" name="acceptterms" value="Yes">&nbsp;I agree to the Terms & Conditions</td>
+		<td colspan="2" class=body2><input type="checkbox" name="acceptterms" value="[[Yes]]">&nbsp;[[I agree to the Terms & Conditions]]</td>
 	</tr>	
 	#end
 	#end
@@ -83,10 +83,10 @@
 		<td style="padding: 0; margin: 0;">
 			<table style="width: 100%;">
 			<tr style="border-top: 1px solid #ddd;">
-				<td colspan="2"  class="body2 thead"><b>Credit Card</b><td>
+				<td colspan="2"  class="body2 thead"><b>[[Credit Card]]</b><td>
 			</tr>
 			<tr>
-				<td class="body2">Card Type: </td>
+				<td class="body2">[[Card Type]]: </td>
 				<td>
 				<select name="cardType">
 					<option value=""></option>
@@ -102,14 +102,14 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="body2" style="vertical-align: middle; width: 110px;">Card Number: </td>
+				<td class="body2" style="vertical-align: middle; width: 110px;">[[Card Number]]: </td>
 				<td style="vertical-align: middle;"><input type="text" name="cardNumber" class="small-field" />
 				
 				CVC:
 				<input type="text" name="cardVerificationCode" size="3"/></td>
 			</tr>
 			<tr>
-				<td style="padding-bottom: 20px;" class="body2">Expiration Date: </td>
+				<td style="padding-bottom: 20px;" class="body2">[[Expiration Date]]: </td>
 				<td style="padding-bottom: 20px;">
 				<select name="expirationMonth">
 					<option value=""></option>
@@ -144,10 +144,10 @@
 				</td>
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
-		        <td colspan=2 class="body2 thead"><b>Billing Details</b></td>
+		        <td colspan=2 class="body2 thead"><b>[[Billing Details]]</b></td>
 		    </tr>
 		    <tr>   
-		        <td colspan="2" class=body2><input type=checkbox name="sameasshipping" onclick="populate()"/> Same as Shipping 
+		        <td colspan="2" class=body2><input type=checkbox name="sameasshipping" onclick="populate()"/> [[Same as Shipping]] 
 		        </td>
 			</tr>
 			</table>
@@ -159,29 +159,29 @@
 		 	#if( $store.usesPoNumbers() )
 		 	<tr>
 					<td class=body2 colspan=2>
-					Purchase Order Number (optional)<br>
+					[[Purchase Order Number (optional)]]<br>
 					<input type="text" class="small-field" id="purchaseorder" name="purchaseorder" />
 					</td>
 			</tr>
 			#end
 			 <tr>
-		        <td class=body2>Address<br><input type="text" name="billing.address1.value" id="billing.address1.value" class="small-field"  /></td>
-		        <td class=body2>Address 2<br><input type="text" name="billing.address2.value" id="billing.address2.value" class="small-field"  /></td>
+		        <td class=body2>[[Address]]<br><input type="text" name="billing.address1.value" id="billing.address1.value" class="small-field"  /></td>
+		        <td class=body2>[[Address]] 2<br><input type="text" name="billing.address2.value" id="billing.address2.value" class="small-field"  /></td>
 		 	</tr>
 		 	<tr>
-		        <td class=body2>City<br><input type="text" name="billing.city.value" id="billing.city.value" class="small-field" /></td>
-		        <td class=body2>State or Province<br>
+		        <td class=body2>[[City]]<br><input type="text" name="billing.city.value" id="billing.city.value" class="small-field" /></td>
+		        <td class=body2>[[State or Province]]<br>
 		        #set($provinces = $searcherManager.getList($catalogid, "province"))
-	<select name="billing.state.value">
-		<option/>
+	<select name="billing.state.value" id="billing.state.value">
+		<option></option>
 		#foreach($province in $provinces)
 			<option value="$province.id" #if($!customer.shippingAddress.state == $province.id) selected #end>$province</option>
 		#end
 	</select></td>
 		 	</tr>
 		 	<tr>
-		 		<td class=body2>ZIP or Postal Code<br><input type="text" name="billing.zipCode.value" id="billing.zipCode.value" maxlength="10" class="small-field" /></td>
-				<td class=body2>Country: Canada<input type="hidden" name="billing.country.value" id="billing.country.value" class="small-field" value="CA"></td>
+		 		<td class=body2>[[ZIP or Postal Code]]<br><input type="text" name="billing.zipCode.value" id="billing.zipCode.value" maxlength="10" class="small-field" /></td>
+				<td class=body2>[[Country]]: Canada<input type="hidden" name="billing.country.value" id="billing.country.value" class="small-field" value="CA"></td>
 					<input type="hidden" name="retainCustomerInfo" value="true"/></td>
 			</tr>
 			<tr >
@@ -189,22 +189,20 @@
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
 			    <td valign=top colspan="2">
-			    	<span style="color:red;">The products you have selected are subject 
-			    	to your inspection and acceptance at the delivery address listed in your order.  You must notify AREA 
-			    	in writing within 15 days of receiving the shipment of any discrepancies in the shipment, such as the 
-			    	specifications, quantity, damage, etc. (“Discrepancy”). If you notify Area within 15 days of receiving 
-			    	the shipment of a Discrepancy, Area will request its distributor to correct the Discrepancy and 
-			    	the distributor will pay the shipping charges to replace the defective or non-conforming products.</span>
+			    	<span style="color:red;">
+				[[The products you have selected are subject to your inspection and acceptance at the delivery address listed in your order.]]
+				[[You must notify AREA in writing within 15 days of receiving the shipment of any discrepancies in the shipment, such as the specifications, quantity, damage, etc. (“Discrepancy”).]]
+				[[If you notify Area within 15 days of receiving the shipment of a Discrepancy, Area will request its distributor to correct the Discrepancy and the distributor will pay the shipping charges to replace the defective or non-conforming products.]]</span>
 			    </td>
 			</tr>
 			<tr>
 				<td valign="top" colspan="2">
-					<p><input type="checkbox" name="discrepancy" value="agree">&nbsp;I agree to the "Discrepancy" agreement.</p>
+					<p><input type="checkbox" name="discrepancy" value="agree">&nbsp;[[I agree to the "Discrepancy" agreement]].</p>
 				</td>
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
 
-			     <td colspan="2" valign=top><input class="btn right" style="margin-top: 20px;" type="button" name="done" value="Order" onclick="javascript: validateCreditCardAndSubmit( document.orderForm ); " /></td>
+			     <td colspan="2" valign=top><input class="btn right" style="margin-top: 20px;" type="button" name="done" value="[[Order]]" onclick="javascript: validateCreditCardAndSubmit( document.orderForm ); " /></td>
 				
 			</tr>
 			</table>
@@ -218,6 +216,7 @@
 </tr>
 </table>
 </div>
+
 <script Language="Javascript">
 function populate()
 {
@@ -227,8 +226,17 @@ function populate()
 		document.getElementById("billing.address2.value").value = "$!customer.shippingAddress.address2";
 		document.getElementById("billing.city.value").value = "$!customer.shippingAddress.city";
 		document.getElementById("billing.state.value").value = "$!customer.shippingAddress.state";
-		document.getElementById("billing.zipCode.value").value = "$!customer.shippingAddress.zipCode";
+		document.getElementById("billing.zipCode.value").value = "$!customer.shippingAddress.zip";
 		document.getElementById("billing.country.value").value = "$!customer.shippingAddress.country";
+	}
+	else
+	{
+		document.getElementById("billing.address1.value").value = "";
+		document.getElementById("billing.address2.value").value = "";
+		document.getElementById("billing.city.value").value = "";
+		document.getElementById("billing.state.value").value = "";
+		document.getElementById("billing.zipCode.value").value = "";
+		document.getElementById("billing.country.value").value = "";
 	}
 }
 </script>

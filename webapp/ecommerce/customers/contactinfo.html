@@ -2,13 +2,13 @@
 #set ( $shippingAddress = $customer.getShippingAddress() )
 
 #if ( $content.customerClub && $customer.getUserName() )
-Your $content.customerClub number is: $customer.getUserName()
+[[Your]] $content.customerClub [[number is]]: $customer.getUserName()
 #end
 
 #if ( $cart.hasZeroSubTotal() )
 
 #else
- <p>It will be shipped to the following address:</p>
+ <p>[[It will be shipped to the following address]]:</p>
 #end
 
 #if ( $shippingAddress && $shippingAddress.getAddress1() )
@@ -22,12 +22,12 @@ Your $content.customerClub number is: $customer.getUserName()
  $!customer.getCompany()<br>
 #end
 #if ( $customer.referenceNumber )
-<p>Customer Reference Number:<br> $customer.referenceNumber </p>
+<p>[[Customer Reference Number]]:<br> $customer.referenceNumber </p>
 #end
 
 
 #if ( $customer.userfield1 || $customer.userfield2 )
-<p>Additional Info:</p>
+<p>[[Additional Info]]:</p>
 #if( $customer.userfield1 )
 $customer.userfield1 <br>
 #end
@@ -44,7 +44,7 @@ $customer.userfield2 <br>
   $!shippingAddress.getCity(), $!shippingAddress.getState() $!shippingAddress.getZipCode() $!shippingAddress.getCountry()</p>
 
 #if ( $billingAddress && $billingAddress.getAddress1() )
-<p>The billing address is:</p>
+<p>[[The billing address is]]:</p>
 <p>$billingAddress.getAddress1()<br>
 #if ( $billingAddress.getAddress2() && $billingAddress.getAddress2() != "" )
  $!billingAddress.getAddress2()<br>
@@ -54,7 +54,7 @@ $customer.userfield2 <br>
 #end
                                                                                           
  <p>
- <b>Contact information</b><br>
+ <b>[[Contact information]]</b><br>
  Email: <a href="mailto:$!customer.email">$!customer.email</a><br>
  Phone: $!customer.phone1<br/>
  Fax:	$!customer.fax<br />

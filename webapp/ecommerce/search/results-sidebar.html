@@ -35,27 +35,27 @@
 -->
 	#if($canviewdistributorsection)
 		#if(!$distrib.equals(""))
-	       <div class="ui-widget-header">Distributor Menu</div>
+	       <div class="ui-widget-header">[[Distributor Menu]]</div>
 			<div class="ui-widget-content categories-widget no-padding-for-real">
 	        	<ul  class="sidebar-list">
 				<li>
-				<a href="$home$apphome/distributors/submitforreview.html">Submit a product</a>
-				<a href="$home$apphome/distributors/myproducts.html">My Products</a>
-				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Approved Products</a>
-				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">Pending Products</a>
-				<a href="$home$apphome/distributors/help/index.html">Help</a>
-				<a href="$home$apphome/distributors/help/terms.html">Terms and Conditions</a>
+				<a href="$home$apphome/distributors/submitforreview.html">[[Submit a product]]</a>
+				<a href="$home$apphome/distributors/myproducts.html">[[My Products]]</a>
+				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Approved Products]]</a>
+				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Pending Products]]</a>
+				<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
+				<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>
 				#if($hits)
-					<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">CSV Export</a>
+					<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">[[CSV Export]]</a>
 				#end
-				<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">Upload Inventory File</a>
+				<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">[[Upload Inventory File]]</a>
 				</li>
 				</ul>
 	       	</div>
 	    #end
 	#end        
 		<div class="ui-widget uipanel" id="left-col-search" >
-			<div  class="ui-widget-header">Search
+			<div  class="ui-widget-header">[[Search]]
 			</div>
 			<div  class="ui-widget-content">
 					$pages.include("$apphome/search/searchform.html")
@@ -63,7 +63,7 @@
 		</div>
 
 
-  <div class="ui-widget-header">Categories</div>
+  <div class="ui-widget-header">[[Categories]]</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">
   
@@ -73,17 +73,17 @@
                	
           	#foreach($man in $mans)
 				#if($man.active == "true")
-                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></li>
+                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">#translate($man.name)</a></li>
                 #end
             #end
             #if($mans.size() > 5)
-                	<li > <a  class="showall" data-id="categories" href="#">Show all...</a></li>
+                	<li > <a  class="showall" data-id="categories" href="#">[[Show all...]]</a></li>
 			#end
                 </ul>
                 </div>
 
 
- <div class="ui-widget-header">Phone Compatibility</div>
+ <div class="ui-widget-header">[[Phone Compatibility]]</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">
   
@@ -117,7 +117,7 @@
                 	#end 
 				#end
 				#if($phones.size()  > 3)
-				<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;More $man</a></li>
+				<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;[[More]] $man</a></li>
 				#end
 				#set($phones = "")
 				
@@ -131,7 +131,7 @@
 
 
 
- <div class="ui-widget-header">Manufacturers</div>
+ <div class="ui-widget-header">[[Manufacturers]]</div>
 	           <div class="ui-widget-content categories-widget no-padding-for-real">
 	               <ul id="settings-menu" class="sidebar-list">
   
@@ -146,7 +146,7 @@
                 	
                 	#end
                 	#if($mans.size() > 5)
-                	<li > <a  class="showall" data-id="manu" href="#">Show all...</a></li>
+                	<li > <a  class="showall" data-id="manu" href="#">[[Show all...]]</a></li>
                 	
                 	
 			#end
@@ -163,11 +163,11 @@
 		            	var id = jQuery(this).data("id");
 		            	
 		            	jQuery("." + id).toggle(500);
-		            	if(jQuery(this).text() == "Show all..." || jQuery(this).text().indexOf("More") != -1)
+		            	if(jQuery(this).text() == "[[Show all...]]" || jQuery(this).text().indexOf("[[More]]") != -1)
 		            	
-		            	jQuery(this).text("Show less..");
+		            	jQuery(this).text("[[Show less...]]");
 		            	else{		            		
-		            		jQuery(this).text("Show all...");
+		            		jQuery(this).text("[[Show all...]]");
 		            	}
 		            	
 		            	return false;

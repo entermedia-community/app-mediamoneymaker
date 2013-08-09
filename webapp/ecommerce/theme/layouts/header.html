@@ -27,7 +27,7 @@
     <div style="padding: 20px;">
    		<div id="headernav">          
 			<h1 style="margin-top: 25px; color: #49494B;">                        
-      			Accessories Portal
+      			[[Accessories Portal]]
       		</h1>
  
        	#set ($lastselected = $content.module )
@@ -47,19 +47,19 @@
 #if( $user )
 	#set($firstname = $userprofile.get("firstname"))
 	#if ($firstname)
-		Welcome $firstname&nbsp;
+		[[Welcome]] $firstname&nbsp;
 	#end
 	#if( $canviewmyaccount )
-		<a href="$home$apphome/views/myaccount/index.html">My Account</a> |
+		<a href="$home$apphome/views/myaccount/index.html">[[My Account]]</a> |
 	#end	
-		<a href="$home$apphome/authentication/logout.html">Logout</a>
+		<a href="$home$apphome/authentication/logout.html">[[Logout]]</a>
 	#else
-	<a href="$home$apphome/authentication/login.html">Login</a>
+	<a href="$home$apphome/authentication/login.html">[[Login]]</a>
 #end	 
  			
  #if($canviewsettings)
-|	<a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>Settings</a>
-|	<a href="$home/manager/index.html">Manager</a>
+|	<a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a>
+|	<a href="$home/manager/index.html">[[Manager]]</a>
 #end
  			
         </span>

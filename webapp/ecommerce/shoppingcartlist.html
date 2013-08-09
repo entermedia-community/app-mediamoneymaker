@@ -4,26 +4,26 @@
         
         <tr class="sc-tableheader">
             <td class="thumbnail" style="width:70px; padding: 0; margin: 0;">&nbsp;</td>
-            <td class="prodhead" style="text-align: left;">Description</td>
+            <td class="prodhead" style="text-align: left;">[[Description]]</td>
             <td class="prodhead" style="text-align: left;">SKU</td>
             #if ($cart.hasItemWithOption('size') ) 
-                <td class="prodhead" style="text-align : center;">Size</td>
+                <td class="prodhead" style="text-align : center;">[[Size]]</td>
             #end
             #if ($cart.hasItemWithOption('color') )
-            	<td class="prodhead">Color</td>
+            	<td class="prodhead">[[Color]]</td>
             #end
-            <td class="prodhead" style="width: 100px;">Quantity</td>
+            <td class="prodhead" style="width: 100px;">[[Quantity]]</td>
            
            
              #if($page.isPropertyTrue("multipleaddress"))
-            <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html"> Manage Addresses</a>)</td>
+            <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html">[[Manage Addresses]]</a>)</td>
             #end
             <!--
             #if($canvieweol)
-            	<td class="prodhead" style="width: 200px;">EOL</td>
+            	<td class="prodhead" style="width: 200px;">[[EOL]]</td>
             #end
 -->
-            <td class="prodhead" style="width: 60px;">Remove</td>
+            <td class="prodhead" style="width: 60px;">[[Remove]]</td>
         </tr>
         
       #foreach( $item in $cart.getItems() )

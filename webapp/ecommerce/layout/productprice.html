@@ -3,8 +3,7 @@
 		<input type="hidden" name="productid" value="$product.getId()" />
 
 #if($cancheckout)
-
-     <h5>Product Price
+     <h5>[[Product Price]]
 
 	#if ( $product.isOnSale() )
 		<div class="mainprice onsale">$product.getRetailPrice()</div>
@@ -14,7 +13,7 @@
 	#end
  	#if( $product.isAvailable() )                                                                                                                                                                          
 	#else	
-	<b>Product No Longer Available.</b> please select another product
+	<b>[[Product No Longer Available.]]</b> [[Please select another product.]]
 
 	#end
 </h5>
@@ -27,7 +26,7 @@
 					<option value="$numb">$numb</option>
 				#end
 				</select>
-				<input class="btn right" type="submit" value="Add to Cart" />
+				<input class="btn right" type="submit" value="[[Add to Cart]]" />
 			</div>
 			<br/><br/>
 			#end
@@ -42,15 +41,15 @@
 		#if($product.isInStock())
 		
 			<li class="price">
-				<div class="instock">Current Stock: $product.getInventoryItem(0).getQuantityInStock()</div>
+				<div class="instock">[[Current Stock]]: $product.getInventoryItem(0).getQuantityInStock()</div>
 			</li>
 			
 		#else
 		
 			<li class="price">
 				<div class="instock">
-					This product is currently out of stock. 
-					<a class="btn" href="$apphome/views/myaccount/tickets/newnotification.html?product.value=${product.id}&tickettype.value=stockrequest&viewid=ticketsticket_details&viewpath=ticket/ticketticket_details">Notify Me When Available</a>
+					[[This product is currently out of stock.]] 
+					<a class="btn" href="$apphome/views/myaccount/tickets/newnotification.html?product.value=${product.id}&tickettype.value=stockrequest&viewid=ticketsticket_details&viewpath=ticket/ticketticket_details">[[Notify me when it's available]]</a>
 				</div>
 			</li>
 			
@@ -105,7 +104,7 @@
         		#end 
         	#end 
         #else
-        	<strong>Manufacturer:</strong>&nbsp;Not found!
+        	<strong>Manufacturer:</strong>&nbsp;[[Not found!]]
         	#if($canviewdevelopertools)
         		#if($product.get("manufacturerid"))
         			($product.get("manufacturerid"))
@@ -120,7 +119,7 @@
 		#if($product.expectedendoflife)
 		
 		<li>
-		<h5>Additional Details</h5>
+		<h5>[[Additional Details]]</h5>
 		
 		$context.putPageValue("data", $product)
 		$context.putPageValue("searcher", $store.getProductSearcher())
@@ -135,11 +134,11 @@
 		        		 					#set($high = (($end.time - $start.time) * .8) + $start.time)
 		        		 				
 		        		 					
-			        		            EOL Status:	<meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter>  
+			        		            [[EOL Status]]:	<meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter>  
 		        		            	<br/>
-		        		            	Creation Date: $product.createdon 
+		        		            	[[Creation Date]]: $product.createdon 
 		        		            	<br/>
-		        		            	Expected EOL: $product.expectedendoflife
+		        		            	[[Expected EOL]]: $product.expectedendoflife
 		        		            	#end
 
 

@@ -12,7 +12,7 @@
 		$context.putPageValue("hits", $featured)
 		
 		<div class="featured" >
-				<div class="featuredheader"><span style="color:#FF3019">FEATURED</span> PRODUCTS</div>
+				<div class="featuredheader"><span style="color:#FF3019">[[FEATURED]]</span> [[PRODUCTS]]</div>
 				<div class="featured-results">
 		$pages.include("$apphome/search/resultssection.html", $context)
 				</div>
@@ -67,7 +67,7 @@
 			#if($man.active == "true")
 				<div class="home-logos">
 					<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
-				       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
+				       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">#translate($man.name)</a></div>
 		        </div>
 		    #end
 		#end
@@ -78,7 +78,7 @@
 #else
 
 #if($canviewdistributorsection)
-Please wait..
+[[Please wait...]]
 <meta http-equiv="refresh" content="0;url=/ecommerce/distributors/index.html">
 #end
 #end

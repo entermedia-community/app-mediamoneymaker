@@ -1,8 +1,8 @@
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">View Product</div>
+	<div class="ui-widget-header">[[View Product]]</div>
 	<div class="ui-widget-content ">
 	#if($data && $data.approved == "true")
-		<strong>This product has already been approved.</strong><br>
+		<strong>[[This product has already been approved.]]</strong><br>
 		
 	#end
 		$context.putPageValue("searcher", $searcher)	 
@@ -34,7 +34,7 @@
 		          
 		        </div>
 		  	#end
-	 	 	    Product Image: <input type="file" name="file.0" #if(!$data.image) class="required" #end/>
+	 	 	    [[Product Image:]] <input type="file" name="file.0" #if(!$data.image) class="required" #end/>
 		    <br/>
 		
 			#set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -57,7 +57,7 @@ jQuery("#submitproduct").bind("submit", function(){
 	if(clearance){
 		var price = jQuery("input[name='clearanceprice.value']").val();
 		if(!price){
-			alert ("You must specify the clearance price for products in the clearance center");
+			alert ("[[You must specify the clearance price for products in the clearance center]]");
 			return false;
 		}
 	

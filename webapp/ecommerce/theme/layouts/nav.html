@@ -39,7 +39,7 @@
 	#set ( $modules = $searcherManager.getList($catalogid, "module") )
 
 #if( $modules.size() > 1)
-<li style="border-right: 1px solid #CCCCCC;"><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) Admin #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+<li style="border-right: 1px solid #CCCCCC;"><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) [[Admin]] #else [[Home]] #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		
 		#foreach ( $module in $modules )
@@ -58,7 +58,7 @@
 
 #if($canviewcart)
 <li  style="float: right; width: 150px; height: 46px; ">
- 	  <a href="$apphome/shoppingbag.html">View Cart</a><img style="padding-top: 12px;" src="$apphome/theme/images/cart.png"/>
+ 	  <a href="$apphome/shoppingbag.html">[[View Cart]]</a><img style="padding-top: 12px;" src="$apphome/theme/images/cart.png"/>
  </li>
 #end
 
@@ -69,7 +69,7 @@
 #if( $hits.userQuery.length() > 0 && !$hits.userQuery.contains("[") )
 <input name="query" size="18" value="$!url_util.xmlEscape($hits.userQuery)" type="text" class="sinput" />
 #else
-<input name="query" type="text" size="18" value="Store Search" onclick="value='';" class="sinput" /> 
+<input name="query" type="text" size="18" value="[[Store Search]]" onclick="value='';" class="sinput" /> 
 #end
  
 

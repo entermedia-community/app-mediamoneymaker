@@ -1,7 +1,7 @@
 <div class="breadcrumb">
 	<ul>
-		<li><a href="$apphome/index.html">Home</a></li>
-		<li>Browse</li>
+		<li><a href="$apphome/index.html">[[Home]]</a></li>
+		<li>[[Browse]]</li>
 	</ul>
 </div>
 #if($canbrowseproducts)
@@ -10,12 +10,12 @@
 $featured.setHitsPerPage(4)
 $context.putPageValue("hits", $featured)
 <div class="featured-browse">
-<h1 style="color: FF3019;">Top Sellers</h1>
+<h1 style="color: FF3019;">[[Top Sellers]]</h1>
 $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 
 <div class="featured-browse">
-<h1 style="color: FF3019;">Recently Added</h1>
+<h1 style="color: FF3019;">[[Recently Added]]</h1>
 
 #set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random",  $context))
 $topsellers.setHitsPerPage(4)
@@ -25,7 +25,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 
 
 <div class="featured-browse">
-<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=cases&operation=exact"><h1>Cases</h1></a>
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=cases&operation=exact"><h1>[[Cases]]</h1></a>
 
 #set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "cases", "random" ,$context))
 $topsellers.setHitsPerPage(4)
@@ -34,7 +34,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 
 <div class="featured-browse">
-<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=smartaccessories&operation=exact"><h1>Smart Accessories</h1></a>
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=smartaccessories&operation=exact"><h1>[[Smart Accessories]]</h1></a>
 
 #set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "smartaccessories", "random", $context))
 $topsellers.setHitsPerPage(4)
@@ -44,7 +44,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 
 <!-- 
 <div class="featured-browse">
-<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=23&operation=exact"><h1>Speakers</h1></a>
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=23&operation=exact"><h1>[[Speakers]]</h1></a>
 
 ##set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "23", "random",  $context))
 ##$topsellers.setHitsPerPage(4)
@@ -55,7 +55,7 @@ $pages.include("$apphome/search/resultssection.html", $context)
 
 <div class="featured-browse">
 
-<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=25&operation=exact"><h1>Screen Protectors</h1></a>
+<a style="color: FF3019;" href="/ecommerce/search/fieldsearch.html?field=categoryid&categoryid.value=25&operation=exact"><h1>[[Screen Protectors]]</h1></a>
 
 #set($topsellers = $store.getProductSearcher().fieldSearch("categoryid", "25", "random",  $context))
 $topsellers.setHitsPerPage(4)
@@ -70,10 +70,10 @@ $pages.include("$apphome/search/resultssection.html", $context)
 
 #else
 	#if( $canviewdistributorsection )
-		<p>Welcome $userprofile</p>
+		<p>[[Welcome]] $userprofile</p>
 		<p>$pages.include("$apphome/distributors/myproducts.html")</p>
 	#else
-		Welcome to the portal.  Please use a link at the top to get started
+		[[Welcome to the portal.  Please use a link at the top to get started.]]
 	#end
 
 #end

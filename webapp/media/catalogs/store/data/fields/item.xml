@@ -1,6 +1,8 @@
+
 <properties>
-  <property id="item.extrainfo.duedate" text="Ship Date">Ship Date</property>
-  <property id="item.extrainfo.shiptoname" text="Ship To">Ship To</property>
-  <property id="item.extrainfo.shipquantity" text="Ship Quantity">Ship Quantity</property>
-  <property id="item.extrainfo.status" text="Status" type="list">Status</property>
+  <property id="item.extrainfo.duedate" searchtype="item">Ship Date</property>
+  <property id="item.extrainfo.shiptoname" searchtype="item">Ship To</property>
+  <property id="item.extrainfo.shipquantity" searchtype="item">Ship Quantity</property>
+  <property id="item.extrainfo.status" type="list" searchtype="item" datatype="list">Status</property>
+  <property id="saleenddate" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="item" internalfield="false" datatype="date">Sale End Date</property>
 </properties>

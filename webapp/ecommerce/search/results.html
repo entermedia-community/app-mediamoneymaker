@@ -9,12 +9,12 @@
 #set($action = $context.getPageValue("action"))
 <div class="breadcrumb">
 	<ul>
-		<li><a href="$apphome/index.html">Home</a></li>
+		<li><a href="$apphome/index.html">[[Home]]</a></li>
 		#if($searchfor && $searchfor.length() > 0)
 			#if(!$searchfor.contains(","))
-				<li><a href="/ecommerce/browse.html">Browse</a><li>
+				<li><a href="/ecommerce/browse.html">[[Browse]]</a><li>
 			#else
-				<li><a href="/ecommerce/browse.html">Searching</a><li>
+				<li><a href="/ecommerce/browse.html">[[Searching]]</a><li>
 			#end
 				<li>$searchfor</li>
 		#end
@@ -38,7 +38,7 @@ $pages.include("$apphome/search/results-navigation.html")
 
 #if ( $hits.totalPages == 0 )
 <p>
-Sorry, no results found!
+[[Sorry, no results found!]]
 </p>
                                                                                                                                                                                                               
 #end

@@ -2,21 +2,21 @@
 			   <div style="color:red">$!errorMessage</div>
 			   #if( $store.areCouponsAccepted() )
 				#if($cart.getAdjustments().size() >0)
-					An adjustment of $cart.getAdjustments().get(0) %  has been applied
+					[[An adjustment of]] $cart.getAdjustments().get(0) %  [[has been applied]]
 				#else
 				<div class="coupon">
-				    Gift Certificate/Coupon Code (one per order): <input style="margin-left: 5px;" type=text name=couponcode size=8 />
+				    [[Gift Certificate/Coupon Code]] ([[one per order]]): <input style="margin-left: 5px;" type=text name=couponcode size=8 />
 				</div>
 				#end
 			   #end
                 <div class="cart-price clearfix">
-                    <span class="price-label"><b>Subtotal:</b></span>
+                    <span class="price-label"><b>[[Subtotal]]:</b></span>
                      <span class="price">$!cart.getSubTotal()</span>
                 </div>
 
 			        #if( $cart.hasZeroSubTotal() )
 
-			          <a href="javascript:zeroCostPage();" class=link><b>next page ></b></a>
+			          <a href="javascript:zeroCostPage();" class=link><b>[[next page]] ></b></a>
 
 			        #else
 			        	#if ( $content.continueShoppingUrl )
@@ -27,14 +27,14 @@
 			        	<div class="checkout-options">
 			        	    <div class="clearfix">
 			                     #if($cancheckout)
-						     <a href="javascript:nextPage();" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Begin Checkout</b></a>
+						     <a href="javascript:nextPage();" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>[[Begin Checkout]]</b></a>
 		        		     #end
 					     #if($cancreatewishlist)
-			                       <a href="$apphome/wishlist/save.html?action=getName" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>Save Wish List</b></a>
+			                       <a href="$apphome/wishlist/save.html?action=getName" class="btn right" style="margin-top: 10px; padding: 10px 15px; font-size: 16px;"><b>[[Save Wish List]]</b></a>
         					#end
 			                </div>
 			               <div style="text-align: right;" class="clearfix">
-			                 <a style="color: #999; font-size: 12px; font-weight: normal; margin-right: 4px;" href="$continueShoppingUrl">Continue Shopping</a>
+			                 <a style="color: #999; font-size: 12px; font-weight: normal; margin-right: 4px;" href="$continueShoppingUrl">[[Continue Shopping]]</a>
 			               </div>
                         </div>
 			        #end

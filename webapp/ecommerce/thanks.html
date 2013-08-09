@@ -4,11 +4,11 @@
 $context.putPageValue("order", $order)
 
 #if ( $orderState.ok )
-<p>Order Reference: $order.id</p>
- <p>Thank you.</p>
+<p>[[Order Reference]]: $order.id</p>
+ <p>[[Thank you]].</p>
 
  
- <p>Your order is complete: </p>
+ <p>[[Your order is complete]]: </p>
 
  $pages.stream("$apphome/orders/listing.html", $context)
 
@@ -24,21 +24,21 @@ $context.putPageValue("order", $order)
 #else
 
  <p>
-	<font color="red"><b>Your order is not complete:</b></font>
+	<font color="red"><b>[[Your order is not complete]]:</b></font>
  </p>
 
  <p>
 	$orderState
  </p>
 
- <p><br><b><a href="javascript:history.go(-1)">Go back to last page</a></b></p>
+ <p><br><b><a href="javascript:history.go(-1)">[[Go back to last page]]</a></b></p>
 
 #end
 
-<p><br><b><a href="$home$content.continueShoppingUrl">Continue shopping</a></b></p>
+<p><br><b><a href="$home$content.continueShoppingUrl">[[Continue shopping]]</a></b></p>
 
 
 
 $pages.stream("$apphome/orders/ordermetrics.html")
 
-<p>You can easily place this order for another location.  <a class="btn" href="$apphome/reloadorder.html?orderid=${order.id}">Click here</a>
+<p>[[You can easily place this order for another location]].  <a class="btn" href="$apphome/reloadorder.html?orderid=${order.id}">[[Click here]]</a>

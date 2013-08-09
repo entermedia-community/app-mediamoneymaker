@@ -18,7 +18,7 @@ public class GetPageInfo extends EnterMediaObject {
 	private Map<String, String> searchValues;
 
 	// SETTERS	
-	public setSearchValues( String inKey, String inValue) {
+	public void setSearchValues( String inKey, String inValue) {
 		
 		if (searchValues == null) {
 			searchValues = new HashMap<String, String>();
@@ -47,7 +47,7 @@ public class GetPageInfo extends EnterMediaObject {
 		}
 	}
 	
-	public getInfo() {
+	public void getInfo() {
 		
 		ArrayList values = new ArrayList();
 		//Get Media Info
@@ -66,7 +66,12 @@ public class GetPageInfo extends EnterMediaObject {
 			String key = (String) entry.getKey();
 			if (key.equals("field")) {
 				if (entry.getValue() instanceof String[]) {
-					for( e in entry.getValue()) {
+					for(String e in entry.getValue()) {
+						log.info("field element ${e}");
+						if (!e.contains(":")){
+							setSearchValues(e, "");
+							continue;
+						}
 						String[] s = e.split(":");
 						setSearchValues(s[2], "");
 					}
