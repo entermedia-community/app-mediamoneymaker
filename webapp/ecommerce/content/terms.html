@@ -1,3 +1,8 @@
+#if($userprofile.distributor == "106")
+	$pages.include("/ecommerce/content/avocaterms.html")
+#elseif($userprofile.distributor == "atlantia")
+	$pages.include("/ecommerce/content/atlantiaterms.html")
+#else
 <p>
 	<strong>Distributor Services Terms</strong><br />
 	<br />
@@ -81,6 +86,10 @@
 	16.5 The headings to the sections of this Agreement are for ease of reference only and shall not affect its interpretation or construction. If any provision of this Agreement is declared void, illegal or unenforceable by a court of competent jurisdiction, the remainder of this Agreement shall be valid and enforceable to the extent permitted by applicable law. You and AREA shall use best efforts to replace the invalid or unenforceable provision by a provision that achieves the purposes intended under the invalid or unenforceable provision. No failure of a or delay by You or AREA to exercise any of its powers or rights or to insist upon strict compliance by the other Party with its obligations, and no custom or practice of the Parties at variance with the terms of this Agreement shall constitute a waiver of either Party&#39;s right to demand compliance with this Agreement. All waivers must be in writing and signed by the Party waiving its rights. Sections 1, 7, 8, 9, 11, 12, 13 and 16 shall survive termination of this Agreement. &nbsp;</p>
 <p>
 	16.6 This Agreement constitutes the entire agreement and understanding between the Parties with respect to its subject matter, and supersedes all prior discussions, agreements, arrangements, understandings, and undertakings between the Parties. La pr&eacute;sente convention est r&eacute;dig&eacute;e en anglais &agrave; la demande expresse des Parties.</p>
+
+#end
+
+
 <a class="btn" href="$apphome/content/acceptterms.html">Accept Terms</a>
 
 or
