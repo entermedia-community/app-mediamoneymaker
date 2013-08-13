@@ -262,6 +262,15 @@ public class OrderModule extends BaseModule
 		}
 		return null;
 	}
+	
+	
+	public void loadOrderSet(WebPageRequest inReq){
+		String ordersetid = inReq.getRequestParameter("setid");
+		//search for all orders in this set
+		//create order set object
+		//add orders to it
+		
+	}
 
 	// public OrderSearcher getOrderSearcher()
 	// {
