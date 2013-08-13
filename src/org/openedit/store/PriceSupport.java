@@ -101,6 +101,7 @@ public class PriceSupport
 			if( 1 >= tier.getThresholdQuantity())
 			{
 				Money price = tier.getPrice().getSalePrice();
+
 				return price;
 			}
 		}

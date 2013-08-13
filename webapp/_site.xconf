@@ -28,4 +28,5 @@
  <property name="productionmode">false</property>
  <property name="ftpidprod">104</property>
  <property name="ftpidtest">103</property>
+ <property name="auto_translate_fr">true</property>
 </page>

@@ -140,6 +140,7 @@
 		<property name="auto_translate_es">true</property>
 	
 		<property name="auto_translate_FR">true</property>
+			<property name="auto_translate_nl">true</property>
 	
 	
 	
