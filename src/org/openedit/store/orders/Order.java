@@ -24,8 +24,6 @@ import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
 
-import com.openedit.hittracker.HitTracker;
-
 /**
  * An order for a number of products contained in a shopping cart at a certain
  * time.
@@ -42,6 +40,25 @@ public class Order extends BaseData implements Comparable {
 	protected Customer fieldCustomer;
 	protected List fieldItems;
 	protected List fieldAdjustments;
+
+	protected List fieldMissingItems;
+	
+	public List getMissingItems() {
+		if (fieldMissingItems == null) {
+			fieldMissingItems = new ArrayList();
+			
+		}
+
+		return fieldMissingItems;
+	}
+	public void addMissingItem(String inProductId){
+		getMissingItems().add(inProductId);
+		
+	}
+
+	public void setMissingItems(List inMissingItems) {
+		fieldMissingItems = inMissingItems;
+	}
 
 	protected ShippingMethod fieldShippingMethod;
 	protected Money fieldTotalShipping;

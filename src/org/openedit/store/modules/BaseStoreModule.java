@@ -42,6 +42,9 @@ public class BaseStoreModule extends BaseMediaModule
 		StoreArchive reader = (StoreArchive)getModuleManager().getBean(readername);
 		Store store = reader.loadStore(inPageRequest);
 		inPageRequest.putPageValue("cataloghome", "/" + store.getCatalogId());
+		String storeapp = inPageRequest.findValue("cartid");
+		inPageRequest.putPageValue("carthome", "/" + storeapp);
+
 		return store;		
 	}
 //	public ProductSearcher getProductSearcher(String inCatalogId)
