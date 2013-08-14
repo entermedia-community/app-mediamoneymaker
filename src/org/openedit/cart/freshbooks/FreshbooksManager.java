@@ -20,6 +20,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.openedit.data.BaseSearcher;
 import org.openedit.store.CartItem;
+import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Address;
@@ -241,37 +242,50 @@ public class FreshbooksManager {
 
 	}
 
-	public void createRecurring(Order inOrder, User inUser, String inFrequency) throws Exception {
+	public void createRecurring(Order inOrder,FreshbookInstructions inStructions) throws Exception {
 		Customer customer = inOrder.getCustomer();
 
-		if (inUser.get("freshbooksid") == null) {
-			createCustmer(new Customer(inUser), inOrder.getBillingAddress(),
+		if (inOrder.get("freshbooksid") == null) {
+			createCustmer(inOrder.getCustomer(), inOrder.getBillingAddress(),
 					null);
 		}
+		
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "recurring.create");
 		Element invoice = root.addElement("recurring");
-		invoice.addElement("client_id").setText(inUser.get("freshbooksid"));
+		invoice.addElement("client_id").setText(customer.get("freshbooksid"));
 		invoice.addElement("number").setText(inOrder.getId());
 		invoice.addElement("status").setText("draft");
 		invoice.addElement("date").setText(format.format(inOrder.getDate()));
+				
+		invoice.addElement("frequency").setText(inStructions.getFrequency());	
+		invoice.addElement("send_email").setText(inStructions.getSendEmail());
+		invoice.addElement("send_snail_mail").setText(inStructions.getSendSnailMail());
+		invoice.addElement("notes").setText(inOrder.get("notes"));
+		
+		CreditPaymentMethod creditCard = (CreditPaymentMethod) inOrder
+				.getPaymentMethod();
 		
 		
 		
-		if (inOrder.getPaymentMethod() instanceof PurchaseOrderMethod) {
-			PurchaseOrderMethod method = (PurchaseOrderMethod) inOrder
-					.getPaymentMethod();
-			if (method.getPoNumber() != null) {
-				invoice.addElement("po_number").setText(method.getPoNumber());
-			}
-		}
+		Element autobill = invoice.addElement("autobill");
+		autobill.addElement("gateway_name").setText(inStructions.getGateway());
+		Element carddetails = autobill.addElement("card");
+		carddetails.addElement("number").setText(creditCard.getCardNumber());
+		carddetails.addElement("name").setText(inOrder.getCustomer().getName());
+		Element expiration = autobill.addElement("expiration");
+		expiration.addElement("month").setText(creditCard.getExpirationMonthString());
+		expiration.addElement("year").setText(creditCard.getExpirationYearString());
+		
+		
+		
 		
 		
 		Element lines = invoice.addElement("lines");
 		for (Iterator iterator = inOrder.getItems().iterator(); iterator
 				.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
-			if (Boolean.parseBoolean(item.getProduct().get("recurring")) && item.getProduct().get("frequency").equals(inFrequency) ) {
+			if (Boolean.parseBoolean(item.getProduct().get("recurring"))) {
 
 				Element line = lines.addElement("line");
 				line.addElement("name").setText(item.getProduct().getId());
@@ -301,28 +315,7 @@ public class FreshbooksManager {
 			// line.addEle
 		}
 
-		Element shipping = lines.addElement("line");
-		shipping.addElement("name").setText("shipping");
-		shipping.addElement("description").setText("Shipping");
-		shipping.addElement("quantity").setText("1");
-		if (inOrder.getTotalShipping() != null) {
-			shipping.addElement("unit_cost").setText(
-					inOrder.getTotalShipping().toShortString());
-		}
-		int count = 1;
-		for (Iterator iterator2 = inOrder.getTaxes().keySet().iterator(); iterator2
-				.hasNext();) {
-			TaxRate rate = (TaxRate) iterator2.next();
-			shipping.addElement("tax" + count + "_name")
-					.setText(rate.getName());
-			double percent = rate.getFraction().doubleValue() * 100;
-			shipping.addElement("tax" + count + "_percent").setText(
-					String.valueOf(percent));
-			count++;
-			if (count > 2) {
-				break;
-			}
-		}
+		
 
 		Element result = callFreshbooks(root);
 		if (result.attributeValue("status").equals("ok")) {
@@ -336,7 +329,7 @@ public class FreshbooksManager {
 
 	}
 
-	public void createCustmer(Customer inUser, Address inAddress,
+	public boolean createCustmer(Customer inUser, Address inAddress,
 			List inContacts) throws Exception {
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "client.create");
@@ -375,9 +368,11 @@ public class FreshbooksManager {
 			String clientid = result.elementText("client_id");
 			inUser.setProperty("freshbooksid", clientid);
 			log.info("result was " + result.asXML());
+			return true;
 
 		} else {
 			log.info("result was " + result.asXML());
+			return false;
 		}
 
 	}

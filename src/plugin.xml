@@ -116,11 +116,20 @@
 			 <value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
+			<value>scriptedOrderProcessor</value>
 			<value>emailOrderProcessor</value>
+						
 			
 		</list>
 	</property>
 </bean>
+
+  <bean id="scriptedOrderProcessor" class="org.openedit.store.gateway.ScriptedOrderProcessor">
+          <property name="moduleManager"><ref bean="moduleManager" /></property>
+          <property name="scriptManager"><ref bean="scriptManager" /></property>     
+          
+  </bean>  
+
 
     <bean id="elevonOrderProcessor" class="org.openedit.store.gateway.ElevonOrderProcessor">
           <property name="pageManager"><ref bean="pageManager" /></property>     

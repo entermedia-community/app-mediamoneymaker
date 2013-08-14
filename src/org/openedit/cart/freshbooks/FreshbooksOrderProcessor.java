@@ -3,26 +3,27 @@
  */
 package org.openedit.cart.freshbooks;
 
-import java.io.File;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.money.Money;
-import org.openedit.store.CartItem;
-import org.openedit.store.CreditPaymentMethod;
+import org.dom4j.Element;
+import org.openedit.Data;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
-import com.jcommercesql.gateway.authorizenet.AuthorizeNetCC;
-import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
+import com.openedit.users.User;
+import com.openedit.users.UserManager;
+import com.openedit.util.XmlUtil;
 
 /**
  * @author cburkey
@@ -33,16 +34,52 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 
 	private static final Log log = LogFactory.getLog(FreshbooksOrderProcessor.class);
 
-	private FreshbooksManager util;
+	protected FreshbooksManager util;
+	protected PageManager fieldPageManager;
+	protected UserManager fieldUserManager;
+	protected XmlUtil fieldXmlUtil;
 	
+	public XmlUtil getXmlUtil() {
+		if (fieldXmlUtil == null) {
+			fieldXmlUtil = new XmlUtil();
+		}
+		return fieldXmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil inXmlUtil) {
+		fieldXmlUtil = inXmlUtil;
+	}
+
 	
+
+	public PageManager getPageManager() {
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager) {
+		fieldPageManager = inPageManager;
+	}
+
+	public FreshbooksManager getUtil(Store inStore) {
+		if (util == null) {
+			util = new FreshbooksManager();
+			
+		}
+
+		return util;
+	}
+
+	public void setUtil(FreshbooksManager inUtil) {
+		util = inUtil;
+	}
 
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
-		File configDirectory = new File(inStore.getStoreDirectory(), "data");
-		File propertiesFile = new File(configDirectory, "authorize.properties");
-		if ( propertiesFile.exists() )
-		{
+		Page page = getPageManager().getPage(
+				inStore.getStoreHome() + "/configuration/beanstream.xml");
+		
+		
+		if (page.exists()) {
 			return inOrder.getPaymentMethod().requiresValidation();
 		}
 		return false;
@@ -56,14 +93,9 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			return;
 		}
 		//	"AUTH_ONLY");   //AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY, CREDIT, VOID, PRIOR_AUTH_CAPTURE.
-		if( inStore.isAutoCapture() )
-		{
+		
 			process(inStore, inOrder, "AUTH_CAPTURE");
-		}
-		else
-		{
-			process(inStore, inOrder, "AUTH_ONLY");
-		}
+		
 	}
 
 	protected void process(Store inStore, Order inOrder, String inType) throws StoreException
@@ -72,82 +104,50 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		{
 			// See examples at http://www.jcommercesql.com/anet/
 			// load properties (e.g. IP address, username, password) for accessing authorize.net
-			File configDirectory = new File(inStore.getStoreDirectory(), "data");
-			File propertiesFile = new File(configDirectory, "authorize.properties");
+			
+			
+			Page page = getPageManager().getPage(
+					inStore.getStoreHome() + "/configuration/freshbooks.xml");
+			Element conf = getXmlUtil().getXml(page.getReader(), "UTF-8");
+			
+			
+			String merchant = conf.element("merchantid").getText();
+			String gateway = conf.element("gateway").getText();
 
-			AuthorizeNetCC anetcc = new AuthorizeNetCC(propertiesFile.getAbsolutePath());
-
+			String userid = conf.element("user").getText();
+			String password = conf.element("password") != null && !conf.element("password").getText().isEmpty() ? conf.element("password").getText() : null;
+			if (password == null)
+			{
+				User user = getUserManager().getUser(userid);
+				password = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
+			}
+			
+			
+			
+			
 			
 			// load customer address info from order (in case needed for AVS)
 		    Customer customer = inOrder.getCustomer();
 		    
-		    anetcc.addOptionalField("x_cust_id", customer.getUserName());
-		    anetcc.addOptionalField("x_first_name", customer.getFirstName());
-		    anetcc.addOptionalField("x_last_name", customer.getLastName());
-		    Address address = customer.getBillingAddress();
-		    if( address.getZipCode() == null)
-		    {
-		    	throw new OpenEditException("zip code is required");
-		    }
-		    anetcc.addOptionalField("x_zip", address.getZipCode());
-		    anetcc.addOptionalField("x_Address", address.getAddress1());
-		    anetcc.addOptionalField("x_city", address.getCity());
-		    anetcc.addOptionalField("x_state", address.getState());
-		    if ( address.getCountry() != null)
-		    {
-		    	anetcc.addOptionalField("x_country", address.getCountry());
-		    }
-
-		    anetcc.addOptionalField("x_phone", customer.getPhone1());
-
-		    anetcc.addOptionalField("x_email", customer.getEmail());
-		    anetcc.addOptionalField("x_Zip", address.getZipCode());
-		    anetcc.addOptionalField("x_invoice_num", inOrder.getId());
-
-		    StringBuffer out = new StringBuffer();
-		    for (Iterator iter = inOrder.getItems().iterator(); iter.hasNext();)
-			{
-		    	CartItem element = (CartItem) iter.next();
-				out.append( "( Product = " );
-				out.append( element.getProduct().getName() );
-				out.append(" ");
-				out.append( element.getProduct().getId() );
-				out.append( "/ sku = " );
-				out.append( element.getSku() );
-				out.append( ")" );
-				
+		    
+		    FreshbookInstructions inStructions = new FreshbookInstructions();
+		    //How will we determine this? Create more than one?
+		    HitTracker hits = inStore.getSearcherManager().getList(inStore.getCatalogId(), "frequency");
+		    inStructions.setGateway(gateway);
+		    for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+				Data freq = (Data) iterator.next();
+				inStructions.setFrequency(freq.get("id"));
+			    inStructions.setSendEmail("true");		
+			    inStructions.setSendSnailMail("true");			    
+			    getUtil(inStore).createRecurring(inOrder, inStructions);
+			    
 			}
 		    
-		    String desc = out.toString();
-		    if ( desc.length() > 254)
-		    {
-		    	desc = desc.substring(0,254);
-		    }
-		    anetcc.addOptionalField("x_description",  desc);
-
-		    //anetcc.setTestMode()
-		    // set credit card number, expiration date, and transaction amount
-		    // Transaction is AUTH_ONLY, meaning we are checking that the account allows
-		    // that amount to be charged, but are not actually charging the account just yet.
-		    CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
-		    Money total = inOrder.getTotalPrice();
-		    anetcc.setTransaction(creditCard.getCardNumber(),
-		    	creditCard.getExpirationDateString(),
-				total.toString(),
-				inType);   //AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY, CREDIT, VOID, PRIOR_AUTH_CAPTURE.
-		    //System.out.println("total price = " + inOrder.getCart().getTotalPrice());
-		    //System.out.println("exp date = " + creditCard.getExpirationDateString());
-
-		    // submit request
-			//anetcc.removeTestMode();
-		    //anetcc.addOptionalField(AuthorizeNetCodes.REQ_FIELD_TEST_REQUEST,"false");
-		    anetcc.submit();
-		    String responseCode = anetcc.getResponseCode();
-		    //creditCard.getCardNumber().equals("5105105105105100") ||
-		    if (  creditCard.getCardNumber().equals("5555555555554444") )
-		    {
-		    	responseCode = "1";
-		    }
+		    
+		    
+		    
+		    
+		    
 		    OrderState orderState = null;
 		    if ("1".equals(responseCode))
 		    {
@@ -198,6 +198,14 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			throw new StoreException(e);
 		}
 	}
+	public UserManager getUserManager() {
+		return fieldUserManager;
+	}
+
+	public void setUserManager(UserManager inUserManager) {
+		fieldUserManager = inUserManager;
+	}
+
 	public void captureOrder(WebPageRequest inContext, Store inStore, Order inOrder) throws StoreException
 	{
 		if ( !requiresValidation( inStore,inOrder ))

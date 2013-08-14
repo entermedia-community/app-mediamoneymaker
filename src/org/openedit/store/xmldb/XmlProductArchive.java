@@ -269,7 +269,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 				inProduct.addKeyword(keyword);
 			}
 		}
-
+		
 		Configuration type = productConfig.getChild("delivery-type");
 		if (type != null)
 		{
