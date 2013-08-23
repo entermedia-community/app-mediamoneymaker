@@ -53,8 +53,7 @@ public class OrderSet {
 	
 	
 	public int getQuantityForProduct(Product product){
-		//loop over all orders and total up number request.
-	}
+return 0;	}
 	
 	
 	public List getOutOfStockOrders(){
