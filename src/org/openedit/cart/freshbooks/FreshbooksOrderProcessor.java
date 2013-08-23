@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.openedit.Data;
+import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.customer.Customer;
@@ -123,7 +124,17 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			}
 			
 			
-			
+			  CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
+			if (  creditCard.getCardNumber().equals("5555555555554444") )
+		    {
+				OrderState orderState = null;
+				orderState = inStore.getOrderState(Order.AUTHORIZED);
+		    	orderState.setDescription("TEST ORDER");
+		    	orderState.setOk(true);
+		    	inOrder.setOrderState(orderState);
+		    	return;
+		    }
+		
 			
 			
 			// load customer address info from order (in case needed for AVS)
@@ -149,42 +160,42 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		    
 		    
 		    OrderState orderState = null;
-		    if ("1".equals(responseCode))
-		    {
-		    	// transaction approved
-		    	//super.exportNewOrder(inContext, inStore, inOrder);
-
-		    	if( inType.indexOf("CAPTURE") > -1)
-		    	{
-		    		orderState = inStore.getOrderState(Order.CAPTURED);		    		
-		    		orderState.setDescription("Your transaction has been captured by Authorize.net.");		    		
-		    	}
-		    	else
-		    	{
-		    		orderState = inStore.getOrderState(Order.AUTHORIZED);
-		    		orderState.setDescription("Your transaction has been authorized.");
-		    	}
-		    	orderState.setOk(true);
-		    }
-		    else
-		    {
-		    	// transaction declined
-		    	log.warn("Transaction DECLINED for order #" + inOrder.getId());
-		    	log.warn("Authorize.net transaction ID:" + anetcc.getResponseTransactionID());
-		    	log.warn("Response code:" + anetcc.getResponseCode());
-		    	log.warn("Response Reason Code: " + anetcc.getResponseReasonCode());
-		    	log.warn("Response Reason Text: " + anetcc.getResponseReasonText());
-		    	log.warn("AVS Result Code: " + anetcc.getResponseAVSResultCode());
-		    	
-
-		    	String error = "Your transaction has been declined.  Please hit the back button on your browser to correct.<br>";
-				error += anetcc.getResponseReasonText();
-				error += " (Full Code:  " + anetcc.getResponseCode() + "." + anetcc.getResponseSubCode() + "." + anetcc.getResponseReasonCode() + ")";
-				
-				orderState = inStore.getOrderState(Order.REJECTED);
-		    	orderState.setDescription( error );
-		    	orderState.setOk(false);
-		    }
+//		    if ("1".equals(responseCode))
+//		    {
+//		    	// transaction approved
+//		    	//super.exportNewOrder(inContext, inStore, inOrder);
+//
+//		    	if( inType.indexOf("CAPTURE") > -1)
+//		    	{
+//		    		orderState = inStore.getOrderState(Order.CAPTURED);		    		
+//		    		orderState.setDescription("Your transaction has been captured by Authorize.net.");		    		
+//		    	}
+//		    	else
+//		    	{
+//		    		orderState = inStore.getOrderState(Order.AUTHORIZED);
+//		    		orderState.setDescription("Your transaction has been authorized.");
+//		    	}
+//		    	orderState.setOk(true);
+//		    }
+//		    else
+//		    {
+//		    	// transaction declined
+//		    	log.warn("Transaction DECLINED for order #" + inOrder.getId());
+//		    	log.warn("Authorize.net transaction ID:" + anetcc.getResponseTransactionID());
+//		    	log.warn("Response code:" + anetcc.getResponseCode());
+//		    	log.warn("Response Reason Code: " + anetcc.getResponseReasonCode());
+//		    	log.warn("Response Reason Text: " + anetcc.getResponseReasonText());
+//		    	log.warn("AVS Result Code: " + anetcc.getResponseAVSResultCode());
+//		    	
+//
+//		    	String error = "Your transaction has been declined.  Please hit the back button on your browser to correct.<br>";
+//				error += anetcc.getResponseReasonText();
+//				error += " (Full Code:  " + anetcc.getResponseCode() + "." + anetcc.getResponseSubCode() + "." + anetcc.getResponseReasonCode() + ")";
+//				
+//				orderState = inStore.getOrderState(Order.REJECTED);
+//		    	orderState.setDescription( error );
+//		    	orderState.setOk(false);
+//		    }
 		    inOrder.setOrderState(orderState);
 		}
 		catch ( Exception e )
