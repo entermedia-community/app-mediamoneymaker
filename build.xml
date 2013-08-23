@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="default" name="app-mediamoneymaker">
 
-  <target name="default" depends="clean,  source, update-dependencies, compile, junit, jar, javadoc, war"/>
+  <target name="default" depends="clean,  source, update-dependencies, compile, junit, jar,  war"/>
   <target name="dependency" depends="default"/>
    
     <property name="appname" value="${ant.project.name}"/>
@@ -51,6 +51,8 @@
 		<get dest="${build}/install.xml" src="http://dev.entermediasoftware.com/jenkins/job/${branch}entermedia-server/lastSuccessfulBuild/artifact/deploy/install.xml"/>
 		<ant antfile="${build}/install.xml" inheritAll="false" dir="${wardir}/WEB-INF/" target="default"/> 
 
+		
+		
 		
 			<copy todir="${wardir}" preservelastmodified="true">
 					<fileset dir="${webapp}">
@@ -155,26 +157,7 @@
   	</junit>
   </target>
   
-    <target name="javadoc">
-    	<delete dir="${deployDir}/javadoc"/>
-
-        <javadoc destdir="${deployDir}/javadoc"
-            access="public" notree="false" nonavbar="false"
-            noindex="false" splitindex="false" author="true" use="false" verbose="false"
-            version="true" nodeprecatedlist="false" nodeprecated="false"
-            doctitle="OpenEdit Cart API">
-          
-              <packageset dir="${src}" defaultexcludes="yes">
-			      <exclude name="**/*Test*"/>
-			 </packageset>
-			<classpath>
-		      <fileset dir="${lib}">
-		        <include name="**/*.jar"/>
-		      </fileset>
-		    </classpath>
-
-		</javadoc>
-    </target>
+    
 
   	<!-- 
 		========================================================================
