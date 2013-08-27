@@ -1,0 +1,81 @@
+#set($orderset = $context.getSessionValue("orderset"))
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers Corporate Orders</div>
+	<div class="ui-widget-content">
+		#set($orders = $orderset.getOrders())
+		<table >
+			<tr>
+				<th style="padding: 3px;">Order ID</th>
+				<th style="padding: 3px;">Product ID</th>
+				<th style="padding: 3px;">Product</th>
+				<th style="padding: 3px;">Quantity</th>
+				<th style="padding: 3px;">Price</th>
+				<th style="padding: 3px;">Line Total</th>
+			</tr>
+		#foreach($order in $orders)
+			#set($cartitems = $order.getItems())
+			<tr>
+				<td style="padding: 3px;" colspan="6">$order.getId() - $cartitems.size()</td>
+			</tr>
+			#foreach($cartitem in $cartitems)
+			<tr>
+				<td style="padding: 3px; font-size: 12px;">$order.getShippingAddress().getState()</td>
+				#set($product = $cartitem.getProduct())
+				<td style="padding: 3px; font-size: 12px;">$product.get("rogerssku")</td>
+				<td style="padding: 3px; font-size: 12px;">$product.getName()</td>
+				<td style="padding: 3px; font-size: 12px; text-align: center;">$cartitem.getQuantity()</td>
+				<td style="padding: 3px; font-size: 12px; text-align: right;">$cartitem.getYourPrice()</td>
+				<td style="padding: 3px; font-size: 12px; text-align: right;">$cartitem.getTotalPrice()</td>
+			</tr>
+			#end
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5">Subtotal:</td>
+				<td style="padding: 3px; font-size: 12px; text-align: right;"><strong>$order.getSubTotal()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5">Shipping:</td>
+				<td style="padding: 3px; font-size: 12px; text-align: right;"><strong>$order.getTotalShipping()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5">Taxes:</td>
+				<td style="padding: 3px; font-size: 12px; text-align: right;"><strong>$order.getTax()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5">Total:</td>
+				<td style="padding: 3px; text-align: right; font-size: 12px;"><strong>$order.getTotalPrice()</strong></td>
+			</tr>
+		#end
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="6">&nbsp;</td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5"><strong>Final Sub-Total:</strong></td>
+				<td style="padding: 3px; text-align: right; font-size: 12px;"><strong>$orderset.getSubTotal()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5"><strong>Final Shipping:</strong></td>
+				<td style="padding: 3px; text-align: right; font-size: 12px;"><strong>$orderset.getTotalShipping()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5"><strong>Final Taxes:</strong></td>
+				<td style="padding: 3px; text-align: right; font-size: 12px;"><strong>$orderset.getTotalTaxes()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="5"><strong>Final Total:</strong></td>
+				<td style="padding: 3px; text-align: right; font-size: 12px;"><strong>$orderset.getTotalPrice()</strong></td>
+			</tr>
+			<tr>
+				<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="6">
+					<form action="processorders.html" method="post">
+						<input type="hidden" name="action" value="processorder">
+						<input type="hidden" name="orderset" value="${orderset}">
+						#set($size = $orderset.getNumberOfOrders())
+						<input type="submit" name="submit" value="Continue and Process all ${size} order(s)" class="btn">
+					</form>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

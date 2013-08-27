@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.openedit.data.BaseData;
@@ -41,22 +43,20 @@ public class Order extends BaseData implements Comparable {
 	protected List fieldItems;
 	protected List fieldAdjustments;
 
-	protected List fieldMissingItems;
+	protected TreeSet<String> fieldMissingItems;
 	
-	public List getMissingItems() {
+	public TreeSet<String> getMissingItems() {
 		if (fieldMissingItems == null) {
-			fieldMissingItems = new ArrayList();
-			
+			fieldMissingItems = new TreeSet<String>();
 		}
-
 		return fieldMissingItems;
 	}
+	
 	public void addMissingItem(String inProductId){
 		getMissingItems().add(inProductId);
-		
 	}
 
-	public void setMissingItems(List inMissingItems) {
+	public void setMissingItems(TreeSet<String> inMissingItems) {
 		fieldMissingItems = inMissingItems;
 	}
 
@@ -103,11 +103,8 @@ public class Order extends BaseData implements Comparable {
 			for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
 				CartItem item = (CartItem) iterator.next();
 				fieldCart.addItem(item);
-
 			}
-
 		}
-
 		return fieldCart;
 	}
 
@@ -291,7 +288,7 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public CartItem getItem(String inSku) {
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+		for (Iterator<CartItem> iterator = getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			if (item.getSku().equals(inSku)) {
 				return item;

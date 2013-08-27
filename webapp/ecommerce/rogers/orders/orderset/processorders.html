@@ -1,0 +1,26 @@
+#set($orderlist = $context.getPageValue("orderlist"))
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers Corporate Orders</div>
+	<div class="ui-widget-content">
+	<h2>The following orders have been processed:</h2>
+	<p>
+		<table >
+			<tr>
+				<th style="padding: 3px;">View</th>
+				<th style="padding: 3px;">Order ID</th>
+			</tr>
+		#foreach($order in $orderlist)
+			<tr>
+				<td style="padding: 3px;">
+					<a href="$home$apphome/views/myaccount/storeorders/view/index.html?id=${order}" target="_blank"><img 
+					src="$home$apphome/theme/images/y-button.png"/></a>
+				</td>
+				<td style="padding: 3px; margin-top: 3px;">$order</td>
+			</tr>
+		#end
+		</table>
+		<p><a href="$home$apphome/rogers/orders/rogersorder.html">Upload a New Order</a></p>
+		<p><a href="$home$apphome/views/myaccount/storeorders/index.html">View all of my Orders</a></p>
+	</p>
+	</div>
+</div>
