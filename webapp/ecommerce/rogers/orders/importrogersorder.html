@@ -1,5 +1,6 @@
 #set($orderset = $context.getSessionValue("orderset"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($storesearcher = $searcherManager.getSearcher($catalogid, "rogersstore"))
 
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Rogers Corporate Orders</div>
@@ -10,6 +11,8 @@
 		<tr>
 			<th style="padding: 10px;">Edit</th>
 			<th style="padding: 10px;">Order ID</th>
+			<th style="padding: 10px;">Store ID</th>
+			<th style="padding: 10px;">Store Name</th>
 			<th style="padding: 10px;">Missing Products</th>
 			<th style="padding: 10px;">Inventory Problems</th>
 			<th style="padding: 10px;">Status</th>
@@ -20,6 +23,12 @@
 				<a href="$home$apphome/rogers/orders/orderset/showorder.html?id=$order.getId()"><img src="$home$apphome/theme/images/edit-icon.png"/></a>
 			</td>
 			<td style="padding: 10px;">$order.getId()</td>
+			#set($customerid = $order.getCustomer().getId())
+			#set($id = $customerid.split("-"))
+			#set($storeid = $id.get(1))
+			#set($rogersstore = $storesearcher.searchById($storeid))
+			<td style="padding: 10px;">$storeid</td>
+			<td style="padding: 10px;">$rogersstore.get("name")</td>
 			<td style="padding: 10px;">
 			#if($orderset.doesOrderHaveBadProducts($order))
 				#set($badproducts = $orderset.getBadProductsPerOrder($order))
@@ -71,8 +80,8 @@
 	#set($outofstockitems = $orderset.getOutOfStockOrders())
 	#if($outofstockitems.size()>0)
 		<p>&nbsp;</p>
-		<h2>Bad Stock Orders</h2>
-		<p>The following orders have problems with their quantities in stock.</p>
+		<h2>Orders with Out of Stock Products.</h2>
+		<p>The following orders have products which are currently out of stock.</p>
 		<p>
 		<table >
 			<tr>
@@ -85,32 +94,32 @@
 			<tr>
 				<td>$orderid</td>
 				<td>
-				#set($order = $orderset.getOrder($orderid))
-				#set($badstockproducts = $orderset.getOutOfStockPerOrder($order))
-				<ul>
-				#foreach($productid in $badstockproducts)
-					#set($product = $productsearcher.searchById($productid))
-					<li>$product.get("rogerssku")</li>
-				#end
-				</ul>
+					#set($order = $orderset.getOrder($orderid))
+					#set($badstockproducts = $orderset.getOutOfStockPerOrder($order))
+					<ul>
+					#foreach($productid in $badstockproducts)
+						#set($product = $productsearcher.searchById($productid))
+						<li>$product.get("rogerssku")</li>
+					#end
+					</ul>
 				</td>
 				<td>
-				<ul>
-				#foreach($productid in $badstockproducts)
-					#set($product = $productsearcher.searchById($productid)) 
-					#set($qty = $orderset.getQuantityForProductInOrder($order, $product))
-					<li>$qty</li>
-				#end
-				</ul>
+					<ul>
+					#foreach($productid in $badstockproducts)
+						#set($product = $productsearcher.searchById($productid)) 
+						#set($qty = $orderset.getQuantityForProductInOrder($order, $product))
+						<li>$qty</li>
+					#end
+					</ul>
 				</td>
 				<td>
-				<ul>
-				#foreach($productid in $badstockproducts)
-					#set($product = $productsearcher.searchById($productid))
-					#set($invitem = $product.getInventoryItem(0))
-					<li>$invitem.getQuantityInStock()</li>
-				#end
-				</ul>
+					<ul>
+					#foreach($productid in $badstockproducts)
+						#set($product = $productsearcher.searchById($productid))
+						#set($invitem = $product.getInventoryItem(0))
+						<li>$invitem.getQuantityInStock()</li>
+					#end
+					</ul>
 				</td>
 			</tr>
 			#end

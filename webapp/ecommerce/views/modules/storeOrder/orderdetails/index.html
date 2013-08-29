@@ -133,7 +133,6 @@ $order.getOrderStatus()
 		<td align="center" nowrap>
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
-			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 			#set($d = $distributorsearcher.searchById($product.get("distributor")))
 			#set($invoices = $invoicesearcher.fieldSearch("ponumber", $orderNumber))
 			#if ($invoices.size() > 1)
@@ -151,19 +150,22 @@ $order.getOrderStatus()
 					#end
 				#end
 				#if($breakflag == "false")
-					$dname
+					$d.get("name")
 				#end
 			#else
-				#set($inv = $invoices[0])
-				#set($invoiceID = $inv.getId())
-				#set($dID = $d.getId())
-				#set($idist = $inv.get("distributor"))
-				#set($dname = $d.getName())
-				#if ($invoiceID != "" && $dID == $idist)
-					#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
-					<a href="$url" style="font-size: 14px; color: blue;">$dname</a>
-					#set($breakflag = "true")
-					#break
+				#if ($invoices.size() == 1)
+					#set($inv = $invoices.get(0))
+					#set($invoiceID = $inv.getId())
+					#set($dID = $d.getId())
+					#set($idist = $inv.get("distributor"))
+					#if ($invoiceID != "" && $dID == $idist)
+						#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+						<a href="$url" style="font-size: 14px; color: blue;">$d.get("name")</a>
+						#set($breakflag = "true")
+						#break
+					#end
+				#else
+					$d.get("name")
 				#end
 			#end
 			</p>
