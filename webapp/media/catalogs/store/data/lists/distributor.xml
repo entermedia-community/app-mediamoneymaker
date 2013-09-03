@@ -9,4 +9,5 @@
   <distributor id="106" fullname="AVOCA" idcode="9057370088" idQual="92" headermailbox="NEED_MAILBOX_ID" headermailboxprod="9057370088" headerprefix="12" headermailboxtest="9057370088" useedi="true">Avoca</distributor>
   <distributor id="area" fullname="AREA COMMUNICATIONS" idcode="AREACOMM" idQual="ZZ" headermailboxprod="AREACOMM" headerprefix="ZZ" headermailboxtest="AREACOMMT">area</distributor>
   <distributor id="floyd" fullname="Floyd Systems" idcode="NEED_ID_CODE" idQual="92" manufacturer="82 22 6 9 87 20">Floyd</distributor>
+  <distributor id="atlantia" fullname="Atlantia" idcode="NEED_ID_CODE" idQual="NEED_QUAL_CODE" address1="949 West 3rd Street" address2="#121" city="Vancouver" province="BC" postalcode="V8P 3P7" phone1="720-634-5323" email="trevor@atlantia.ca" hstnumber="NEED_HST_NUMBER" pstnumber="NEED_PST_NUMBER">Atlantia</distributor>
 </distributors>

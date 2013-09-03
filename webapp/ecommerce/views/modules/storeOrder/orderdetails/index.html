@@ -9,27 +9,11 @@
 (<a class="btn" href="$apphome/views/modules/storeOrder/actions/recreatecart.html?orderid=${order.orderNumber}">Re-order this</a>)
 
 <h3 >$order.dateOrdered</h3>
-#if( $canmanageorders )
-			<form name="orderstatusform" >
-				<input type=hidden name="ordernumber" value="$order.getOrderNumber()"/>
-				<select name="orderstatus" id="orderstatus" >
-					#set ($types = $store.getOrderArchive().getOrderStates($store))		
-				 	#foreach( $key in $types.keySet() )
-						<option value="$key" #if( $order.getOrderState().getId() == $key ) selected #end>
-							$types.get($key)
-						</option>
-					#end
-				</select>
-			<!-- <input type=submit value="Change Order Status" /> -->
-			</form> 
-#else
-$order.getOrderStatus()
-#end
+<strong>Status:</strong>&nbsp;$order.getOrderStatus()
 
 #if( $canmanageorders)
 	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$apphome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
 	<span id="messagearea"> </span>
-	
 #end
 
 #if ( $shippingAddress.address1 == $billingAddress.address1 )
