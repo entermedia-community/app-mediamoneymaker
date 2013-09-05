@@ -5,15 +5,23 @@ package org.openedit.store.modules;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.lucene.document.Document;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEventListener;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
+import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
 import org.openedit.store.TaxRate;
@@ -22,11 +30,14 @@ import org.openedit.store.orders.EmailOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderId;
+import org.openedit.store.orders.OrderSearcher;
+import org.openedit.store.orders.OrderSet;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 import org.openedit.store.orders.RefundItem;
 import org.openedit.store.orders.RefundState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -649,5 +660,118 @@ public class OrderModule extends BaseModule
 		inContext.putPageValue("data",order);
 		inContext.putPageValue("order",order);
 		inContext.putPageValue("refund",refund);
+	}
+	
+	public void loadCurrentOrderSet (WebPageRequest inContext) {
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		inContext.putPageValue("orderset", orderSet);
+	}
+	
+	public void saveCurrentOrderSet( WebPageRequest inContext ) {
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		//TO-DO: Loop through all orders and save them!
+		inContext.putSessionValue("orderset", null);
+	}
+	
+	public void removeItems( WebPageRequest inContext ) {
+		String[] inProducts = inContext.getRequestParameters("product");
+		List<String> products = Arrays.asList(inProducts); 
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		for (Iterator<Order> orderIterator = orderSet.getOrders().iterator(); orderIterator.hasNext();) {
+			Order order = (Order) orderIterator.next();
+			if (order.getMissingItems().size() > 0) {
+				for (int indx = 0; indx < products.size(); indx++) {
+					String productid = (String) products.get(indx);
+					if (order.getMissingItems().contains(productid)) {
+						order.getMissingItems().remove(productid);
+						//products.remove(indx);
+					}				
+				}
+			}
+		}
+	}
+	
+	public void removeBadStockFromOrders( WebPageRequest inContext ) {
+		String[] inOrders = inContext.getRequestParameters("orders");
+		List<String> badOrders = Arrays.asList(inOrders);
+		
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		if (orderSet.getOutOfStockOrders().size() > 0) {
+			for (Iterator<String> badOrderIterator = badOrders.iterator(); badOrderIterator.hasNext();) {
+				List<CartItem> removeList = new ArrayList<CartItem>();
+				String orderId = badOrderIterator.next();
+				Order order = orderSet.getOrder(orderId);
+				for (Iterator<CartItem> cartItemIterator = order.getItems().iterator(); cartItemIterator.hasNext();) {
+					CartItem cartItem = (CartItem) cartItemIterator.next();
+					Product product = cartItem.getProduct();
+					if (!product.isInStock()) {
+						removeList.add(cartItem);
+					} else {
+						Set<String> badproducts = orderSet.getOutOfStockPerOrder(order);
+						if (badproducts.contains(product.getId())) {
+							removeList.add(cartItem);
+						}
+					}
+				}
+				if (removeList.size()>0) {
+					for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
+						CartItem cartItem = (CartItem) itemIter.next();
+						order.getCart().removeItem(cartItem);
+					}
+				}
+			}
+			Store store = getStore(inContext);
+			orderSet.recalculateAll(store);
+		}
+	}
+	public void processOrders( WebPageRequest inContext ) {
+		if (inContext.getRequestParameter("action").equalsIgnoreCase("processorder")) {
+			List<String> orderList = new ArrayList<String>();
+			
+			MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+			String catalogid = archive.getCatalogId();
+			SearcherManager searcherManager = archive.getSearcherManager();
+			Searcher as400Searcher = searcherManager.getSearcher(catalogid, "as400");
+			
+			Store store = getStore(inContext);
+			OrderSearcher orderSearcher = store.getOrderSearcher();
+			OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+			for (Iterator<Order> orderIterator = orderSet.getOrders().iterator(); orderIterator.hasNext();) {
+				Order order = (Order) orderIterator.next();
+				
+				//Save data to AS400 Table
+				String batchID = (String) order.get("batchid");
+				Data as400Record = (Data) as400Searcher.searchByField("batchid", batchID);
+				if (as400Record == null) {
+					as400Record = as400Searcher.createNewData();
+					as400Record.setId(as400Searcher.nextId());
+					as400Record.setSourcePath(batchID);
+					as400Record.setProperty("batchid", batchID);
+					as400Record.setProperty("user", inContext.getUser().getId());
+					Date now = new Date();
+					String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
+					as400Record.setProperty("date", newDate);
+					as400Searcher.saveData(as400Record, inContext.getUser());
+				}
+				
+				OrderState orderState = new OrderState();
+				orderState.setId("authorized");
+				orderState.setDescription("authorized");
+				orderState.setOk(true);
+				order.setOrderState(orderState);
+				
+				Date now = new Date();
+				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
+				order.setProperty("orderdate", newDate);
+				
+				order.setProperty("orderstatus", "authorized");
+				order.setProperty("order_status", "authorized");
+				
+				orderSearcher.saveData(order, inContext.getUser());
+				orderList.add(order.getId());
+			}
+			inContext.putPageValue("orderlist", orderList);
+			inContext.putSessionValue("orderset", null);
+		}
 	}
 }

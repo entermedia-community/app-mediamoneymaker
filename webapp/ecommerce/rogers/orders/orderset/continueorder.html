@@ -1,0 +1,93 @@
+#set($orderset = $context.getSessionValue("orderset"))
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($storesearcher = $searcherManager.getSearcher($catalogid, "rogersstore"))
+
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Rogers Corporate Orders</div>
+	<div class="ui-widget-content">
+		#set($orders = $orderset.getOrders())
+		#set($ctr = 0)
+		#foreach($order in $orders)
+			#set($customerid = $order.getCustomer().getId())
+			#set($id = $customerid.split("-"))
+			#set($storeid = $id.get(1))
+			#set($rogersstore = $storesearcher.searchById($storeid))
+			
+		<div class="rogers-summary">
+			<ul>
+				<li><a href="#" class="order-row" data-orderid="$order.getId()">$order.getId()</a></li>
+				<li>$storeid - $rogersstore.get("name")</li>
+				<li class="total">Order Total: $order.getTotalPrice()</li>
+			</ul>
+		</div>
+		<div class="rogers-summary-details" id="order-$order.getId()" style="display: none">
+			<table style="width: 100%;">
+				<tr>
+					<td class="rogers-summary-product-id"><strong>Product ID<strong></td>
+					<td class="rogers-summary-product-name">Product</td>
+					<td class="rogers-summary-product-quantity">Quantity</td>
+					<td class="rogers-summary-product-price">Price</td>
+					<td class="rogers-summary-line-total">Line Total</td>
+				</tr>
+				#set($cartitems = $order.getItems())
+				#foreach($cartitem in $cartitems)
+				<tr>
+					#set($product = $cartitem.getProduct())
+					<td class="rogers-summary-product-id">$product.get("rogerssku")</td>
+					<td class="rogers-summary-product-name">$product.getName()</td>
+					<td class="rogers-summary-product-quantity">$cartitem.getQuantity()</td>
+					<td class="rogers-summary-product-price">$cartitem.getYourPrice()</td>
+					<td class="rogers-summary-line-total">$cartitem.getTotalPrice()</td>
+				</tr>
+				#end
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px;">Subtotal:</span><strong>$order.getSubTotal()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px;">Shipping:</span><strong>$order.getTotalShipping()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px;">Taxes:</span><strong>$order.getTax()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5" style="padding-bottom: 20px;"><span style="margin-right: 20px;">Total:</span><strong>$order.getTotalPrice()</strong></td>
+				</tr>
+			</table>
+		</div>
+		#end
+		<div class="rogers-summary" style="margin-top: 10px;">
+			<table>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px; float: left;">Final Sub-Total:</span><strong>$orderset.getSubTotal()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px; float: left;">Final Shipping:</span><strong>$orderset.getTotalShipping()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px; float: left;">Final Taxes:</span><strong>$orderset.getTotalTaxes()</strong></td>
+				</tr>
+				<tr>
+					<td class="rogers-summary-totals" colspan="5"><span style="margin-right: 20px; float: left; margin-bottom: 10px;">Final Total:</span><strong>$orderset.getTotalPrice()</strong></td>
+				</tr>
+				<tr>
+					<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="6">
+						<form action="processorders.html" method="post">
+							<input type="hidden" name="action" value="processorder">
+							<input type="hidden" name="orderset" value="${orderset}">
+							#set($size = $orderset.getNumberOfOrders())
+							<input type="submit" name="submit" value="Continue and Process all ${size} order(s)" class="btn">
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".order-row").click(function() {
+			var orderid = $(this).data("orderid");
+			$("#order-" + orderid).toggle(500);
+		});
+	});
+</script>

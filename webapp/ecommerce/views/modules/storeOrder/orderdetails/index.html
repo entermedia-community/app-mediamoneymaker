@@ -9,27 +9,11 @@
 (<a class="btn" href="$apphome/views/modules/storeOrder/actions/recreatecart.html?orderid=${order.orderNumber}">Re-order this</a>)
 
 <h3 >$order.dateOrdered</h3>
-#if( $canmanageorders )
-			<form name="orderstatusform" >
-				<input type=hidden name="ordernumber" value="$order.getOrderNumber()"/>
-				<select name="orderstatus" id="orderstatus" >
-					#set ($types = $store.getOrderArchive().getOrderStates($store))		
-				 	#foreach( $key in $types.keySet() )
-						<option value="$key" #if( $order.getOrderState().getId() == $key ) selected #end>
-							$types.get($key)
-						</option>
-					#end
-				</select>
-			<!-- <input type=submit value="Change Order Status" /> -->
-			</form> 
-#else
-$order.getOrderStatus()
-#end
+<strong>Status:</strong>&nbsp;$order.getOrderStatus()
 
 #if( $canmanageorders)
 	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$apphome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
 	<span id="messagearea"> </span>
-	
 #end
 
 #if ( $shippingAddress.address1 == $billingAddress.address1 )
@@ -133,7 +117,6 @@ $order.getOrderStatus()
 		<td align="center" nowrap>
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
-			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 			#set($d = $distributorsearcher.searchById($product.get("distributor")))
 			#set($invoices = $invoicesearcher.fieldSearch("ponumber", $orderNumber))
 			#if ($invoices.size() > 1)
@@ -151,19 +134,22 @@ $order.getOrderStatus()
 					#end
 				#end
 				#if($breakflag == "false")
-					$dname
+					$d.get("name")
 				#end
 			#else
-				#set($inv = $invoices[0])
-				#set($invoiceID = $inv.getId())
-				#set($dID = $d.getId())
-				#set($idist = $inv.get("distributor"))
-				#set($dname = $d.getName())
-				#if ($invoiceID != "" && $dID == $idist)
-					#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
-					<a href="$url" style="font-size: 14px; color: blue;">$dname</a>
-					#set($breakflag = "true")
-					#break
+				#if ($invoices.size() == 1)
+					#set($inv = $invoices.get(0))
+					#set($invoiceID = $inv.getId())
+					#set($dID = $d.getId())
+					#set($idist = $inv.get("distributor"))
+					#if ($invoiceID != "" && $dID == $idist)
+						#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
+						<a href="$url" style="font-size: 14px; color: blue;">$d.get("name")</a>
+						#set($breakflag = "true")
+						#break
+					#end
+				#else
+					$d.get("name")
 				#end
 			#end
 			</p>

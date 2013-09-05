@@ -494,3 +494,86 @@ table.product-report td.product-report-item {
 	padding-right: 7px; /*adjust bullet image padding*/
 	padding-left: 7px; /*adjust bullet image padding*/
 }
+
+/* ROGERS ORDER CUSTOM LAYOUT */
+
+.rogers-summary {
+	width: 100%;
+	overflow: hidden;
+}
+
+.rogers-summary h3 {
+	float: left;
+	background: transparent url(/ecommerce/theme/images/green-check.png) no-repeat center right;
+	text-decoration: none;
+	padding-right: 18px; /*adjust bullet image padding*/
+	color: navy;
+}
+
+.rogers-summary ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.rogers-summary li {
+	font-size: 16px;
+	font-weight: bold;
+	margin-right: 10px;
+	display: inline;
+}
+.rogers-summary li.total {
+	float: right;
+}
+
+.rogers-summary li a {
+	font-size: 16px;
+	font-weight: bold;
+	float: left;
+	background: transparent url(/ecommerce/theme/images/details_open.png) no-repeat center left;
+	text-decoration: none;
+	padding-left: 24px; /*adjust bullet image padding*/
+	color: navy;
+	margin-right: 10px;
+}
+
+.rogers-summary li a:visited, .breadcrumb li a:active {
+	color: navy;
+}
+
+.rogers-summary li a:hover{
+	text-decoration: underline;
+}
+
+.rogers-summary li img {
+	padding-right: 7px; /*adjust bullet image padding*/
+	padding-left: 7px; /*adjust bullet image padding*/
+}
+
+.rogers-summary-details {
+	font-size: 13px;
+}
+
+.rogers-summary-product-id {
+	float: left;
+	width: 125px;
+}
+.rogers-summary-product-name {
+	width: 1000px;
+}
+.rogers-summary-product-quantity {
+	margin-left: auto;
+	margin-right: auto;
+	width: 125px;
+}
+.rogers-summary-product-price {
+	width: 200px;
+	text-align: right;
+}
+.rogers-summary-line-total {
+	width: 200px;
+	text-align: right;
+}
+.rogers-summary-totals {
+	text-align: right;
+}
