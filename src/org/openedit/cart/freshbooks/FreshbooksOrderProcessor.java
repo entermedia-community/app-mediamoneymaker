@@ -77,7 +77,7 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
 		Page page = getPageManager().getPage(
-				inStore.getStoreHome() + "/configuration/beanstream.xml");
+				inStore.getStoreHome() + "/configuration/freshbooks.xml");
 		
 		
 		if (page.exists()) {
