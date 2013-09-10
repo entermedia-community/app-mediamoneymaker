@@ -583,5 +583,18 @@ public class Cart extends BaseData
 		}
 		return map;
 	}
+	
+	
+	public boolean containsRecurring(){
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+		{
+			CartItem item = (CartItem) iterator.next();
+			if (item.getProduct() != null && Boolean.parseBoolean(item.getProduct().get("recurring")))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

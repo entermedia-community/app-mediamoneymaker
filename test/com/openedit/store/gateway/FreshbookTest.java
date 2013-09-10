@@ -27,8 +27,8 @@ public class FreshbookTest extends StoreTestCase {
 
 	public void testListClients() throws Exception {
 		FreshbooksManager util = new FreshbooksManager();
-		util.setToken("abe5fe4944436ee1984c3564805931c1");
-		util.setUrl("https://flowthink.freshbooks.com/api/2.1/xml-in");
+		util.setToken("1486563a14b69f71a3ab62d2f9851ec6");
+		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");
 		Element list = util.getClientList();
 		assertNotNull(list);
 		System.out.println(list.asXML());
@@ -37,25 +37,33 @@ public class FreshbookTest extends StoreTestCase {
 	
 	public void testListItems() throws Exception {
 		FreshbooksManager util = new FreshbooksManager();
-		util.setToken("abe5fe4944436ee1984c3564805931c1");
-		util.setUrl("https://flowthink.freshbooks.com/api/2.1/xml-in");
+		util.setToken("1486563a14b69f71a3ab62d2f9851ec6");
+		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");
 		Element list = util.getItemList();
 		assertNotNull(list);
 		System.out.println(list.asXML());
 	
 	}
 	
+	public void testGatewayList() throws Exception {
+		FreshbooksManager util = new FreshbooksManager();
+		util.setToken("1486563a14b69f71a3ab62d2f9851ec6");
+		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");
+		Element list = util.getGatewayList();
+		assertNotNull(list);
+		System.out.println(list.asXML());
+	}
+	
 	
 	public void testCreateInvoice() throws Exception {
 		FreshbooksManager util = new FreshbooksManager();
-		util.setToken("abe5fe4944436ee1984c3564805931c1");
-		util.setUrl("https://flowthink.freshbooks.com/api/2.1/xml-in");
-		
+		util.setToken("1486563a14b69f71a3ab62d2f9851ec6");
+		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");
 		
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "invoice.create");
 		Element invoice = root.addElement("invoice");
-		invoice.addElement("client_id").setText("57");
+		invoice.addElement("client_id").setText("3");
 		//invoice.addElement("number")."test");
 		Element lines = invoice.addElement("lines");
 		Element line1 = lines.addElement("line");

@@ -654,4 +654,8 @@ public class Order extends BaseData implements Comparable {
 		refundItem.setTotalPrice(tally);
 		return refundItem;
 	}
+	
+	public boolean containsRecurring(){
+		return this.getCart().containsRecurring();
+	}
 }

@@ -112,8 +112,9 @@
 		
 		    <value>directPaymentProcessor</value>
 			<value>paypalOrderProcessor</value>
-			<value>beanstreamOrderProcessor</value>			
-			 <value>elevonOrderProcessor</value>
+			<!-- <value>beanstreamOrderProcessor</value>-->		
+			<value>freshbooksOrderProcessor</value>
+			<value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
 			<value>electronicGoodsOrderProcessor</value>
 			<value>scriptedOrderProcessor</value>
@@ -181,6 +182,17 @@
     	</property>
     	<property name="beanstreamUtil">
     		<ref bean="beanstreamUtil" />
+    	</property>
+    	<property name="userManager">
+    		<ref bean="userManager" />
+    	</property>
+  
+  </bean>
+  
+  
+  <bean id="freshbooksOrderProcessor" class="org.openedit.cart.freshbooks.FreshbooksOrderProcessor">
+    	<property name="pageManager">
+    		<ref bean="pageManager" />
     	</property>
     	<property name="userManager">
     		<ref bean="userManager" />

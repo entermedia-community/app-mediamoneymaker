@@ -103,63 +103,69 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 	{
 		try
 		{
-			// See examples at http://www.jcommercesql.com/anet/
-			// load properties (e.g. IP address, username, password) for accessing authorize.net
-			
-			
-			Page page = getPageManager().getPage(
-					inStore.getStoreHome() + "/configuration/freshbooks.xml");
+			Page page = getPageManager().getPage(inStore.getStoreHome() + "/configuration/freshbooks.xml");
 			Element conf = getXmlUtil().getXml(page.getReader(), "UTF-8");
 			
-			
-			String merchant = conf.element("merchantid").getText();
+			String uri = conf.element("uri").getText();
+			String token = conf.element("token").getText();
 			String gateway = conf.element("gateway").getText();
-
-			String userid = conf.element("user").getText();
-			String password = conf.element("password") != null && !conf.element("password").getText().isEmpty() ? conf.element("password").getText() : null;
-			if (password == null)
-			{
-				User user = getUserManager().getUser(userid);
-				password = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
-			}
 			
+			log.info("uri: "+uri+", token: "+token+", gateway: "+gateway);
 			
-			  CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
-			if (  creditCard.getCardNumber().equals("5555555555554444") )
-		    {
-				OrderState orderState = null;
-				orderState = inStore.getOrderState(Order.AUTHORIZED);
-		    	orderState.setDescription("TEST ORDER");
-		    	orderState.setOk(true);
-		    	inOrder.setOrderState(orderState);
-		    	return;
-		    }
+			FreshbooksManager util = new FreshbooksManager();
+			util.setToken(token);
+			util.setUrl(uri);
+			
+//			
+//			
+//			
+//			CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
+//			if (  creditCard.getCardNumber().equals("5555555555554444") )
+//		    {
+//				OrderState orderState = null;
+//				orderState = inStore.getOrderState(Order.AUTHORIZED);
+//		    	orderState.setDescription("TEST ORDER");
+//		    	orderState.setOk(true);
+//		    	inOrder.setOrderState(orderState);
+//		    	return;
+//		    }
 		
 			
 			
 			// load customer address info from order (in case needed for AVS)
-		    Customer customer = inOrder.getCustomer();
+//		    Customer customer = inOrder.getCustomer();
 		    
 		    
-		    FreshbookInstructions inStructions = new FreshbookInstructions();
-		    //How will we determine this? Create more than one?
-		    HitTracker hits = inStore.getSearcherManager().getList(inStore.getCatalogId(), "frequency");
-		    inStructions.setGateway(gateway);
-		    for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-				Data freq = (Data) iterator.next();
-				inStructions.setFrequency(freq.get("id"));
-			    inStructions.setSendEmail("true");		
-			    inStructions.setSendSnailMail("true");			    
-			    getUtil(inStore).createRecurring(inOrder, inStructions);
-			    
-			}
-		    
-		    
-		    
-		    
-		    
+		    FreshbookInstructions instructions = new FreshbookInstructions();
+		    instructions.setGateway(gateway);
+		    //not sure why we do this...
+//		    HitTracker hits = inStore.getSearcherManager().getList(inStore.getCatalogId(), "frequency");
+//		    for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+//				Data freq = (Data) iterator.next();
+//				instructions.setFrequency(freq.get("id"));
+			    instructions.setSendEmail("1");		
+			    instructions.setSendSnailMail("0");			    
+			    util.createRecurring(inOrder, instructions);
+//			    
+//			}
+//		    
 		    
 		    OrderState orderState = null;
+		    if (inOrder.get("freshbooksid") != null){
+				orderState = inStore.getOrderState(Order.AUTHORIZED);
+		    	orderState.setDescription("Authorized by Freshbooks");
+		    	orderState.setOk(true);
+		    	inOrder.setOrderState(orderState);
+		    } else {
+		    	String error = instructions.getErrorMessage();
+		    	
+		    	orderState = inStore.getOrderState(Order.REJECTED);
+		    	orderState.setDescription( error );
+		    	orderState.setOk(false);
+		    	
+		    }
+		    
+		    
 //		    if ("1".equals(responseCode))
 //		    {
 //		    	// transaction approved

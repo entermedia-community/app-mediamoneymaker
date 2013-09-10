@@ -8,6 +8,23 @@ public class FreshbookInstructions {
 	protected String fieldSendEmail;
 	protected String fieldSendSnailMail;
 	protected String fieldGateway;
+	
+	
+	protected String fieldErrorMessage;
+	protected String fieldErrorCode;
+	
+	public String getErrorMessage() {
+		return fieldErrorMessage;
+	}
+	public void setErrorMessage(String fieldErrorMessage) {
+		this.fieldErrorMessage = fieldErrorMessage;
+	}
+	public String getErrorCode() {
+		return fieldErrorCode;
+	}
+	public void setErrorCode(String fieldErrorCode) {
+		this.fieldErrorCode = fieldErrorCode;
+	}
 	public String getFrequency() {
 		return fieldFrequency;
 	}

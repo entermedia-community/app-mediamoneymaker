@@ -87,6 +87,13 @@ public class FreshbooksManager {
 		return result;
 
 	}
+	
+	public Element getGatewayList() throws Exception {
+		Element root = DocumentHelper.createElement("request");
+		root.addAttribute("method", "gateway.list");
+		root.addElement("autobill_capable").setText("1");
+		return callFreshbooks(root);
+	}
 
 	public Element callFreshbooks(Element element) throws HttpException,
 			IOException, DocumentException {
@@ -216,7 +223,7 @@ public class FreshbooksManager {
 					inOrder.getTotalShipping().toShortString());
 		}
 		int count = 1;
-		for (Iterator iterator2 = inOrder.getTaxes().keySet().iterator(); iterator2
+		for (Iterator<?> iterator2 = inOrder.getTaxes().keySet().iterator(); iterator2
 				.hasNext();) {
 			TaxRate rate = (TaxRate) iterator2.next();
 			shipping.addElement("tax" + count + "_name")
@@ -241,6 +248,10 @@ public class FreshbooksManager {
 		}
 
 	}
+	
+	public void createOneTimeInvoice(Order inOrder, FreshbookInstructions instructions) throws Exception {
+		
+	}
 
 	public void createRecurring(Order inOrder,FreshbookInstructions inStructions) throws Exception {
 		Customer customer = inOrder.getCustomer();
@@ -254,14 +265,14 @@ public class FreshbooksManager {
 		root.addAttribute("method", "recurring.create");
 		Element invoice = root.addElement("recurring");
 		invoice.addElement("client_id").setText(customer.get("freshbooksid"));
-		invoice.addElement("number").setText(inOrder.getId());
-		invoice.addElement("status").setText("draft");
-		invoice.addElement("date").setText(format.format(inOrder.getDate()));
-				
-		invoice.addElement("frequency").setText(inStructions.getFrequency());	
+		invoice.addElement("po_number").setText(inOrder.getId());
+//		invoice.addElement("status").setText("draft");
+//		invoice.addElement("date").setText(format.format(inOrder.getDate()));
+		invoice.addElement("occurrences").setText("1");
+//		invoice.addElement("frequency").setText("weekly");//inStructions.getFrequency());	
 		invoice.addElement("send_email").setText(inStructions.getSendEmail());
 		invoice.addElement("send_snail_mail").setText(inStructions.getSendSnailMail());
-		invoice.addElement("notes").setText(inOrder.get("notes"));
+		if (inOrder.get("notes")!=null) invoice.addElement("notes").setText(inOrder.get("notes"));
 		
 		CreditPaymentMethod creditCard = (CreditPaymentMethod) inOrder
 				.getPaymentMethod();
@@ -273,7 +284,7 @@ public class FreshbooksManager {
 		Element carddetails = autobill.addElement("card");
 		carddetails.addElement("number").setText(creditCard.getCardNumber());
 		carddetails.addElement("name").setText(inOrder.getCustomer().getName());
-		Element expiration = autobill.addElement("expiration");
+		Element expiration = carddetails.addElement("expiration");
 		expiration.addElement("month").setText(creditCard.getExpirationMonthString());
 		expiration.addElement("year").setText(creditCard.getExpirationYearString());
 		
@@ -285,7 +296,7 @@ public class FreshbooksManager {
 		for (Iterator iterator = inOrder.getItems().iterator(); iterator
 				.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
-			if (Boolean.parseBoolean(item.getProduct().get("recurring"))) {
+//			if (Boolean.parseBoolean(item.getProduct().get("recurring"))) {
 
 				Element line = lines.addElement("line");
 				line.addElement("name").setText(item.getProduct().getId());
@@ -310,7 +321,7 @@ public class FreshbooksManager {
 						break;
 					}
 				}
-			}
+//			}
 
 			// line.addEle
 		}
@@ -322,9 +333,18 @@ public class FreshbooksManager {
 			String clientid = result.elementText("invoice_id");
 			inOrder.setProperty("freshbooksid", clientid);
 			log.info("result was " + result.asXML());
-
 		} else {
 			log.info("result was " + result.asXML());
+			
+			/*
+			 * <error>Invalid value for field 'send_snail_mail'. Value must be 0 or 1.</error>
+[19:22:42.105]   <code>40063</code>
+[19:22:42.105]   <field>send_snail_mail</field>
+			 */
+			String error = result.elementText("error");
+			String code = result.elementText("code");
+			inStructions.setErrorMessage(error);
+			inStructions.setErrorCode(code);
 		}
 
 	}
