@@ -35,9 +35,9 @@ public class FreshbooksManager {
 
 	protected String fieldUrl;
 	protected String fieldToken;
+	protected String fieldGateway;
 	protected XmlUtil fieldXmlUtil;
-	protected SimpleDateFormat format = new SimpleDateFormat(
-			"yyyy-MM-dd hh:mm:ss");
+	protected SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
 	public XmlUtil getXmlUtil() {
 		if (fieldXmlUtil == null) {
@@ -64,6 +64,14 @@ public class FreshbooksManager {
 
 	public void setUrl(String inUrl) {
 		fieldUrl = inUrl;
+	}
+	
+	public String getGateway() {
+		return fieldGateway;
+	}
+
+	public void setGateway(String inGateway) {
+		fieldGateway = inGateway;
 	}
 
 	public Element getClientList() throws Exception {
@@ -165,7 +173,7 @@ public class FreshbooksManager {
 	public void createInvoice(Order inOrder, User inUser) throws Exception {
 		Customer customer = inOrder.getCustomer();
 
-		if (inUser.get("freshbooksid") == null) {
+		if (!hasFreshbooksId(customer.getUser())) {
 			createCustmer(new Customer(inUser), inOrder.getBillingAddress(),
 					null);
 		}
@@ -249,15 +257,19 @@ public class FreshbooksManager {
 
 	}
 	
-	public void createOneTimeInvoice(Order inOrder, FreshbookInstructions instructions) throws Exception {
+	public void queryOrderStatus() throws Exception {
+		
+	}
+	
+	public void createOneTimeOrder(Order inOrder, FreshbookInstructions inStructions) throws Exception {
 		
 	}
 
 	public void createRecurring(Order inOrder,FreshbookInstructions inStructions) throws Exception {
 		Customer customer = inOrder.getCustomer();
 
-		if (inOrder.get("freshbooksid") == null) {
-			createCustmer(inOrder.getCustomer(), inOrder.getBillingAddress(),
+		if (!hasFreshbooksId(customer.getUser())) {
+			createCustmer(customer, customer.getBillingAddress()/*inOrder.getBillingAddress()*/,
 					null);
 		}
 		
@@ -280,7 +292,7 @@ public class FreshbooksManager {
 		
 		
 		Element autobill = invoice.addElement("autobill");
-		autobill.addElement("gateway_name").setText(inStructions.getGateway());
+		autobill.addElement("gateway_name").setText(getGateway());
 		Element carddetails = autobill.addElement("card");
 		carddetails.addElement("number").setText(creditCard.getCardNumber());
 		carddetails.addElement("name").setText(inOrder.getCustomer().getName());
@@ -307,20 +319,20 @@ public class FreshbooksManager {
 				line.addElement("quantity").setText(
 						String.valueOf(item.getQuantity()));
 
-				int count = 1;
-				for (Iterator iterator2 = inOrder.getTaxes().keySet()
-						.iterator(); iterator2.hasNext();) {
-					TaxRate rate = (TaxRate) iterator2.next();
-					line.addElement("tax" + count + "_name").setText(
-							rate.getName());
-					double percent = rate.getFraction().doubleValue() * 100;
-					line.addElement("tax" + count + "_percent").setText(
-							String.valueOf(percent));
-					count++;
-					if (count > 2) {
-						break;
-					}
-				}
+//				int count = 1;
+//				for (Iterator iterator2 = inOrder.getTaxes().keySet()
+//						.iterator(); iterator2.hasNext();) {
+//					TaxRate rate = (TaxRate) iterator2.next();
+//					line.addElement("tax" + count + "_name").setText(
+//							rate.getName());
+//					double percent = rate.getFraction().doubleValue() * 100;
+//					line.addElement("tax" + count + "_percent").setText(
+//							String.valueOf(percent));
+//					count++;
+//					if (count > 2) {
+//						break;
+//					}
+//				}
 //			}
 
 			// line.addEle
@@ -330,37 +342,32 @@ public class FreshbooksManager {
 
 		Element result = callFreshbooks(root);
 		if (result.attributeValue("status").equals("ok")) {
-			String clientid = result.elementText("invoice_id");
-			inOrder.setProperty("freshbooksid", clientid);
+			String invoiceid = result.elementText("invoice_id");
+			inOrder.setProperty("freshbooksid", invoiceid);
 			log.info("result was " + result.asXML());
 		} else {
 			log.info("result was " + result.asXML());
-			
-			/*
-			 * <error>Invalid value for field 'send_snail_mail'. Value must be 0 or 1.</error>
-[19:22:42.105]   <code>40063</code>
-[19:22:42.105]   <field>send_snail_mail</field>
-			 */
 			String error = result.elementText("error");
 			String code = result.elementText("code");
 			inStructions.setErrorMessage(error);
 			inStructions.setErrorCode(code);
 		}
-
+	}
+	
+	public boolean createCustomer(Customer inCustomer, List inContacts) throws Exception {
+		return createCustmer(inCustomer, inCustomer.getBillingAddress(), inContacts);
 	}
 
-	public boolean createCustmer(Customer inUser, Address inAddress,
-			List inContacts) throws Exception {
+	public boolean createCustmer(Customer inCustomer, Address inAddress, List inContacts) throws Exception {
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "client.create");
 		Element client = root.addElement("client");
-		client.addElement("first_name").setText(inUser.getFirstName());
-		client.addElement("last_name").setText(inUser.getLastName());
-		client.addElement("email").setText(inUser.getEmail());
-		// client.addElement("username").setText(inUser.getUserName());
-		if (inUser.get("organization") == null) {
+		client.addElement("first_name").setText(inCustomer.getFirstName());
+		client.addElement("last_name").setText(inCustomer.getLastName());
+		client.addElement("email").setText(inCustomer.getEmail());
+		if (inCustomer.get("organization") == null) {
 			client.addElement("organization").setText(
-					inUser.getUser().toString());
+					inCustomer.getUser().toString());
 		}
 		if (inContacts != null) {
 
@@ -368,8 +375,8 @@ public class FreshbooksManager {
 			// Element contacts = client.addElement("contacts");
 
 		}
-		if (inUser.getPhone1() != null) {
-			client.addElement("work_phone").setText(inUser.getUserName());
+		if (inCustomer.getPhone1() != null) {
+			client.addElement("work_phone").setText(inCustomer.getUserName());
 		}
 
 		if (inAddress != null) {
@@ -381,12 +388,11 @@ public class FreshbooksManager {
 			client.addElement("p_state").setText(inAddress.getState());
 			client.addElement("p_country").setText(inAddress.getCountry());
 			client.addElement("p_code").setText(inAddress.getZipCode());
-
 		}
 		Element result = callFreshbooks(root);
 		if (result.attributeValue("status").equals("ok")) {
 			String clientid = result.elementText("client_id");
-			inUser.setProperty("freshbooksid", clientid);
+			inCustomer.setProperty("freshbooksid", clientid);
 			log.info("result was " + result.asXML());
 			return true;
 
@@ -394,34 +400,50 @@ public class FreshbooksManager {
 			log.info("result was " + result.asXML());
 			return false;
 		}
-
 	}
-
 	
-	public boolean emailInvoice(String invoiceid, String subject, String message) throws Exception{
+	public Element getInvoice(Order inOrder) throws Exception {
+		if (!hasFreshbooksId(inOrder)){
+			return null;
+		}
+		Element root = DocumentHelper.createElement("request");
+		root.addAttribute("method", "invoice.get");
+		Element invoice = root.addElement("invoice_id");
+		invoice.setText(inOrder.get("freshbooksid"));
+		
+		Element result = callFreshbooks(root);
+		return result;
+	}
+	
+	public boolean hasFreshbooksId(Order inOrder) throws Exception {
+		return inOrder.get("freshbooksid")!=null;
+	}
+	
+	public boolean hasFreshbooksId(User inUser) throws Exception{
+		return inUser.get("freshbooksid")!=null;
+	}
+	
+	public boolean emailInvoice(String inInvoiceId) throws Exception{
+		return emailInvoice(inInvoiceId,null,null);
+	}
+	
+	public boolean emailInvoice(String inInvoiceId, String inSubject, String inMessage) throws Exception{
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "invoice.sendByEmail");
-		root.addElement("invoice_id").setText(invoiceid);
-		if(subject != null){
-		root.addElement("subject").setText("subject");
+		root.addElement("invoice_id").setText(inInvoiceId);
+		if(inSubject != null){
+			root.addElement("subject").setText(inSubject);
 		}
-		
-		if(message != null){
-			root.addElement("message").setText("message");
+		if(inMessage != null){
+			root.addElement("message").setText(inMessage);
 		}
 		Element result = callFreshbooks(root);
-		
 		if (result.attributeValue("status").equals("ok")) {
 			return true;
-
 		} else {
 			log.info("result was " + result.asXML());
 			return false;
-
 		}
-		
-		// client.addElement("username").setText(inUser.getUserName());
-
 	}
 	
 }

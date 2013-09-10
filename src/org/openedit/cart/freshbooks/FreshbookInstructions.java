@@ -1,15 +1,10 @@
 package org.openedit.cart.freshbooks;
 
 public class FreshbookInstructions {
-
-	
 	
 	protected String fieldFrequency;
 	protected String fieldSendEmail;
 	protected String fieldSendSnailMail;
-	protected String fieldGateway;
-	
-	
 	protected String fieldErrorMessage;
 	protected String fieldErrorCode;
 	
@@ -43,13 +38,4 @@ public class FreshbookInstructions {
 	public void setSendSnailMail(String inSendSnailMail) {
 		fieldSendSnailMail = inSendSnailMail;
 	}
-	public String getGateway() {
-		return fieldGateway;
-	}
-	public void setGateway(String inGateway) {
-		fieldGateway = inGateway;
-	}
-	
-	
-	
 }

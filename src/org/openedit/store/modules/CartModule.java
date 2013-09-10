@@ -262,6 +262,7 @@ public class CartModule extends BaseStoreModule {
 			}
 			log.info("Created new Customer");
 		}
+		customer.getUser().setEnabled(true);
 		cart.setCustomer(customer);
 		inPageRequest.putPageValue("user", customer.getUser());
 		inPageRequest.putPageValue("customer", customer);
@@ -328,6 +329,7 @@ public class CartModule extends BaseStoreModule {
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
 		cart.setShippingAddress(customer.getShippingAddress());
 		cart.setBillingAddress(customer.getBillingAddress());
+		customer.getUser().setEnabled(true);
 
 		inPageRequest.putPageValue("customer", customer);
 	}
