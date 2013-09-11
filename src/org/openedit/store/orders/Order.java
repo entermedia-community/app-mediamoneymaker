@@ -658,4 +658,8 @@ public class Order extends BaseData implements Comparable {
 	public boolean containsRecurring(){
 		return this.getCart().containsRecurring();
 	}
+	
+	public boolean containsNonRecurring(){
+		return this.getCart().containsNonRecurring();
+	}
 }

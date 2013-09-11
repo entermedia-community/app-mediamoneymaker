@@ -197,6 +197,9 @@
     	<property name="userManager">
     		<ref bean="userManager" />
     	</property>
+    	<property name="searcherManager">
+    		<ref bean="searcherManager"/>
+    	</property>  
   
   </bean>	
 

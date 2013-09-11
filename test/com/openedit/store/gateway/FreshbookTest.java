@@ -5,7 +5,7 @@ package com.openedit.store.gateway;
 
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.openedit.cart.freshbooks.FreshbookInstructions;
+import org.openedit.cart.freshbooks.FreshbooksStatus;
 import org.openedit.cart.freshbooks.FreshbooksManager;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
@@ -63,7 +63,7 @@ public class FreshbookTest extends StoreTestCase {
 		util.createCustmer(customer, address, null);
 	}
 	
-	public void testCreateRecurringInvoice() throws Exception {
+	public void testProcessInvoice() throws Exception {
 //		String clientid = "34008";
 		
 		Customer customer = new Customer(new FileSystemUser());
@@ -89,10 +89,14 @@ public class FreshbookTest extends StoreTestCase {
 		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");
 		util.setGateway("beanstream");
 		
-		FreshbookInstructions instructions = new FreshbookInstructions();
-	    instructions.setSendEmail("1");//send email 
-	    instructions.setSendSnailMail("0");// don't send post mail
+		FreshbooksStatus inStatus = new FreshbooksStatus();
+	    inStatus.setSendEmail("1");//send email 
+	    inStatus.setSendSnailMail("0");// don't send post mail
+	    inStatus.setBlocking(true);// force it to continue until finished
+	    inStatus.setDelayBetweenQueries(100);// 100ms between repeated queries (i.e., querying the status of an invoice)
+	    inStatus.setMaximumQueryRepeat(25);// perform only 25 queries at most
 	    
+	    inStatus.setFrequency("monthly");//kloog
 	    
 	    Store store = getStore();
 		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
@@ -100,7 +104,9 @@ public class FreshbookTest extends StoreTestCase {
 		WebPageRequest context = getFixture().createPageRequest();
 		Cart cart = cartModule.getCart(context);
 		cart.setCustomer(customer);
-		cart.addItem(createCheapToyCartItem());
+		
+		cart.addItem(createCheapToyCartItem());//add non-recurring
+		cart.addItem(createRecurringCartItem());//add recurring
 		
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		order.setProperty("notes", "This is a note");
@@ -109,14 +115,14 @@ public class FreshbookTest extends StoreTestCase {
 		CreditCardType type = new CreditCardType();
 		type.setName("Visa");
 		paymentMethod.setCreditCardType(type);
-		paymentMethod.setCardNumber("4030000010001234");
+		paymentMethod.setCardNumber("4030000010001234");//beanstream test credit card#
 		paymentMethod.setCardVerificationCode("123");
 		paymentMethod.setExpirationMonth(10);
 		paymentMethod.setExpirationYear(2015);
 		
 		order.setPaymentMethod(paymentMethod);
 	    
-	    util.createRecurring(order, instructions);
+	    util.processOrder(order, inStatus);
 		
 		
 		
@@ -125,7 +131,7 @@ public class FreshbookTest extends StoreTestCase {
 	/**
 	 * @throws Exception
 	 */
-	public void testListClients() throws Exception {
+	public void xxtestListClients() throws Exception {
 		FreshbooksManager util = new FreshbooksManager();
 		util.setToken("1486563a14b69f71a3ab62d2f9851ec6");
 		util.setUrl("https://shawnbest-billing.freshbooks.com/api/2.1/xml-in");

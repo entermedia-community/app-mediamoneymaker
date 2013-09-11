@@ -596,5 +596,18 @@ public class Cart extends BaseData
 		}
 		return false;
 	}
+	
+	public boolean containsNonRecurring(){
+		int count = 0;
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+		{
+			CartItem item = (CartItem) iterator.next();
+			if (item.getProduct() != null && !Boolean.parseBoolean(item.getProduct().get("recurring")))
+			{
+				count++;
+			}
+		}
+		return count > 0;
+	}
 
 }

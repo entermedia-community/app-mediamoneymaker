@@ -74,6 +74,25 @@ public abstract class StoreTestCase extends BaseTestCase
 		cheapToy.setInventoryItem(item);
 		return cheapToy;
 	}
+	protected CartItem createRecurringCartItem() throws StoreException{
+		Product cheapToyProduct = new Product( "cheap toy (recurring)" );
+		cheapToyProduct.setProperty("recurring", "true");
+		final double CHEAP_TOY_PRICE = 2.99;
+		cheapToyProduct.setName("Cheap Toy (recurring)");
+		cheapToyProduct.setId("1003");
+		cheapToyProduct.setPriceSupport(new PriceSupport());
+		cheapToyProduct.addTierPrice(1, createPrice( CHEAP_TOY_PRICE ) );
+	
+		InventoryItem item = new InventoryItem();
+		item.setQuantityInStock(10000);
+		item.setSku("40988alkjdi");
+		
+		cheapToyProduct.addInventoryItem(item);
+		CartItem cheapToy = new CartItem();
+		cheapToy.setQuantity(10);
+		cheapToy.setInventoryItem(item);
+		return cheapToy;
+	}
 	protected Customer createCustomer()
 	{
 		Customer customer = new Customer();
