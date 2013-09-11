@@ -112,96 +112,43 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			
 			log.info("uri: "+uri+", token: "+token+", gateway: "+gateway);
 			
+			CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
+			if (  creditCard.getCardNumber().equals("5555555555554444") )
+		    {
+				OrderState orderState = null;
+				orderState = inStore.getOrderState(Order.AUTHORIZED);
+		    	orderState.setDescription("TEST ORDER");
+		    	orderState.setOk(true);
+		    	inOrder.setOrderState(orderState);
+		    	return;
+		    }
+			
 			FreshbooksManager util = new FreshbooksManager();
 			util.setToken(token);
 			util.setUrl(uri);
-			
-//			
-//			
-//			
-//			CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
-//			if (  creditCard.getCardNumber().equals("5555555555554444") )
-//		    {
-//				OrderState orderState = null;
-//				orderState = inStore.getOrderState(Order.AUTHORIZED);
-//		    	orderState.setDescription("TEST ORDER");
-//		    	orderState.setOk(true);
-//		    	inOrder.setOrderState(orderState);
-//		    	return;
-//		    }
-		
-			
-			
-			// load customer address info from order (in case needed for AVS)
-//		    Customer customer = inOrder.getCustomer();
-		    
+			util.setGateway(gateway);
 		    
 		    FreshbookInstructions instructions = new FreshbookInstructions();
-		    instructions.setGateway(gateway);
-		    //not sure why we do this...
-//		    HitTracker hits = inStore.getSearcherManager().getList(inStore.getCatalogId(), "frequency");
-//		    for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-//				Data freq = (Data) iterator.next();
-//				instructions.setFrequency(freq.get("id"));
-			    instructions.setSendEmail("1");		
-			    instructions.setSendSnailMail("0");			    
-			    util.createRecurring(inOrder, instructions);
-//			    
-//			}
-//		    
+		    instructions.setSendEmail("1");//send email 
+		    instructions.setSendSnailMail("0");// don't send post mail
+		    
+		    util.createRecurring(inOrder, instructions);
 		    
 		    OrderState orderState = null;
-		    if (inOrder.get("freshbooksid") != null){
+		    if (util.hasFreshbooksId(inOrder)){
 				orderState = inStore.getOrderState(Order.AUTHORIZED);
 		    	orderState.setDescription("Authorized by Freshbooks");
 		    	orderState.setOk(true);
 		    	inOrder.setOrderState(orderState);
 		    } else {
-		    	String error = instructions.getErrorMessage();
-		    	
+		    	// transaction declined
+		    	log.warn("Transaction DECLINED for order #" + inOrder.getId());
+		    	log.warn("Freshbooks Response Code:" + instructions.getErrorCode());
+		    	log.warn("Freshbooks Reason Text: " + instructions.getErrorMessage());
 		    	orderState = inStore.getOrderState(Order.REJECTED);
-		    	orderState.setDescription( error );
+		    	orderState.setDescription(instructions.getErrorMessage());
 		    	orderState.setOk(false);
-		    	
 		    }
-		    
-		    
-//		    if ("1".equals(responseCode))
-//		    {
-//		    	// transaction approved
-//		    	//super.exportNewOrder(inContext, inStore, inOrder);
-//
-//		    	if( inType.indexOf("CAPTURE") > -1)
-//		    	{
-//		    		orderState = inStore.getOrderState(Order.CAPTURED);		    		
-//		    		orderState.setDescription("Your transaction has been captured by Authorize.net.");		    		
-//		    	}
-//		    	else
-//		    	{
-//		    		orderState = inStore.getOrderState(Order.AUTHORIZED);
-//		    		orderState.setDescription("Your transaction has been authorized.");
-//		    	}
-//		    	orderState.setOk(true);
-//		    }
-//		    else
-//		    {
-//		    	// transaction declined
-//		    	log.warn("Transaction DECLINED for order #" + inOrder.getId());
-//		    	log.warn("Authorize.net transaction ID:" + anetcc.getResponseTransactionID());
-//		    	log.warn("Response code:" + anetcc.getResponseCode());
-//		    	log.warn("Response Reason Code: " + anetcc.getResponseReasonCode());
-//		    	log.warn("Response Reason Text: " + anetcc.getResponseReasonText());
-//		    	log.warn("AVS Result Code: " + anetcc.getResponseAVSResultCode());
-//		    	
-//
-//		    	String error = "Your transaction has been declined.  Please hit the back button on your browser to correct.<br>";
-//				error += anetcc.getResponseReasonText();
-//				error += " (Full Code:  " + anetcc.getResponseCode() + "." + anetcc.getResponseSubCode() + "." + anetcc.getResponseReasonCode() + ")";
-//				
-//				orderState = inStore.getOrderState(Order.REJECTED);
-//		    	orderState.setDescription( error );
-//		    	orderState.setOk(false);
-//		    }
 		    inOrder.setOrderState(orderState);
 		}
 		catch ( Exception e )

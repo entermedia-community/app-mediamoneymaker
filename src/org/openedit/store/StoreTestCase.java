@@ -59,6 +59,8 @@ public abstract class StoreTestCase extends BaseTestCase
 	{
 		Product cheapToyProduct = new Product( "cheap toy" );
 		final double CHEAP_TOY_PRICE = 1.99;
+		cheapToyProduct.setName("Cheap Toy");
+		cheapToyProduct.setId("1002");
 		cheapToyProduct.setPriceSupport(new PriceSupport());
 		cheapToyProduct.addTierPrice(1, createPrice( CHEAP_TOY_PRICE ) );
 	
