@@ -678,6 +678,7 @@ public class CartModule extends BaseStoreModule {
 			// Order succeeded - remove cart
 			cart.removeAllItems();
 			cart.getAdjustments().clear();
+			getMediaArchive(inPageRequest).fireMediaEvent("order/orderprocessed", inPageRequest.getUser());
 
 		}
 		store.saveOrder(order);
