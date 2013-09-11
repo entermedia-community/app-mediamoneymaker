@@ -263,6 +263,7 @@ public class CartModule extends BaseStoreModule {
 			log.info("Created new Customer");
 		}
 		customer.getUser().setEnabled(true);
+		
 		cart.setCustomer(customer);
 		inPageRequest.putPageValue("user", customer.getUser());
 		inPageRequest.putPageValue("customer", customer);
@@ -352,9 +353,9 @@ public class CartModule extends BaseStoreModule {
 				"address2"));
 		inAddress.setCity(getAddressValue(inPageRequest, inPrefix, "city"));
 		String state = getAddressValue(inPageRequest, inPrefix, "state");
-		if (state != null) {
-			state = state.toUpperCase();
-		}
+//		if (state != null) {
+//			state = state.toUpperCase();
+//		}
 		inAddress.setState(state);
 		inAddress
 				.setCountry(getAddressValue(inPageRequest, inPrefix, "country"));
