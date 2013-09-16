@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
@@ -539,7 +540,7 @@ public class CartModule extends BaseStoreModule {
 			method.setExpirationMonth(Integer.valueOf(expirationMonth)
 					.intValue());
 		}
-		// Experation year
+		// Expiration year
 		String expirationYear = inPageRequest
 				.getRequestParameter("expirationYear");
 		if (expirationYear != null && !expirationYear.trim().equals("")) {
@@ -681,11 +682,20 @@ public class CartModule extends BaseStoreModule {
 			// Order succeeded - remove cart
 			cart.removeAllItems();
 			cart.getAdjustments().clear();
-			getMediaArchive(inPageRequest).fireMediaEvent("order/orderprocessed", inPageRequest.getUser());
-
 		}
 		store.saveOrder(order);
-
+		
+		//trigger webevent after the order has been saved
+		if (order.getOrderStatus().isOk()){
+			WebEvent event = new WebEvent();
+			event.setSearchType("order");
+			event.setCatalogId(getMediaArchive(inPageRequest).getCatalogId());
+			event.setOperation("orders/orderprocessed");
+			event.setUser(inPageRequest.getUser());
+			event.setProperty("orderid", order.getId());
+			
+			getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
+		}
 		return order;
 	}
 

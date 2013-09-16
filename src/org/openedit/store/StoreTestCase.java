@@ -74,14 +74,13 @@ public abstract class StoreTestCase extends BaseTestCase
 		cheapToy.setInventoryItem(item);
 		return cheapToy;
 	}
-	protected CartItem createRecurringCartItem() throws StoreException{
-		Product cheapToyProduct = new Product( "cheap toy (recurring)" );
+	protected CartItem createRecurringCartItem(String name, double price) throws StoreException{
+		Product cheapToyProduct = new Product( name + " (price="+price+")");
 		cheapToyProduct.setProperty("recurring", "true");
-		final double CHEAP_TOY_PRICE = 2.99;
-		cheapToyProduct.setName("Cheap Toy (recurring)");
+		cheapToyProduct.setName(name+ " (price="+price+")");
 		cheapToyProduct.setId("1003");
 		cheapToyProduct.setPriceSupport(new PriceSupport());
-		cheapToyProduct.addTierPrice(1, createPrice( CHEAP_TOY_PRICE ) );
+		cheapToyProduct.addTierPrice(1, createPrice( price ) );
 	
 		InventoryItem item = new InventoryItem();
 		item.setQuantityInStock(10000);
@@ -89,7 +88,7 @@ public abstract class StoreTestCase extends BaseTestCase
 		
 		cheapToyProduct.addInventoryItem(item);
 		CartItem cheapToy = new CartItem();
-		cheapToy.setQuantity(10);
+		cheapToy.setQuantity(1);
 		cheapToy.setInventoryItem(item);
 		return cheapToy;
 	}
@@ -108,6 +107,7 @@ public abstract class StoreTestCase extends BaseTestCase
 		customer.setUserName( "cburkey" );
 		address.setZipCode("45232");
 		TaxRate rate = new TaxRate();
+		rate.setName("GST");
 		rate.setFraction(new Fraction( 0.07 ));
 		ArrayList rates = new ArrayList();
 		rates.add(rate);

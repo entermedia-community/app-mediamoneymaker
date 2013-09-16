@@ -567,61 +567,6 @@ public class Order extends BaseData implements Comparable {
 		return total.subtract(refunds);
 	}
 	
-//	public static Money calculateRefundTotalForCartItem(Order inOrder, CartItem inItem)
-//	{
-//		Money amount = new Money("0");
-//		List<Refund> refunds = inOrder.getRefunds();
-//		if (inItem.getSku() != null && refunds != null){
-//			for (Refund refund:refunds){
-//				if (!refund.isSuccess())
-//				{
-//					continue;
-//				}
-//				Iterator<RefundItem> itr = refund.getItems().iterator();
-//				while(itr.hasNext())
-//				{
-//					RefundItem item  = itr.next();
-//					String refundId = item.getId();
-//					if (refundId!=null && inItem.getSku().equals(refundId))
-//					{
-//						amount = amount.add(item.getTotalPrice());
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		return amount;
-//	}
-//	
-//	public static void calculateRefundInfoForCartItem(Order inOrder, CartItem inItem, Money inAmount, Integer inQuantity){
-//		if (inAmount == null || inQuantity == null){
-//			return;
-//		}
-//		int quantity = 0;
-//		List<Refund> refunds = inOrder.getRefunds();
-//		if (inItem.getSku() != null && refunds != null){
-//			for (Refund refund:refunds){
-//				if (!refund.isSuccess())
-//				{
-//					continue;
-//				}
-//				Iterator<RefundItem> itr = refund.getItems().iterator();
-//				while(itr.hasNext())
-//				{
-//					RefundItem item  = itr.next();
-//					String refundId = item.getId();
-//					if (refundId!=null && inItem.getSku().equals(refundId))
-//					{
-//						inAmount = inAmount.add(item.getTotalPrice());
-//						quantity += item.getQuantity();
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		inQuantity = new Integer(quantity);
-//	}
-	
 	public static RefundItem calculateRefundInfoForCartItem(Order inOrder, CartItem inItem){
 		RefundItem refundItem = new RefundItem();
 		refundItem.setId(inItem.getSku());
@@ -657,9 +602,5 @@ public class Order extends BaseData implements Comparable {
 	
 	public boolean containsRecurring(){
 		return this.getCart().containsRecurring();
-	}
-	
-	public boolean containsNonRecurring(){
-		return this.getCart().containsNonRecurring();
 	}
 }

@@ -202,6 +202,13 @@
     	</property>  
   
   </bean>	
+  
+  <bean id="freshbooksManager" class="org.openedit.cart.freshbooks.FreshbooksManager">
+    	<property name="searcherManager">
+    		<ref bean="searcherManager"/>
+    	</property>  
+  
+  </bean>
 
 
   <bean id="electronicGoodsOrderProcessor" class="org.openedit.store.orders.ElectronicGoodsOrderProcessor">

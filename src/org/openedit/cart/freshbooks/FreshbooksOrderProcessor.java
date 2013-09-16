@@ -41,7 +41,7 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 
 	private static final Log log = LogFactory.getLog(FreshbooksOrderProcessor.class);
 
-	protected FreshbooksManager util;
+	protected FreshbooksManager fieldFreshbooksManager;
 	protected PageManager fieldPageManager;
 	protected UserManager fieldUserManager;
 	protected XmlUtil fieldXmlUtil;
@@ -68,20 +68,17 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
-
-	public FreshbooksManager getUtil(Store inStore) {
-		if (util == null) {
-			util = new FreshbooksManager();
+	public FreshbooksManager getFreshbooksManager() {
+		if (fieldFreshbooksManager == null) {
+			fieldFreshbooksManager = (FreshbooksManager) getSearcherManager().getModuleManager().getBean(getCatalogId(),"freshbooksManager");
 			
 		}
-
-		return util;
+		return fieldFreshbooksManager;
 	}
-
-	public void setUtil(FreshbooksManager inUtil) {
-		util = inUtil;
+	public void setFreshbooksManager(FreshbooksManager fieldFreshbooksManager) {
+		this.fieldFreshbooksManager = fieldFreshbooksManager;
 	}
-
+	
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
 		Page page = getPageManager().getPage(
@@ -110,33 +107,80 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		try
 		{
 			//check for test card before anything else
-			CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
-			if (creditCard.getCardNumber().equals("5555555555554444"))
-		    {
-				OrderState orderState = null;
-				orderState = inStore.getOrderState(Order.AUTHORIZED);
-		    	orderState.setDescription("TEST ORDER");
-		    	orderState.setOk(true);
-		    	inOrder.setOrderState(orderState);
-		    	return;
-		    }
+//			CreditPaymentMethod creditCard = (CreditPaymentMethod)inOrder.getPaymentMethod();
+//			if (creditCard.getCardNumber().equals("5555555555554444"))
+//		    {
+//				OrderState orderState = null;
+//				
+//				String cvc = creditCard.getCardVerificationCode();
+//				if (cvc.equals("123")){
+//					log.info("&&&& test condition: authorized case &&&&");
+//					orderState = inStore.getOrderState(Order.AUTHORIZED);
+//			    	orderState.setDescription("Authorized by Freshbooks");
+//			    	orderState.setOk(true);
+//			    	
+//			    	inOrder.getCustomer().setProperty(FreshbooksManager.FRESHBOOKS_ID, "100");
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_ID, "101");//invoice
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_RECURRING_ID, "102");//recurring
+//			    	
+//				} else if (cvc.equals("321")){
+//					log.info("&&&& test condition: accepted case - requires invoice query &&&&");
+//					orderState = inStore.getOrderState(Order.ACCEPTED);
+//			    	orderState.setDescription("Accepted by Freshbooks");
+//			    	orderState.setOk(true);
+//			    	
+//			    	inOrder.getCustomer().setProperty(FreshbooksManager.FRESHBOOKS_ID, "100");
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_ID, "101");//invoice
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_RECURRING_ID, "102");//recurring
+//			    	
+//			    	inOrder.setProperty("requiresinvoicequery", "true");//requires invoice query
+//					
+//				} else if (cvc.equals("111")){
+//					log.info("&&&& test condition: authorized case - requires recurring profile query &&&&");
+//					orderState = inStore.getOrderState(Order.AUTHORIZED);
+//			    	orderState.setDescription("Accepted by Freshbooks");
+//			    	orderState.setOk(true);
+//			    	
+//			    	inOrder.getCustomer().setProperty(FreshbooksManager.FRESHBOOKS_ID, "100");
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_ID, "101");//invoice
+//			    	
+//			    	inOrder.setProperty("requirescurringprofile", "true");//requires invoice query
+//					
+//				} else if (cvc.equals("222")){
+//					log.info("&&&& test condition: authorized case - requires invoice AND recurring profile query &&&&");
+//					orderState = inStore.getOrderState(Order.AUTHORIZED);
+//			    	orderState.setDescription("Accepted by Freshbooks");
+//			    	orderState.setOk(true);
+//			    	
+//			    	inOrder.getCustomer().setProperty(FreshbooksManager.FRESHBOOKS_ID, "100");
+//			    	inOrder.setProperty(FreshbooksManager.FRESHBOOKS_ID, "101");//invoice
+//			    	
+//			    	inOrder.setProperty("requirescurringprofile", "true");//requires invoice query
+//					
+//				} else {
+//					log.info("&&&& test condition: rejected case &&&&");
+//					orderState = inStore.getOrderState(Order.REJECTED);
+//			    	orderState.setDescription("Card Declined");
+//			    	orderState.setOk(false);
+//				}
+//		    	inOrder.setOrderState(orderState);
+//		    	return;
+//		    }
 			
 			Page page = getPageManager().getPage(inStore.getStoreHome() + "/configuration/freshbooks.xml");
 			Element conf = getXmlUtil().getXml(page.getReader(), "UTF-8");
 			
 			String uri = conf.element("uri").getText();
-			String token = conf.element("token").getText();
+			String token = conf.element("token").getText(); 
 			String gateway = conf.element("gateway").getText();
+			log.info("freshbooks configuration, uri: "+uri+", token: "+token+", gateway: "+gateway);
 			
-			log.info("uri: "+uri+", token: "+token+", gateway: "+gateway);
-			
-			FreshbooksManager manager = new FreshbooksManager();
+			FreshbooksManager manager = getFreshbooksManager();
 			manager.setToken(token);
 			manager.setUrl(uri);
 			manager.setGateway(gateway);
 		    
 		    FreshbooksStatus inStatus = new FreshbooksStatus();
-		    populateFreshbooksVariables(inStatus,inOrder,inStore);
 		    manager.processOrder(inOrder, inStatus);
 		    
 		    //need to map the freshbooks invoice state to an Order state
@@ -149,9 +193,11 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		    	orderState.setDescription(inStatus.getErrorMessage());
 		    	orderState.setOk(false);
 		    } else {//may be authorized or accepted
-		    	String message = mappedState.equals(Order.ACCEPTED) ? "Pending Authorization by Freshbooks" : "Authorized by Freshbooks";
+		    	String message = mappedState.equals(Order.ACCEPTED) ? "Pending Authorization from Freshbooks" : "Authorized by Freshbooks";
 		    	orderState.setDescription(message);
 		    	orderState.setOk(true);
+		    	//update invoice profile table
+			    updateInvoiceProfiles(inOrder,inStatus);
 		    }
 		    inOrder.setOrderState(orderState);
 		}
@@ -167,50 +213,37 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		}
 	}
 	
-	protected void populateFreshbooksVariables(FreshbooksStatus inStatus, Order inOrder, Store inStore) throws Exception {
-		inStatus.setSendEmail("1");//send email 
-		inStatus.setSendSnailMail("0");// don't send post mail
-		inStatus.setBlocking(true);// blocking call when chaining a non-recurring with a recurring invoice
-		inStatus.setDelayBetweenQueries(100);// 100ms between repeated queries (i.e., querying the status of an invoice)
-		inStatus.setMaximumQueryRepeat(25);// perform only 25 queries at most
-		inStatus.setOccurrences("0");//infinity
-		
-		String frequency = inOrder.get("frequency");
-		if (frequency == null || !inOrder.containsRecurring()){
-			frequency = "weekly";//if no recurring, default is weekly anyway
-			//test mode!!
-			//force the order to have recurring items
-//			Iterator <?> itr = inOrder.getCart().getItems().iterator();
-//			if(itr.hasNext()){
-//				CartItem item = (CartItem) itr.next();
-//				item.getProduct().setProperty("recurring", "true");
-//			}
+	public void updateInvoiceProfiles(Order inOrder, FreshbooksStatus inStatus) throws Exception{
+		//update invoice profile table with invoice_id and list of recurring profile info
+		SearcherManager sm = getSearcherManager();
+		Searcher searcher = sm.getSearcher(getCatalogId(), "invoiceprofile");
+		Data data = searcher.createNewData();
+		data.setProperty("orderid", inOrder.getId());
+		data.setProperty("querytype", "invoice");
+		data.setProperty("invoicefrequency", "weekly");//default is weekly so put that
+		data.setProperty("invoiceoccurrence", "1");
+		data.setProperty("remoteid", inStatus.getInvoiceId());
+		data.setProperty("remotestatus", inStatus.getInvoiceStatus());
+		data.setProperty("requiresupdate", String.valueOf(!FreshbooksManager.isInvoicePaid(inStatus.getInvoiceStatus())));
+		data.setProperty("querycount", "0");
+		searcher.saveData(data, null);
+		if (!inStatus.getRecurringProfiles().isEmpty()){
+			for (RecurringProfile profile: inStatus.getRecurringProfiles()){
+				Data pdata = searcher.createNewData();
+				pdata.setProperty("orderid", inOrder.getId());
+				pdata.setProperty("querytype", "recurringprofile");
+				pdata.setProperty("invoicefrequency", profile.getFrequency());
+				pdata.setProperty("invoiceoccurrence", profile.getOccurrence());
+				if (profile.getRecurringId() !=null){
+					pdata.setProperty("remoteid", profile.getRecurringId());
+					pdata.setProperty("requiresupdate","false");
+				} else {
+					pdata.setProperty("requiresupdate","true");
+				}
+				pdata.setProperty("querycount", "0");
+				searcher.saveData(pdata, null);
+			}
 		}
-		inStatus.setFrequency(frequency);
-		//calculate the future date
-		Date date = inOrder.getDate();
-		SearcherManager manager = getSearcherManager();
-		Searcher searcher = manager.getSearcher(inStore.getCatalogId(), "frequency");
-		Data data = (Data) searcher.searchById(frequency);
-		String day = data.get("day");
-		String month = data.get("month");
-		String year = data.get("year");
-		long days = 0;
-		if (!day.equals("0")){//days
-			days = Long.parseLong(day);
-		} else if (!year.equals("0")){ //years
-			days = Integer.parseInt(year) * 365;
-		} else { //months
-			int months = Integer.parseInt(month);
-			Calendar cal = new GregorianCalendar();
-			cal.setTime(date);
-			cal.add(Calendar.MONTH,months);
-			days = (cal.getTimeInMillis() - date.getTime())/(24*60*60*1000);
-		}
-		long futureTime = date.getTime() + ((long)days) *24*60*60*1000;
-		Date futureDate = new Date();
-		futureDate.setTime(futureTime);
-	    inStatus.setFirstRecurringInvoiceDate(futureDate);
 	}
 	
 	public UserManager getUserManager() {

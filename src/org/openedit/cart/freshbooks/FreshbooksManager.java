@@ -2,9 +2,16 @@ package org.openedit.cart.freshbooks;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -18,7 +25,12 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.money.Fraction;
+import org.openedit.money.Money;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.PurchaseOrderMethod;
@@ -33,7 +45,7 @@ import com.openedit.util.XmlUtil;
 public class FreshbooksManager {
 	
 	public static final String FRESHBOOKS_ID = "freshbooksid";
-	public static final String FRESHBOOKS_RECURRING_ID = "recurringid";
+//	public static final String FRESHBOOKS_RECURRING_ID = "recurringid";
 	
 	private static final Log log = LogFactory.getLog(BaseSearcher.class);
 
@@ -42,6 +54,23 @@ public class FreshbooksManager {
 	protected String fieldGateway;
 	protected XmlUtil fieldXmlUtil;
 	protected SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	
+	//required for searching
+	protected SearcherManager fieldSearcherManager;
+	protected String fieldCatalogId;
+	
+	public SearcherManager getSearcherManager() {
+		return fieldSearcherManager;
+	}
+	public void setSearcherManager(SearcherManager fieldSearcherManager) {
+		this.fieldSearcherManager = fieldSearcherManager;
+	}
+	public void setCatalogId(String inCatalogId){
+		fieldCatalogId = inCatalogId;
+	}
+	public String getCatalogId(){
+		return fieldCatalogId;
+	}
 
 	public XmlUtil getXmlUtil() {
 		if (fieldXmlUtil == null) {
@@ -292,7 +321,21 @@ public class FreshbooksManager {
 	 * @throws Exception
 	 */
 	public void processOrder(Order inOrder, FreshbooksStatus inStatus) throws Exception {
-		//deal with client
+		//build all invoices first
+		//once complete, send the auto-payment one
+		//if it fails then update inStatus with fail, don't process recurring profiles
+		//otherwise process the recurring profiles
+		ArrayList<CartItem> items = getNonRecurringCartItems(inOrder);
+		ArrayList<RecurringProfile> profiles = getRecurringProfiles(inOrder);
+		inStatus.setRecurringProfiles(profiles);
+		createAutoPayInvoice(inOrder,items,inStatus);
+		if (!profiles.isEmpty() && inStatus.getInvoiceId() != null){
+			createRecurringInvoices(inOrder,inStatus);
+		}
+	}
+	
+	public void createAutoPayInvoice(Order inOrder, ArrayList<CartItem> inCartItems, FreshbooksStatus inStatus) throws Exception {
+		//check for customer first
 		Customer customer = inOrder.getCustomer();
 		if (!hasFreshbooksId(customer)) {
 			boolean success = createCustmer(customer,customer.getBillingAddress(),null);
@@ -300,35 +343,19 @@ public class FreshbooksManager {
 				throw new Exception("Customer "+customer.getUser()+" cannot be added to Freshbooks");
 			}
 		}
-		//create an invoice set to autop-pay immediately
-		//these should include all items, including those that are recurring
-		createAutoPayInvoice(inOrder,inStatus);
-		if (inStatus.getInvoiceId() != null){
-			String invoiceId = inStatus.getInvoiceId();
-			inOrder.setProperty(FRESHBOOKS_ID, invoiceId);
-		} else {// at this point, completed in error, so don't continue to recurring request
-			return;
-		}
-		//if a recurring order needs to be created, do that as well
-		if (inOrder.containsRecurring()){
-			createRecurringInvoice(inOrder,inStatus);
-			//now update the recurring order id on the order
-			if (inStatus.getRecurringId() != null){
-				inOrder.setProperty(FRESHBOOKS_RECURRING_ID, inStatus.getRecurringId());
-			} else {
-				//TODO fix???
-				// at this point, not sure what to do. log it???
-				log.warn("recurring order request could not be completed");
-			}
-		}
-	}
-	
-	private void createAutoPayInvoice(Order inOrder, FreshbooksStatus inStatus) throws Exception {
+		
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "recurring.create");
 		Element invoice = root.addElement("recurring");
-		populateOrderElements(invoice,false,inOrder,inStatus);
-		populateCartItemElements(invoice,false,inOrder,inStatus);
+		Element lines = invoice.addElement("lines");
+		populateOrderElements(invoice,inOrder,null);
+		populateItemsForAutopayInvoice(lines,inCartItems,inOrder.getTaxes(),1);
+		if (inStatus.getRecurringProfiles()!=null && !inStatus.getRecurringProfiles().isEmpty()){
+			for (RecurringProfile profile:inStatus.getRecurringProfiles()){
+				populateItemsForAutopayInvoice(lines,profile.getCartItems(),inOrder.getTaxes(),Integer.parseInt(profile.getOccurrence()));
+			}
+		}
+		
 		Element result = callFreshbooks(root);
 		if (isStatusOk(result)) {
 			//since the invoice went through, we don't need 
@@ -340,41 +367,14 @@ public class FreshbooksManager {
 			//set the invoice id
 			String invoiceId = result.elementText("invoice_id");
 			inStatus.setInvoiceId(invoiceId);//set the invoice
+			inOrder.setProperty(FRESHBOOKS_ID, invoiceId);//persist the invoiceId in the order itself
+			
 			//check the status
-			Element element = queryInvoice(invoiceId);
+			Element element = getInvoice(invoiceId);
 			String status = getInvoiceStatus(element);
-			if (isInvoicePaid(element)){
-				inStatus.setInvoiceStatus(status);
-			} else {
-				if (inStatus.isBlocking()){
-					int repeats = inStatus.getMaximumQueryRepeat();
-					final long delay = inStatus.getDelayBetweenQueries();
-					for (int i=0; i < repeats-1; i++){
-						//start with a delay
-						try{
-							Thread.sleep(delay);
-						}catch (Exception e){}
-						//query invoice status
-						Element e = queryInvoice(invoiceId);
-						status = getInvoiceStatus(e);
-						if (isInvoicePaid(e)){
-							inStatus.setInvoiceStatus(status);
-							return;
-						}
-					}
-					//finished for loop so now update inStatus with last known invoice status
-					inStatus.setInvoiceStatus(status);
-					//all good but invoice did not go through during the period of time we initially queried
-					//so need to trigger an async processor
-					log.warn("payment for "+invoiceId+" has not been paid after "+repeats+" query attempts, current status is "+status);
-					
-					//TODO handle asynchronous queries!!!
-					log.warn("&&&&&&&& need to handle asynchronous queries &&&&&&&");
-				} else {
-					inStatus.setInvoiceStatus(status);
-					//TODO handle asynchronous queries!!!
-					log.warn("&&&&&&&& need to handle asynchronous queries &&&&&&&");
-				}
+			inStatus.setInvoiceStatus(status);
+			if (!isInvoicePaid(element)){
+				log.warn("payment for "+invoiceId+" has not been received, current status is "+status);
 			}
 		} else {
 			String error = result.elementText("error");
@@ -384,18 +384,24 @@ public class FreshbooksManager {
 		}
 	}
 	
-	private void populateOrderElements(Element inInvoice, boolean isRecurring, Order inOrder, FreshbooksStatus inStatus) throws Exception {
+	private void populateOrderElements(Element inInvoice,Order inOrder,RecurringProfile inProfile) throws Exception {
 		Customer customer = inOrder.getCustomer();
 		inInvoice.addElement("client_id").setText(customer.get(FRESHBOOKS_ID));
-		if (isRecurring){
-			inInvoice.addElement("date").setText(format.format(inStatus.getFirstRecurringInvoiceDate()));
-			inInvoice.addElement("frequency").setText(inStatus.getFrequency());
-			inInvoice.addElement("occurrences").setText(inStatus.getOccurrences());
+		if (inProfile!=null){
+			Date startDate = inProfile.getStartDate();
+			String frequency = inProfile.getFrequency();
+			String occurrences = inProfile.getOccurrence();
+			inInvoice.addElement("date").setText(format.format(startDate));
+			inInvoice.addElement("frequency").setText(frequency);
+			inInvoice.addElement("occurrences").setText(occurrences);
 		} else {
 			inInvoice.addElement("occurrences").setText("1");//one time only
 		}
-		inInvoice.addElement("send_email").setText(inStatus.getSendEmail());
-		inInvoice.addElement("send_snail_mail").setText(inStatus.getSendSnailMail());
+		
+		boolean sendEmail = inOrder.getBoolean("sendemail");
+		boolean sendSnailMail = inOrder.getBoolean("sendsnailmail");
+		inInvoice.addElement("send_email").setText(sendEmail ? "1" : "0");
+		inInvoice.addElement("send_snail_mail").setText(sendSnailMail ? "1" : "0");
 		if (inOrder.get("notes")!=null) {
 			inInvoice.addElement("notes").setText(inOrder.get("notes"));
 		}
@@ -412,86 +418,203 @@ public class FreshbooksManager {
 		expiration.addElement("year").setText(creditCard.getExpirationYearString());
 	}
 	
-	private void populateCartItemElements(Element inInvoice, boolean includeRecurring, Order inOrder, FreshbooksStatus inStatus) throws Exception {
-		Element lines = inInvoice.addElement("lines");
+	private void populateItemsForAutopayInvoice(Element inLines, List<CartItem> inCartItems, Map<?,?> inTaxes, int inOccurrences) throws Exception {
+		//includes one-time invoices and the first invoice of recurring invoices
+		populateCartItemElements(inLines,inCartItems,inTaxes,inOccurrences,false);
+	}
+	
+	private void populateItemsForRecurringInvoices(Element inLines, List<CartItem> inCartItems, Map<?,?> inTaxes, int inOccurrences) throws Exception {
+		populateCartItemElements(inLines,inCartItems,inTaxes,inOccurrences,true);
+	}
+	
+	private void populateCartItemElements(Element inLines, List<CartItem> inCartItems, Map<?,?> inTaxes, int inOccurrences, boolean inProcessRecurring) throws Exception {
+		for (Iterator<?> iterator = inCartItems.iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			Money unitCost = item.getYourPrice();
+			//if the item is not recurring, then we are creating a one time invoice so we use provided cost
+			//if the item is recurring then
+			//	we are either calculating the first invoice or the remaining recurring invoices
+			//  if inProcessRecurring is false then this is the first invoice
+			//  otherwise this is the remaining invoices
+			if (Boolean.parseBoolean(item.getProduct().get("recurring"))){
+				ArrayList<Money> costs = getRecurringItemPrices(unitCost,inOccurrences);
+				if (!inProcessRecurring){//first invoice of recurring
+					unitCost = costs.get(0);
+				} else {
+					//remaining invoices of recurring
+					unitCost = costs.get(1);
+				}
+			}
+			Element line = inLines.addElement("line");
+			line.addElement("name").setText(item.getProduct().getId());
+			line.addElement("description").setText(item.getProduct().getName());
+			line.addElement("unit_cost").setText(unitCost.toShortString());
+			line.addElement("quantity").setText(String.valueOf(item.getQuantity()));
+			
+			int count = 1;
+			for (Iterator<?> iterator2 = inTaxes.keySet().iterator(); iterator2.hasNext();) {
+				TaxRate rate = (TaxRate) iterator2.next();
+				String name = rate.getName() == null ? "Tax #"+count : rate.getName();//do only when tax has no name
+				line.addElement("tax" + count + "_name").setText(name);
+				double percent = rate.getFraction().doubleValue() * 100;
+				line.addElement("tax" + count + "_percent").setText(String.valueOf(percent));
+				count++;
+				//not sure why we cut it off here?
+//				if (count > 2) {
+//					break;
+//				}
+			}	
+		}
+	}
+	
+	private ArrayList<Money> getRecurringItemPrices(Money inTotalPrice, int inOccurrences) throws Exception{
+		ArrayList<Money> amounts = new ArrayList<Money>();
+		if (inOccurrences - 1 > 0){
+			int remainingOccurrences = inOccurrences - 1;
+			double equalParts = inTotalPrice.doubleValue() / ((double) inOccurrences);
+			Fraction fraction = new Fraction(equalParts);
+			
+			Money firstPayment = inTotalPrice.multiply(fraction);
+			Money remainingPayments = inTotalPrice.subtract(firstPayment);
+			while ( ( (int) (remainingPayments.doubleValue() * 100) % remainingOccurrences) != 0){//must have remaining payments divide up equally
+				firstPayment = firstPayment.add("0.01");//increment first payment by one penny
+				remainingPayments = inTotalPrice.subtract(firstPayment);//recalculate remaining payments
+			}
+			amounts.add(firstPayment);
+			amounts.add(new Money(remainingPayments.doubleValue()/(double)remainingOccurrences));//the result here should be properly rounded
+		} else {
+			amounts.add(inTotalPrice);
+			amounts.add(inTotalPrice);
+		}
+		return amounts;
+	}
+
+	public void createRecurringInvoices(Order inOrder,FreshbooksStatus inStatus) throws Exception {
+		//check for customer first
+		Customer customer = inOrder.getCustomer();
+		if (!hasFreshbooksId(customer)) {
+			boolean success = createCustmer(customer,customer.getBillingAddress(),null);
+			if (!success){
+				throw new Exception("Customer "+customer.getUser()+" cannot be added to Freshbooks");
+			}
+		}
+		//check if recurring profiles on freshbooks status is empty
+		if (inStatus.getRecurringProfiles().isEmpty()){
+			//break up order into separate invoices consisting of cart items itemized by frequency and occurrence
+			ArrayList<RecurringProfile> profiles = getRecurringProfiles(inOrder);
+			if (profiles.isEmpty()){
+				throw new Exception("no recurring order items found in order #"+inOrder.getId()+", "+inOrder.getName());
+			}
+			inStatus.setRecurringProfiles(profiles);
+		}
+		//go through each profile and generate recurring profile on freshbooks
+		for (RecurringProfile profile:inStatus.getRecurringProfiles()){
+			createRecurringInvoice(inOrder,profile);//if succeeds, recurring id will be added to profile object
+		}
+	}
+	
+	protected ArrayList<CartItem> getNonRecurringCartItems(Order inOrder){
+		ArrayList<CartItem> items = new ArrayList<CartItem>();
 		for (Iterator<?> iterator = inOrder.getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
-			boolean include = false;
-			if ( (includeRecurring && Boolean.parseBoolean(item.getProduct().get("recurring"))) || !includeRecurring) {
-				include = true;
+			if (!Boolean.parseBoolean(item.getProduct().get("recurring"))){
+				items.add(item);
 			}
-			if (include) {
-				Element line = lines.addElement("line");
-				line.addElement("name").setText(item.getProduct().getId());
-				line.addElement("description").setText(item.getProduct().getName());
-				line.addElement("unit_cost").setText(item.getYourPrice().toShortString());
-				line.addElement("quantity").setText(String.valueOf(item.getQuantity()));
-
-				int count = 1;
-				for (Iterator<?> iterator2 = inOrder.getTaxes().keySet().iterator(); iterator2.hasNext();) {
-					TaxRate rate = (TaxRate) iterator2.next();
-					String name = rate.getName() == null ? "Tax #"+count : rate.getName();//do only when tax has no name
-					line.addElement("tax" + count + "_name").setText(name);
-					double percent = rate.getFraction().doubleValue() * 100;
-					line.addElement("tax" + count + "_percent").setText(String.valueOf(percent));
-					count++;
-					//not sure why we cut it off here?
-//					if (count > 2) {
-//						break;
-//					}
+		}
+		return items;
+	}
+	
+	protected ArrayList<RecurringProfile> getRecurringProfiles(Order inOrder){
+		SearcherManager manager = getSearcherManager();
+		Searcher searcher = manager.getSearcher(getCatalogId(), "frequency");
+		
+		HashMap<String,RecurringProfile> map = new HashMap<String,RecurringProfile>();//key = frequency+occurrence
+		for (Iterator<?> iterator = inOrder.getItems().iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			if (Boolean.parseBoolean(item.getProduct().get("recurring"))){
+				String frequency = item.get("frequency");
+				String occurrence = item.get("occurrences");
+				if (occurrence == null) occurrence = "0";//infinity if occurrence is not specified
+				String key = frequency+"_"+occurrence;
+				RecurringProfile profile;
+				if (map.containsKey(key)){
+					profile = map.get(key);
+				} else {
+					profile = new RecurringProfile();
+					profile.setFrequency(frequency);
+					profile.setOccurrence(occurrence);
+					Data data = (Data) searcher.searchById(frequency);//get the day,month,year of the particular frequency chosen
+					profile.setStartDate(inOrder.getDate(),data.get("day"),data.get("month"),data.get("year"));//calculate the start date based on frequency and order date
+					
+					map.put(key, profile);
+				}
+				profile.getCartItems().add(item);
+			}
+		}
+		return new ArrayList<RecurringProfile>(map.values());
+	}
+	
+	protected RecurringProfile getRecurringProfile(Order inOrder, String inFrequency, String inOccurrence) throws Exception{
+		SearcherManager manager = getSearcherManager();
+		Searcher searcher = manager.getSearcher(getCatalogId(), "frequency");
+		RecurringProfile profile = new RecurringProfile();
+		profile.setOccurrence(inOccurrence);
+		profile.setFrequency(inFrequency);
+		Data data = (Data) searcher.searchById(inFrequency);
+		profile.setStartDate(inOrder.getDate(),data.get("day"),data.get("month"),data.get("year"));
+		for (Iterator<?> iterator = inOrder.getItems().iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			if (Boolean.parseBoolean(item.getProduct().get("recurring"))){
+				String frequency = item.get("frequency");
+				String occurrence = item.get("occurrences");
+				if (occurrence == null) occurrence = "0";
+				if (frequency.equals(inFrequency) && occurrence.equals(inOccurrence)){
+					profile.getCartItems().add(item);
 				}
 			}
 		}
+		return profile;
 	}
-
-	public void createRecurringInvoice(Order inOrder,FreshbooksStatus inStatus) throws Exception {
+	
+	public void createRecurringInvoice(Order inOrder, RecurringProfile inProfile) throws Exception{
+		//check for customer first
+		Customer customer = inOrder.getCustomer();
+		if (!hasFreshbooksId(customer)) {
+			boolean success = createCustmer(customer,customer.getBillingAddress(),null);
+			if (!success){
+				throw new Exception("Customer "+customer.getUser()+" cannot be added to Freshbooks");
+			}
+		}
+		
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "recurring.create");
 		Element invoice = root.addElement("recurring");
-		populateOrderElements(invoice,true,inOrder,inStatus);
-		populateCartItemElements(invoice,true,inOrder,inStatus);
+		Element lines = invoice.addElement("lines");
+		populateOrderElements(invoice,inOrder,inProfile);
+		populateItemsForRecurringInvoices(lines,inProfile.getCartItems(),inOrder.getTaxes(),Integer.parseInt(inProfile.getOccurrence()));
 		Element result = callFreshbooks(root);
 		if (isStatusOk(result)) {
-			//recurring orders create a recurring profile, with a start date (sometime in the future)
-			//the start date is set to the current date + the frequency
-			//so we don't actually get an invoice_id when we initially create it
-			//all we're looking for is a status OK
-			//and the recurring_id number, which we can use to cancel the recurring profile at a later date
-			String recurringId = result.element("recurring").element("recurring_id").getText();
-			inStatus.setRecurringId(recurringId);
+			String recurringId = result.element("recurring_id").getText();
+			inProfile.setRecurringId(recurringId);
 		} else {
 			String error = result.elementText("error");
 			String code = result.elementText("code");
-			inStatus.setErrorMessage(error);
-			inStatus.setErrorCode(code);
+			log.warn("recurring profile for "+inOrder.getId()+" cannot be completed, error code: "+code+", error message: "+error);
 		}
 	}
 	
-	public boolean isRecurringInvoiceActive(String inRecurringId) throws Exception{
-		Element root = DocumentHelper.createElement("request");
-		root.addAttribute("method", "recurring.get");
-		root.addElement("recurring_id").setText(inRecurringId);
-
-		Element result = callFreshbooks(root);
-		if (isStatusOk(result)){
-			String stopped = result.element("recurring").element("stopped").getText();
-			//0 = active, 1 = not active
-			return (stopped!=null && stopped.equals("0"));
-		}
-		return false;
-	}
-	
-	public boolean cancelRecurringInvoice(Order inOrder) throws Exception{
-		boolean success = false;
-		if (isRecurring(inOrder)){
-			String recurringid = inOrder.get(FRESHBOOKS_RECURRING_ID);
-			success = cancelRecurringInvoice(recurringid);
-			if (success){
-				inOrder.setProperty(FRESHBOOKS_RECURRING_ID,"");//remove recurring_id from inOrder
-			}
-		}
-		return success;
-	}
+//	public boolean isRecurringInvoiceActive(String inRecurringId) throws Exception{
+//		Element root = DocumentHelper.createElement("request");
+//		root.addAttribute("method", "recurring.get");
+//		root.addElement("recurring_id").setText(inRecurringId);
+//
+//		Element result = callFreshbooks(root);
+//		if (isStatusOk(result)){
+//			String stopped = result.element("recurring").element("stopped").getText();
+//			return (stopped!=null && stopped.equals("0"));//0 = active, 1 = not active
+//		}
+//		return false;
+//	}
 	
 	public boolean cancelRecurringInvoice(String inRecurringId) throws Exception {
 		Element root = DocumentHelper.createElement("request");
@@ -502,14 +625,14 @@ public class FreshbooksManager {
 		return isStatusOk(result);
 	}
 	
-	public Element queryInvoice(String inInvoiceId) throws Exception {
-		Element root = DocumentHelper.createElement("request");
-		root.addAttribute("method", "invoice.get");
-		root.addElement("invoice_id").setText(inInvoiceId);
-
-		Element result = callFreshbooks(root);
-		return result;
-	}
+//	public Element queryInvoice(String inInvoiceId) throws Exception {
+//		Element root = DocumentHelper.createElement("request");
+//		root.addAttribute("method", "invoice.get");
+//		root.addElement("invoice_id").setText(inInvoiceId);
+//
+//		Element result = callFreshbooks(root);
+//		return result;
+//	}
 
 	public boolean createCustmer(Customer inCustomer, Address inAddress, List inContacts) throws Exception {
 		Element root = DocumentHelper.createElement("request");
@@ -526,8 +649,6 @@ public class FreshbooksManager {
 
 			// TODO: implement contacts
 			// Element contacts = client.addElement("contacts");
-			
-			//note: contact fields are optional on freshbooks so not sure if even required
 
 		}
 		if (inCustomer.getPhone1() != null) {
@@ -557,21 +678,20 @@ public class FreshbooksManager {
 		if (!hasFreshbooksId(inOrder)){
 			return null;
 		}
+		return getInvoice(inOrder.get(FRESHBOOKS_ID));
+	}
+	
+	public Element getInvoice(String invoiceId) throws Exception{
 		Element root = DocumentHelper.createElement("request");
 		root.addAttribute("method", "invoice.get");
 		Element invoice = root.addElement("invoice_id");
-		invoice.setText(inOrder.get(FRESHBOOKS_ID));
-		
+		invoice.setText(invoiceId);
 		Element result = callFreshbooks(root);
 		return result;
 	}
 	
 	public static boolean hasFreshbooksId(Order inOrder) throws Exception {
 		return inOrder.get(FRESHBOOKS_ID)!=null;
-	}
-	
-	public static boolean isRecurring(Order inOrder) throws Exception{
-		return inOrder.get(FRESHBOOKS_RECURRING_ID)!=null;
 	}
 	
 	public static boolean hasFreshbooksId(Customer inCustomer) throws Exception{
@@ -597,12 +717,7 @@ public class FreshbooksManager {
 	}
 	
 	public static String getOrderStatusFromInvoice(Order inOrder, FreshbooksStatus inStatus) throws Exception{
-		// Freshbooks invoice states
-		
-		// paid: ‘paid’, ‘auto-paid’
-		// unpaid: ‘disputed’, ‘sent’, ‘viewed’, ‘retry’, ‘failed’
-		// unknown: ‘draft’
-		
+		// Freshbooks invoice states - paid: ‘paid’, ‘auto-paid’; unpaid: ‘disputed’, ‘sent’, ‘viewed’, ‘retry’, ‘failed’; n/a: ‘draft’
 		//if there's a problem with an online payment, the invoice will be in either a retry or failed state
 		String orderStatus = Order.REJECTED;
 		if (inStatus.getInvoiceStatus()!=null){
@@ -614,5 +729,4 @@ public class FreshbooksManager {
 		}
 		return orderStatus;
 	}
-	
 }
