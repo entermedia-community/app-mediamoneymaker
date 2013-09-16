@@ -12,6 +12,7 @@ import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.cart.freshbooks.FreshbooksStatus;
 import org.openedit.cart.freshbooks.FreshbooksManager;
+import org.openedit.cart.freshbooks.RecurringProfile;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
@@ -99,9 +100,20 @@ public class FreshbookTest extends StoreTestCase {
 		cart.addItem(createCheapToyCartItem());//add non-recurring
 		
 		
-		CartItem item1 = createRecurringCartItem("Item 1",12.00);
-		CartItem item2 = createRecurringCartItem("Item 2",4.00);
-		CartItem item3 = createRecurringCartItem("Item 3",6.00);
+		CartItem item1 = createRecurringCartItem("Item 1",24.00);
+		item1.setProperty("frequency", "2 weeks");
+		item1.setProperty("occurrences", "12");
+		cart.addItem(item1);
+		
+		CartItem item2 = createRecurringCartItem("Item 2",3.99);
+		item2.setProperty("frequency", "monthly");
+		item2.setProperty("occurrences", "4");
+		cart.addItem(item2);
+		
+		CartItem item3 = createRecurringCartItem("Item 3",8.99);
+		item3.setProperty("frequency", "3 months");
+		item3.setProperty("occurrences", "6");
+		cart.addItem(item3);
 
 		//TODO in the UI:
 		//frequency and occurrences have to be added dynamically 
@@ -111,24 +123,6 @@ public class FreshbookTest extends StoreTestCase {
 		//on submit, before order is processed, 
 		// go through and find those fields and add them to the 
 		// cart items
-		
-		item1.setProperty("frequency", "2 weeks");
-		item1.setProperty("occurrences", "12");
-		
-		item2.setProperty("frequency", "monthly");
-		item2.setProperty("occurrences", "4");
-		
-		item3.setProperty("frequency", "monthly");
-		item3.setProperty("occurrences", "6");
-		cart.addItem(item1);
-		cart.addItem(item2);
-		cart.addItem(item3);
-		
-		
-		/*
-		 * String frequency = item.get("frequency");
-				String occurrence = item.get("occurrences");
-		 */
 		
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		order.setProperty("notes", "This is a note");
@@ -157,7 +151,7 @@ public class FreshbookTest extends StoreTestCase {
 	    System.out.println(status.toString());
 		
 	}
-
+	
 	/**
 	 * @throws Exception
 	 */
