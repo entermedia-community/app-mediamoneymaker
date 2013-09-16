@@ -2,12 +2,9 @@ package org.openedit.cart.freshbooks;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +26,6 @@ import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
@@ -472,9 +468,7 @@ public class FreshbooksManager {
 		if (inOccurrences - 1 > 0){
 			int remainingOccurrences = inOccurrences - 1;
 			double equalParts = inTotalPrice.doubleValue() / ((double) inOccurrences);
-			Fraction fraction = new Fraction(equalParts);
-			
-			Money firstPayment = inTotalPrice.multiply(fraction);
+			Money firstPayment = new Money(equalParts);
 			Money remainingPayments = inTotalPrice.subtract(firstPayment);
 			while ( ( (int) (remainingPayments.doubleValue() * 100) % remainingOccurrences) != 0){//must have remaining payments divide up equally
 				firstPayment = firstPayment.add("0.01");//increment first payment by one penny
@@ -554,7 +548,7 @@ public class FreshbooksManager {
 		return new ArrayList<RecurringProfile>(map.values());
 	}
 	
-	protected RecurringProfile getRecurringProfile(Order inOrder, String inFrequency, String inOccurrence) throws Exception{
+	public RecurringProfile getRecurringProfile(Order inOrder, String inFrequency, String inOccurrence) throws Exception{
 		SearcherManager manager = getSearcherManager();
 		Searcher searcher = manager.getSearcher(getCatalogId(), "frequency");
 		RecurringProfile profile = new RecurringProfile();
@@ -690,6 +684,16 @@ public class FreshbooksManager {
 		return result;
 	}
 	
+	public String getInvoiceStatus(String invoiceId) throws Exception {
+		Element root = DocumentHelper.createElement("request");
+		root.addAttribute("method", "invoice.get");
+		Element invoice = root.addElement("invoice_id");
+		invoice.setText(invoiceId);
+		Element result = callFreshbooks(root);
+		String status = getInvoiceStatus(result);
+		return status;
+	}
+	
 	public static boolean hasFreshbooksId(Order inOrder) throws Exception {
 		return inOrder.get(FRESHBOOKS_ID)!=null;
 	}
@@ -712,7 +716,7 @@ public class FreshbooksManager {
 	}
 	
 	public static String getInvoiceStatus(Element inElement) throws Exception{
-		String status = inElement.element("invoice").element("status").getText();
+		String status = inElement!=null ? inElement.element("invoice").element("status").getText() : null;
 		return status;
 	}
 	

@@ -224,8 +224,15 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		data.setProperty("invoiceoccurrence", "1");
 		data.setProperty("remoteid", inStatus.getInvoiceId());
 		data.setProperty("remotestatus", inStatus.getInvoiceStatus());
-		data.setProperty("requiresupdate", String.valueOf(!FreshbooksManager.isInvoicePaid(inStatus.getInvoiceStatus())));
+		if ( FreshbooksManager.isInvoicePaid(inStatus.getInvoiceStatus()) ){
+			data.setProperty("requiresupdate", "false");
+			data.setProperty("querystate","ok");
+		} else {
+			data.setProperty("requiresupdate", "true");
+			data.setProperty("querystate","retry");
+		}
 		data.setProperty("querycount", "0");
+		
 		searcher.saveData(data, null);
 		if (!inStatus.getRecurringProfiles().isEmpty()){
 			for (RecurringProfile profile: inStatus.getRecurringProfiles()){
@@ -237,8 +244,10 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 				if (profile.getRecurringId() !=null){
 					pdata.setProperty("remoteid", profile.getRecurringId());
 					pdata.setProperty("requiresupdate","false");
+					pdata.setProperty("querystate","ok");
 				} else {
 					pdata.setProperty("requiresupdate","true");
+					pdata.setProperty("querystate","retry");
 				}
 				pdata.setProperty("querycount", "0");
 				searcher.saveData(pdata, null);
