@@ -10,6 +10,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-server"/>
 	<classpathentry exported="true" kind="lib" path="lib/openedit-money-5.626.jar"/>
 	<classpathentry kind="lib" path="lib/paypal_base.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/extension-openedit"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
