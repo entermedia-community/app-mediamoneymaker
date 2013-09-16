@@ -1,0 +1,11 @@
+<properties>
+	<property id="weekly" day="7" month="0" year="0">Weekly</property>  
+	<property id="2 weeks" day="14" month="0" year="0">2 Weeks</property>  
+	<property id="4 weeks" day="28" month="0" year="0">4 Weeks</property>  
+	<property id="monthly" day="0" month="1" year="0">Monthly</property>  
+	<property id="2 months" day="0" month="2" year="0">2 Months</property>  
+	<property id="3 months" day="0" month="3" year="0">3 Months</property>  
+	<property id="6 months" day="0" month="6" year="0">6 Months</property>  
+	<property id="yearly" day="0" month="0" year="1">Yearly</property>  
+	<property id="2 years" day="0" month="0" year="2">2 Years</property>  
+</properties>
