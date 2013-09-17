@@ -68,9 +68,9 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
-	public FreshbooksManager getFreshbooksManager() {
+	public FreshbooksManager getFreshbooksManager(String inCatalogId) {
 		if (fieldFreshbooksManager == null) {
-			fieldFreshbooksManager = (FreshbooksManager) getSearcherManager().getModuleManager().getBean(getCatalogId(),"freshbooksManager");
+			fieldFreshbooksManager = (FreshbooksManager) getSearcherManager().getModuleManager().getBean(inCatalogId,"freshbooksManager");
 			
 		}
 		return fieldFreshbooksManager;
@@ -175,7 +175,7 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			String gateway = conf.element("gateway").getText();
 			log.info("freshbooks configuration, uri: "+uri+", token: "+token+", gateway: "+gateway);
 			
-			FreshbooksManager manager = getFreshbooksManager();
+			FreshbooksManager manager = getFreshbooksManager(inStore.getCatalogId());
 			manager.setToken(token);
 			manager.setUrl(uri);
 			manager.setGateway(gateway);
@@ -197,7 +197,7 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		    	orderState.setDescription(message);
 		    	orderState.setOk(true);
 		    	//update invoice profile table
-			    updateInvoiceProfiles(inOrder,inStatus);
+			    updateInvoiceProfiles(inStore, inOrder,inStatus);
 		    }
 		    inOrder.setOrderState(orderState);
 		}
@@ -213,10 +213,10 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 		}
 	}
 	
-	public void updateInvoiceProfiles(Order inOrder, FreshbooksStatus inStatus) throws Exception{
+	public void updateInvoiceProfiles(Store inStore, Order inOrder, FreshbooksStatus inStatus) throws Exception{
 		//update invoice profile table with invoice_id and list of recurring profile info
 		SearcherManager sm = getSearcherManager();
-		Searcher searcher = sm.getSearcher(getCatalogId(), "invoiceprofile");
+		Searcher searcher = sm.getSearcher(inStore.getCatalogId(), "invoiceprofile");
 		Data data = searcher.createNewData();
 		data.setProperty("orderid", inOrder.getId());
 		data.setProperty("querytype", "invoice");
