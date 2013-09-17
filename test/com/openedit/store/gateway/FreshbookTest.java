@@ -72,7 +72,7 @@ public class FreshbookTest extends StoreTestCase {
 		util.createCustmer(customer, address, null);
 	}
 	
-	public void testProcessInvoice() throws Exception {
+	public void xxtestProcessInvoice() throws Exception {
 		
 		Customer customer = new Customer(new FileSystemUser());
 		customer.getUser().setId("testuser1222");
