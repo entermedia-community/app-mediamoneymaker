@@ -771,9 +771,9 @@ public class CartTest extends StoreTestCase {
 		// end new
 		
 		store.saveProduct(testProduct);		
-		assertNotNull(store.getProduct("template"));
+		assertNotNull(store.getProduct("test"));
 		
-		context.setRequestParameter("productid", "template");
+		context.setRequestParameter("productid", "test");
 		context.setRequestParameter("property.testprop", "true");
 		
 		cartModule.clearCart(context);
