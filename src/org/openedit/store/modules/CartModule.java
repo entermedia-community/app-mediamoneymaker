@@ -271,7 +271,7 @@ public class CartModule extends BaseStoreModule {
 					String redirecturl = inReq.getPageProperty("registerpage");
 					cart.setCustomer(null);
 					inReq.setCancelActions(true);
-					inReq.forward(redirecturl);
+					if (redirecturl!= null) inReq.forward(redirecturl);
 					
 					
 					return;
