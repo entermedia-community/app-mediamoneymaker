@@ -65,10 +65,9 @@ public class RecurringProfile {
 	}
 	public String toString(){
 		StringBuilder buf = new StringBuilder();
-		buf.append("RecurringId=").append(getRecurringId() == null ? "NULL" : getRecurringId()).append(",Frequency=").append(getFrequency())
+		buf.append("[RecurringId=").append(getRecurringId() == null ? "NULL" : getRecurringId()).append(",Frequency=").append(getFrequency())
 			.append(",Occurrence=").append(getOccurrence()).append(",Start Date=").append(getStartDate())
-			.append("CartItems=").append(getCartItems() == null ? "0" : getCartItems().size())
-			;
+			.append("CartItems=").append(getCartItems() == null ? "0" : getCartItems().size()).append("]");
 		return buf.toString();
 	}
 }

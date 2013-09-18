@@ -596,5 +596,23 @@ public class Cart extends BaseData
 		}
 		return false;
 	}
+	
+	public boolean requiresShipping(){
+		int regularshipping = 0;
+		Iterator<?> itr = getItems().iterator();
+		while (itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			Product product = item.getProduct();
+			if (!Boolean.parseBoolean(product.get("electronicshipping"))){
+				regularshipping++;
+			}
+		}
+		return (regularshipping > 0);
+	}
+	
+	public boolean canPlaceOrder(){
+		return (this.getCustomer()!=null && !this.getItems().isEmpty() && this.getCustomer().getBillingAddress(false)!=null &&
+				this.getCustomer().getPaymentMethod()!=null);
+	}
 
 }

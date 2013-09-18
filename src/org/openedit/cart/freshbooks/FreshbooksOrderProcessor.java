@@ -232,7 +232,6 @@ public class FreshbooksOrderProcessor extends BaseOrderProcessor
 			data.setProperty("querystate","retry");
 		}
 		data.setProperty("querycount", "0");
-		
 		searcher.saveData(data, null);
 		if (!inStatus.getRecurringProfiles().isEmpty()){
 			for (RecurringProfile profile: inStatus.getRecurringProfiles()){

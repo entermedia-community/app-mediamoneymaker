@@ -601,6 +601,10 @@ public class Order extends BaseData implements Comparable {
 	}
 	
 	public boolean containsRecurring(){
-		return this.getCart().containsRecurring();
+		return getCart().containsRecurring();
+	}
+	
+	public boolean requiresShipping(){
+		return getCart().requiresShipping();
 	}
 }

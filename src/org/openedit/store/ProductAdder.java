@@ -89,9 +89,10 @@ public class ProductAdder
 				quantity = 0;
 			}
 
-			if (quantity == 0)
+			if (quantity <= 0)
 			{
-				//inCart.removeProduct(product);
+				//remove the product if quantity is less than or equal to zero
+				inCart.removeProduct(product);
 				continue;
 			}
 			// Look for any options being passed to us. Option can be a size,
