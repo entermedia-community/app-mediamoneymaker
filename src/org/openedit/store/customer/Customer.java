@@ -206,7 +206,9 @@ public class Customer implements Data {
 			billing = new Address();
 			billing.setPrefix("billing"); // only used to store the data
 		}
+		if(billing != null){
 		addAddress(billing);
+		}
 		return billing;
 	}
 	

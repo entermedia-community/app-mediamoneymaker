@@ -32,6 +32,7 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -218,71 +219,102 @@ public class CartModule extends BaseStoreModule {
 		return cart;
 	}
 
-	public void createCustomer(WebPageRequest inPageRequest) throws Exception {
-		Store store = getStore(inPageRequest);
-		Cart cart = getCart(inPageRequest);
-		String userName = inPageRequest.getRequestParameter("userName");
-		String passWord = inPageRequest.getRequestParameter("password");
+	public void createCustomer(WebPageRequest inReq) throws Exception {
+		Store store = getStore(inReq);
+		Cart cart = getCart(inReq);
+		
+		String username = inReq.getRequestParameter("userName");
+		String email = inReq.getRequestParameter("email");
+		String password = inReq.getRequestParameter("password");
+		
+		if(email != null){
+			email = email.toLowerCase().trim();
+		}
+		
 		if (cart.getCustomer() != null) {
-			if (userName == null) {
+			if (username == null && email == null) {
 				return;
 			}
-			if (cart.getCustomer().getUserName().equals(userName)) {
-				log.info("Already created " + userName);
-				return;
+			if ((username != null || email != null) && password != null) {
+				User user = null;
+				if(username != null){
+					user = getUserManager().getUser(username);
+				}
+				if(user == null && email != null){
+					user = getUserManager().getUserByEmail(email);
+				}
+				if (user != null && cart.getCustomer().getUserName().equals(user.getUserName())) {
+					log.info("Already created " + username);
+					return;
+				}
 			}
+			
 		}
 
 		Customer customer = null;
-		if (userName != null && passWord != null) {
-			User user = getUserManager().getUser(userName);
-			if (getUserManager().authenticate(user, passWord)) {
-				customer = store.getCustomerArchive().getCustomer(userName);
+		if ((username != null || email != null) && password != null) {
+			User user = null;
+			if(username != null){
+				user = getUserManager().getUser(username);
+			}
+			if(user == null && email != null){
+				user = getUserManager().getUserByEmail(email);
+			}
+			
+			if(user != null){
+				if (getUserManager().authenticate(user, password)) {
+					customer = store.getCustomerArchive().getCustomer(username);
+					inReq.putSessionValue("user", user);
+
+				} else{
+					inReq.putPageValue("authenticationstatus", "failed" );
+					String redirecturl = inReq.getPageProperty("registerpage");
+					cart.setCustomer(null);
+					inReq.setCancelActions(true);
+					inReq.forward(redirecturl);
+					
+					
+					return;
+				}
 			}
 		}
 
 		if (customer == null) {
-			if (!store.getAllowDuplicateAccounts()) {
-				// create a new customer
-				String email = inPageRequest.getRequestParameter("email");
-				email = email.toLowerCase().trim();
-				User user = getUserManager().getUserByEmail(email);
-				if (user != null) {
-					// TODO: Replace with a stream API
-					inPageRequest.forward(store.getStoreHome()
-							+ "/customers/duplicate.html");
-					return;
-				}
-			}
-			if (passWord == null) {
+			//Brand new user
+			if (password == null) {
 				customer = store.getCustomerArchive().createNewCustomer(null,
 						null);
 			} else {
 				customer = store.getCustomerArchive().createNewCustomer(null,
-						passWord);
+						password);
 			}
 			log.info("Created new Customer");
+			customer.getUser().setEnabled(true);
+			if(email != null){
+				customer.setEmail(email);
+			}
+			
+			inReq.putSessionValue("user", customer.getUser());
 		}
-		customer.getUser().setEnabled(true);
 		
 		cart.setCustomer(customer);
-		inPageRequest.putPageValue("user", customer.getUser());
-		inPageRequest.putPageValue("customer", customer);
+		inReq.putPageValue("user", customer.getUser());
+		inReq.putPageValue("customer", customer);
 	}
 
-	public void updateCustomer(WebPageRequest inPageRequest) throws Exception {
-		Cart cart = getCart(inPageRequest);
+	public void updateCustomer(WebPageRequest inReq) throws Exception {
+		Cart cart = getCart(inReq);
 		Customer customer = cart.getCustomer();
-
+		Store store = getStore(inReq);
 		// Page one stuff
-		String email = inPageRequest.getRequestParameter("email");
+		String email = inReq.getRequestParameter("email");
 		if (email != null) {
 			customer.setEmail(email);
-			String firstName = inPageRequest.getRequestParameter("firstName");
+			String firstName = inReq.getRequestParameter("firstName");
 			customer.setFirstName(firstName);
-			String lastName = inPageRequest.getRequestParameter("lastName");
+			String lastName = inReq.getRequestParameter("lastName");
 			customer.setLastName(lastName);
-			String company = inPageRequest.getRequestParameter("company");
+			String company = inReq.getRequestParameter("company");
 			if (company != null) {
 				customer.setCompany(company);
 			} else {
@@ -290,26 +322,26 @@ public class CartModule extends BaseStoreModule {
 						+ customer.getLastName());
 			}
 			customer.setAllowEmail(Boolean.valueOf(
-					inPageRequest.getRequestParameter("allowEmail"))
+					inReq.getRequestParameter("allowEmail"))
 					.booleanValue());
-			customer.setPhone1(inPageRequest.getRequestParameter("phone1"));
-			customer.setFax(inPageRequest.getRequestParameter("fax"));
+			customer.setPhone1(inReq.getRequestParameter("phone1"));
+			customer.setFax(inReq.getRequestParameter("fax"));
 			// TODO: Remove these, replace with list that the usermanager uses
 			// to display data
-			customer.setUserField1(inPageRequest
+			customer.setUserField1(inReq
 					.getRequestParameter("userfield1"));
-			customer.setUserField2(inPageRequest
+			customer.setUserField2(inReq
 					.getRequestParameter("userfield2"));
 			if (customer.getReferenceNumber() == null) {
-				customer.setReferenceNumber(inPageRequest
+				customer.setReferenceNumber(inReq
 						.getRequestParameter("referenceNumber"));
 			}
 		}
-		if (inPageRequest.getRequestParameter("billing.address1.value") != null) {
-			populateCustomerAddress(inPageRequest, customer.getBillingAddress());
+		if (inReq.getRequestParameter("billing.address1.value") != null) {
+			populateCustomerAddress(inReq, customer.getBillingAddress());
 		}
-		if (inPageRequest.getRequestParameter("shipping.address1.value") != null) {
-			populateCustomerAddress(inPageRequest,
+		if (inReq.getRequestParameter("shipping.address1.value") != null) {
+			populateCustomerAddress(inReq,
 					customer.getShippingAddress());
 		}
 
@@ -321,10 +353,15 @@ public class CartModule extends BaseStoreModule {
 		}
 		customer.setTaxRates(taxrates);
 
-		if (inPageRequest.getRequestParameter("taxExemptId") != null) {
-			customer.setTaxExemptId(inPageRequest
+		if (inReq.getRequestParameter("taxExemptId") != null) {
+			customer.setTaxExemptId(inReq
 					.getRequestParameter("taxExemptId"));
 		}
+		UserSearcher searcher = (UserSearcher)store.getSearcherManager().getSearcher("system", "user");
+		String[] fields = inReq.getRequestParameters("field");
+		
+		searcher.updateData(inReq, fields, customer);
+		
 
 		log.debug("Setting cart customer to " + customer);
 		cart.setCustomer(customer);
@@ -333,7 +370,7 @@ public class CartModule extends BaseStoreModule {
 		cart.setBillingAddress(customer.getBillingAddress());
 		customer.getUser().setEnabled(true);
 
-		inPageRequest.putPageValue("customer", customer);
+		inReq.putPageValue("customer", customer);
 	}
 
 	protected void populateCustomerAddress(WebPageRequest inPageRequest,

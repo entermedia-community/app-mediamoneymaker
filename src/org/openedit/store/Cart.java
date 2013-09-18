@@ -611,8 +611,11 @@ public class Cart extends BaseData
 	}
 	
 	public boolean canPlaceOrder(){
-		return (this.getCustomer()!=null && !this.getItems().isEmpty() && this.getCustomer().getBillingAddress(false)!=null &&
-				this.getCustomer().getPaymentMethod()!=null);
+		if(getItems() == null){
+			return false;
+		}
+		return (getCustomer()!=null && !getItems().isEmpty() && getCustomer().getBillingAddress(false)!=null &&
+				getCustomer().getPaymentMethod()!=null);
 	}
 
 }
