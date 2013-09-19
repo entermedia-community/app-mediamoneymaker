@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections.map.ListOrderedMap;
@@ -481,6 +480,7 @@ public class Order extends BaseData implements Comparable {
 		}
 		return list;
 	}
+	
 	public CartItem getCartItemByProductProperty( String inKey, String inValue ) {
 		CartItem item = null;
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
@@ -493,8 +493,21 @@ public class Order extends BaseData implements Comparable {
 		}
 		return item;
 	}
+	
 	public boolean containsItemByProductProperty( String inKey, String inValue ) {
 		return getCartItemByProductProperty(inKey, inValue) != null;
+	}
+	
+	public boolean containsProduct( Product product ) {
+		boolean exists = false;
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+			CartItem item = (CartItem) iterator.next();
+			if (item.getProduct().equals(product)) {
+				exists = true;
+				break;
+			}
+		}		
+		return exists;
 	}
 
 	public List<Refund> getRefunds() {

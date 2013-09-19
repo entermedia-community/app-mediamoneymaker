@@ -1,35 +1,61 @@
 #set($orderset = $context.getSessionValue("orderset"))
 #set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
 #set($storesearcher = $searcherManager.getSearcher($catalogid, "rogersstore"))
-
+#set($baditems = $orderset.getAllBadProducts())
+#set($outofstockitems = $orderset.getOutOfStockOrders())
+#set($outofstockproducts = $orderset.getAllOutOfStockProductsFromAllOrders())
+#set($orders = $orderset.getOrders())
+<a id="topofpage"></a>
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Rogers Corporate Orders</div>
 	<div class="ui-widget-content">
-	<h2>Your orders have been imported.</h2>
-	#set($orders = $orderset.getOrders())
+	<p style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 8px;">
+		<a href="#processedorders" class="btn" style="margin-right: 8px;">Jump to Order Status</a>
+		#if ($baditems.size()>0) 
+		<a href="#badproducts" class="btn" style="margin-right: 8px;">Jump to Bad Products</a>
+		#end
+		#if ($outofstockitems.size()>0)
+		<a href="#outofstock" class="btn" style="margin-right: 8px;">Jump to Out of Stock Problems</a>
+		#end
+		#if ($outofstockproducts.size()>0)
+		<a href="#stockproblems" class="btn" style="margin-right: 8px;">Jump to Out of Stock Problems</a>
+		#end
+		#if(($baditems.size() == 0) && ($outofstockitems.size() == 0) && ($outofstockproducts.size() == 0))
+		<a href="#bottomofpage" class="btn">Jump to Bottom of Page</a>
+		#end
+	</p>
+	#if(($baditems.size() == 0) && ($outofstockitems.size() == 0) && ($outofstockproducts.size() == 0))
+		<h2>Congratulations!</h2>
+		<p>There are no errors in these ${orders.size()} order(s).</p>
+		<p>Click continue to view an overview of your ${orders.size()} order(s).</p>
+		<form action="$home$apphome/rogers/orders/orderset/continueorder.html">
+			<input type="submit" name="submit" value="Continue">
+		</form>
+	#end
+	<h2>The following orders are ready to be processed.</h2>
 	<table >
 		<tr>
-			<th style="padding: 10px;">Edit</th>
-			<th style="padding: 10px;">Order ID</th>
-			<th style="padding: 10px;">Store ID</th>
-			<th style="padding: 10px;">Store Name</th>
-			<th style="padding: 10px;">Missing Products</th>
-			<th style="padding: 10px;">Inventory Problems</th>
-			<th style="padding: 10px;">Status</th>
+			<th style="padding: 8px;">Edit</th>
+			<th style="padding: 8px;">Order ID</th>
+			<th style="padding: 8px;">Store ID</th>
+			<th style="padding: 8px;">Store Name</th>
+			<th style="padding: 8px;">Missing Products</th>
+			<th style="padding: 8px;">Inventory Problems</th>
+			<th style="padding: 8px;">Status</th>
 		</tr>
 		<tr>
 	#foreach($order in $orders)
-			<td style="padding: 10px; text-align: center;">
+			<td style="padding: 8px; text-align: center;">
 				<a href="$home$apphome/rogers/orders/orderset/showorder.html?id=$order.getId()"><img src="$home$apphome/theme/images/edit-icon.png"/></a>
 			</td>
-			<td style="padding: 10px;">$order.getId()</td>
+			<td style="padding: 8px; white-space: nowrap;">$order.getId()</td>
 			#set($customerid = $order.getCustomer().getId())
 			#set($id = $customerid.split("-"))
 			#set($storeid = $id.get(1))
 			#set($rogersstore = $storesearcher.searchById($storeid))
-			<td style="padding: 10px;">$storeid</td>
-			<td style="padding: 10px;">$rogersstore.get("name")</td>
-			<td style="padding: 10px;">
+			<td style="padding: 8px; text-align: center;">$storeid</td>
+			<td style="padding: 8px; white-space: nowrap;">$rogersstore.get("name")</td>
+			<td style="padding: 8px; text-align: center;">
 			#if($orderset.doesOrderHaveBadProducts($order))
 				#set($badproducts = $orderset.getBadProductsPerOrder($order))
 				#foreach($product in $badproducts)
@@ -39,7 +65,7 @@
 				<p>None</p>
 			#end
 			</td>
-			<td style="padding: 10px;">
+			<td style="padding: 8px; text-align: center;">
 			#if($orderset.doesOrderHaveOutOfStockProducts($order))
 				#set($badproducts = $orderset.getOutOfStockPerOrder($order))
 				#foreach($productid in $badproducts)
@@ -50,7 +76,7 @@
 				<p>None</p>
 			#end
 			</td>
-			<td style="padding: 10px; text-align: center;">
+			<td style="padding: 8px; text-align: center;">
 			#if($orderset.doesOrderHaveBadProducts($order) || $orderset.doesOrderHaveOutOfStockProducts($order))
 				<img src="$home$apphome/theme/images/x-button.png"/>
 			#else
@@ -60,8 +86,8 @@
 		</tr>
 	#end
 	</table>
-	#set($baditems = $orderset.getAllBadProducts())
 	#if($baditems.size()>0)
+		<a id="badproducts"></a>
 		<h2>Bad Products in Orders</h2>
 		<p>The following products were not found and have NOT been added to your orders. Would you like to remove these items from your orders?</p>
 		#foreach($productid in $baditems)
@@ -77,65 +103,155 @@
 			</form>
 		</p>
 	#end 
-	#set($outofstockitems = $orderset.getOutOfStockOrders())
 	#if($outofstockitems.size()>0)
-		<p>&nbsp;</p>
+		<p>&nbsp;<a id="outofstock"></a></p>
 		<h2>Orders with Out of Stock Products.</h2>
 		<p>The following orders have products which are currently out of stock.</p>
 		<p>
 		<table >
 			<tr>
-				<th style="padding: 10px;">Order ID</th>
-				<th style="padding: 10px;">Products</th>
-				<th style="padding: 10px;">Quantity<br>Ordered</th>
-				<th style="padding: 10px;">Quantity<br>In Stock</th>
+				<th style="padding: 8px;">Order ID</th>
+				<th style="padding: 8px;">Products</th>
+				<th style="padding: 8px;">Quantity<br>Ordered</th>
+				<th style="padding: 8px;">Quantity<br>In Stock</th>
 			</tr>
-			#foreach($orderid in $outofstockitems)
+		#foreach($orderid in $outofstockitems)
 			<tr>
-				<td>$orderid</td>
-				<td>
-					#set($order = $orderset.getOrder($orderid))
-					#set($badstockproducts = $orderset.getOutOfStockPerOrder($order))
-					<ul>
-					#foreach($productid in $badstockproducts)
-						#set($product = $productsearcher.searchById($productid))
-						<li>$product.get("rogerssku")</li>
-					#end
-					</ul>
+				<td colspan="4">$orderid</td>
+			</tr>
+			#set($order = $orderset.getOrder($orderid))
+			#set($badstockproducts = $orderset.getOutOfStockPerOrder($order))
+			#foreach($productid in $badstockproducts)
+			<tr>
+				#set($product = $productsearcher.searchById($productid))
+				#set($invitem = $product.getInventoryItem(0))
+				#if ($invitem.getQuantityInStock() == 0)
+				<td>&nbsp;</td>
+				<td style="padding-left: 8px; padding-right: 8px;">
+					#set($product = $productsearcher.searchById($productid))
+					$product.get("rogerssku")
 				</td>
-				<td>
-					<ul>
-					#foreach($productid in $badstockproducts)
-						#set($product = $productsearcher.searchById($productid)) 
-						#set($qty = $orderset.getQuantityForProductInOrder($order, $product))
-						<li>$qty</li>
-					#end
-					</ul>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
+					#set($product = $productsearcher.searchById($productid)) 
+					#set($qty = $orderset.getQuantityForProductInOrder($order, $product))
+					$qty
 				</td>
-				<td>
-					<ul>
-					#foreach($productid in $badstockproducts)
-						#set($product = $productsearcher.searchById($productid))
-						#set($invitem = $product.getInventoryItem(0))
-						<li>$invitem.getQuantityInStock()</li>
-					#end
-					</ul>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
+					$invitem.getQuantityInStock()
 				</td>
+				#end
 			</tr>
 			#end
+			<tr>
+				<td colspan="4">&nbsp;</td>
+			</tr>
+		#end
 		</table>
 		</p>
-		<p>Would you like to remove all of the products from these orders that currently have quantity stock problems?</p>
-		<form action="$home$apphome/rogers/orders/orderset/removestockitems.html">
+		<p>Would you like to remove all of the products from these orders that are currently out of stock?</p>
+		<form action="$home$apphome/rogers/orders/orderset/removeoutofstockitems.html">
 			<input type="hidden" name="action" value="remove">
 			#foreach($orderid in $outofstockitems)
 			<input type="hidden" name="orders" value="${orderid}">
 			#end
-			<input type="submit" name="submit" class="btn" value="Remove all products from $outofstockitems.size() order(s) which have stock problems.">
+			<input type="submit" name="submit" class="btn" value="Remove all products from $outofstockitems.size() order(s) that are out of stock.">
 		</form>
-		
 	#end
-	#if(($baditems.size() == 0) && ($outofstockitems.size() == 0))
+	#if($outofstockproducts.size() > 0)
+	<p>&nbsp;<a id="stockproblems"></a></p>
+		#set($ctr=0)
+		#set($totalordered=0)
+		#foreach($prodid in $outofstockproducts)
+			#set($ctr=$ctr+1)
+	<form action="$home$apphome/rogers/orders/orderset/updateitems.html" class="updateform">
+		<p>&nbsp;</p>
+		<h2>Products which have stock problems.</h2>
+		<table >
+			<tr>
+				<th style="padding: 8px;">Product</th>
+				<th style="padding: 8px;">Quantity<br>In Stock</th>
+				<th style="padding: 8px;">Order #</th>
+				<th style="padding: 8px;">Store ID</th>
+				<th style="padding: 8px;">Store Name</th>
+				<th style="padding: 8px;">Quantity<br>Ordered</th>
+				<th style="padding: 8px;">Update</th>
+				<th style="padding: 8px;">Remove</th>
+			</tr>
+			#set($product = $productsearcher.searchById($prodid))
+			<tr>
+				<td colspan="8">$product.get("rogerssku") - $product.getName()</td>
+			</tr>
+			<tr>
+				<td colspan="8"><a 
+				href="$home$apphome/rogers/orders/orderset/removeitemfromallorders.html?product=${product.getId()}" 
+				class="btn">Remove ${product.get("rogerssku")} from all orders</a>
+				</td>
+			</tr>
+			#foreach ($order in $orderset.getOrders())
+				#if($order.containsProduct($product))
+			<tr>
+				<td>&nbsp;</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$orderset.getQuantityInStock($product)</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$order.getId()</td>
+					#set($customerid = $order.getCustomer().getId())
+					#set($id = $customerid.split("-"))
+					#set($storeid = $id.get(1))
+					#set($rogersstore = $storesearcher.searchById($storeid))
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$storeid</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$rogersstore</td>
+					#set($cartitem = $order.getItem($product.getInventoryItem(0).getSku()))
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$cartitem.getQuantity()</td>
+				#set($totalordered = $totalordered + $cartitem.getQuantity())
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
+					<input type="text" name="${order.getId()}:${product.getId()}" 
+						value="${cartitem.getQuantity()}" size="5" 
+						onkeyup="recalculateQuantities${ctr}()" 
+						class="formvalues${ctr}"/>
+					<input type="hidden" name="orderqty" value="${order.getId()}:${product.getId()}">
+				</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
+					<a href="$home$apphome/rogers/orders/orderset/removeitem.html?product=${product.getId()}&order=${order.getId()}"><img 
+					src="$home$apphome/theme/images/x-button.png"/></a>
+				</td>
+			</tr>
+				#end
+			#end
+			<tr>
+				<td colspan="8">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="6"><p style="text-align: right;">Total Amount:</p></td>
+				<td colspan="2"><div style="text-align: left;"><p class="totalamount${ctr}" style="margin-left: 15px;">${totalordered}</p></div></td>
+			</tr>
+			<tr>
+				<td colspan="7" style="text-align: right;"><input type="submit" name="submit" value="Update quantities for ${product.get("rogerssku")}"></td>
+			</tr>
+		</table>
+	</form>
+	<script type="text/javascript">
+	      function recalculateQuantities${ctr}() {
+	          var total = 0;
+	          jQuery.each(jQuery('.formvalues${ctr}'), function() {
+	              var value = $(this).val();
+	              console.log(value);
+	              if (value !== "") {
+	                  if (isInt(value)) {
+	                      var intVal = parseInt(value);
+	                      total += intVal;
+	                      console.log(total);
+	                  }
+	              }
+	          });
+	          jQuery('.totalamount${ctr}').html(total.toString());
+	      }
+	      function isInt(n) {
+	         return n % 1 === 0;
+	      }
+	</script>
+		#end
+	#end
+	#if(($baditems.size() == 0) && ($outofstockitems.size() == 0) && ($outofstockproducts.size() == 0))
+		<p>&nbsp;<a id="bottomofpage"></a></p>
 		<h2>Congratulations!</h2>
 		<p>There are no errors in these ${orders.size()} order(s).</p>
 		<p>Click continue to view an overview of your ${orders.size()} order(s).</p>
@@ -145,4 +261,3 @@
 	#end
 	</div>
 </div>
-

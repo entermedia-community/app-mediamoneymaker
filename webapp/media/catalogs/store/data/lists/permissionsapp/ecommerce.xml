@@ -10,8 +10,7 @@
 	<permission id="rogersprice" permissiontype="ecommerce" name="View Rogers Price" description="View Rogers Price (wholesale)" ordering="200"/>
 
 	<permission id="viewtesting" permissiontype="ecommerce" name="View Testing Section" description="View the shopping cart" ordering="200"/>
-		
-	
+	<permission id="superadmin" permissiontype="ecommerce" name="SuperAdmin Account" description="Advanced Account with Special Admin rights" ordering="200"/>
 	
 </permissions>
 

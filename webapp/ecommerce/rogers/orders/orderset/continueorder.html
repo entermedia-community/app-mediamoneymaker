@@ -3,8 +3,13 @@
 #set($storesearcher = $searcherManager.getSearcher($catalogid, "rogersstore"))
 
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">Rogers Corporate Orders</div>
+	<div class="ui-widget-header"><a id="topofpage"></a>Rogers Corporate Orders</div>
 	<div class="ui-widget-content">
+		<div class="rogers-summary-details">
+			<a href="#bottom" class="btn">Jump to the Bottom of the page</a>
+		</div>
+		<h3 style="margin-top: 15px;">Click the order number to expand and view.</h3>
+		<h3 style="margin-bottom: 15px;">Click the order number again to close. </h3>
 		#set($orders = $orderset.getOrders())
 		#set($ctr = 0)
 		#foreach($order in $orders)
@@ -12,7 +17,6 @@
 			#set($id = $customerid.split("-"))
 			#set($storeid = $id.get(1))
 			#set($rogersstore = $storesearcher.searchById($storeid))
-			
 		<div class="rogers-summary">
 			<ul>
 				<li><a href="#" class="order-row" data-orderid="$order.getId()">$order.getId()</a></li>
@@ -55,6 +59,7 @@
 			</table>
 		</div>
 		#end
+		<a id="bottom"></a>
 		<div class="rogers-summary" style="margin-top: 10px;">
 			<table>
 				<tr>
@@ -81,6 +86,7 @@
 				</tr>
 			</table>
 		</div>
+		<div class="rogers-summary" style="margin-top: 10px;"><a href="#topofpage" class="btn">Back to Top of Page</a>
 	</div>
 </div>
 <script type="text/javascript">
@@ -88,6 +94,7 @@
 		$(".order-row").click(function() {
 			var orderid = $(this).data("orderid");
 			$("#order-" + orderid).toggle(500);
+			return false;
 		});
 	});
 </script>

@@ -1,6 +1,22 @@
 #set($url = "$content.siteroot/ecommerce/views/modules/invoice/edit/edit.html")
 #set($id = $context.getRequestParameter("id"))
 #set($options = "id=$id&viewid=invoiceinvoice&viewpath=invoice/invoiceinvoice&searchtype=invoice")
+
+#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
+#set($invoice = $invoicesearcher.searchById($id))
+#set($invoicenumber = $invoice.get("invoicenumber"))
+
+#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+#set($distributor = $distributorsearcher.searchById($invoice.get("distributor")))
+#set($distributorname = $distributor.getName())
+
+#set($order = $context.getRequestParameter("order"))
+#set($orderid = $order.getId())
+
 <h2>Invoice Notification</h2>
 <p>The following invoice has been created!</p>
+<p>Invoice Number: $invoicenumber</p>
+<p>Order: $orderid</p>
+<p>Distributor: $distributorname</p>
+
 <p><a href="${url}?${options}">Please click here to view.</a></p>
