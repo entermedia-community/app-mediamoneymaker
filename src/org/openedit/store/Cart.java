@@ -617,5 +617,30 @@ public class Cart extends BaseData
 		return (getCustomer()!=null && !getItems().isEmpty() && getCustomer().getBillingAddress(false)!=null &&
 				getCustomer().getPaymentMethod()!=null);
 	}
+	
+	public boolean hasProductsWithPartialPayments(){
+		Iterator<?> itr = getItems().iterator();
+		while (itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			Product product = item.getProduct();
+			if (Boolean.parseBoolean(product.get("allowspartialpayments"))){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void updatePartialPayment(String inProductId, String inFrequency, String inOccurrences){
+		Iterator<?> itr = getItems().iterator();
+		while (itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			Product product = item.getProduct();
+			if (product.getId()!=null && product.getId().equals(inProductId)){
+				item.setProperty("occurrences", inOccurrences);
+				item.setProperty("frequency",inFrequency);
+				return;
+			}
+		}
+	}
 
 }
