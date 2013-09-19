@@ -229,7 +229,7 @@ public class FreshbooksManager {
 			line.addElement("name").setText(item.getProduct().getId());
 			line.addElement("description").setText(item.getProduct().getName());
 			line.addElement("unit_cost").setText(
-					item.getYourPrice().toShortString());
+					item.getYourPrice().toShortString().replace(",",""));
 			line.addElement("quantity").setText(
 					String.valueOf(item.getQuantity()));
 
@@ -262,7 +262,7 @@ public class FreshbooksManager {
 		shipping.addElement("quantity").setText("1");
 		if (inOrder.getTotalShipping() != null) {
 			shipping.addElement("unit_cost").setText(
-					inOrder.getTotalShipping().toShortString());
+					inOrder.getTotalShipping().toShortString().replace(",",""));
 		}
 		int count = 1;
 		for (Iterator<?> iterator2 = inOrder.getTaxes().keySet().iterator(); iterator2
@@ -444,7 +444,7 @@ public class FreshbooksManager {
 			Element line = inLines.addElement("line");
 			line.addElement("name").setText(item.getProduct().getId());
 			line.addElement("description").setText(item.getProduct().getName());
-			line.addElement("unit_cost").setText(unitCost.toShortString());
+			line.addElement("unit_cost").setText(unitCost.toShortString().replace(",",""));
 			line.addElement("quantity").setText(String.valueOf(item.getQuantity()));
 			
 			int count = 1;
