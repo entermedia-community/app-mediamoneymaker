@@ -19,17 +19,17 @@
 </h5>
 #end
 #if($canviewcart)
-			#if($product.isInStock())
-			<div style="margin-top:3px;float:right; width: 150px;">
-				<select name="quantity">
-				#foreach($numb in [1..100])
-					<option value="$numb">$numb</option>
-				#end
-				</select>
-				<input class="btn right" type="submit" value="[[Add to Cart]]" />
-			</div>
-			<br/><br/>
-			#end
+	#if($product.isInStock())
+	<div style="margin-top:3px;float:right; width: 150px;">
+		<select name="quantity">
+		#foreach($numb in [1..100])
+			<option value="$numb">$numb</option>
+		#end
+		</select>
+		<input class="btn right" type="submit" value="[[Add to Cart]]" />
+	</div>
+	<br/><br/>
+	#end
  #end
 
 </li>
