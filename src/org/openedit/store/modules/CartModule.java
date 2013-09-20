@@ -20,6 +20,7 @@ import org.openedit.store.CartItem;
 import org.openedit.store.Category;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.InventoryItem;
+import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ProductAdder;
 import org.openedit.store.PurchaseOrderMethod;
@@ -271,7 +272,7 @@ public class CartModule extends BaseStoreModule {
 					String redirecturl = inReq.getPageProperty("registerpage");
 					cart.setCustomer(null);
 					inReq.setCancelActions(true);
-					inReq.forward(redirecturl);
+					if (redirecturl!= null) inReq.forward(redirecturl);
 					
 					
 					return;
@@ -533,6 +534,23 @@ public class CartModule extends BaseStoreModule {
 		} else {
 			customer.getUser().put("addresslist", buff.toString());
 		}
+	}
+	
+	public void updatePaymentAdjustments(WebPageRequest inReq) 
+			throws OpenEditException
+	{
+		Cart cart = getCart(inReq);
+		String[] products = inReq.getRequestParameters("products");
+		if (products!=null && products.length!=0){
+			for(String product:products){
+				String frequency = inReq.getRequestParameter(product+".frequency");
+				String occurrences = inReq.getRequestParameter(product+".occurrences");
+				if (frequency!=null && occurrences!=null){
+					cart.updatePartialPayment(product, frequency, occurrences);
+				}
+			}
+		}
+		
 	}
 
 	public void saveCreditPaymentMethodData(WebPageRequest inPageRequest)

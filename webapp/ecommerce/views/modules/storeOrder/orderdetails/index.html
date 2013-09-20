@@ -118,6 +118,7 @@
 			<p class="results-list">
 			#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
 			#set($d = $distributorsearcher.searchById($product.get("distributor")))
+			#set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 			#set($invoices = $invoicesearcher.fieldSearch("ponumber", $orderNumber))
 			#if ($invoices.size() > 1)
 				#set($breakflag = "false")
@@ -137,6 +138,7 @@
 					$d.get("name")
 				#end
 			#else
+				#set($breakflag = "false")
 				#if ($invoices.size() == 1)
 					#set($inv = $invoices.get(0))
 					#set($invoiceID = $inv.getId())
@@ -147,6 +149,9 @@
 						<a href="$url" style="font-size: 14px; color: blue;">$d.get("name")</a>
 						#set($breakflag = "true")
 						#break
+					#end
+					#if($breakflag == "false")
+						$d.get("name")
 					#end
 				#else
 					$d.get("name")

@@ -488,6 +488,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 										emaillist.add(userInfo.get("email"));
 									}
 									inReq.putPageValue("id", ediInvoice.getId());
+									inReq.putPageValue("order", order);
 									String templatePage = "/ecommerce/views/modules/invoice/workflow/invoice-notification.html";
 									String subject = "INVOICE has been generated: " + ediInvoice.get("invoicenumber");
 									sendEmail(archive, context, emaillist, templatePage, subject);

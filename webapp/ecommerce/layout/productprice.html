@@ -19,42 +19,39 @@
 </h5>
 #end
 #if($canviewcart)
-			#if($product.isInStock())
-			<div style="margin-top:3px;float:right; width: 150px;">
-				<select name="quantity">
-				#foreach($numb in [1..100])
-					<option value="$numb">$numb</option>
-				#end
-				</select>
-				<input class="btn right" type="submit" value="[[Add to Cart]]" />
-			</div>
-			<br/><br/>
-			#end
+	#if($product.isInStock())
+	<div style="margin-top:3px;float:right; width: 150px;">
+		<select name="quantity">
+		#foreach($numb in [1..100])
+			<option value="$numb">$numb</option>
+		#end
+		</select>
+		<input class="btn right" type="submit" value="[[Add to Cart]]" />
+	</div>
+	<br/><br/>
+	#end
  #end
 
 </li>
     #end
 
 #if( $product.isAvailable() )                                                                                                                                                                          
-	#if($cancheckout)
+	#if($product.isInStock())
 	
-		#if($product.isInStock())
+		<li class="price">
+			<div class="instock">[[Current Stock]]: $product.getInventoryItem(0).getQuantityInStock()</div>
+		</li>
 		
-			<li class="price">
-				<div class="instock">[[Current Stock]]: $product.getInventoryItem(0).getQuantityInStock()</div>
-			</li>
-			
-		#else
+	#else
+	
+		<li class="price">
+			<div class="instock">
+				[[This product is currently out of stock.]] 
+				<a class="btn" href="$apphome/views/myaccount/tickets/newnotification.html?product.value=${product.id}&tickettype.value=stockrequest&viewid=ticketsticket_details&viewpath=ticket/ticketticket_details">[[Notify me when it's available]]</a>
+			</div>
+		</li>
 		
-			<li class="price">
-				<div class="instock">
-					[[This product is currently out of stock.]] 
-					<a class="btn" href="$apphome/views/myaccount/tickets/newnotification.html?product.value=${product.id}&tickettype.value=stockrequest&viewid=ticketsticket_details&viewpath=ticket/ticketticket_details">[[Notify me when it's available]]</a>
-				</div>
-			</li>
-			
-			
-		#end
+		
 	#end
 	<li class="price">
 	
@@ -111,6 +108,16 @@
         		#end
         	#end 
         #end
+        #if($canviewtesting)
+        	#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+        	#set($distrib = $distributorsearcher.searchById($product.get("distributor")))
+        	#if($distrib)
+        	<strong>Distributor:</strong>&nbsp;$distrib.getName()
+        	#else
+        	<strong>Distributor:</strong>&nbsp;[[Not found!]]
+        	#end
+        #end
+        
     </li>
 #end
 	

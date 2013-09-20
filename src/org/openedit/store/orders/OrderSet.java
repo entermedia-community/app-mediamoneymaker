@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
+import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
@@ -101,6 +102,11 @@ public class OrderSet {
 		return qty;
 	}
 	
+	public int getQuantityInStock( Product product ) {
+		InventoryItem item = product.getInventoryItem(0);
+		return item.getQuantityInStock();
+	}
+	
 	public int getQuantityForProductInOrder(Order inOrder, Product inProduct) {
 		int qty = 0;
 		for (Iterator<CartItem> items = inOrder.getItems().iterator(); items.hasNext();) {
@@ -122,12 +128,7 @@ public class OrderSet {
 					problemorders.add(order.getId());	
 					continue;
 				}
-				int totalrequested = getQuantityForProduct(item.getProduct());
-				if(totalrequested > item.getInventoryItem().getQuantityInStock()){
-					problemorders.add(order.getId());
-				}
 			}
-			
 		}
 		return problemorders;
 	}
@@ -145,6 +146,15 @@ public class OrderSet {
 			if(totalrequested > item.getInventoryItem().getQuantityInStock()){
 				badProducts.add(product.getId());
 			}
+		}
+		return badProducts;
+	}
+	
+	public Set<String> getAllOutOfStockProductsFromAllOrders() {
+		Set<String> badProducts = new TreeSet<String>();
+		for (Iterator<Order> orderIterator = getOrders().iterator(); orderIterator.hasNext();) {
+			Order order = (Order) orderIterator.next();
+			badProducts.addAll(getOutOfStockPerOrder(order));
 		}
 		return badProducts;
 	}

@@ -691,6 +691,33 @@ public class OrderModule extends BaseModule
 		}
 	}
 	
+	public void removeItem( WebPageRequest inContext ) {
+		String inProduct = inContext.getRequestParameter("product");
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		for (Iterator<Order> orderIterator = orderSet.getOrders().iterator(); orderIterator.hasNext();) {
+			List<CartItem> removeList = new ArrayList<CartItem>();
+			Order order = (Order) orderIterator.next();
+			if (order != null) {
+				for (Iterator cartItemIterator = order.getItems().iterator(); cartItemIterator.hasNext();) {
+					CartItem cartItem = (CartItem) cartItemIterator.next();
+					Product product = cartItem.getProduct();
+					if (product.getId().equals(inProduct)) {
+						removeList.add(cartItem);
+						break;
+					}
+				}
+				if (removeList.size()>0) {
+					for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
+						CartItem cartItem = (CartItem) itemIter.next();
+						order.getCart().removeItem(cartItem);
+					}
+				}
+				Store store = getStore(inContext);
+				orderSet.recalculateAll(store);
+			}
+		}
+	}
+	
 	public void removeBadStockFromOrders( WebPageRequest inContext ) {
 		String[] inOrders = inContext.getRequestParameters("orders");
 		List<String> badOrders = Arrays.asList(inOrders);
@@ -718,6 +745,99 @@ public class OrderModule extends BaseModule
 						CartItem cartItem = (CartItem) itemIter.next();
 						order.getCart().removeItem(cartItem);
 					}
+				}
+			}
+			Store store = getStore(inContext);
+			orderSet.recalculateAll(store);
+		}
+	}
+
+	public void removeStockFromOrder( WebPageRequest inContext ) {
+		String inOrder = inContext.getRequestParameter("order");
+		String inProduct = inContext.getRequestParameter("product");
+		
+		Store store = getStore(inContext);
+		List<CartItem> removeList = new ArrayList<CartItem>();
+		
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		Order order = orderSet.getOrder(inOrder);
+		if (order != null) {
+			for (Iterator cartItemIterator = order.getItems().iterator(); cartItemIterator.hasNext();) {
+				CartItem cartItem = (CartItem) cartItemIterator.next();
+				Product product = cartItem.getProduct();
+				if (product.getId().equals(inProduct)) {
+					removeList.add(cartItem);
+					break;
+				}
+			}
+			if (removeList.size()>0) {
+				for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
+					CartItem cartItem = (CartItem) itemIter.next();
+					order.getCart().removeItem(cartItem);
+				}
+			}
+			orderSet.recalculateAll(store);
+		}
+	}
+	
+	public void removeOutOfStockItemsFromOrders( WebPageRequest inContext ) {
+		String[] inOrders = inContext.getRequestParameters("orders");
+		List<String> badOrders = Arrays.asList(inOrders);
+		
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		if (orderSet.getOutOfStockOrders().size() > 0) {
+			for (Iterator<String> badOrderIterator = badOrders.iterator(); badOrderIterator.hasNext();) {
+				List<CartItem> removeList = new ArrayList<CartItem>();
+				String orderId = badOrderIterator.next();
+				Order order = orderSet.getOrder(orderId);
+				for (Iterator<CartItem> cartItemIterator = order.getItems().iterator(); cartItemIterator.hasNext();) {
+					CartItem cartItem = (CartItem) cartItemIterator.next();
+					Product product = cartItem.getProduct();
+					if (!product.isInStock()) {
+						removeList.add(cartItem);
+					}
+				}
+				if (removeList.size()>0) {
+					for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
+						CartItem cartItem = (CartItem) itemIter.next();
+						order.getCart().removeItem(cartItem);
+					}
+				}
+			}
+			Store store = getStore(inContext);
+			orderSet.recalculateAll(store);
+		}
+	}
+	public void updateOrders( WebPageRequest inContext ) {
+		OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+		String[] inOrders = inContext.getRequestParameters("orderqty");
+		
+		List<String> processOrders = Arrays.asList(inOrders);
+		for (Iterator<String> iterator = processOrders.iterator(); iterator.hasNext();) {
+			List<CartItem> removeList = new ArrayList<CartItem>();
+			String key = (String) iterator.next();
+			String qty = inContext.getRequestParameter(key);
+			String[] info = key.split(":");
+			String orderid = info[0];
+			String productid = info[1];
+			Order order = orderSet.getOrder(orderid);
+			for (Iterator<CartItem> cartItemIterator = order.getItems().iterator(); cartItemIterator.hasNext();) {
+				CartItem cartItem = (CartItem) cartItemIterator.next();
+				Product product = cartItem.getProduct();
+				if (product.getId().equals(productid)) {
+					int newValue = Integer.parseInt(qty);
+					if (newValue > 0) {
+						cartItem.setQuantity(newValue);
+					} else {
+						removeList.add(cartItem);
+					}
+					break;
+				}
+			}
+			if (removeList.size()>0) {
+				for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
+					CartItem cartItem = (CartItem) itemIter.next();
+					order.getCart().removeItem(cartItem);
 				}
 			}
 			Store store = getStore(inContext);
