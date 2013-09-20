@@ -224,9 +224,12 @@ public class CartModule extends BaseStoreModule {
 		Store store = getStore(inReq);
 		Cart cart = getCart(inReq);
 		
+		//page could have username, email, password + first/last names
 		String username = inReq.getRequestParameter("userName");
 		String email = inReq.getRequestParameter("email");
 		String password = inReq.getRequestParameter("password");
+		String firstname = inReq.getRequestParameter("firstName");
+		String lastname = inReq.getRequestParameter("lastName");
 		
 		if (username!=null && username.isEmpty()) {
 			username = null;
@@ -238,6 +241,12 @@ public class CartModule extends BaseStoreModule {
 		}
 		if (password!=null && password.isEmpty()) {
 			password = null;
+		}
+		if (firstname!=null && firstname.isEmpty()) {
+			firstname = null;
+		}
+		if (lastname!=null && lastname.isEmpty()) {
+			lastname = null;
 		}
 		
 		if (cart.getCustomer() != null) {
@@ -300,10 +309,16 @@ public class CartModule extends BaseStoreModule {
 			if(email != null){
 				customer.setEmail(email);
 			}
-			
 			inReq.putSessionValue("user", customer.getUser());
 		}
 		
+		//final sanity check 
+		if (firstname!=null) {
+			customer.setFirstName(firstname);
+		}
+		if (lastname!=null) {
+			customer.setLastName(lastname);
+		}
 		customer.setPaymentMethod(null);//make sure payment method has been reset
 		
 		cart.setCustomer(customer);
