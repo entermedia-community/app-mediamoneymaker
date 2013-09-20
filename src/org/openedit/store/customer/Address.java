@@ -126,9 +126,31 @@ public class Address extends ElementData
 	{
 		setProperty(DESCRIPTION, inDescription);
 	}
+	public boolean isComplete(){
+		if (getAddress1()==null || getAddress1().isEmpty())
+			return false;
+		if (getCity()==null || getCity().isEmpty())
+			return false;
+		if (getState()==null || getState().isEmpty())
+			return false;
+		if (getZipCode()==null || getZipCode().isEmpty())
+			return false;
+		if (getCountry()==null || getCountry().isEmpty())
+			return false;
+		return true;
+	}
 	
 	public String toString()
 	{
-		return super.toString();
+		String str = super.toString();
+		if (str==null || str.isEmpty()){
+			StringBuilder buf = new StringBuilder();
+			buf.append(getAddress1())
+				.append(getAddress2()!=null && !getAddress2().isEmpty() ? " "+getAddress2() : "")
+				.append(", ").append(getCity()).append(", ").append(getState())
+				.append(", ").append(getZipCode()).append(", ").append(getCountry());
+			str = getPrefix()+": "+buf.toString().replace("null,", "").replace("null","");
+		}
+		return str;
 	}
 }

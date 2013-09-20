@@ -611,11 +611,29 @@ public class Cart extends BaseData
 	}
 	
 	public boolean canPlaceOrder(){
-		if(getItems() == null){
+		if(getItems() == null || getItems().isEmpty() || getCustomer()==null){
+			System.out.println("no customer or orders");
 			return false;
 		}
-		return (getCustomer()!=null && !getItems().isEmpty() && getCustomer().getBillingAddress(false)!=null &&
-				getCustomer().getPaymentMethod()!=null);
+		if (getCustomer().getAddressList()==null || getCustomer().getAddressList().isEmpty()){
+			System.out.println("no addresses");
+			return false;
+		}
+		if (getCustomer().getBillingAddress()==null || !getCustomer().getBillingAddress().isComplete()){
+			System.out.println("no billing address");
+			return false;
+		}
+		if (getCustomer().getPaymentMethod()==null){
+			System.out.println("no method of payment");
+			return false;
+		}
+		if (getCustomer().getTaxRates()==null || getCustomer().getTaxRates().isEmpty()){
+			if (getCustomer().getTaxExemptId()==null || getCustomer().getTaxExemptId().isEmpty()){
+				System.out.println("no tax rate and not tax exempt");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public boolean hasProductsWithPartialPayments(){

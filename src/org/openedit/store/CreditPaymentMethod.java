@@ -12,6 +12,8 @@ import java.text.NumberFormat;
  */ 
 public class CreditPaymentMethod extends PaymentMethod
 {
+	public static final String MASK = "*";
+	
 	protected CreditCardType fieldCreditCardType;
 	protected String fieldCardNumber = "";
 	protected int fieldExpirationMonth = 0;
@@ -139,6 +141,22 @@ public class CreditPaymentMethod extends PaymentMethod
 	{
 		fieldNote = inNote;
 	}
+	public String getMaskedCardNumber(){
+		if (getCardNumber()==null || getCardNumber().isEmpty())
+			return getCardNumber();
+		int length = getCardNumber().length();
+		String mask = getCardNumber();
+		if (length >= 4) {
+			String sub = getCardNumber().substring(getCardNumber().length()-4);
+			return pad("",MASK,length-4) + sub;
+		}
+		return mask;
+	}
+	
+	protected String pad(String base, String str, int length){
+		if (base.length() >= length) return base;
+		return pad(base+str,str,length);
+	}
 
 	public String getCardVerificationCode() {
 		return fieldCardVerificationCode;
@@ -146,6 +164,17 @@ public class CreditPaymentMethod extends PaymentMethod
 
 	public void setCardVerificationCode(String fieldCardVerificationCode) {
 		this.fieldCardVerificationCode = fieldCardVerificationCode;
+	}
+	public String getMaskedVerificationCode(){
+		if (getCardVerificationCode()==null || getCardVerificationCode().isEmpty())
+			return getCardVerificationCode();
+		int length = getCardVerificationCode().length();
+		return pad("",MASK,length);
+	}
+	public static boolean isMasked(String inValue){
+		if (inValue == null || inValue.isEmpty())
+			return false;
+		return (inValue.contains(MASK));
 	}
 
 }

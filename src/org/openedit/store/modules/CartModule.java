@@ -228,8 +228,16 @@ public class CartModule extends BaseStoreModule {
 		String email = inReq.getRequestParameter("email");
 		String password = inReq.getRequestParameter("password");
 		
-		if(email != null){
+		if (username!=null && username.isEmpty()) {
+			username = null;
+		}
+		if (email!=null && email.isEmpty()) {
+			email = null;
+		} else if (email != null){
 			email = email.toLowerCase().trim();
+		}
+		if (password!=null && password.isEmpty()) {
+			password = null;
 		}
 		
 		if (cart.getCustomer() != null) {
@@ -249,7 +257,6 @@ public class CartModule extends BaseStoreModule {
 					return;
 				}
 			}
-			
 		}
 
 		Customer customer = null;
@@ -266,15 +273,14 @@ public class CartModule extends BaseStoreModule {
 				if (getUserManager().authenticate(user, password)) {
 					customer = store.getCustomerArchive().getCustomer(username);
 					inReq.putSessionValue("user", user);
-
 				} else{
 					inReq.putPageValue("authenticationstatus", "failed" );
 					String redirecturl = inReq.getPageProperty("registerpage");
 					cart.setCustomer(null);
 					inReq.setCancelActions(true);
-					if (redirecturl!= null) inReq.forward(redirecturl);
-					
-					
+					if (redirecturl!= null) {
+						inReq.forward(redirecturl);
+					}
 					return;
 				}
 			}
@@ -297,6 +303,8 @@ public class CartModule extends BaseStoreModule {
 			
 			inReq.putSessionValue("user", customer.getUser());
 		}
+		
+		customer.setPaymentMethod(null);//make sure payment method has been reset
 		
 		cart.setCustomer(customer);
 		inReq.putPageValue("user", customer.getUser());
@@ -338,35 +346,48 @@ public class CartModule extends BaseStoreModule {
 						.getRequestParameter("referenceNumber"));
 			}
 		}
-		if (inReq.getRequestParameter("billing.address1.value") != null) {
+		if (inReq.getRequestParameter("billing.address1.value") != null && 
+				!inReq.getRequestParameter("billing.address1.value").isEmpty()) {
 			populateCustomerAddress(inReq, customer.getBillingAddress());
 		}
-		if (inReq.getRequestParameter("shipping.address1.value") != null) {
+		if (inReq.getRequestParameter("shipping.address1.value") != null && 
+				!inReq.getRequestParameter("shipping.address1.value").isEmpty()) {
+			System.out.println(" &&& saving shipping address");
 			populateCustomerAddress(inReq,
 					customer.getShippingAddress());
 		}
-
-		List taxrates = cart.getStore().getTaxRatesFor(
-				customer.getShippingAddress().getState());
-		if (customer.getShippingAddress().getState() == null) {
-			taxrates = cart.getStore().getTaxRatesFor(
-					customer.getBillingAddress().getState());
+		
+		Address taxRateAddress = null;
+		if (customer.getShippingAddress()!=null && 
+				customer.getShippingAddress().getState()!=null &&
+				!customer.getShippingAddress().getState().isEmpty()){
+			taxRateAddress = customer.getShippingAddress();
+			
+		} else if (customer.getBillingAddress()!=null && 
+				customer.getBillingAddress().getState()!=null &&
+				!customer.getBillingAddress().getState().isEmpty()){
+			taxRateAddress = customer.getBillingAddress();
 		}
-		customer.setTaxRates(taxrates);
+		if (taxRateAddress!=null){
+			List<?> taxrates = cart.getStore().getTaxRatesFor(taxRateAddress.getState());
+			customer.setTaxRates(taxrates);
+		}
 
-		if (inReq.getRequestParameter("taxExemptId") != null) {
+		if (inReq.getRequestParameter("taxExemptId") != null && 
+				!inReq.getRequestParameter("taxExemptId").isEmpty()) {
 			customer.setTaxExemptId(inReq
 					.getRequestParameter("taxExemptId"));
 		}
+		
 		UserSearcher searcher = (UserSearcher)store.getSearcherManager().getSearcher("system", "user");
 		String[] fields = inReq.getRequestParameters("field");
-		
 		searcher.updateData(inReq, fields, customer);
-		
 
 		log.debug("Setting cart customer to " + customer);
 		cart.setCustomer(customer);
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
+		
+		System.out.println("&&& shipping address: "+customer.getShippingAddress());
 		cart.setShippingAddress(customer.getShippingAddress());
 		cart.setBillingAddress(customer.getBillingAddress());
 		customer.getUser().setEnabled(true);
@@ -392,9 +413,6 @@ public class CartModule extends BaseStoreModule {
 				"address2"));
 		inAddress.setCity(getAddressValue(inPageRequest, inPrefix, "city"));
 		String state = getAddressValue(inPageRequest, inPrefix, "state");
-//		if (state != null) {
-//			state = state.toUpperCase();
-//		}
 		inAddress.setState(state);
 		inAddress
 				.setCountry(getAddressValue(inPageRequest, inPrefix, "country"));
@@ -439,6 +457,8 @@ public class CartModule extends BaseStoreModule {
 			populateAddressList(cart.getCustomer());
 
 			inPageRequest.putPageValue("customer", cart.getCustomer());
+		} else {
+			
 		}
 
 		return customer;
@@ -553,21 +573,21 @@ public class CartModule extends BaseStoreModule {
 		
 	}
 
-	public void saveCreditPaymentMethodData(WebPageRequest inPageRequest)
+	public void saveCreditPaymentMethodData(WebPageRequest inReq)
 			throws OpenEditException
 
 	{
-		Cart cart = getCart(inPageRequest);
+		Cart cart = getCart(inReq);
 
 		// check for billing info
-		if (inPageRequest.getRequestParameter("billing.address1.value") != null) {
-			populateCustomerAddress(inPageRequest, cart.getCustomer()
+		if (inReq.getRequestParameter("billing.address1.value") != null) {
+			populateCustomerAddress(inReq, cart.getCustomer()
 					.getBillingAddress());
 		}
 
 		CreditPaymentMethod method = null;
 		// PO
-		String purchaseorder = inPageRequest
+		String purchaseorder = inReq
 				.getRequestParameter("purchaseorder");
 		if (purchaseorder != null && purchaseorder.trim().length() > 0) {
 			PurchaseOrderMethod po = new PurchaseOrderMethod();
@@ -577,37 +597,40 @@ public class CartModule extends BaseStoreModule {
 			method = new CreditPaymentMethod();
 		}
 		// Card type
-		String cardType = inPageRequest.getRequestParameter("cardType");
-		if (cardType != null) {
-			method.setCreditCardType(getStore(inPageRequest).getCreditCardType(
+		String cardType = inReq.getRequestParameter("cardType");
+		if (cardType != null && !cardType.isEmpty()) {
+			method.setCreditCardType(getStore(inReq).getCreditCardType(
 					cardType));
 		}
 		// Card number
-		String cardNumber = inPageRequest.getRequestParameter("cardNumber");
-		method.setCardNumber(cardNumber);
-		String cardVerificationCode = inPageRequest
-				.getRequestParameter("cardVerificationCode");
-		method.setCardVerificationCode(cardVerificationCode);
+		String cardNumber = inReq.getRequestParameter("cardNumber");
+		if (!CreditPaymentMethod.isMasked(cardNumber)){
+			method.setCardNumber(cardNumber);
+		}
+		String cardVerificationCode = inReq.getRequestParameter("cardVerificationCode");
+		if (!CreditPaymentMethod.isMasked(cardVerificationCode)){
+			method.setCardVerificationCode(cardVerificationCode);
+		}
 		// Expiration month
-		String expirationMonth = inPageRequest
+		String expirationMonth = inReq
 				.getRequestParameter("expirationMonth");
 		if (expirationMonth != null && !expirationMonth.trim().equals("")) {
 			method.setExpirationMonth(Integer.valueOf(expirationMonth)
 					.intValue());
 		}
 		// Expiration year
-		String expirationYear = inPageRequest
+		String expirationYear = inReq
 				.getRequestParameter("expirationYear");
 		if (expirationYear != null && !expirationYear.trim().equals("")) {
 			method.setExpirationYear(Integer.valueOf(expirationYear).intValue());
 		}
 
-		String note = inPageRequest.getRequestParameter("ordernote");
+		String note = inReq.getRequestParameter("ordernote");
 		if (note != null) {
 			method.setNote(note);
 		}
 
-		String bill = inPageRequest.getRequestParameter("billmelater");
+		String bill = inReq.getRequestParameter("billmelater");
 		boolean billMeLater = (bill != null && bill.equalsIgnoreCase("true"));
 		method.setBillMeLater(billMeLater);
 
@@ -637,6 +660,9 @@ public class CartModule extends BaseStoreModule {
 	public void saveShippingMethod(WebPageRequest inPageRequest)
 			throws OpenEditException {
 		String method = inPageRequest.getRequestParameter("shippingmethod");
+		if (method==null || method.isEmpty()){
+			return;
+		}
 		Cart cart = getCart(inPageRequest);
 		Store store = getStore(inPageRequest);
 		if (method != null) {
