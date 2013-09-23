@@ -677,19 +677,19 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	 * 
 	 * @see org.openedit.store.search.ProductSearcher#getAllHits()
 	 */
-	public HitTracker getAllHits(WebPageRequest inReq)
-	{
-		SearchQuery query = new SearchQuery();
-		query.addMatches("id", "*");
-		if( inReq == null)
-		{
-			return search(query);
-		}
-		else
-		{
-			return cachedSearch(inReq, query);
-		}
-	}
+//	public HitTracker getAllHits(WebPageRequest inReq)
+//	{
+//		SearchQuery query = new SearchQuery();
+//		query.addMatches("id", "*");
+//		if( inReq == null)
+//		{
+//			return search(query);
+//		}
+//		else
+//		{
+//			return cachedSearch(inReq, query);
+//		}
+//	}
 
 	public void saveData(Data inData, User inUser)
 	{
