@@ -62,4 +62,5 @@
   <property id="validitem" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Valid Item</property>
   <property id="validerrormessage" index="true" stored="true" editable="true" searchtype="product">Valid Error Message</property>
   <property id="as400id" index="true" stored="true" editable="true" searchtype="product">AS400 ID</property>
+  <property id="inventoryupdated" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="product" internalfield="false" datatype="date">Inventory Updated</property>
 </properties>

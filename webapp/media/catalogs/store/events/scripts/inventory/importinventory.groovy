@@ -16,8 +16,8 @@ import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.util.DateStorageUtil
 
-import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
@@ -224,6 +224,7 @@ public class ImportInventory  extends EnterMediaObject {
 								msg += qtyInStock.toString();
 								log.info(msg);
 								productInventory.setQuantityInStock(qtyInStock);
+								product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 								productsearcher.saveData(product, context.getUser());
 							} else {
 								String msg = "Product(" + product.getName() + ") no inventory changes.";

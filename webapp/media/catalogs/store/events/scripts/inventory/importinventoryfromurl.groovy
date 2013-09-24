@@ -6,7 +6,6 @@ package inventory
 
 import java.text.SimpleDateFormat
 
-import org.apache.commons.httpclient.util.URIUtil
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
@@ -17,6 +16,7 @@ import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
@@ -25,7 +25,7 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
 import com.openedit.modules.update.Downloader
 import com.openedit.page.Page
-import com.openedit.page.manage.PageManager;
+import com.openedit.page.manage.PageManager
 import com.openedit.util.FileUtils
 
 public class ImportInventoryFromUrl  extends EnterMediaObject {
@@ -288,6 +288,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 											msg += qtyInStock.toString();
 											log.info(msg);
 											productInventory.setQuantityInStock(qtyInStock);
+											product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 											productsearcher.saveData(product, context.getUser());
 										} else {
 											String msg = "Product(" + manufacturerSKU + ":" + product.getName() + ") no inventory changes.";
