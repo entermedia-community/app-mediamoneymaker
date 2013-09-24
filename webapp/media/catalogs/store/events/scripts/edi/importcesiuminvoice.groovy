@@ -117,6 +117,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 					
 					Order order = null;
 					Date newDate = null;
+					CartItem cartItem = null;
 
 					//Create the XMLSlurper Object
 					def INVOICE = new XmlSlurper().parse(page.getReader());
@@ -369,7 +370,8 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 											//Create a new search query for the invoice item
 											vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 											if (!vendorCode.isEmpty()) {
-												product = media.searchForProductByField("manufacturersku", vendorCode);
+												cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode); 
+												product = cartItem.getProduct();
 												if (product != null) {
 													productID = product.getId();
 													log.info("Product Found: " + productID + ":" + product.getName());

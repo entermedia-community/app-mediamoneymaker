@@ -8,7 +8,6 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.money.Money
 import org.openedit.store.CartItem
 import org.openedit.store.InventoryItem
@@ -95,6 +94,7 @@ public class ImportEDIInvoice extends EnterMediaObject {
 					
 					Order order = null;
 					Date newDate = null;
+					CartItem cartItem = null;
 					boolean foundData = false;
 
 					//Create the XMLSlurper Object
@@ -345,7 +345,8 @@ public class ImportEDIInvoice extends EnterMediaObject {
 											//Create a new search query for the invoice item
 											vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 											if (!vendorCode.isEmpty()) {
-												product = media.searchForProductByField("manufacturersku", vendorCode);
+												cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode); 
+												product = cartItem.getProduct();
 												if (product != null) {
 													productID = product.getId();
 													log.info("Product Found: " + productID + ":" + product.getName());

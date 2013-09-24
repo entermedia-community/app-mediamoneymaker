@@ -21,7 +21,6 @@ import org.openedit.util.DateStorageUtil
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
-import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
@@ -114,6 +113,8 @@ public class ImportEDIASN extends EnterMediaObject {
 						String quantityShipped = "";
 						String productID = "";
 						String foundErrors = "";
+						
+						CartItem cartItem = null;
 						Date dateShipped = null;
 
 						//Create the XMLSlurper Object
@@ -241,7 +242,8 @@ public class ImportEDIASN extends EnterMediaObject {
 												def String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 												if (!vendorCode.isEmpty()) {
 													foundFlag = true;
-													Data product = media.searchForProductByField("manufacturersku", vendorCode);
+													cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode); 
+													Product product = cartItem.getProduct();
 													if (product != null) {
 														foundFlag = true;
 														productID = product.getId();
