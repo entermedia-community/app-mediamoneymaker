@@ -116,6 +116,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		WebPageRequest inReq = context;
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		String catalogID = archive.getCatalogId();
+		String inURL = "";
 		
 		//Create the searcher objects.	 
 		SearcherManager manager = archive.getSearcherManager();
@@ -123,14 +124,6 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
 		Searcher productsearcher = store.getProductSearcher();
 		Searcher userprofilesearcher = archive.getSearcher("userprofile");
-		
-		String inURL = inReq.findValue("url");
-		if (inURL == null || inURL.equals("")) {
-			context.putPageValue("errorout", "URL does not exist!");
-			log.info("URL does not exist!");
-			return;
-		}
-		log.info("URL : " + inURL);
 		
 		//Get CSV Type
 		String inDistributor = inReq.findValue("distributor");
@@ -141,6 +134,17 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 			return;
 		}
 		log.info("Distributor: " + distributor.getName());
+		
+		Data inventoryImport = inventorysearcher.searchByField("distributor", distributor.getId());
+		if (inventoryImport != null) {
+			inURL = inventoryImport.get("importurl");
+			if (inURL == null || inURL.equals("")) {
+				context.putPageValue("errorout", "URL does not exist!");
+				log.info("URL does not exist!");
+				return;
+			}
+			log.info("Inventory URL: " + inURL);
+		}
 				
 		//Get the Uploaded Page
 		String filename = "inventory.csv";

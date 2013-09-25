@@ -7,6 +7,5 @@
   <path-action name="Script.run">
     <script>/${catalogid}/events/scripts/inventory/importinventoryfromurl.groovy</script>
   </path-action>
-  <property name="url">http://old.cesiumonline.com/feeds/0PxjsKn0IKuYWFUS6bqT/inventory.csv</property>
   <property name="distributor">105</property>
 </page>
