@@ -337,6 +337,23 @@ public class Product implements Data
 		}
 		return sizes;
 	}
+	
+	public InventoryItem getInventoryItemBySize(Option inSize){
+		for ( Iterator iter = getInventoryItems().iterator(); iter.hasNext(); )
+		{
+			InventoryItem item = (InventoryItem) iter.next();
+			if ( item.hasSize() )
+			{
+				Option size = item.getSize();
+				if(inSize.equals(size)){
+					return item;
+				}
+			}
+		}
+		return null;
+	}
+	
+
 	public List getSizesSorted()
 	{
 		List sizes = getSizes();
@@ -695,6 +712,8 @@ public class Product implements Data
 	{
 		return fieldPriceSupport != null;
 	}
+	
+	
 	public PriceSupport getPriceSupport()
 	{
 		return fieldPriceSupport;

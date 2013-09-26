@@ -501,7 +501,9 @@ public class Cart extends BaseData
 		{
 			CartItem item = (CartItem) iter.next();
 			
-			if (item.getInventoryItem() != null && item.getInventoryItem().getSku().equals(inInventoryItem.getSku()))
+			String sku = item.getInventoryItem().getSku();
+			String sku2 = inInventoryItem.getSku();
+			if (item.getInventoryItem() != null && sku.equals(sku2))
 			{
 				return item;
 			}
