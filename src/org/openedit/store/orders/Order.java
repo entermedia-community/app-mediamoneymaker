@@ -18,6 +18,7 @@ import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
+import org.openedit.store.InventoryItem;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
@@ -486,7 +487,21 @@ public class Order extends BaseData implements Comparable {
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
 			CartItem foundItem = (CartItem) iterator.next();
 			Product p = foundItem.getProduct();
-			if (p.get(inKey) == inValue) {
+			if (p != null) {
+				item = foundItem;
+				break;
+			}
+		}
+		return item;
+	}
+	
+	public CartItem getCartItemByProductSku( String inValue ) {
+		CartItem item = null;
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+			CartItem foundItem = (CartItem) iterator.next();
+			Product p = foundItem.getProduct();
+			InventoryItem i = p.getInventoryItemBySku(inValue);
+			if (i != null) {
 				item = foundItem;
 				break;
 			}
