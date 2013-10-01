@@ -112,7 +112,7 @@
 		
 		    <value>directPaymentProcessor</value>
 			<value>paypalOrderProcessor</value>
-			<!-- <value>beanstreamOrderProcessor</value>-->		
+			<value>beanstreamOrderProcessor</value>		
 			<value>freshbooksOrderProcessor</value>
 			<value>elevonOrderProcessor</value>
 			<value>authorizeNetOrderProcessor</value>
