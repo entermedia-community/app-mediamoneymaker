@@ -131,7 +131,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		//Add the Order Number
 		headerRow.add("ORDER_NUMBER");
 		getDetailsFromView("userprofile", "userprofile/userprofileusername", order, headerRow, true);
-		getDetailsFromView("address", "userprofile/userprofileaddress_list", order, headerRow, true);
+		getDetailsFromView("address", "address/addresslist", order, headerRow, true);
 		getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, headerRow, true);
 		getDetailsFromView("product", "product/productproduct_info", order, headerRow, true);
 		headerRow.add("QUANTITY");
@@ -147,7 +147,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			//Add the Order ID
 			orderDetailRow.add(order.getId());
 			getDetailsFromView("userprofile", "userprofile/userprofileusername", order.getCustomer(), orderDetailRow, false);
-			getDetailsFromView("address", "userprofile/userprofileaddress_list", order.getShippingAddress(), orderDetailRow, false);
+			getDetailsFromView("address", "address/addresslist", order.getShippingAddress(), orderDetailRow, false);
 			getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, orderDetailRow, false);
 			getDetailsFromView("product", "product/productproduct_info", item.getProduct(), orderDetailRow, false);
 			
@@ -180,6 +180,17 @@ public class ExportAffinityOrder extends EnterMediaObject {
 				value = inOrder.get(detail.getId());
 				inListRows.add(value);
 			}
+		}
+	}
+		
+	private void getAddressDetails( Order inOrder, List inListRows, boolean isHeaderRow ) {
+		MediaArchive archive = context.getPageValue("mediaarchive");
+		SearcherManager manager = archive.getSearcherManager();
+		Searcher addressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
+		if (isHeaderRow) {
+			
+		} else {
+			
 		}
 	}
 
