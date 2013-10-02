@@ -13,6 +13,7 @@ import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 
 import com.openedit.OpenEditException
+import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
 import com.openedit.entermedia.scripts.ScriptLogger
@@ -49,6 +50,8 @@ public class ExportAffinityOrder extends EnterMediaObject {
 	public void doExport() {
 
 		log.info("PROCESS: START Orders.exportaffinityorder");
+		
+		WebPageRequest inReq = context;
 		
 		orderList = new HashMap<String, String>();
 				
@@ -111,10 +114,10 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			}
 		}
 		if (getOrderList().isEmpty()) {
-			context.putPageValue("errorout", "There are no Affinity orders to export at this time.");
+			inReq.putPageValue("errorout", "There are no Affinity orders to export at this time.");
+		} else {
+			inReq.putPageValue("export", getOrderList());
 		}
-		context.putPageValue("export", getOrderList());
-		context.putPageValue("id", getOrderID());
 	}
 
 	private void createOrderDetails(Order order, CSVWriter writer) {
@@ -228,8 +231,14 @@ try {
 	affinityOrder.setPageManager(pageManager);
 
 	affinityOrder.doExport();
-	log.info("The following file(s) has been created. ");
-	log.info(affinityOrder.getOrderList().toString());
+	if (affinityOrder.getOrderList().size() > 0) {
+		log.info("The following file(s) has been created. ");
+		log.info(affinityOrder.getOrderList().toString());
+		log.info("Exporting " + affinityOrder.getOrderList().size().toString() + " Affinity orders.");
+	} else {
+		log.info("0 Affinity Orders to process.");
+	}
+		
 	log.info("PROCESS: END Orders.exportaffinity");
 }
 finally {

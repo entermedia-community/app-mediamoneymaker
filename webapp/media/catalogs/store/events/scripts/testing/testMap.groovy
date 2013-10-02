@@ -11,7 +11,7 @@ import com.openedit.entermedia.scripts.ScriptLogger
 
 public class TestMap  extends EnterMediaObject {
 	
-	Map<String, int[]> testingMap;
+	Map<String, String> testingMap;
 	public void doTest() {
 		
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
@@ -23,16 +23,8 @@ public class TestMap  extends EnterMediaObject {
 		
 		testingMap = new HashMap<String, ArrayList>();
 		
-		ArrayList<String> quantities = new ArrayList<String>();
-		quantities.add("10");
-		quantities.add("8");
-		testingMap.put("test123", quantities);
-		quantities = null; 
-		
-		quantities = new ArrayList<String>();
-		quantities.add("20");
-		quantities.add("16");
-		testingMap.put("test234", quantities);
+		testingMap.put("test123", "123.csv");
+		testingMap.put("test234", "423.csv");
 		
 		context.putPageValue("testmap", testingMap);
 

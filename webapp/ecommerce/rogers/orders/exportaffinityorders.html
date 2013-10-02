@@ -1,5 +1,6 @@
 #set($errorout = $context.getPageValue("errorout"))
 #set($export = $context.getPageValue("export"))
+<p>Export Size ($export.size())</p>
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">[[Affinity Export Section]]</div>
 	<div class="ui-widget-content">
@@ -16,12 +17,12 @@
 				</thead>
 				<tbody
 				#foreach ($mapEntry in $export.entrySet())
-    				#set($id = $mapEntry.key)
-    				#set($filename = $mapEntry.value)
+					#set($key = $mapEntry.getKey())
+					#set($filename = $mapEntry.getValue())
 					<tr>
 						<td>$filename</td>
-						<td><a href="$home$apphome/rogers/orders/exportaffinity.csv?id=$id" class="btn">[[Download]]</a></td>
-						<td><a href="$home$apphome/rogers/orders/sendtoaffinity.html?id=$id" class="btn">[[Email]]</a></td>
+						<td><a href="$home$apphome/rogers/orders/exportaffinity.csv?id=${key}" class="btn">[[Download]]</a></td>
+						<td><a href="$home$apphome/rogers/orders/sendtoaffinity.html?id=${key}" class="btn">[[Email]]</a></td>
 					</tr>
 				#end
 				</tbody>
