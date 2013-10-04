@@ -1,4 +1,4 @@
-package edi
+package invoices
 
 import java.text.SimpleDateFormat
 
@@ -47,9 +47,6 @@ public class EdiCesiumImport extends EnterMediaObject {
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		String catalogID = archive.getCatalogId();
 
-		SearcherManager manager = archive.getSearcherManager();
-		Searcher userprofilesearcher = archive.getSearcher("userprofile");
-
 		log.info("---- START Import EDI Invoice ----");
 
 		def String SEARCH_FIELD = "";
@@ -73,7 +70,14 @@ public class EdiCesiumImport extends EnterMediaObject {
 			log.info(strMsg);
 			throw new OpenEditException(strMsg);
 		}
-
+		
+		// Load searchers
+		SearcherManager manager = archive.getSearcherManager();
+		Searcher userprofilesearcher = archive.getSearcher("userprofile");
+		Searcher invoiceSearcher = manager.getSearcher(catalogID, "invoice");
+		Searcher invoiceItemSearcher = media.getInvoiceItemsSearcher();
+		Searcher productSearcher = store.getProductSearcher();
+		
 		// Get XML File
 		//String fileName = "export-" + this.distributorName.replace(" ", "-") + ".csv";
 		String invoiceFolder = "/WEB-INF/data/" + media.getCatalogid() + "/incoming/invoices/cesium/";
@@ -111,6 +115,7 @@ public class EdiCesiumImport extends EnterMediaObject {
 					String taxFedID = "";
 					String shippingAmount = "";
 					String waybill = "";
+					String courier = "";
 
 					Money invoiceAmount;
 					Boolean checkShipping = true;
@@ -161,7 +166,6 @@ public class EdiCesiumImport extends EnterMediaObject {
 							log.info("Found InvoiceHeaders: " + INVOICEHEADERS.size().toString());
 
 							INVOICEHEADERS.each {
-								Searcher invoiceSearcher = media.getInvoiceSearcher();
 								List<Data> invoiceItems = new ArrayList<Data>();
 								Shipment shipment = new Shipment();
 
@@ -290,6 +294,11 @@ public class EdiCesiumImport extends EnterMediaObject {
 									if (!WB.isEmpty()) {
 										waybill = WB;
 										log.info("Waybill: " + waybill);
+										if (waybill.substring(0, 1).equalsIgnoreCase("1Z")) {
+											courier = "UNITED PARCEL POST";
+										} else {
+											courier = "NOT PROVIDED";
+										}
 										foundData = true;
 									} else {
 										strMsg = "ERROR: Wyabill value was not found in INVOICE.";
@@ -342,7 +351,6 @@ public class EdiCesiumImport extends EnterMediaObject {
 								 * TODO: Add invoice items to invoiceitems table.
 								 * TODO: SAVE INVOICE SOMEWHERE! */
 								if (foundData) {
-									Searcher invoiceItemSearcher = media.getInvoiceItemsSearcher();
 									/* Get the products from the XML file */
 									def allInvoiceDetails = it.depthFirst().grep{
 										it.name() == 'InvoiceDetail';
@@ -359,7 +367,6 @@ public class EdiCesiumImport extends EnterMediaObject {
 										vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 										if (!vendorCode.isEmpty()) {
 											log.info("vendorCode: " + vendorCode);
-											Searcher productSearcher = store.getProductSearcher();
 											Data findProduct = productSearcher.searchByField(MANUFACTURER_SEARCH_FIELD, vendorCode);
 											String findProductID = findProduct.getId();
 											cartItem = order.getCartItemByProductID(findProductID);
@@ -475,14 +482,14 @@ public class EdiCesiumImport extends EnterMediaObject {
 														entry.setQuantity(Integer.parseInt(quantity));
 														shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 														shipment.setProperty("waybill", waybill);
-														shipment.setProperty("courier", "NOT PROVIDED");
+														shipment.setProperty("courier", courier);
 														shipment.addEntry(entry);
 														foundData = true;
 
 														strMsg = "Order Updated(" + purchaseOrder + ") and saved";
 														log.info(strMsg);
 
-														strMsg = "Waybill (" + waybill + ")";
+														strMsg = "Waybill:Courier (" + waybill + ":" + courier + ")";
 														log.info(strMsg);
 
 														strMsg = "SKU (" + vendorCode + ")";
@@ -506,14 +513,14 @@ public class EdiCesiumImport extends EnterMediaObject {
 															entry.setCartItem(cartItem);
 															entry.setQuantity(Integer.parseInt(quantity));
 															shipment.setProperty("waybill", waybill);
-															shipment.setProperty("courier", "NOT PROVIDED");
+															shipment.setProperty("courier", courier);
 															shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 															shipment.addEntry(entry);
 
 															strMsg = "Order Updated(" + purchaseOrder + ") and saved";
 															log.info(strMsg);
 
-															strMsg = "Waybill (" + waybill + ")";
+															strMsg = "Waybill:Courier (" + waybill + ":" + courier + ")";
 															log.info(strMsg);
 
 															strMsg = "SKU (" + vendorCode + ")";
@@ -538,14 +545,14 @@ public class EdiCesiumImport extends EnterMediaObject {
 														entry.setCartItem(cartItem);
 														entry.setQuantity(Integer.parseInt(quantity));
 														shipment.setProperty("waybill", waybill);
-														shipment.setProperty("courier", "NOT PROVIDED");
+														shipment.setProperty("courier", courier);
 														shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 														shipment.addEntry(entry);
 
 														strMsg = "Order Updated(" + purchaseOrder + ") and saved";
 														log.info(strMsg);
 
-														strMsg = "Waybill (" + waybill + ")";
+														strMsg = "Waybill:Courier (" + waybill + ":" + courier + ")";
 														log.info(strMsg);
 
 														strMsg = "SKU (" + vendorCode + ")";
@@ -588,14 +595,14 @@ public class EdiCesiumImport extends EnterMediaObject {
 										log.info(strMsg);
 									}
 								} // end FOUND DATA
-								if (foundData) {
-									invoiceSearcher.saveData(ediInvoice, inReq.getUser());
-									processedInvoices.add(ediInvoice.getId());
-									strMsg = "Invoice saved (" + ediInvoice.getId() + ")" + "\n";
-									strMsg += "Purchase Order: " + purchaseOrder + "\n";
-									log.info(strMsg);
-								}
 							} /* END INVOICEHEADERS */
+							if (foundData) {
+								invoiceSearcher.saveData(ediInvoice, inReq.getUser());
+								processedInvoices.add(ediInvoice.getId());
+								strMsg = "Invoice saved (" + ediInvoice.getId() + ")" + "\n";
+								strMsg += "Purchase Order: " + purchaseOrder + "\n";
+								log.info(strMsg);
+							}
 						} /* END INVOICEGROUPS */
 					} /* END foundData */
 					if (foundData) {
@@ -608,7 +615,6 @@ public class EdiCesiumImport extends EnterMediaObject {
 							}
 							for (Iterator inv = processedInvoices.iterator(); inv.hasNext();) {
 								String invoiceID = (String)inv.next();
-								Searcher invoiceSearcher = manager.getSearcher(catalogID, "invoice");
 								Data invoice = invoiceSearcher.searchById(invoiceID);
 								String purchaseOrderNumber = invoice.get("ponumber");
 								String iNumber = invoice.get("invoicenumber");

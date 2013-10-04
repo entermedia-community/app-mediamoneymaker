@@ -16,5 +16,6 @@
   <property id="ticketadmin"/>
   <property id="storeadmin"/>
   <property id="productadmin"/>
+  <property id="shippingadmin"/>
   <property id="address"/>
 </root>

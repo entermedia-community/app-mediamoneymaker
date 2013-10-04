@@ -11,4 +11,5 @@
   <property id="enabled"/>
   <property id="ticketadmin"/>
   <property id="storeadmin"/>
+  <property id="shippingadmin"/>
 </root>

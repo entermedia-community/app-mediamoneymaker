@@ -4,6 +4,6 @@
   <property name="enabled">true</property>
   <property name="eventname">Process Cesium Invoice</property>
   <path-action name="Script.run">
-    <script>/${catalogid}/events/scripts/edi/importcesiuminvoice.groovy</script>
+    <script>/${catalogid}/events/scripts/invoices/edicesiumimport.groovy</script>
   </path-action>
 </page>

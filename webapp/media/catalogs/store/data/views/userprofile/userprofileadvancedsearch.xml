@@ -11,4 +11,5 @@
   <property id="distributor"/>
   <property id="productadmin"/>
   <property id="storeadmin"/>
+  <property id="shippingadmin"/>
 </root>

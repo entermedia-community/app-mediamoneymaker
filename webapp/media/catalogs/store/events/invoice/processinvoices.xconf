@@ -5,6 +5,6 @@
   <property name="enabled">true</property>
   <property name="eventname">Process Invoice Files</property>
   <path-action name="Script.run">
-    <script>/${catalogid}/events/scripts/edi/importediinvoice.groovy</script>
+    <script>/${catalogid}/events/scripts/edi/ediinvoiceimport.groovy</script>
   </path-action>
 </page>

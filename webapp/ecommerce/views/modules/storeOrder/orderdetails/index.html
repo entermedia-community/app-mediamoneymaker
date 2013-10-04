@@ -81,7 +81,7 @@
 	#else
 		<tr class="results-list-b">
 	#end
-		<td>$productid</td>
+		<td>${productid}</td>
 		<td>
 			<p class="results-list" style="margin-left: 10px;">
 				<a class="results-list" href="$home$path" target="_blank" 
@@ -148,7 +148,6 @@
 						#set($url = "/ecommerce/views/modules/invoice/edit/export/index.html?id=$invoiceID&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice")
 						<a href="$url" style="font-size: 14px; color: blue;">$d.get("name")</a>
 						#set($breakflag = "true")
-						#break
 					#end
 					#if($breakflag == "false")
 						$d.get("name")
@@ -164,25 +163,30 @@
 	<tr style="border-top: 1px solid black;">
 		<td colspan="5" align="right">Subtotal:&nbsp;&nbsp;</td>
 		<td align="right">$order.getSubTotal()</td>
+		<td colspan="2">&nbsp;</td>
 	</tr>
 #if ( $order.getTotalShipping() && $order.getTotalShipping() != "0.00" )
 	<tr>
 		  <td colspan="5" align="right">Shipping:&nbsp;&nbsp;</td>
 		  <td align="right">$order.getTotalShipping()</td>
+		  <td colspan="2">&nbsp;</td>
 	</tr>
 #else
 	<tr>
 		  <td colspan="5" align="right">Shipping:&nbsp;&nbsp;</td>
 		  <td align="right">$0.00</td>
+		  <td colspan="2">&nbsp;</td>
 	</tr>
 #end
 	<tr>
 		<td colspan="5" align="right">Tax:&nbsp;&nbsp;</td>
 		<td align="right">$order.tax</td>
+		<td colspan="2">&nbsp;</td>
 	</tr>
 	<tr>
 		<td colspan="5" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
 		<td align="right"><b>$order.totalPrice</b></td>
+		<td colspan="2">&nbsp;</td>
 	</tr>
 </table></p>
 <p>

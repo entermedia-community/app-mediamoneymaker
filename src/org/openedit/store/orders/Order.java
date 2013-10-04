@@ -509,6 +509,19 @@ public class Order extends BaseData implements Comparable {
 		return item;
 	}
 	
+	public CartItem getCartItemByProductID( String inID ) {
+		CartItem item = null;
+		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
+			CartItem foundItem = (CartItem) iterator.next();
+			Product p = foundItem.getProduct();
+			if (p.getId().equals(inID)) {
+				item = foundItem;
+				break;
+			}
+		}
+		return item;
+	}
+	
 	public boolean containsItemByProductProperty( String inKey, String inValue ) {
 		return getCartItemByProductProperty(inKey, inValue) != null;
 	}
