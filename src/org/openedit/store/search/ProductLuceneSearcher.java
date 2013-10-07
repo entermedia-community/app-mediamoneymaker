@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.openedit.Data;
@@ -460,7 +461,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	 * 
 	 * @see org.openedit.store.search.ProductSearcher#reIndexAll()
 	 */
-	public void reIndexAll(IndexWriter inWriter) throws OpenEditException
+	public void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) throws OpenEditException
 	{
 		
 		try

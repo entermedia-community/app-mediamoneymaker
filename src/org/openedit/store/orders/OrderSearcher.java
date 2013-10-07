@@ -13,6 +13,7 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -77,7 +78,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		return cachedSearch(inReq, search);
 	}
 
-	private void buildIndex(IndexWriter inWriter, List inList) throws Exception {
+	private void buildIndex(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter, List inList) throws Exception {
 		PropertyDetails details = getPropertyDetailsArchive()
 				.getPropertyDetails("storeOrder");
 
@@ -88,7 +89,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			if (order != null) {
 				//Document doc = new Document();
 				//updateIndex(order, doc, details);
-				updateIndex(inWriter, order);
+				updateIndex(inWriter,  inTaxonomyWriter ,order);
 				//updateIndex(order);
 				//inWriter.addDocument(doc);
 			} else {
@@ -289,10 +290,10 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	
 
 	@Override
-	protected void reIndexAll(IndexWriter inWriter) {
+	protected void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) {
 		List list = getOrderArchive().listAllOrderIds(getStore());
 		try {
-			buildIndex(inWriter, list);
+			buildIndex(inWriter,inTaxonomyWriter, list);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}

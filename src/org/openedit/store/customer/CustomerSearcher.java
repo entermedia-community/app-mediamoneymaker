@@ -13,6 +13,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
@@ -36,7 +37,7 @@ public class CustomerSearcher extends BaseLuceneSearcher
 	/* (non-javadoc)
 	 * @see com.openedit.modules.search.BaseLuceneSearch#reIndexAll() 
 	 */
-	public void reIndexAll(IndexWriter inWriter) throws OpenEditException
+	public void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) throws OpenEditException
 	{
 		log.info("Reindex of customer users directory");
 		//http://today.java.net/pub/a/today/2003/07/30/LuceneIntro.html?page=last&x-maxdepth=0
