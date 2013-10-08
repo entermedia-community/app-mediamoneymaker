@@ -11,6 +11,7 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.money.Money
 import org.openedit.store.CartItem
 import org.openedit.store.Product
+import org.openedit.store.Store
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 import org.openedit.util.DateStorageUtil
@@ -31,7 +32,8 @@ public class EdiInvoiceImport extends EnterMediaObject {
 	private static final String ADDED = "Added";
 	private static final String CESIUM_ID = "105";
 	private static String strMsg = "";
-
+	private static String MANUFACTURER_SEARCH_FIELD = "manufacturersku";
+	
 	public void doImport() {
 
 		MediaUtilities media = new MediaUtilities();
@@ -46,6 +48,25 @@ public class EdiInvoiceImport extends EnterMediaObject {
 
 		log.info("---- START Import EDI Invoice ----");
 
+		Store store = null;
+
+		try {
+			store  = inReq.getPageValue("store");
+			if (store != null) {
+				log.info("Store loaded");
+			} else {
+				String inMsg = "ERROR: Could not load store";
+				throw new Exception(inMsg);
+			}
+		}
+		catch (Exception e) {
+			strMsg = "ERROR: Could not load store.\n";
+			strMsg += "Exception thrown:\n";
+			strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
+			strMsg += "Stack Trace: " + e.getStackTrace().toString();;
+			log.info(strMsg);
+		}
+
 		def String SEARCH_FIELD = "";
 		//Read the production value
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
@@ -59,11 +80,6 @@ public class EdiInvoiceImport extends EnterMediaObject {
 
 		if (dirList.size() > 0) {
 
-			Data ediInvoice = null;
-			Data ediInvoiceItem = null;
-			String distributorID = "";
-			List<String> processedInvoices = new ArrayList<String>();
-
 			def int iterCounter = 0;
 			for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
 
@@ -76,22 +92,7 @@ public class EdiInvoiceImport extends EnterMediaObject {
 				if (xmlFile.exists() && xmlFile.isFile()) {
 					iterCounter++;
 
-					String orderID = "";
-					String productID = "";
-					String ediInvoiceItemID = "";
-					String invoiceNumber = "";
-					String invoiceTotal = "";
-					String purchaseOrder = "";
-					String taxAmount = "";
-					String taxType = "";
-					String taxFedID = "";
-					String shippingAmount = "";
-
-					Money invoiceAmount;
-					Boolean checkShipping = true;
-
-					Order order = null;
-					CartItem cartItem = null;
+					String distributorID = "";
 					boolean foundData = false;
 
 					//Create the XMLSlurper Object
@@ -99,6 +100,7 @@ public class EdiInvoiceImport extends EnterMediaObject {
 					String distributor = INVOICE.Attributes.TblEntityID.find {it.Qualifier == "GSSND"}.EntityValue.text();
 					if (!distributor.isEmpty()) {
 						//Find the distributor
+
 						Data DISTRIB = media.searchForDistributor(distributor, production);
 						if (DISTRIB != null) {
 							distributorID = DISTRIB.getId();
@@ -139,9 +141,20 @@ public class EdiInvoiceImport extends EnterMediaObject {
 							log.info("Found InvoiceHeaders: " + INVOICEHEADERS.size().toString());
 
 							INVOICEHEADERS.each {
+
 								Searcher invoiceSearcher = media.getInvoiceSearcher();
-								List<Data> invoiceItems = new ArrayList<Data>();
-								
+								Data ediInvoice = null;
+
+								String orderID = "";
+								String ediInvoiceItemID = "";
+								String invoiceNumber = "";
+								String purchaseOrder = "";
+
+								Money invoiceAmount;
+								Boolean checkShipping = true;
+
+								Order order = null;
+
 								foundData = true;
 
 								if (foundData) {
@@ -234,7 +247,7 @@ public class EdiInvoiceImport extends EnterMediaObject {
 								if (foundData) {
 									foundData = false;
 									//Get the INVOICEAMOUNT details
-									invoiceTotal = it.InvoiceAmount.text();
+									String invoiceTotal = it.InvoiceAmount.text();
 									if (!invoiceTotal.isEmpty()) {
 										log.info("Invoice Total: " + invoiceTotal);
 										invoiceAmount = new Money(invoiceTotal);
@@ -249,9 +262,23 @@ public class EdiInvoiceImport extends EnterMediaObject {
 								if (foundData) {
 									foundData = false;
 									/* This works - This gets the first level store info */
-									def String invoiceDate = it.Attributes.TblDate.find {it.Qualifier == "003"}.DateValue.text();
+									String subTotal = it.Attributes.TblAmount.find {it.Qualifier == "6"}.Amount.text();
+									if (!subTotal.isEmpty()) {
+										ediInvoice.setProperty("subtotal", subTotal);
+										log.info("Sub Total: " + subTotal);
+										foundData = true;
+									}
+									if (!foundData) {
+										String inMsg = "ERROR: Sub Total value was not found in INVOICE.";
+										log.info(inMsg);
+									}
+								}
+								if (foundData) {
+									foundData = false;
+									/* This works - This gets the first level store info */
+									String invoiceDate = it.Attributes.TblDate.find {it.Qualifier == "003"}.DateValue.text();
 									if (!invoiceDate.isEmpty()) {
-										Date newDate = new SimpleDateFormat("yyyymmdd").parse(invoiceDate);
+										Date newDate = new SimpleDateFormat("yyyyMMdd").parse(invoiceDate);
 										ediInvoice.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 										log.info("Invoice Date: " + newDate.toString());
 										foundData = true;
@@ -264,21 +291,29 @@ public class EdiInvoiceImport extends EnterMediaObject {
 								if (foundData) {
 									foundData = false;
 									/* This works - This gets the first level store info */
-									taxAmount = it.Attributes.TblTax.TaxAmount.text();
+									String inMsg = "";
+									String taxAmount = it.Attributes.TblTax.TaxAmount.text();
 									if (!taxAmount.isEmpty()) {
 										log.info("Tax Amount: " + taxAmount);
 										foundData = true;
-										taxType = it.Attributes.TblTax.TaxType.text();
-										taxFedID = it.Attributes.TblTax.TaxID.text();
+										String taxType = it.Attributes.TblTax.TaxType.text();
+										String taxFedID = it.Attributes.TblTax.TaxID.text();
 										if (taxType == "GS") {
 											ediInvoice.setProperty("fedtaxamount", taxAmount);
+											inMsg = "Fed Tax Amount: " + taxAmount;
+											log.info(inMsg);
 											ediInvoice.setProperty("fedtaxid", taxFedID);
+											inMsg = "Fed Tax ID" + taxFedID;
+											log.info(inMsg);
 										} else {
 											ediInvoice.setProperty("provtaxamount", taxAmount);
+											inMsg = "Provincial Tax Amount" + taxAmount;
+											log.info(inMsg);
+											ediInvoice.setProperty("fedtaxid", "NOT PROVIDED");
 										}
 									}
 									if (!foundData) {
-										String inMsg = "ERROR: Tax Amount value was not found in INVOICE.";
+										inMsg = "ERROR: Tax Amount value was not found in INVOICE.";
 										log.info(inMsg);
 									}
 								}
@@ -286,7 +321,7 @@ public class EdiInvoiceImport extends EnterMediaObject {
 								if (foundData) {
 									foundData = false;
 									/* This works - This gets the first level store info */
-									shippingAmount = it.Attributes.TblAllowCharge.AllowChargeAmount.text();
+									String shippingAmount = it.Attributes.TblAllowCharge.AllowChargeAmount.text();
 									if (!shippingAmount.isEmpty()) {
 										ediInvoice.setProperty("shipping", shippingAmount);
 										log.info("Shipping Amount: " + shippingAmount);
@@ -305,7 +340,10 @@ public class EdiInvoiceImport extends EnterMediaObject {
 								 * TODO: Add invoice items to invoiceitems table.
 								 * TODO: SAVE INVOICE SOMEWHERE! */
 								if (foundData) {
+
 									Searcher invoiceItemSearcher = media.getInvoiceItemsSearcher();
+									List<Data> invoiceItems = new ArrayList<Data>();
+
 									/* Get the products from the XML file */
 									def allInvoiceDetails = it.depthFirst().grep{
 										it.name() == 'InvoiceDetail';
@@ -315,17 +353,26 @@ public class EdiInvoiceImport extends EnterMediaObject {
 
 										Product product = null;
 										String linePrice = "";
-										String vendorCode = "";
 										String quantity = "";
+										CartItem cartItem = null;
 
 										//Create a new search query for the invoice item
-										vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
+										String vendorCode = it.Attributes.TblReferenceNbr.find {it.Qualifier == "VN"}.ReferenceNbr.text();
 										if (!vendorCode.isEmpty()) {
 											cartItem = order.getCartItemByProductSku(vendorCode);
-											product = cartItem.getProduct();
+											if (cartItem != null) {
+												product = cartItem.getProduct();
+											} else {
+												Searcher productSearcher = store.getProductSearcher();
+												Data vendorProduct = productSearcher.searchByField(MANUFACTURER_SEARCH_FIELD, vendorCode);
+												String productID = vendorProduct.getId();
+												cartItem = order.getCartItemByProductID(productID);
+												if (cartItem != null) {
+													product = cartItem.getProduct();
+												}	
+											}
 											if (product != null) {
-												productID = product.getId();
-												log.info("Product Found: " + productID + ":" + product.getName());
+												log.info("Product Found: " + product.getId() + ":" + product.getName());
 												foundData = true;
 											} else {
 												String inMsg = "Product(" + vendorCode + ") cannot be found!";
@@ -360,9 +407,10 @@ public class EdiInvoiceImport extends EnterMediaObject {
 										}
 										if (foundData) {
 											foundData = false;
+											Data ediInvoiceItem = null;
 											SearchQuery invoiceItemQuery = invoiceItemSearcher.createSearchQuery();
 											invoiceItemQuery.addExact("invoiceid", ediInvoice.getId());
-											invoiceItemQuery.addExact("product", productID);
+											invoiceItemQuery.addExact("product", product.getId());
 											HitTracker items = invoiceItemSearcher.search(invoiceItemQuery);
 											if (items.size() == 1) {
 												try {
@@ -411,7 +459,6 @@ public class EdiInvoiceImport extends EnterMediaObject {
 													String inMsg = "Line Item (" + ediInvoiceItem.getId() + ") saved for Invoice(" + ediInvoice.getId() + ")";
 													log.info(inMsg);
 													foundData = true;
-													ediInvoiceItem = null;
 												} catch (Exception e) {
 													strMsg = "ERROR: Problem saving Invoice Item.";
 													strMsg += "Invoice ID: " + ediInvoice.getId() + "\n";
@@ -432,45 +479,36 @@ public class EdiInvoiceImport extends EnterMediaObject {
 										log.info(strMsg);
 									}
 								} // end FOUND DATA
-								if (foundData) {
+  								if (foundData) {
 									invoiceSearcher.saveData(ediInvoice, inReq.getUser());
-									processedInvoices.add(ediInvoice.getId());
 									strMsg = "Invoice saved (" + ediInvoice.getId() + ")" + "\n";
 									strMsg += "Purchase Order: " + purchaseOrder + "\n";
 									log.info(strMsg);
-								}
+									
+									ArrayList emaillist = new ArrayList();
+									String invoiceID = ediInvoice.getId();
+									HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+									if (results.size() > 0) {
+										for(Iterator detail = results.iterator(); detail.hasNext();) {
+											Data userInfo = (Data)detail.next();
+											emaillist.add(userInfo.get("email"));
+										}
+										Data invoice = invoiceSearcher.searchById(invoiceID);
+										String purchaseOrderNumber = invoice.get("ponumber");
+										String iNumber = invoice.get("invoicenumber");
+										inReq.putPageValue("id", invoiceID);
+										inReq.putPageValue("orderid", order.getId());
+										inReq.putPageValue("distributorid", distributorID);
+										String templatePage = "/ecommerce/views/modules/invoice/workflow/invoice-notification.html";
+										String subject = "INVOICE has been generated: " + iNumber;
+										sendEmail(archive, context, emaillist, templatePage, subject);
+										log.info("Email sent to Store Admins");
+									}
+								} /* END foundData - Save Invoice and Send EMAIL */
 							} /* END INVOICEHEADERS */
 						} /* END INVOICEGROUPS */
 					} /* END foundData */
 					if (foundData) {
-						ArrayList emaillist = new ArrayList();
-						HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
-						if (results.size() > 0) {
-							for(Iterator detail = results.iterator(); detail.hasNext();) {
-								Data userInfo = (Data)detail.next();
-								emaillist.add(userInfo.get("email"));
-							}
-							for (Iterator inv = processedInvoices.iterator(); inv.hasNext();) {
-								String invoiceID = (String)inv.next();
-								Searcher invoiceSearcher = manager.getSearcher(catalogID, "invoice");
-								Data invoice = invoiceSearcher.searchById(invoiceID);
-								String purchaseOrderNumber = invoice.get("ponumber");
-								String iNumber = invoice.get("invoicenumber");
-								Order foundOrder = media.searchForOrder(purchaseOrderNumber);
-								if (foundOrder != null) {
-									inReq.putPageValue("id", invoiceID);
-									inReq.putPageValue("order", foundOrder);
-									String templatePage = "/ecommerce/views/modules/invoice/workflow/invoice-notification.html";
-									String subject = "INVOICE has been generated: " + iNumber;
-									sendEmail(archive, context, emaillist, templatePage, subject);
-									log.info("Email sent to Store Admins");
-								} else {
-									strMsg = "ORDER (" + purchaseOrderNumber + ") for Invoice (" + invoiceNumber + ") could not be loaded. ";
-									log.info(strMsg);
-									log.info("Email NOT sent to admins.");
-								}
-							}
-						}
 						boolean move = movePageToProcessed(pageManager, page, media.getCatalogid(), true);
 						if (move) {
 							String inMsg = "Invoice File(" + page.getName() + ") has been moved to processed.";
