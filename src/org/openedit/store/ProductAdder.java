@@ -83,8 +83,13 @@ public class ProductAdder
 			// Quantity
 			if (quantityStr != null && !quantityStr.equals("quantity") && quantityStr.length() != 0)
 			{
-				quantity = Integer.parseInt(quantityStr);
-				quantityspecified = true;
+				if (!quantityStr.contains(".")) {
+					quantity = Integer.parseInt(quantityStr);
+					quantityspecified = true;
+				} else {
+					String[] arr = quantityStr.split("\\.");
+					quantity = Integer.parseInt(arr[0]);
+				}
 			}
 			else if (quantityStr != null && quantityStr.length() == 0)
 			{
