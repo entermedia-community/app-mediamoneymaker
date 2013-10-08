@@ -173,6 +173,13 @@ public class CartModule extends BaseStoreModule {
 		}
 	}
 	
+	public void removeItemById(WebPageRequest inPageRequest) throws Exception {
+		String id = inPageRequest.getRequestParameter("itemid");
+		if (id != null) {
+			Cart cart = getCart(inPageRequest);
+			cart.removeById(id);
+		}
+	}
 	
 	public void toggleProduct(WebPageRequest inPageRequest) throws Exception {
 		String productId = inPageRequest.getRequestParameter("productid");

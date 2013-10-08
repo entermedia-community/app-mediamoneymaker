@@ -36,30 +36,36 @@ public class Cart extends BaseData
 	protected Category fieldLastVisitedCatalog;
 	protected Category fieldLastLoadedCatalog;
 	protected Address fieldShippingAddress;
-	public Address getBillingAddress() {
+	protected int fieldIdCounter = 0;
+
+	public Address getBillingAddress()
+	{
 		return fieldBillingAddress;
 	}
 
-	public void setItems(List inItems) {
+	public void setItems(List inItems)
+	{
 		fieldItems = inItems;
 	}
 
-	public void setBillingAddress(Address inBillingAddress) {
+	public void setBillingAddress(Address inBillingAddress)
+	{
 		fieldBillingAddress = inBillingAddress;
 	}
 
 	protected Address fieldBillingAddress;
 
-
 	public Cart()
 	{
 	}
 
-	public Address getShippingAddress() {
+	public Address getShippingAddress()
+	{
 		return fieldShippingAddress;
 	}
 
-	public void setShippingAddress(Address inShippingAddress) {
+	public void setShippingAddress(Address inShippingAddress)
+	{
 		fieldShippingAddress = inShippingAddress;
 	}
 
@@ -106,8 +112,7 @@ public class Cart extends BaseData
 	{
 		return getTotalPrice().doubleValue() < 0.01;
 	}
-	
-	
+
 	public boolean hasBackOrderedItems()
 	{
 		for (Iterator iter = getItemIterator(); iter.hasNext();)
@@ -255,9 +260,6 @@ public class Cart extends BaseData
 		return cost;
 	}
 
-	
-	
-	
 	public Money getTotalTax()
 	{
 		Money totalTax = Money.ZERO;
@@ -373,11 +375,25 @@ public class Cart extends BaseData
 
 	public void addItem(CartItem inItem, int inLineNumber)
 	{
+		if (inItem.getId() == null)
+		{
+			inItem.setId(nextId());
+		}
+
 		getItems().add(inLineNumber, inItem);
+	}
+
+	private String nextId()
+	{
+		return String.valueOf(fieldIdCounter++);
 	}
 
 	public void addItem(CartItem inItem)
 	{
+		if (inItem.getId() == null)
+		{
+			inItem.setId(nextId());
+		}
 		if (!getItems().contains(inItem))
 		{
 			getItems().add(inItem);
@@ -500,7 +516,7 @@ public class Cart extends BaseData
 		for (Iterator iter = getItems().iterator(); iter.hasNext();)
 		{
 			CartItem item = (CartItem) iter.next();
-			
+
 			String sku = item.getInventoryItem().getSku();
 			String sku2 = inInventoryItem.getSku();
 			if (item.getInventoryItem() != null && sku.equals(sku2))
@@ -525,7 +541,6 @@ public class Cart extends BaseData
 		return false;
 	}
 
-
 	public CartItem getItemForProduct(String inId)
 	{
 		for (Iterator iter = getItems().iterator(); iter.hasNext();)
@@ -538,8 +553,7 @@ public class Cart extends BaseData
 		}
 		return null;
 	}
-	
-	
+
 	public Category getLastVisitedCatalog()
 	{
 		return fieldLastVisitedCatalog;
@@ -585,9 +599,9 @@ public class Cart extends BaseData
 		}
 		return map;
 	}
-	
-	
-	public boolean containsRecurring(){
+
+	public boolean containsRecurring()
+	{
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
 		{
 			CartItem item = (CartItem) iterator.next();
@@ -598,69 +612,105 @@ public class Cart extends BaseData
 		}
 		return false;
 	}
-	
-	public boolean requiresShipping(){
+
+	public boolean requiresShipping()
+	{
 		int regularshipping = 0;
 		Iterator<?> itr = getItems().iterator();
-		while (itr.hasNext()){
+		while (itr.hasNext())
+		{
 			CartItem item = (CartItem) itr.next();
 			Product product = item.getProduct();
-			if (!Boolean.parseBoolean(product.get("electronicshipping"))){
+			if (!Boolean.parseBoolean(product.get("electronicshipping")))
+			{
 				regularshipping++;
 			}
 		}
 		return (regularshipping > 0);
 	}
-	
-	public boolean canPlaceOrder(){
-		if(getItems() == null || getItems().isEmpty() || getCustomer()==null){
+
+	public boolean canPlaceOrder()
+	{
+		if (getItems() == null || getItems().isEmpty() || getCustomer() == null)
+		{
 			System.out.println("no customer or orders");
 			return false;
 		}
-		if (getCustomer().getAddressList()==null || getCustomer().getAddressList().isEmpty()){
+		if (getCustomer().getAddressList() == null || getCustomer().getAddressList().isEmpty())
+		{
 			System.out.println("no addresses");
 			return false;
 		}
-		if (getCustomer().getBillingAddress()==null || !getCustomer().getBillingAddress().isComplete()){
+		if (getCustomer().getBillingAddress() == null || !getCustomer().getBillingAddress().isComplete())
+		{
 			System.out.println("no billing address");
 			return false;
 		}
-		if (getCustomer().getPaymentMethod()==null){
+		if (getCustomer().getPaymentMethod() == null)
+		{
 			System.out.println("no method of payment");
 			return false;
 		}
-		if (getCustomer().getTaxRates()==null || getCustomer().getTaxRates().isEmpty()){
-			if (getCustomer().getTaxExemptId()==null || getCustomer().getTaxExemptId().isEmpty()){
+		if (getCustomer().getTaxRates() == null || getCustomer().getTaxRates().isEmpty())
+		{
+			if (getCustomer().getTaxExemptId() == null || getCustomer().getTaxExemptId().isEmpty())
+			{
 				System.out.println("no tax rate and not tax exempt");
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	public boolean hasProductsWithPartialPayments(){
+
+	public boolean hasProductsWithPartialPayments()
+	{
 		Iterator<?> itr = getItems().iterator();
-		while (itr.hasNext()){
+		while (itr.hasNext())
+		{
 			CartItem item = (CartItem) itr.next();
 			Product product = item.getProduct();
-			if (Boolean.parseBoolean(product.get("allowspartialpayments"))){
+			if (Boolean.parseBoolean(product.get("allowspartialpayments")))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public void updatePartialPayment(String inProductId, String inFrequency, String inOccurrences){
+
+	public void updatePartialPayment(String inProductId, String inFrequency, String inOccurrences)
+	{
 		Iterator<?> itr = getItems().iterator();
-		while (itr.hasNext()){
+		while (itr.hasNext())
+		{
 			CartItem item = (CartItem) itr.next();
 			Product product = item.getProduct();
-			if (product.getId()!=null && product.getId().equals(inProductId)){
+			if (product.getId() != null && product.getId().equals(inProductId))
+			{
 				item.setProperty("occurrences", inOccurrences);
-				item.setProperty("frequency",inFrequency);
+				item.setProperty("frequency", inFrequency);
 				return;
 			}
 		}
+	}
+
+	public void removeById(String id)
+	{
+		CartItem toremove = null;
+		for (Iterator iterator = getItemIterator(); iterator.hasNext();)
+		{
+			CartItem item = (CartItem) iterator.next();
+			if (id.equals(item.getId()))
+			{
+				toremove = item;
+
+			}
+
+		}
+		if (toremove != null)
+		{
+			removeItem(toremove);
+		}
+
 	}
 
 }

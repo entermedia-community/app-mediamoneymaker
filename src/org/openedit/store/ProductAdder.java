@@ -74,9 +74,11 @@ public class ProductAdder
 			{
 				inCart.removeProduct(product);
 			}
-
+			int quantity = 0;
 			String quantityStr = (String) params.get("quantity" + counter);
-			int quantity = 1;
+			if(i == 0){
+				quantity = 1;
+			}
 			boolean quantityspecified = false;
 			// Quantity
 			if (quantityStr != null && !quantityStr.equals("quantity") && quantityStr.length() != 0)
@@ -92,7 +94,7 @@ public class ProductAdder
 			if (quantity <= 0)
 			{
 				//remove the product if quantity is less than or equal to zero
-				inCart.removeProduct(product);
+				//inCart.removeProduct(product);
 				continue;
 			}
 			// Look for any options being passed to us. Option can be a size,
@@ -138,10 +140,12 @@ public class ProductAdder
 				cartItem = inCart.findCartItemWith(inventory);
 			}
 
-			if (cartItem == null)
+			if (cartItem == null )
 			{
 				cartItem = new CartItem();
+				if(i == 0){
 				quantityspecified = true;
+				}
 			}
 			cartItem.setInventoryItem(inventory);
 			int oldquantity = cartItem.getQuantity();
@@ -153,6 +157,8 @@ public class ProductAdder
 			{
 				cartItem.setQuantity(quantity + oldquantity);
 			}
+			
+			
 			cartItem.setOptions(options);
 			cartItem.setProperties(properties);
 
