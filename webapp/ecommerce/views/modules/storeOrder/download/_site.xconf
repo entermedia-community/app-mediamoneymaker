@@ -1,0 +1,15 @@
+<page>
+
+<path-action name="DataEditModule.loadPageOfSearch" alltypes="true">
+				<searchtype>${module}</searchtype>
+	</path-action>
+<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
+
+
+<property name="virtual">true</property>
+<!--
+<property name="reporttemplate">/${applicationid}/views/modules/${module}/download/template.odt</property>
+-->
+<generator name="xdocGenerator" />
+
+</page>
