@@ -22,24 +22,7 @@ public class ExportInvoice extends EnterMediaObject {
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 		
 		String strMsg = "";
-		Store store = null;
-		try {
-			store  = context.getPageValue("store");
-			if (store != null) {
-				log.info("Store loaded");
-			} else {
-				strMsg = "ERROR: Could not load store";
-				throw new Exception(strMsg);
-			}
-		}
-		catch (Exception e) {
-			strMsg += "Exception thrown:\n";
-			strMsg += "Local Message: " + e.getLocalizedMessage() + "\n";
-			strMsg += "Stack Trace: " + e.getStackTrace().toString();;
-			log.info(strMsg);
-			throw new OpenEditException(strMsg);
-		}
-		
+		Store store = context.getPageValue("store");
 		//Read Value from Page
 		String inID = context.getRequestParameter("id");
 		
@@ -88,7 +71,7 @@ public class ExportInvoice extends EnterMediaObject {
 			try {
 				dateOut = inFormat.parse(oldDate);
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new OpenEditException(e);
 			}
 			SimpleDateFormat outFormat = new SimpleDateFormat("MMMM dd, yyyy");
 			String invoiceDate = outFormat.format(dateOut);
