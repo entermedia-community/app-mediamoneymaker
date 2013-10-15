@@ -111,6 +111,13 @@
       <userprofile value="true" name="dealertools"/>
   </permission>
   
+  
+   <permission name="requestquote">
+      <userprofile value="true" name="requestquote"/>
+  </permission>
+  
+  
+  
   <permission name="viewwishlists">
       <userprofile value="true" name="dealertools"/>
   </permission>

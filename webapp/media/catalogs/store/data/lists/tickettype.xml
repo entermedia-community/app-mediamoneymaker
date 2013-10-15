@@ -7,4 +7,6 @@
   <tickettype id="productchangerequest">Product Change Request</tickettype>
   <tickettype id="newproductsubmission">New Product Submission</tickettype>
   <tickettype id="updateproduct">Update Product</tickettype>
+    <tickettype id="quoterequest">Quote Request</tickettype>
+  
 </tickettypes>

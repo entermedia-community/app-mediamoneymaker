@@ -30,6 +30,17 @@
 	            $('#submit-form').show();
 	            $('#notifyme').attr({value:'no'});
 	        	break;
+	        
+	        case 'quoterequest':
+	            //$("#order").show();
+	            	            $("#stockrequest").show();
+
+	            $('#inputarea_notes').show();
+	            $('#notes-area').html("Please provide details about your request - how many items would you like to order?:");
+	            $('#submit-form').show();
+	            $('#notifyme').attr({value:'yes'});
+	        break;
+	        
 	        case 'feedback':
 	            $('#inputarea_notes').show();
 	            $('#notes-area').html("Please provide your feedback:");
@@ -85,6 +96,10 @@ $context.putPageValue("view", "ticket/addnew")
 	#if($tickettype == "productchangerequest")
 				<option value="productchangerequest" selected="selected">Product Change Request</option>
 	#end
+	
+	#if($tickettype == "quoterequest")
+				<option value="quoterequest" selected="selected">Product Quote Request</option>
+	#end
 	#if($tickettype == "newproductsubmission")
 				<option value="newproductsubmission" selected="selected" >New Product Submission</option>
 	#end
@@ -106,8 +121,8 @@ $context.putPageValue("view", "ticket/addnew")
 				<input type="hidden" name="field" value="storeOrder"/>
 			#end
 		</td>
-	</tr>
-#if($tickettype == "stockrequest")
+	</tr>$tickettype
+#if($tickettype == "stockrequest" || $tickettype == "quoterequest") 
 	<tr id="stockrequest">
 		<td class="emdatafield">Product:</td>
 		<td class="emdatafieldvalue">
@@ -119,7 +134,8 @@ $context.putPageValue("view", "ticket/addnew")
 	<tr id="stockrequest-field">
 		<td class="emdatafield">&nbsp;</td>
 		<td class="emdatafieldvalue">
-			#if($product)
+		$product
+			#if($product) 
 				#set($name = $product.get("name"))
 				<span id="product-name">$name</span>
 				<input type="hidden" name="product.value" value="${productid}"/>
@@ -130,7 +146,7 @@ $context.putPageValue("view", "ticket/addnew")
 		</td>
 	</tr>
 #end
-#if($tickettype != "stockrequest")
+#if($tickettype != "stockrequest")  
 	<tr id="inputarea_notes">
 		<td class="emdatafield">
 			<span id="notes-area">Please describe your issue:</span>

@@ -12,6 +12,8 @@
 	<permission id="viewtesting" permissiontype="ecommerce" name="View Testing Section" description="View the shopping cart" ordering="200"/>
 	<permission id="superadmin" permissiontype="ecommerce" name="SuperAdmin Account" description="Advanced Account with Special Admin rights" ordering="200"/>
 	
+	<permission id="requestquote" permissiontype="ecommerce" name="Request a Quote" description="Allows user to request a quote" ordering="200"/>
+	
 </permissions>
 
 	

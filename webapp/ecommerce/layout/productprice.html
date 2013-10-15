@@ -53,6 +53,13 @@
 		
 		
 	#end
+	#if($canrequestquote)
+	<li class="price">
+	<p>Order a large number and interested in a better price?  Use our request a quote feature.</p>
+					<a class="btn" href="$apphome/views/myaccount/tickets/addnew.html?product.value=${product.id}&tickettype.value=quoterequest&viewid=ticketsticket_details&viewpath=ticket/ticketticket_details">[[Request a quote]]</a>
+	
+	</li>
+	#end
 	<li class="price">
 	
 		#if($canviewdevelopertools)
