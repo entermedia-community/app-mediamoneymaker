@@ -120,7 +120,7 @@ try {
 	invoice.setContext(context);
 	invoice.setPageManager(pageManager);
 
-	invoice.init();
+//	invoice.init();
 //	context.putPageValue("export", invoice);
 }
 finally {

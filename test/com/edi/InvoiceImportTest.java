@@ -17,8 +17,10 @@ public class InvoiceImportTest extends StoreTestCase {
 	public void testImportInventory() throws Exception {
 		
 		Store store = getStore();
-		Searcher searcher = getStore().getSearcherManager().getSearcher(store.getCatalogId(), "invoice");
+		Searcher searcher = getStore().getSearcherManager().getSearcher("media/catalogs/store", "invoice");
+		Searcher itemsearcher = getStore().getSearcherManager().getSearcher("media/catalogs/store", "invoiceitem");
 		searcher.deleteAll(null);
+		itemsearcher.deleteAll(null);
 		PageManager pm = getFixture().getPageManager();
 		List <String> files = pm.getChildrenPaths("/media/catalogs/store/samples/invoices/");
 		

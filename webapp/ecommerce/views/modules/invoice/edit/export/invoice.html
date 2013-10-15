@@ -1,4 +1,5 @@
 #set( $moduleid = $context.findValue("module") )
+#set($invoice = $data)
 #set($module = $searcherManager.getData($catalogid, "module", $moduleid))
 #set($invoicesearcher = $searcherManager.getSearcher($catalogid, "invoice"))
 #set($invoiceitemsearcher = $searcherManager.getSearcher($catalogid, "invoiceitem"))
@@ -109,17 +110,18 @@
 					<td align="center"><strong>Unit Price</strong></td>
 					<td align="center"><strong>Line Total</strong></td>
 				</tr>
+				#set($invoiceitems = $invoiceitemsearcher.fieldSearch("invoiceid", $data.id))
 				#foreach($inv in $invoiceitems)
 				<tr>
 					#set($qty=$inv.get("quantity"))
 					<td align="center">$qty</td>
 					#set($product = $productsearcher.searchById($inv.get("product")))
 					<td align="center">$product.getId()</td>
-					<td align="center">$product.get("manufacturersku")</td>
-					<td align="left">$product.get("name")</td>
+					<td align="center">$inv.vendorcode</td>
+					<td align="left">$inv.descrip</td>
 					#set($price=$inv.get("price"))
-					<td align="center">$formatutil.formatString($price)</td>
-					<td align="right">$formatutil.formatString($inv.linetotal)</td>
+					<td align="center">$formatutil.formatString($inv.unitprice)</td>
+					<td align="right">$formatutil.formatString($price)</td>
 				</tr>
 				#end
 				<tr>
@@ -131,16 +133,16 @@
 					<td align="right">$formatutil.formatString($invoice.get("shipping"))</td>
 				</tr>
 				<tr>
-					<td colspan="5" align="right">HST/GST Tax ( $fedtaxid )</td>
-					<td align="right">$formatutil.formatString($fedtaxes)</td>
+					<td colspan="5" align="right">HST/GST Tax ( $!fedtaxid )</td>
+					<td align="right">$formatutil.formatString($invoice.fedtaxamount)</td>
 				</tr>
 				<tr>
 					<td colspan="5" align="right">Provincial Tax</td>
-					<td align="right">$formatutil.formatString($provtaxes)</td>
+					<td align="right">$formatutil.formatString($invoice.provtaxamount)</td>
 				</tr>
 				<tr>
 					<td colspan="5" align="right"><strong>Total</strong></td>
-					<td align="right">$formatutil.formatString($total)</td>
+					<td align="right">$formatutil.formatString($data.invoicetotal)</td>
 				</tr>
 			</table>
 		</td>

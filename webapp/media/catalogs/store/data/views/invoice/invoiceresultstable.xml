@@ -11,4 +11,7 @@
   <property id="invoicetotal"/>
   <property id="invoicestatus"/>
   <property id="terms"/>
+  <property id="termsdate"/>
+    <property id="inputfile"/>
+  
 </root>
