@@ -61,6 +61,9 @@ public void doImport() {
 		def int iterCounter = 0;
 		for (Iterator iterator = dirList.iterator(); iterator.hasNext();) {
 			Page page = pageManager.getPage(iterator.next());
+			if(page.isFolder()){
+				continue;
+			}
 			log.info("Processing " + page.getName());
 			if(page.getName().contains("DIH")){
 				log.info("Starting this invoice");
