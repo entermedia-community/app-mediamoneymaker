@@ -8,6 +8,19 @@
 		<div class="rogers-summary-details">
 			<a href="#bottom" class="btn">Jump to the Bottom of the page</a>
 		</div>
+		<h3 style="margin-top: 15px;">The following orders have been removed because they don't have any items.</h3>
+		<div>
+			<ul>
+		#set($removedorders = $orderset.getRemovedOrders())
+		#foreach($order in $removedorders)
+			#set($customerid = $order.getCustomer().getId())
+			#set($id = $customerid.split("-"))
+			#set($storeid = $id.get(1))
+			#set($rogersstore = $storesearcher.searchById($storeid))
+					<li>$order.getId() - $storeid - $rogersstore.get("name")</li>
+		#end
+			</ul>
+		</div>
 		<h3 style="margin-top: 15px;">Click the order number to expand and view.</h3>
 		<h3 style="margin-bottom: 15px;">Click the order number again to close. </h3>
 		#set($orders = $orderset.getOrders())

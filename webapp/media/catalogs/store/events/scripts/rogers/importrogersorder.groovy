@@ -6,9 +6,6 @@ package rogers
  */
 
 //Import List
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -16,28 +13,26 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Cart
 import org.openedit.store.CartItem
-import org.openedit.store.InventoryItem;
+import org.openedit.store.InventoryItem
 import org.openedit.store.PaymentMethod
 import org.openedit.store.Product
 import org.openedit.store.PurchaseOrderMethod
-import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store
 import org.openedit.store.customer.Address
 import org.openedit.store.customer.Customer
-import org.openedit.store.modules.ProcessOrderModule;
 import org.openedit.store.orders.Order
-import org.openedit.store.orders.OrderSet;
+import org.openedit.store.orders.OrderSet
 import org.openedit.store.orders.OrderState
-import org.openedit.util.DateStorageUtil;
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
+import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
 import com.openedit.users.BaseUser
 import com.openedit.users.User
 import com.openedit.util.FileUtils
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 public class ImportRogersOrder extends EnterMediaObject {
 
@@ -65,14 +60,14 @@ public class ImportRogersOrder extends EnterMediaObject {
 	private String colHeadROGERSOTHERID = "IRLSDT";
 	int totalRows;
 	Map<String, Order> orderMap;
-	
+
 	Map<String, Integer> badProductMap;
 	List<String> goodOrderList;
 	List<String> badProductList;
 	List<String> badStoreList;
 	List<String> badColumnList;
 	boolean processOrder;
-	
+
 	public List<String> getGoodOrderList() {
 		if(goodOrderList == null) {
 			goodOrderList = new ArrayList<String>();
@@ -116,7 +111,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 				if (key.equalsIgnoreCase(inItem)) {
 					value = entry.getValue();
 					value++;
-				}	
+				}
 			}
 			badProductMap.put(inItem, value);
 		}
@@ -134,7 +129,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 		}
 		badStoreList.add(inItem);
 	}
-	
+
 	public void addToBadColumnList(String inItem) {
 		if (badColumnList == null) {
 			badColumnList = new ArrayList<String>();
@@ -147,7 +142,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 		}
 		return badColumnList;
 	}
-	
+
 	public int getTotalRows() {
 		if (totalRows == null) {
 			totalRows = 0;
@@ -188,26 +183,23 @@ public class ImportRogersOrder extends EnterMediaObject {
 	public void orderImport(){
 		//Create Store, MediaArchive Object
 
-		log.info("PROCESS: START Orders.RogersImport");
-		
-		MediaArchive archive = context.getPageValue("mediaarchive");
-		String catalogid = getMediaArchive().getCatalogId();
-		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
-		
-		String choice = context.getRequestParameter("choice");
+		WebPageRequest inReq = context;
+		boolean production = Boolean.parseBoolean(inReq.findValue('productionmode'));
+
+		String choice = inReq.getRequestParameter("choice");
 		if (choice != null) {
 			if (choice.equals("exit")) {
-				context.redirect("/ecommerce/rogers/orders/rogersorder.html");
+				inReq.redirect("/ecommerce/rogers/orders/rogersorder.html");
 				return;
 			} else {
-				setProcessOrder(); 
+				setProcessOrder();
 			}
 		}
-		
+
 		String strMsg = "";
 		Store store = null;
 		try {
-			store  = context.getPageValue("store");
+			store  = inReq.getPageValue("store");
 			if (store != null) {
 				log.info("Store loaded");
 			} else {
@@ -222,8 +214,10 @@ public class ImportRogersOrder extends EnterMediaObject {
 			log.info(strMsg);
 			throw new OpenEditException(strMsg);
 		}
-		
+
 		// Create the Searcher Objects to read values!
+		MediaArchive archive = inReq.getPageValue("mediaarchive");
+		String catalogid = getMediaArchive().getCatalogId();
 		SearcherManager manager = archive.getSearcherManager();
 
 		//Create Searcher Object
@@ -231,7 +225,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
-		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "address");
+		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "rogersstore");
 		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
 		Searcher usersearcher = manager.getSearcher("system", "user");
 
@@ -239,37 +233,39 @@ public class ImportRogersOrder extends EnterMediaObject {
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
 		//detail.get("column");
 		
-		Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
-		Data as400Record = as400searcher.createNewData();
-		as400Record.setId(as400searcher.nextId());
-		as400Record.setName("Batch " + as400Record.getId());
-		String batchID = UUID.randomUUID().toString();
-		as400Record.setProperty("batchid", batchID);
-		as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		as400Record.setProperty("exportstatus", "open");
-		as400Record.setProperty("user", context.getUser().getName());
-		as400searcher.saveData(as400Record, context.getUser());
-		as400searcher.reIndexAll();
-
 		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/rogers_order.csv");
+		if (!upload.exists()) {
+			return;
+		}
 		Reader reader = upload.getReader();
 		try
 		{
+			Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
+			Data as400Record = as400searcher.createNewData();
+			as400Record.setId(as400searcher.nextId());
+			as400Record.setName("Batch " + as400Record.getId());
+			String batchID = UUID.randomUUID().toString();
+			as400Record.setProperty("batchid", batchID);
+			as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			as400Record.setProperty("exportstatus", "open");
+			as400Record.setProperty("user", inReq.getUser().getName());
+			as400searcher.saveData(as400Record, inReq.getUser());
+
 			def SEARCH_FIELD = "rogerssku";
 			boolean done = false;
 
 			//Create CSV reader
 			CSVReader read = new CSVReader(reader, ',', '\"');
-			
+
 			//Read 1 line of header
 			String[] headers = read.readNext();
 			boolean errorFields = checkColumns(headers);
-			
+
 			if (errorFields == true) {
-				
+
 				//String errorOut = "<p>The following fields in the input file are invalid:<ul>" + errorOut + "</ul></p>";
-				context.putPageValue("errorfields", getBadColumnList());
-				context.putPageValue("errorcontext", "fields");
+				inReq.putPageValue("errorfields", getBadColumnList());
+				inReq.putPageValue("errorcontext", "fields");
 
 			} else {
 
@@ -287,7 +283,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 				columnNumbers.add(columnQuantity);
 				columnNumbers.add(columnRogersID);
 				columnNumbers.add(columnRogersOtherID);
-		
+
 				Reader checkProducts = upload.getReader();
 				String[] orderLine;
 				while ((orderLine = read.readNext()) != null)
@@ -304,9 +300,10 @@ public class ImportRogersOrder extends EnterMediaObject {
 						order.setId("Rogers-"+ordersearcher.nextId());
 						order.setSourcePath(order.getId());
 						order.setProperty("batchid", batchID);
+						order.setCart(new Cart(store));
 						orderMap.put(storeNum, order);
 					}
-					
+
 					//Create as400list Searcher
 					Searcher storeList = manager.getSearcher(archive.getCatalogId(), "rogersstore");
 					Data targetStore = storeList.searchById(storeNum);
@@ -322,38 +319,39 @@ public class ImportRogersOrder extends EnterMediaObject {
 					//Search the product for the oracle sku(rogerssku)
 					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku);
 					if (targetProduct != null) {
-						
+
 						Product product = productsearcher.searchById(targetProduct.getId());
 						if (product != null) {
 
-							//productsearcher.saveData(real, context.getUser());
+							//productsearcher.saveData(real, inReq.getUser());
 							log.info("ProductID Found: " + product.getId());
-	
+
 							int qty = Integer.parseInt(orderLine[columnQuantity]);
-							
+
 							//Everything is good... Create the cart item!
 							CartItem orderitem = new CartItem();
-							
+
 							orderitem.setProduct(product);
 							orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
-							
+
 							String as400id = product.get("as400id");
 							if (as400id == null) {
 								product.setProperty("as400id", orderLine[columnAS400id]);
-								productsearcher.saveData(product, context.getUser());
+								productsearcher.saveData(product, inReq.getUser());
 							}
-							order.addItem(orderitem);
-							
+							Cart cart = order.getCart();
+							cart.addItem(orderitem);
+
 							Address shipping = order.getShippingAddress();
 							if (shipping == null) {
-								Data shippingAddress = addresssearcher.searchByField("storenumber", storeNum);
+								Data shippingAddress = addresssearcher.searchById(storeNum);
 								shipping = new Address();
 								shipping.setId(shippingAddress.get("id"));
 								shipping.setName(shippingAddress.get("name"));
 								shipping.setAddress1(shippingAddress.get("address1"));
 								shipping.setAddress2("");
 								shipping.setCity(shippingAddress.get("city"));
-								shipping.setState(shippingAddress.get("state"));
+								shipping.setState(shippingAddress.get("province"));
 								shipping.setZipCode(shippingAddress.get("zip"));
 								shipping.setCountry(shippingAddress.get("country"));
 								shipping.setDescription(shippingAddress.get("description"));
@@ -361,37 +359,37 @@ public class ImportRogersOrder extends EnterMediaObject {
 								order.setShippingAddress(shipping);
 							}
 							//store.saveOrder(order);
-							
+
 							Address billing = order.getBillingAddress();
 							if (billing == null) {
-								Data billingAddress = addresssearcher.searchByField("storenumber", storeNum);
+								Data billingAddress = addresssearcher.searchById(storeNum);
 								billing = new Address();
 								billing.setId(billingAddress.get("id"));
 								billing.setName(billingAddress.get("name"));
 								billing.setAddress1(billingAddress.get("address1"));
 								billing.setAddress2("");
 								billing.setCity(billingAddress.get("city"));
-								billing.setState(billingAddress.get("state"));
+								billing.setState(billingAddress.get("province"));
 								billing.setZipCode(billingAddress.get("zip"));
 								billing.setCountry(billingAddress.get("country"));
 								billing.setDescription(billingAddress.get("description"));
 								billing.setProperty("phone", billingAddress.get("phone1"));
 								order.setBillingAddress(billing);
 							}
-							
+
 							Customer customer = order.getCustomer();
 							if (customer == null) {
 								//ADD STORE AS USER
-								
+
 								User user = usersearcher.searchById("rogers-"+storeNum);
 								if (user == null) {
 									user = new BaseUser();
 									user.setId("rogers-"+storeNum);
 									user.setPassword("rogers");
 									user.setFirstName(orderLine[columnStoreName]);
-									usersearcher.saveData(user, context.getUser());
+									usersearcher.saveData(user, inReq.getUser());
 								}
-								
+
 								Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
 								Data customerInfo = profileAddressSearcher.searchByField("storenumber", storeNum);
 								if (customerInfo == null) {
@@ -408,7 +406,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 								customer.setUser(user);
 								order.setCustomer(customer);
 							}
-							
+
 							String purchaseorder = order.getId();
 							PurchaseOrderMethod poMethod = new PurchaseOrderMethod();
 							poMethod.setPoNumber(purchaseorder);
@@ -418,7 +416,10 @@ public class ImportRogersOrder extends EnterMediaObject {
 							if (order.getPaymentMethod() == null) {
 								throw new OpenEditException("Cannot set PaymentMethod()");
 							}
-							
+
+							//Update the cart in the order.
+							order.setCart(cart);
+							order.setItems(cart.getItems());
 							//Lets Save the ORDER!
 							log.info("Order (" + order.getId() + ") saved to OrderMap");
 						} else {
@@ -432,37 +433,33 @@ public class ImportRogersOrder extends EnterMediaObject {
 				for (Iterator iterator = orderMap.keySet().iterator(); iterator.hasNext();) {
 					String key = (String) iterator.next();
 					Order order = orderMap.get(key);
-					
+
 					if (order.getNumItems() > 0) {
-					
-						orderSet.recalculateOrder(order, store);
-						
+
 						OrderState orderState = new OrderState();
 						orderState.setId("pending");
 						orderState.setDescription("pending");
 						orderState.setOk(true);
 						order.setOrderState(orderState);
-						
+
 						//Set other properties
 						Date now = new Date();
 						String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
 						order.setProperty("orderdate", newDate);
-						
+
 						order.setProperty("orderstatus", "pending");
 						order.setProperty("order_status", "pending");
 						order.setProperty("id", order.getId());
 						order.setProperty("customer", order.getCustomer().getId());
 						order.setProperty("batchid", batchID);
-				
-	//					store.saveOrder(order);
-	//					store.getOrderSearcher().updateIndex(order);
+
 						orderSet.recalculateOrder(order, store);
 						orderSet.addOrder(order);
 					} else {
 						log.info("Order (" + order.getId() + ") skipped. No Cart Items");
 					}
 				}
-				context.putSessionValue("orderset", orderSet);
+				inReq.putSessionValue("orderset", orderSet);
 			}
 		}
 		finally
@@ -474,7 +471,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 	public String addQuotes( String s ) {
 		return "\"" + s + "\"";
 	}
-	
+
 	private boolean checkColumns( String[] headers) {
 		def List columnNumbers = new ArrayList();
 		columnNumbers.add(columnStore);
@@ -509,15 +506,15 @@ public class ImportRogersOrder extends EnterMediaObject {
 		}
 		return (getBadColumnList().size() > 0);
 	}
-	
-	private boolean checkOrder( Reader csvReader, ArrayList columnNumbers, 
-		MediaArchive archive, String catalogId, Searcher productsearcher ) {
+
+	private boolean checkOrder( Reader csvReader, ArrayList columnNumbers,
+			MediaArchive archive, String catalogId, Searcher productsearcher ) {
 		boolean result = false;
 
 		int columnQuantity = 21;
 		int columnRogersID = 33;
 		String SEARCH_FIELD = "rogerssku";
-		
+
 		CSVReader readLine = new CSVReader(csvReader, ',', '\"');
 		//Read Header Line
 		readLine.readNext();
@@ -530,7 +527,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 			if (targetProduct != null) {
 				Product product = productsearcher.searchById(targetProduct.getId());
 				if (product == null) {
-					addToBadProductList(rogerssku);				
+					addToBadProductList(rogerssku);
 				} else {
 					int qty = Integer.parseInt(orderLine[columnQuantity]);
 					if ( qty < 1 ) {
@@ -550,14 +547,14 @@ public class ImportRogersOrder extends EnterMediaObject {
 		}
 		return result;
 	}
-	private boolean checkInventory( Reader csvReader, ArrayList columnNumbers, 
-		MediaArchive archive, String catalogId, Searcher productsearcher, boolean skipBadProducts ) {
+	private boolean checkInventory( Reader csvReader, ArrayList columnNumbers,
+			MediaArchive archive, String catalogId, Searcher productsearcher, boolean skipBadProducts ) {
 		boolean result = false;
 
 		int columnQuantity = 21;
 		int columnRogersID = 33;
 		String SEARCH_FIELD = "rogerssku";
-		
+
 		CSVReader readLine = new CSVReader(csvReader, ',', '\"');
 		//Read Header Line
 		readLine.readNext();
@@ -575,7 +572,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 					if (qty > qtyInStock) {
 						addToBadProductList(rogerssku);
 					}
-				}	
+				}
 			}
 		}
 		if (getBadProductList().size() == 0) {

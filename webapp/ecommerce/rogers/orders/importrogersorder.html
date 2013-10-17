@@ -18,7 +18,7 @@
 		<a href="#outofstock" class="btn" style="margin-right: 8px;">Jump to Out of Stock Problems</a>
 		#end
 		#if ($outofstockproducts.size()>0)
-		<a href="#stockproblems" class="btn" style="margin-right: 8px;">Jump to Out of Stock Problems</a>
+		<a href="#stockproblems" class="btn" style="margin-right: 8px;">Jump to Current Stock Problems</a>
 		#end
 		#if(($baditems.size() == 0) && ($outofstockitems.size() == 0) && ($outofstockproducts.size() == 0))
 		<a href="#bottomofpage" class="btn">Jump to Bottom of Page</a>
@@ -35,7 +35,7 @@
 	<h2>The following orders are ready to be processed.</h2>
 	<table >
 		<tr>
-			<th style="padding: 8px;">Edit</th>
+<!-- 			<th style="padding: 8px;">Edit</th> -->
 			<th style="padding: 8px;">Order ID</th>
 			<th style="padding: 8px;">Store ID</th>
 			<th style="padding: 8px;">Store Name</th>
@@ -45,9 +45,10 @@
 		</tr>
 		<tr>
 	#foreach($order in $orders)
+<!-- 
 			<td style="padding: 8px; text-align: center;">
 				<a href="$home$apphome/rogers/orders/orderset/showorder.html?id=$order.getId()"><img src="$home$apphome/theme/images/edit-icon.png"/></a>
-			</td>
+			</td> -->
 			<td style="padding: 8px; white-space: nowrap;">$order.getId()</td>
 			#set($customerid = $order.getCustomer().getId())
 			#set($id = $customerid.split("-"))
@@ -163,13 +164,13 @@
 		#set($totalordered=0)
 		#foreach($prodid in $outofstockproducts)
 			#set($ctr=$ctr+1)
-	<form action="$home$apphome/rogers/orders/orderset/updateitems.html" class="updateform">
+	<form action="$home$apphome/rogers/orders/orderset/updateitems.html" 
+		class="updateform" id="rogersform${ctr}" onloadeddata="updateValue();">
 		<p>&nbsp;</p>
 		<h2>Products which have stock problems.</h2>
 		<table >
 			<tr>
 				<th style="padding: 8px;">Product</th>
-				<th style="padding: 8px;">Quantity<br>In Stock</th>
 				<th style="padding: 8px;">Order #</th>
 				<th style="padding: 8px;">Store ID</th>
 				<th style="padding: 8px;">Store Name</th>
@@ -179,10 +180,18 @@
 			</tr>
 			#set($product = $productsearcher.searchById($prodid))
 			<tr>
-				<td colspan="8">$product.get("rogerssku") - $product.getName()</td>
+				<td colspan="7">$product.get("rogerssku") - $product.getName()</td>
 			</tr>
 			<tr>
-				<td colspan="8"><a 
+				<td colspan="7">
+					<div class="container-rogersform${ctr}" style="border: 1px solid red; padding: 5px; background-color: orange;">
+						<strong>Current Quantity In Stock:</strong>&nbsp;<span 
+						class="instock-rogersform${ctr}"><strong>$orderset.getQuantityInStock($product)</strong></span>
+					</div>
+				<td>
+			</tr>
+			<tr>
+				<td colspan="7" style="clear: both;"><a 
 				href="$home$apphome/rogers/orders/orderset/removeitemfromallorders.html?product=${product.getId()}" 
 				class="btn">Remove ${product.get("rogerssku")} from all orders</a>
 				</td>
@@ -190,8 +199,7 @@
 			#foreach ($order in $orderset.getOrders())
 				#if($order.containsProduct($product))
 			<tr>
-				<td>&nbsp;</td>
-				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$orderset.getQuantityInStock($product)</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">&nbsp;</td>
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$order.getId()</td>
 					#set($customerid = $order.getCustomer().getId())
 					#set($id = $customerid.split("-"))
@@ -205,7 +213,7 @@
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
 					<input type="text" name="${order.getId()}:${product.getId()}" 
 						value="${cartitem.getQuantity()}" size="5" 
-						onkeyup="recalculateQuantities${ctr}()" 
+						onkeyup="recalculateQuantities()" 
 						class="formvalues${ctr}"/>
 					<input type="hidden" name="orderqty" value="${order.getId()}:${product.getId()}">
 				</td>
@@ -221,33 +229,13 @@
 			</tr>
 			<tr>
 				<td colspan="6"><p style="text-align: right;">Total Amount:</p></td>
-				<td colspan="2"><div style="text-align: left;"><p class="totalamount${ctr}" style="margin-left: 15px;">${totalordered}</p></div></td>
+				<td colspan="2"><div style="text-align: left;"><p class="rogersform${ctr}-totalamount" style="margin-left: 15px;">${totalordered}</p></div></td>
 			</tr>
 			<tr>
 				<td colspan="7" style="text-align: right;"><input type="submit" name="submit" value="Update quantities for ${product.get("rogerssku")}"></td>
 			</tr>
 		</table>
 	</form>
-	<script type="text/javascript">
-	      function recalculateQuantities${ctr}() {
-	          var total = 0;
-	          jQuery.each(jQuery('.formvalues${ctr}'), function() {
-	              var value = $(this).val();
-	              console.log(value);
-	              if (value !== "") {
-	                  if (isInt(value)) {
-	                      var intVal = parseInt(value);
-	                      total += intVal;
-	                      console.log(total);
-	                  }
-	              }
-	          });
-	          jQuery('.totalamount${ctr}').html(total.toString());
-	      }
-	      function isInt(n) {
-	         return n % 1 === 0;
-	      }
-	</script>
 		#end
 	#end
 	#if(($baditems.size() == 0) && ($outofstockitems.size() == 0) && ($outofstockproducts.size() == 0))
@@ -261,3 +249,53 @@
 	#end
 	</div>
 </div>
+<script type="text/javascript">
+      function recalculateQuantities() {
+	      jQuery('form').each(function() {
+	          var id = jQuery(this).attr('id');
+			  var check = id.substring(0,10);
+	          if (check == "rogersform") {
+		    	  var getstock = jQuery('span.instock-' + id).text();
+		    	  var instock = parseInt(getstock);
+		          var total = 0;
+		          jQuery(':input', this).each(function() {
+		              var value = $(this).val();
+		              if (value !== "") {
+		                  if (isInt(value)) {
+		                      var intVal = parseInt(value);
+		                      total += intVal;
+		                  }
+		              }
+		          });
+		          jQuery(this).each(function() {
+		              jQuery('.' + id + '-totalamount').html(total.toString());
+		              if (total > instock) {
+		            	  jQuery('.' + id + '-totalamount').css('color', 'red');
+		            	  jQuery('.container-' + id).css('border', '1px solid red');
+		            	  jQuery('.container-' + id).css('background-color', 'orange');
+		            	  
+		              } else {
+		            	  jQuery('.' + id + '-totalamount').css('color', 'black');
+		            	  jQuery('.container-' + id).css('border', '1px solid green');
+		            	  jQuery('.container-' + id).css('background-color', '#66FF66');
+		              }
+		          });
+	          }
+	      });
+	      return false;
+      }
+      function isInt(n) {
+         return n % 1 === 0;
+      }
+</script>
+<script>
+	jQuery(window).bind("load", function() {
+        jQuery('form').each(function() {
+	         var id = jQuery(this).attr('id');
+	         var check = id.substring(0,10);
+	         if (check == "rogersform") {
+	        	recalculateQuantities();
+	         }
+        });
+	});
+</script>

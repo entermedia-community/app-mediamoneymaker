@@ -709,13 +709,17 @@ public class OrderModule extends BaseModule
 				if (removeList.size()>0) {
 					for (Iterator<CartItem> itemIter = removeList.iterator(); itemIter.hasNext();) {
 						CartItem cartItem = (CartItem) itemIter.next();
-						order.getCart().removeItem(cartItem);
+						if (cartItem != null) {
+							order.getCart().removeItem(cartItem);
+						} else {
+							System.out.println("CartItem is null");
+						}
 					}
 				}
-				Store store = getStore(inContext);
-				orderSet.recalculateAll(store);
 			}
 		}
+		Store store = getStore(inContext);
+		orderSet.recalculateAll(store);
 	}
 	
 	public void removeBadStockFromOrders( WebPageRequest inContext ) {
@@ -840,9 +844,9 @@ public class OrderModule extends BaseModule
 					order.getCart().removeItem(cartItem);
 				}
 			}
-			Store store = getStore(inContext);
-			orderSet.recalculateAll(store);
 		}
+		Store store = getStore(inContext);
+		orderSet.recalculateAll(store);
 	}
 	public void processOrders( WebPageRequest inContext ) {
 		if (inContext.getRequestParameter("action").equalsIgnoreCase("processorder")) {

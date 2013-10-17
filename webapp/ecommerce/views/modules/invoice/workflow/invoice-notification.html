@@ -6,11 +6,14 @@
 #set($invoice = $invoicesearcher.searchById($id))
 #set($invoicenumber = $invoice.get("invoicenumber"))
 
+#set($distributorID = $context.getRequestParameter("distributorid"))
 #set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
-#set($distributor = $distributorsearcher.searchById($invoice.get("distributor")))
+#set($distributor = $distributorsearcher.searchById($distributorID))
 #set($distributorname = $distributor.getName())
 
-#set($order = $context.getRequestParameter("order"))
+#set($inOrderid = $context.getRequestParameter("orderid"))
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "storeorder"))
+#set($order = $ordersearcher.searchById($inOrderid))
 #set($orderid = $order.getId())
 
 <h2>Invoice Notification</h2>

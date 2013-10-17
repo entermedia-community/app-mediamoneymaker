@@ -29,6 +29,9 @@ import com.openedit.page.manage.PageManager
 import com.openedit.util.FileUtils
 
 public class ImportInventoryFromUrl  extends EnterMediaObject {
+
+	public static final String MICROCEL_ID = "";
+	public static final String CESIUM_ID = "";
 	
 	List<String> badProductList;
 	List<String> badUPCList;
@@ -237,6 +240,8 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 						if (inDistributor.equals("104")) {
 							manufacturerSKU = parseMicrocelData(cols);
 							rogersSKU = manufacturerSKU;
+						} else if (inDistributor.equals(CESIUM_ID)) {
+						
 						} else {
 							manufacturerSKU = cols[manufacturerSKUcol];
 							rogersSKU = cols[rogersSKUcol];
@@ -364,7 +369,6 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 					csvFields.setProperty("lastimportdate", parseDateTime(now));
 				}
 				inventorysearcher.saveData(csvFields, inReq.getUser());
-				inventorysearcher.reIndexAll();
 			
 				context.putPageValue("export", inURL);
 				context.putPageValue("url", inURL);
@@ -421,6 +425,14 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		String extract = split[2].trim();
 		return extract;
 	}
+
+	private String parseCesiumData( String[] inData ) 
+	{
+		String[] split = inData[0].split("-");
+		String extract = split[2].trim();
+		return extract;
+	}
+	
 	protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject)
 	{
 		Page template = pageManager.getPage(templatePage);
