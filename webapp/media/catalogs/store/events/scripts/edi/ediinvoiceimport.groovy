@@ -193,7 +193,7 @@ public void doImport() {
 					invoice.setProperty("invoicestatus", "new");
 				} else {
 					invoice.setProperty("invoicestatus", "error");
-					invoice.setProperty("notes", "Order ${ponumber} cannot be found on the system");
+					invoice.setProperty("notes", "Preprocessing error: order ${ponumber} cannot be found on the system");
 				}
 				invoicesearcher.saveData(invoice, null);
 				itemsearcher.saveAllData(items, null);
