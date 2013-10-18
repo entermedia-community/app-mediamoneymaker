@@ -11,6 +11,7 @@ import org.openedit.util.DateStorageUtil
 
 import org.openedit.store.CartItem
 import org.openedit.store.Store
+import org.openedit.store.Product
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 import org.openedit.store.orders.Shipment
@@ -153,13 +154,16 @@ public void doImport() {
 						q.addExact("distributor", distributorData.getId());
 					}
 					HitTracker hits = productsearcher.search(q);
+					Product product = null;
 					if (hits.size() == 0){
 						invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
 					} else if (hits.size() == 1){
 						Data hit = hits.get(0);
+						product = productsearcher.searchById(hit.id);
 						invoiceitem.setProperty("productid", hit.id);
 					} else {
 						Data hit = hits.get(0);
+						product = productsearcher.searchById(hit.id);
 						invoiceitem.setProperty("productid", hit.id);
 						invoiceitem.setProperty("notes", "Found multiple matches for this product.  Used first.");
 					}
@@ -171,21 +175,17 @@ public void doImport() {
 					invoiceitem.setProperty("vendorcode", vendorCode);
 					invoiceitem.setProperty("UPC", it.Attributes.TblReferenceNbr.find {it.Qualifier == "UP"}.ReferenceNbr.text());
 					//Check to see if we need to handle shipping
-					if(shipment != null && vendorCode!=null && !vendorCode.isEmpty()){
-						Searcher productSearcher = store.getProductSearcher();
-						Data findProduct = productSearcher.searchByField("manufacturersku", vendorCode);
-						CartItem cartItem = (findProduct == null ? null : order.getCartItemByProductID(findProduct.getId()));
-						if (cartItem == null) {
-							cartItem = order.getCartItemByProductSku(vendorCode);
-						}
-						ShipmentEntry entry = new ShipmentEntry();
-						entry.setCartItem(cartItem);
-						entry.setQuantity(Integer.parseInt(quantity));
-						shipment.addEntry(entry);
-						
-						order.addShipment(shipment);
-						order.setProperty("shippingstatus", order.isFullyShipped() ? "shipped" : "partialshipped");
-						store.saveOrder(order);
+					if(shipment != null){
+						if (product!=null){
+							CartItem cartItem = order.getCartItemByProductID(product.getId());
+							ShipmentEntry entry = new ShipmentEntry();
+							entry.setCartItem(cartItem);
+							entry.setQuantity(Integer.parseInt(quantity));
+							shipment.addEntry(entry);
+							order.addShipment(shipment);
+							order.setProperty("shippingstatus", order.isFullyShipped() ? "shipped" : "partialshipped");
+							store.saveOrder(order);
+						}//don't need to log this case: already logged error in notes above
 					}
 				}
 				if (order != null){
