@@ -18,8 +18,7 @@ import com.openedit.page.manage.PageManager
 		searcher.deleteAll(null);
 		itemsearcher.deleteAll(null);
 		PageManager pm = store.getPageManager();
-		List <String> files = pm.getChildrenPaths("/media/catalogs/store/samples/invoices/");
-		
+		List <String> files = pm.getChildrenPaths("/WEB-INF/data/media/catalogs/store/processed/invoices/");
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			Page test = pm.getPage((String)iterator.next());

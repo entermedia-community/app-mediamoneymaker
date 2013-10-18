@@ -612,24 +612,6 @@ public class Cart extends BaseData
 		}
 		return false;
 	}
-	
-//	public boolean requiresShipping(){
-//		int regularshipping = 0;
-//		Iterator<?> itr = getItems().iterator();
-//		while (itr.hasNext()){
-//			CartItem item = (CartItem) itr.next();
-//			Product product = item.getProduct();
-//			if (!Boolean.parseBoolean(product.get("electronicshipping"))){
-//				regularshipping++;
-//			}
-//		}
-//		return (regularshipping > 0);
-//	}
-	
-//	public boolean canPlaceOrder(){
-//		return (this.getCustomer()!=null && !this.getItems().isEmpty() && this.getCustomer().getBillingAddress(false)!=null &&
-//				this.getCustomer().getPaymentMethod()!=null);
-//	}
 
 	public boolean requiresShipping()
 	{
@@ -714,15 +696,14 @@ public class Cart extends BaseData
 	public void removeById(String id)
 	{
 		CartItem toremove = null;
-		for (Iterator iterator = getItemIterator(); iterator.hasNext();)
+		for (Iterator<?> iterator = getItemIterator(); iterator.hasNext();)
 		{
 			CartItem item = (CartItem) iterator.next();
 			if (id.equals(item.getId()))
 			{
 				toremove = item;
-
+				break;
 			}
-
 		}
 		if (toremove != null)
 		{

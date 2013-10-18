@@ -409,7 +409,6 @@ public class CartModule extends BaseStoreModule {
 		cart.setCustomer(customer);
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
 		
-//		System.out.println("&&&&& Shipping address: "+customer.getShippingAddress());
 		cart.setShippingAddress(customer.getShippingAddress());
 		cart.setBillingAddress(customer.getBillingAddress());
 		customer.getUser().setEnabled(true);
@@ -440,8 +439,6 @@ public class CartModule extends BaseStoreModule {
 				.setCountry(getAddressValue(inPageRequest, inPrefix, "country"));
 		inAddress
 				.setZipCode(getAddressValue(inPageRequest, inPrefix, "zipCode"));
-		
-//		System.out.println("&&&&& Customer Address: \n"+inAddress.toString());
 	}
 
 	private String getAddressValue(WebPageRequest inPageRequest,
@@ -684,10 +681,6 @@ public class CartModule extends BaseStoreModule {
 	public void saveShippingMethod(WebPageRequest inPageRequest)
 			throws OpenEditException {
 		String method = inPageRequest.getRequestParameter("shippingmethod");
-//		if (method==null || method.isEmpty()){
-//			System.out.println("&&&&&&&&&& No shipping method found, returning");
-//			return;
-//		}
 		Cart cart = getCart(inPageRequest);
 		Store store = getStore(inPageRequest);
 		if (method != null) {
