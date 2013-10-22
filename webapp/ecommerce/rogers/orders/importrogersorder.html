@@ -130,7 +130,7 @@
 				<td>&nbsp;</td>
 				<td style="padding-left: 8px; padding-right: 8px;">
 					#set($product = $productsearcher.searchById($productid))
-					$product.get("rogerssku")
+					<a href="#${product.get("rogerssku")}" style="color: blue; font-size: 14px;">$product.get("rogerssku")</a>
 				</td>
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
 					#set($product = $productsearcher.searchById($productid)) 
@@ -166,7 +166,7 @@
 			#set($ctr=$ctr+1)
 	<form action="$home$apphome/rogers/orders/orderset/updateitems.html" 
 		class="updateform" id="rogersform${ctr}" onloadeddata="updateValue();">
-		<p>&nbsp;</p>
+		<p><a name="${product.get("rogerssku")}"></a>&nbsp;</p>
 		<h2>Products which currently have stock problems.</h2>
 		<table >
 			<tr>
@@ -212,13 +212,13 @@
 				#set($totalordered = $totalordered + $cartitem.getQuantity())
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
 					<input type="text" name="${order.getId()}:${product.getId()}" 
-						value="${cartitem.getQuantity()}" size="5" 
+						value="${cartitem.getQuantity()}" size="5" id="${order.getId()}-${product.getId()}"
 						onkeyup="recalculateQuantities()" 
 						class="formvalues${ctr}"/>
 					<input type="hidden" name="orderqty" value="${order.getId()}:${product.getId()}">
 				</td>
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
-					<a href="$home$apphome/rogers/orders/orderset/removeitem.html?product=${product.getId()}&order=${order.getId()}"><img 
+					<a href="#" onclick="zerovalue('${order.getId()}-${product.getId()}'); return false;"><img 
 					src="$home$apphome/theme/images/x-button.png"/></a>
 				</td>
 			</tr>
@@ -251,36 +251,33 @@
 </div>
 <script type="text/javascript">
       function recalculateQuantities() {
-	      jQuery('form').each(function() {
+	      jQuery('.updateform').each(function() {
 	          var id = jQuery(this).attr('id');
-			  var check = id.substring(0,10);
-	          if (check == "rogersform") {
-		    	  var getstock = jQuery('span.instock-' + id).text();
-		    	  var instock = parseInt(getstock);
-		          var total = 0;
-		          jQuery(':input', this).each(function() {
-		              var value = $(this).val();
-		              if (value !== "") {
-		                  if (isInt(value)) {
-		                      var intVal = parseInt(value);
-		                      total += intVal;
-		                  }
-		              }
-		          });
-		          jQuery(this).each(function() {
-		              jQuery('.' + id + '-totalamount').html(total.toString());
-		              if (total > instock) {
-		            	  jQuery('.' + id + '-totalamount').css('color', 'red');
-		            	  jQuery('.container-' + id).css('border', '1px solid red');
-		            	  jQuery('.container-' + id).css('background-color', 'orange');
-		            	  
-		              } else {
-		            	  jQuery('.' + id + '-totalamount').css('color', 'black');
-		            	  jQuery('.container-' + id).css('border', '1px solid green');
-		            	  jQuery('.container-' + id).css('background-color', '#66FF66');
-		              }
-		          });
-	          }
+	    	  var getstock = jQuery('span.instock-' + id).text();
+	    	  var instock = parseInt(getstock);
+	          var total = 0;
+	          jQuery(':input', this).each(function() {
+	              var value = $(this).val();
+	              if (value !== "") {
+	                  if (isInt(value)) {
+	                      var intVal = parseInt(value);
+	                      total += intVal;
+	                  }
+	              }
+	          });
+	          jQuery(this).each(function() {
+	              jQuery('.' + id + '-totalamount').html(total.toString());
+	              if (total > instock) {
+	            	  jQuery('.' + id + '-totalamount').css('color', 'red');
+	            	  jQuery('.container-' + id).css('border', '1px solid red');
+	            	  jQuery('.container-' + id).css('background-color', 'orange');
+	            	  
+	              } else {
+	            	  jQuery('.' + id + '-totalamount').css('color', 'black');
+	            	  jQuery('.container-' + id).css('border', '1px solid green');
+	            	  jQuery('.container-' + id).css('background-color', '#66FF66');
+	              }
+	          });
 	      });
 	      return false;
       }
@@ -288,14 +285,15 @@
          return n % 1 === 0;
       }
 </script>
+<script type="text/javascript">
+	function zerovalue(value) {
+		var idVal = '#' + value;
+		jQuery(idVal).val("0");
+		recalculateQuantities();
+	}
+</script>
 <script>
 	jQuery(window).bind("load", function() {
-        jQuery('form').each(function() {
-	         var id = jQuery(this).attr('id');
-	         var check = id.substring(0,10);
-	         if (check == "rogersform") {
-	        	recalculateQuantities();
-	         }
-        });
+       	recalculateQuantities();
 	});
 </script>
