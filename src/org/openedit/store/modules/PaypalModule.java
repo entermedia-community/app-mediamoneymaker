@@ -2,10 +2,12 @@ package org.openedit.store.modules;
 
 
 import org.openedit.cart.paypal.PaypalUtil;
+import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.modules.MediaArchiveModule;
 
 import com.openedit.WebPageRequest;
 
-public class PaypalModule {
+public class PaypalModule extends MediaArchiveModule{
 	protected PaypalUtil fieldPaypalUtil;
 	
 	public void handleIPN(WebPageRequest inReq) throws Exception{
@@ -18,6 +20,8 @@ public class PaypalModule {
 	public void handlePDT(WebPageRequest inReq) throws Exception{
 		String result = getPaypalUtil().handlePDT(inReq);
 		inReq.putPageValue("paymentResult", result);
+		 MediaArchive archive  = getMediaArchive(inReq);
+		 
 		//the result should be matched to an order....
 		
 	}

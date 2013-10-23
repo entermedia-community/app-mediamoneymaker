@@ -35,9 +35,12 @@ public class PaypalUtil {
 		}
 		Enumeration en = inReq.getRequest().getParameterNames();
 		String str = "cmd=_notify-validate";
+		HashMap resultInfo = new HashMap();
+
 		while(en.hasMoreElements()){
 		String paramName = (String)en.nextElement();
 		String paramValue = inReq.getRequest().getParameter(paramName);
+		resultInfo.put(paramName, paramValue);
 		str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
 		}
 
@@ -57,13 +60,14 @@ public class PaypalUtil {
 		BufferedReader in = new BufferedReader(
 		new InputStreamReader(uc.getInputStream()));
 		String res = in.readLine();
-		in.close();
-
 		
+
+		in.close();
 
 		//check notification validation
 		if(res.equals("VERIFIED")) {
-	
+			inReq.putPageValue("resultMap", resultInfo);
+
 			//getStore().getOrderArchive().
 		
 		}
