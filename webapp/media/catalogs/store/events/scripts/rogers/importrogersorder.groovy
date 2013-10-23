@@ -390,15 +390,14 @@ public class ImportRogersOrder extends EnterMediaObject {
 									usersearcher.saveData(user, inReq.getUser());
 								}
 
-								Searcher profileAddressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
-								Data customerInfo = profileAddressSearcher.searchByField("storenumber", storeNum);
+								Data customerInfo = storeList.searchById(storeNum);
 								if (customerInfo == null) {
-									throw new OpenEditException("Cannot find Store Information");
+									log.info("Cannot find Store Information: " + storeNum);
+									throw new OpenEditException("Cannot find Store Information: " + storeNum);
 								}
 								customer = new Customer()
 								customer.setId(customerInfo.get("id"));
 								customer.setName(customerInfo.get("name"));
-								customer.setEmail(customerInfo.get("email"));
 								customer.setPhone1(customerInfo.get("phone"));
 								customer.setCompany("Rogers");
 								customer.setShippingAddress(shipping);

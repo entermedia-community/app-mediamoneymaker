@@ -71,7 +71,7 @@
 				#set($badproducts = $orderset.getOutOfStockPerOrder($order))
 				#foreach($productid in $badproducts)
 				  	#set($product = $productsearcher.searchById($productid))
-					<p>$product.get("rogerssku")</p>
+					<p><a href="#${product.get("rogerssku")}" style="font-size: 14px; color: blue;">$product.get("rogerssku")</a></p>
 				#end
 			#else
 				<p>None</p>
@@ -108,6 +108,7 @@
 		<p>&nbsp;<a id="outofstock"></a></p>
 		<h2>Orders with Out of Stock Products.</h2>
 		<p>The following orders have products which are currently out of stock.</p>
+		<p>Click on the product to jump and see what orders include this product.</p> 
 		<p>
 		<table >
 			<tr>
@@ -166,6 +167,7 @@
 			#set($ctr=$ctr+1)
 	<form action="$home$apphome/rogers/orders/orderset/updateitems.html" 
 		class="updateform" id="rogersform${ctr}" onloadeddata="updateValue();">
+		#set($product = $productsearcher.searchById($prodid))
 		<p><a name="${product.get("rogerssku")}"></a>&nbsp;</p>
 		<h2>Products which currently have stock problems.</h2>
 		<table >
@@ -178,15 +180,15 @@
 				<th style="padding: 8px;">Update</th>
 				<th style="padding: 8px;">Remove</th>
 			</tr>
-			#set($product = $productsearcher.searchById($prodid))
 			<tr>
 				<td colspan="7">$product.get("rogerssku") - $product.getName()</td>
 			</tr>
 			<tr>
 				<td colspan="7">
-					<div class="container-rogersform${ctr}" style="border: 1px solid red; padding: 5px; background-color: orange;">
-						<strong>Current Quantity In Stock:</strong>&nbsp;<span 
-						class="instock-rogersform${ctr}"><strong>$orderset.getQuantityInStock($product)</strong></span>
+					<div class="container-rogersform${ctr}" style="border: 1px solid red; padding: 5px; background-color: orange; height: 16px;">
+						<div style="display: block; float: left;"><strong>Current Quantity In Stock:</strong>&nbsp;<span 
+						class="instock-rogersform${ctr}"><strong>$orderset.getQuantityInStock($product)</strong></span></div>
+						<div style="display: block; float: right; margin-top: -15px;"><p class="rogersform${ctr}-totalamount" style="margin-left: 15px;">Total Amount: ${totalordered}</p></div>
 					</div>
 				<td>
 			</tr>
@@ -198,22 +200,22 @@
 			</tr>
 			#foreach ($order in $orderset.getOrders())
 				#if($order.containsProduct($product))
-			<tr>
-				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">&nbsp;</td>
-				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$order.getId()</td>
 					#set($customerid = $order.getCustomer().getId())
 					#set($id = $customerid.split("-"))
 					#set($storeid = $id.get(1))
 					#set($rogersstore = $storesearcher.searchById($storeid))
+					#set($cartitem = $order.getItem($product.getInventoryItem(0).getSku()))
+					#set($totalordered = $totalordered + $cartitem.getQuantity())
+			<tr id="tr-${order.getId()}-${product.getId()}">
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">&nbsp;</td>
+				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$order.getId()</td>
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$storeid</td>
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$rogersstore</td>
-					#set($cartitem = $order.getItem($product.getInventoryItem(0).getSku()))
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">$cartitem.getQuantity()</td>
-				#set($totalordered = $totalordered + $cartitem.getQuantity())
 				<td style="padding-left: 8px; padding-right: 8px; text-align: center;">
 					<input type="text" name="${order.getId()}:${product.getId()}" 
 						value="${cartitem.getQuantity()}" size="5" id="${order.getId()}-${product.getId()}"
-						onkeyup="recalculateQuantities()" 
+						onkeyup="recalculateQuantities()" onchange="recalculateQuantities()"
 						class="formvalues${ctr}"/>
 					<input type="hidden" name="orderqty" value="${order.getId()}:${product.getId()}">
 				</td>
@@ -228,8 +230,7 @@
 				<td colspan="8">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="6"><p style="text-align: right;">Total Amount:</p></td>
-				<td colspan="2"><div style="text-align: left;"><p class="rogersform${ctr}-totalamount" style="margin-left: 15px;">${totalordered}</p></div></td>
+				<td colspan="8"><div style="text-align: right;"><p class="rogersform${ctr}-totalamount" style="margin-left: 15px;">${totalordered}</p></div></td>
 			</tr>
 			<tr>
 				<td colspan="7" style="text-align: right;"><input type="submit" name="submit" value="Update quantities for ${product.get("rogerssku")}"></td>
@@ -266,7 +267,7 @@
 	              }
 	          });
 	          jQuery(this).each(function() {
-	              jQuery('.' + id + '-totalamount').html(total.toString());
+	              jQuery('.' + id + '-totalamount').html('Total Amount Ordered: ' + total.toString());
 	              if (total > instock) {
 	            	  jQuery('.' + id + '-totalamount').css('color', 'red');
 	            	  jQuery('.container-' + id).css('border', '1px solid red');
@@ -289,6 +290,7 @@
 	function zerovalue(value) {
 		var idVal = '#' + value;
 		jQuery(idVal).val("0");
+		//jQuery('#tr-' + value).remove();
 		recalculateQuantities();
 	}
 </script>
