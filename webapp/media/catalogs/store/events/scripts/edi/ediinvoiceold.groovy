@@ -548,7 +548,7 @@ protected TemplateWebEmail getMail(MediaArchive archive) {
 	PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
 	return mail.getTemplateWebEmail();
 }
-}
+
 logs = new ScriptLogger();
 logs.startCapture();
 
