@@ -56,7 +56,6 @@ public void processInvoices() {
 			return;//equivalent to continue;
 		}
 		processInvoice(data,order,invoicesearcher,itemsearcher);
-		//update invoicestatus: new approved complete updated submitted waiting paid printed error
 	}
 }
 
@@ -102,10 +101,7 @@ public void processInvoice(Data data, Order order, Searcher invoiceSearcher, Sea
 				}
 			}
 			if (target!=null){
-				Money listedPrice = target.getYourPrice();
-				//@todo: need to save wholesale price on an order
-				//using temporary fix that calculates the known mark-up but needs to change going forward
-				listedPrice = listedPrice.divide("1.10");
+				Money listedPrice = target.getWholesalePrice();
 				if (invoiceUnitPrice.compareTo(listedPrice)!=0){
 					if (!msg.toString().isEmpty()) msg.append("; ");
 					msg.append("Unit price conflict (${invoiceUnitPrice} vs. ${listedPrice})");
@@ -117,8 +113,7 @@ public void processInvoice(Data data, Order order, Searcher invoiceSearcher, Sea
 					msg.append("Quantity exceeds order quantity (${quantity} vs. ${listedQuantity})");
 					isItemsOk = false;
 				}
-				//@todo: add refund logic here
-//				RefundState refundState = target.getRefundState();
+				//@todo: support for refund logic
 			} else {
 				if (!msg.toString().isEmpty()) msg.append("; ");
 				msg.append("Cannot find item in order (${productid})");
