@@ -44,13 +44,11 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	protected OrderArchive fieldOrderArchive;
 	protected StoreArchive fieldStoreArchive;
 
-	public StoreArchive getStoreArchive()
-	{
+	public StoreArchive getStoreArchive() {
 		return fieldStoreArchive;
 	}
 
-	public void setStoreArchive(StoreArchive inStoreArchive)
-	{
+	public void setStoreArchive(StoreArchive inStoreArchive) {
 		fieldStoreArchive = inStoreArchive;
 	}
 
@@ -78,7 +76,8 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		return cachedSearch(inReq, search);
 	}
 
-	private void buildIndex(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter, List inList) throws Exception {
+	private void buildIndex(IndexWriter inWriter,
+			TaxonomyWriter inTaxonomyWriter, List inList) throws Exception {
 		PropertyDetails details = getPropertyDetailsArchive()
 				.getPropertyDetails("storeOrder");
 
@@ -87,11 +86,11 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			SubmittedOrder order = getOrderArchive().loadSubmittedOrder(
 					getStore(), id.getUsername(), id.getOrderId());
 			if (order != null) {
-				//Document doc = new Document();
-				//updateIndex(order, doc, details);
-				updateIndex(inWriter,  inTaxonomyWriter ,order);
-				//updateIndex(order);
-				//inWriter.addDocument(doc);
+				// Document doc = new Document();
+				// updateIndex(order, doc, details);
+				updateIndex(inWriter, inTaxonomyWriter, order);
+				// updateIndex(order);
+				// inWriter.addDocument(doc);
 			} else {
 				log.error("Could not load " + id.getUsername() + " "
 						+ id.getOrderId());
@@ -101,7 +100,8 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	}
 
 	public OrderArchive getOrderArchive() {
-		return (OrderArchive) getModuleManager().getBean(getCatalogId(), "orderArchive");
+		return (OrderArchive) getModuleManager().getBean(getCatalogId(),
+				"orderArchive");
 	}
 
 	public void setOrderArchive(OrderArchive inOrderArchive) {
@@ -124,7 +124,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	public HitTracker listOrdersForUser(Store inStore, User inUser)
 			throws StoreException {
 		File ordersFile = getOrdersDirectory(inStore);
-		HitTracker allorders = fieldSearch("username" ,inUser.getUserName(),
+		HitTracker allorders = fieldSearch("username", inUser.getUserName(),
 				"date");
 		return allorders;
 	}
@@ -139,6 +139,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			PropertyDetails details = getPropertyDetailsArchive()
 					.getPropertyDetails("storeOrder");
 			updateIndex(inOrder, doc, details);
+			populateProductDetails(inOrder, doc);
 			Term term = new Term("id", inOrder.getId());
 			getIndexWriter().updateDocument(term, doc, getAnalyzer());
 			flush();
@@ -149,130 +150,26 @@ public class OrderSearcher extends BaseLuceneSearcher {
 
 	}
 
-//	protected void updateIndex(Order inOrder, Document doc,
-//			PropertyDetails inDetails) {
-//		super.updateIndex(inOrder);
-//		
-//		if (inOrder.getCustomer() != null) {
-//			doc.add(new Field("username", inOrder.getCustomer().getUserName(),
-//					Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-//		}
-//		
-//		StringBuffer keywords = new StringBuffer();
-//		
-//		List details = inDetails.findIndexProperties();
-//		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
-//			PropertyDetail detail = (PropertyDetail) iterator.next();
-//			String prop = detail.getId();
-//			if (prop.equals("id") || prop.equals("name")) {
-//				continue;
-//			}
-//			String value = null;
-//			if (prop.equals("orderstatus")) {
-//				value = inOrder.getOrderStatus().getId();// inOrder.get(detail.getId());
-//			} else if (prop.equals("customer")) {
-//				Customer customer = inOrder.getCustomer();
-//				String customerString = customer.getFirstName() + " "
-//						+ customer.getLastName();
-//				Map properties = customer.getUser().getProperties();
-//				for (Iterator iterator2 = properties.keySet().iterator(); iterator2
-//						.hasNext();) {
-//					String key = (String) iterator2.next();
-//					keywords.append(" ");
-//					keywords.append(properties.get(key));
-//				}
-//				keywords.append(" ");
-//				keywords.append(customerString);
-//				value = customer.getUserName();
-//
-//			} else if (prop.equals("products")) {
-//				StringBuffer products = new StringBuffer();
-//				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-//						.hasNext();) {
-//					CartItem item = (CartItem) iterator2.next();
-//					if (item.getProduct() != null) {
-//						products.append(item.getProduct().getId());
-//						products.append(" ");
-//					}
-//				}
-//				value = products.toString();
-//			} else if (prop.equals("categories")) {
-//				StringBuffer categories = new StringBuffer();
-//				for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-//						.hasNext();) {
-//					CartItem item = (CartItem) iterator2.next();
-//					if (item.getProduct() != null) {
-//						Category cat = item.getProduct().getDefaultCategory();
-//						if (cat != null) {
-//							categories.append(cat.getId());
-//							categories.append(" ");
-//						}
-//
-//					}
-//				}
-//				value = categories.toString();
-//			} else if (detail.isDate()) {
-//				if(inOrder.getDate() != null){
-//				value = DateTools.dateToString(inOrder.getDate(),
-//						Resolution.MINUTE);
-//				}
-//			} else {
-//				value = inOrder.get(prop);
-//			}
-//			if (value != null) {
-//				if (detail.isStored()) {
-//					if (detail.isDate()) {
-//						doc.add(new Field(detail.getId(), value,
-//								Field.Store.YES,
-//								Field.Index.NOT_ANALYZED_NO_NORMS));
-//					} else {
-//						doc.add(new Field(detail.getId(), value,
-//								Field.Store.YES, Field.Index.ANALYZED));
-//					}
-//				} else {
-//					doc.add(new Field(detail.getId(), value, Field.Store.NO,
-//							Field.Index.ANALYZED));
-//				}
-//				if (detail.isKeyword()) {
-//					keywords.append(" ");
-//					keywords.append(value);
-//				}
-//			}
-//			List productkeywords = getPropertyDetailsArchive()
-//					.getPropertyDetailsCached("product")
-//					.findKeywordProperties();
-//			for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
-//					.hasNext();) {
-//				CartItem item = (CartItem) iterator2.next();
-//				for (Iterator iterator3 = productkeywords.iterator(); iterator3
-//						.hasNext();) {
-//					PropertyDetail itemdetail = (PropertyDetail) iterator3
-//							.next();
-//					String kvalue = item.get(itemdetail.getId());
-//					if (kvalue == null) {
-//						Option option = item.getOption(itemdetail.getId());
-//						if (option != null) {
-//							kvalue = option.getValue();
-//						}
-//					}
-//
-//					if (kvalue != null) {
-//						keywords.append(" ");
-//						keywords.append(kvalue);
-//					}
-//
-//				}
-//			}
-//
-//			doc.add(new Field("description", keywords.toString(),
-//					Field.Store.YES, Field.Index.ANALYZED));
-//		}
-//	}
+	protected void populateProductDetails(Order inOrder, Document doc) {
 
-	public Store getStore()
-	{
-		if (fieldStore == null)
-		{
+		StringBuffer products = new StringBuffer();
+		for (Iterator iterator2 = inOrder.getItems().iterator(); iterator2
+				.hasNext();) {
+			CartItem item = (CartItem) iterator2.next();
+			if (item.getProduct() != null) {
+				products.append(item.getProduct().getId());
+				products.append(" ");
+			}
+		}
+		String value = products.toString();
+
+		doc.add(new Field("products", value, Field.Store.YES,
+				Field.Index.NOT_ANALYZED));
+
+	}
+
+	public Store getStore() {
+		if (fieldStore == null) {
 			fieldStore = getStoreArchive().getStore(getCatalogId());
 		}
 		return fieldStore;
@@ -282,50 +179,47 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		fieldStore = inStore;
 	}
 
-//	public HitTracker getAllHits(WebPageRequest inReq) {
-//		List list = getOrderArchive().listAllOrderIds(getStore());
-//		return new ListHitTracker(list);
-//	}
-
-	
+	// public HitTracker getAllHits(WebPageRequest inReq) {
+	// List list = getOrderArchive().listAllOrderIds(getStore());
+	// return new ListHitTracker(list);
+	// }
 
 	@Override
-	protected void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) {
+	protected void reIndexAll(IndexWriter inWriter,
+			TaxonomyWriter inTaxonomyWriter) {
 		List list = getOrderArchive().listAllOrderIds(getStore());
 		try {
-			buildIndex(inWriter,inTaxonomyWriter, list);
+			buildIndex(inWriter, inTaxonomyWriter, list);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
 	}
 
 	@Override
-	public Object searchById(String inId)
-	{
+	public Object searchById(String inId) {
 		Data orderinfo = (Data) super.searchById(inId);
-		if(orderinfo != null){
-			return getOrderArchive().loadSubmittedOrder(getStore(), orderinfo.get("customer"), inId);	
-		}
-		else{
+		if (orderinfo != null) {
+			return getOrderArchive().loadSubmittedOrder(getStore(),
+					orderinfo.get("customer"), inId);
+		} else {
 			return null;
 		}
-		//return orderinfo;
-		
+		// return orderinfo;
+
 	}
-	
-	
+
 	@Override
-	public void saveData(Data inData, User inUser){
-		if(inData instanceof Order){
+	public void saveData(Data inData, User inUser) {
+		if (inData instanceof Order) {
 			Order order = (Order) inData;
 			getOrderArchive().saveOrder(getStore(), order);
 		}
 		super.updateIndex(inData);
 	}
-	
+
 	@Override
-	public String nextId(){
-	return getStore().getOrderGenerator().nextOrderNumber(getStore());
+	public String nextId() {
+		return getStore().getOrderGenerator().nextOrderNumber(getStore());
 	}
-	
+
 }

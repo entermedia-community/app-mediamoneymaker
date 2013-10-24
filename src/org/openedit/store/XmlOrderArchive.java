@@ -421,6 +421,10 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		itemElem.addAttribute("product_id", inItem.getProduct().getId());
 		itemElem.addAttribute("quantity", String.valueOf(inItem.getQuantity()));
 		itemElem.addAttribute("price", inItem.getYourPrice().toShortString());
+		if (inItem.getWholesalePrice()!=null)
+		{
+			itemElem.addAttribute("wholesaleprice", inItem.getWholesalePrice().toShortString());
+		}
 		// itemElem.addAttribute("shipto", inItem.getShippingPrefix());
 		itemElem.addAttribute("status", inItem.getStatus());
 
@@ -842,6 +846,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		item.setQuantity(Integer.parseInt(inItemElem.attributeValue("quantity")));
 
 		item.setYourPrice(new Money(inItemElem.attributeValue("price")));
+		
 		item.setShippingPrefix(inItemElem.attributeValue("shipto"));
 		item.setStatus(inItemElem.attributeValue("status"));
 		for (Iterator it = inItemElem.elementIterator("option"); it.hasNext();) {

@@ -87,6 +87,20 @@ public class InventoryItem
 		return sup.getYourPriceByQuantity( i );
 	}
 	
+	public Money getWholesalePriceByQuantity(int i)
+	{
+		PriceSupport sup =  getPriceSupport();
+		if ( sup == null && getProduct()!=null)
+		{
+			sup = getProduct().getPriceSupport();
+		}
+		if ( sup == null)
+		{
+			return null;
+		}
+		return sup.getWholesalePriceByQuantity( i );
+	}
+	
 	public int getQuantityInStock()
 	{
 		return fieldQuantityInStock;

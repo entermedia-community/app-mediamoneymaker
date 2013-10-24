@@ -11,6 +11,7 @@ import org.openedit.money.Money;
  */
 public class Price
 {
+	protected Money fieldWholesalePrice;
 	protected Money fieldRetailPrice;
 	protected Money fieldSalePrice;
 	protected String fieldRegion;
@@ -34,6 +35,14 @@ public class Price
 	{
 		fieldRetailPrice = retailPrice;
 		adjustRegion(fieldRetailPrice);
+	}
+	public Money getWholesalePrice()
+	{
+		return fieldWholesalePrice;
+	}
+	public void setWholesalePrice( Money wholesalePrice )
+	{
+		fieldWholesalePrice = adjustRegion(wholesalePrice);
 	}
 	public Money getSalePrice()
 	{
@@ -142,8 +151,23 @@ public class Price
 		Price price = new Price();
 		price.setRetailPrice(getRetailPrice().copy());
 		price.setSalePrice(getSalePrice().copy());
+		if (getWholesalePrice()!=null)
+		{
+			price.setWholesalePrice(getWholesalePrice().copy());//avoid null pointer exceptions
+		}
 		price.setRegion(getRegion());
 		return price;
+	}
+	
+	public String toString(){
+		StringBuilder buf = new StringBuilder();
+		buf.append("Retail=").append(getRetailPrice()).append(", Sale=").append(getSalePrice());
+		if (getWholesalePrice()!=null)
+		{
+			buf.append(", Wholesale=").append(getWholesalePrice());
+		}
+		buf.append(" (Region=").append(getRegion()).append(")");
+		return buf.toString();
 	}
 
 }

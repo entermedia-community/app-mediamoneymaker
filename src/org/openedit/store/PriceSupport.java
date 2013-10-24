@@ -34,6 +34,24 @@ public class PriceSupport
 
 	}
 	
+	public Money getWholesalePriceByQuantity(int inQuantity)
+	{
+		Money wholesale = Money.ZERO;
+		// This code assumes that the tier prices must be entered in ascending price order.
+		for (Iterator iter = getTiers().iterator(); iter.hasNext();)
+		{
+			PriceTier tier = (PriceTier)iter.next();
+			if( inQuantity >= tier.getThresholdQuantity())
+			{
+				Price price = tier.getPrice();
+				wholesale = price.getWholesalePrice();
+			}
+			
+		}
+		return wholesale;
+
+	}
+	
 	
 	public List getTiers()
 	{
@@ -101,6 +119,22 @@ public class PriceSupport
 			if( 1 >= tier.getThresholdQuantity())
 			{
 				Money price = tier.getPrice().getSalePrice();
+
+				return price;
+			}
+		}
+		return null;
+	}
+	
+	public Money getWholesalePrice()
+	{
+		// This code assumes that the tier prices must be entered in ascending price order.
+		for (Iterator iter = getTiers().iterator(); iter.hasNext();)
+		{
+			PriceTier tier = (PriceTier)iter.next();
+			if( 1 >= tier.getThresholdQuantity())
+			{
+				Money price = tier.getPrice().getWholesalePrice();
 
 				return price;
 			}

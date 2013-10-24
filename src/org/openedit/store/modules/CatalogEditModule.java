@@ -1387,7 +1387,8 @@ public class CatalogEditModule extends BaseStoreModule {
 		PriceSupport ps = null;
 		String saleprice = inContext.getRequestParameter("saleprice");
 		String retailprice = inContext.getRequestParameter("retailprice");
-		if (saleprice != null || retailprice != null) {
+		String wholesaleprice = inContext.getRequestParameter("wholesaleprice");
+		if (saleprice != null || retailprice != null || wholesaleprice != null) {
 			ps = new PriceSupport();
 			Price point = new Price();
 			if (saleprice != null) {
@@ -1397,6 +1398,10 @@ public class CatalogEditModule extends BaseStoreModule {
 			if (retailprice != null) {
 				Money money = new Money(retailprice);
 				point.setRetailPrice(money);
+			}
+			if (wholesaleprice != null) {
+				Money money = new Money(wholesaleprice);
+				point.setWholesalePrice(money);
 			}
 			ps.addTierPrice(1, point);
 		}

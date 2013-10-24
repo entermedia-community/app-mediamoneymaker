@@ -29,6 +29,7 @@ public class CartItem extends BaseData
 {	
 	protected int fieldQuantity = 1;
 	protected Money fieldYourPrice;
+	protected Money fieldWholesalePrice;
 	protected InventoryItem fieldInventoryItem;
 	protected Boolean fieldBackOrdered;
 	protected Map fieldOptions;
@@ -66,6 +67,40 @@ public class CartItem extends BaseData
 	{
 		return getYourPrice().multiply( getQuantity() );
 	}
+	
+	public Money getWholesalePrice()
+	{	
+		if ( fieldWholesalePrice != null)
+		{
+			return fieldWholesalePrice;
+		}
+		if( getInventoryItem() == null)
+		{
+			return null;
+		}
+		int quantity = getQuantity();
+		Money price = Money.ZERO;
+		Money priceByQuantity = getInventoryItem().getWholesalePriceByQuantity(quantity);
+		if (priceByQuantity != null)
+		{
+			price = price.add(priceByQuantity);
+		}
+		for ( Iterator<?> it = getOptions().iterator(); it.hasNext();)
+		{
+			Option option = (Option)it.next();
+			PriceSupport prices = option.getPriceSupport();
+			if(  prices != null)
+			{
+				price = prices.getWholesalePriceByQuantity(quantity).add(price);
+			}
+		}
+		return price;
+	}
+	public void setWholeSalePrice(Money inMoney)
+	{
+		fieldWholesalePrice = inMoney;
+	}
+	
 
 	public Money getYourPrice()
 	{
