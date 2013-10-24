@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -118,7 +119,10 @@ public class PaypalUtil {
 		{
 			String[] param = line.split("=");
 			if(param.length == 2){
-			resultInfo.put(param[0], param[1]);
+			String key = URLDecoder.decode(param[0]);
+			String val = URLDecoder.decode(param[1]);
+			
+			resultInfo.put(key, val);
 			}
 		}
 		inReq.putPageValue("resultMap", resultInfo);
