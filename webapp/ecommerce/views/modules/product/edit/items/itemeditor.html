@@ -58,7 +58,6 @@
 			<table cellspacing="10">
 				<tr>
 					
-					
 					#if( $item && $selectedItemShown )
 						<form name="saveitem">
 					<td valign=top>
@@ -88,6 +87,9 @@
 						 </tr>
 						 <tr>
 							<td>[[Sale Price]]:</td><td> <input name="saleprice" value="$!item.getPriceSupport().getSalePrice().toShortString()" /> </td>
+						 </tr>
+						 <tr>
+							<td>[[Wholesale Price]]:</td><td> <input name="wholesaleprice" value="$!item.getPriceSupport().getWholesalePrice().toShortString()" /> </td>
 						 </tr>
 						 <tr>
 							<td>#[[In Stock]]:</td><td> <input name="qinstock" value="$item.getQuantityInStock()" /> </td>
