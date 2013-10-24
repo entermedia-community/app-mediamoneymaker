@@ -92,6 +92,9 @@ public void processInvoice(Data data, Order order, Searcher invoiceSearcher, Sea
 			isItemsOk = false;
 		}
 		String productid = invoiceItem.get("productid");
+		if (productid == null){
+			productid = invoiceItem.get("product");
+		}
 		if (productid!=null){
 			CartItem target = null;
 			for(CartItem cartItem:cartItems){
