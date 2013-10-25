@@ -170,7 +170,6 @@ public class BaseXmlArchive extends BaseArchive
 			if (retailPrice == null && salePrice == null && priceConfig.getValue() != null)
 			{
 				price.setRetailPrice(new Money(priceConfig.getValue()));
-				System.err.println("&&&&&&& wholesale price not set in product ");
 			}
 			if( priceSupport == null)
 			{
