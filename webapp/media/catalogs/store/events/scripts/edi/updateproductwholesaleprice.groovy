@@ -19,6 +19,8 @@ import org.openedit.store.Product
 import org.openedit.store.InventoryItem
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
+import org.openedit.store.orders.OrderArchive
+import org.openedit.store.orders.OrderId
 import org.openedit.store.orders.Shipment
 import org.openedit.store.orders.ShipmentEntry
 import org.openedit.store.orders.Refund
@@ -42,15 +44,15 @@ public void processProducts() {
 	
 	WebPageRequest inReq = context;
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	Store store = inReq.getPageValue("store");
 	String catalogID = archive.getCatalogId();
 	
 	SearcherManager manager = archive.getSearcherManager();
 	Searcher productsearcher = archive.getSearcher("product");
-	Searcher ordersearcher = archive.getSearcher("storeOrder");
 	HitTracker hits = productsearcher.getAllHits();
 	log.info("staring processing ${hits.size()} products");
 	hits.each{
-		Product product = (Product) productsearcher.searchById(it.id);
+		Product product = store.getProduct(it.id);
 		List<InventoryItem> inventoryItems = product.getInventoryItems();
 		log.info("Item size: ${inventoryItems.size()}");
 		for(InventoryItem inventoryItem:inventoryItems){
@@ -69,35 +71,25 @@ public void processProducts() {
 				log.info("Products: updated ${product.getId()}(${product}) price: ${price}");
 			}
 		}
-		productsearcher.saveData(product, null);
+		store.saveProduct(product);
 	}
-	updateWholesalePricesForAllOrders(manager,ordersearcher);
+	store.clearProducts();//forces products to be loaded from disc
+	updateWholesalePrices(store);
 	log.info("---- END Update Product Wholesale Price ----");
 }
 
-public void updateWholesalePricesForAllOrders(SearcherManager searchermanager, Searcher ordersearcher){
-	HitTracker hits = ordersearcher.getAllHits();
-	hits.each{
-		Order order = null;
-		try{
-			order = (Order) ordersearcher.searchById(it.id);
-		}catch (Exception e){
-			System.err.println("Exception caught searching for ${it.id}, ${e.getMessage()}");
-			log.error("Exception caught searching for ${it.id}, ${e.getMessage()}");
-		}//bug with one of the orders
-		if (order == null){
-			return;//continue to next
-		}
+public void updateWholesalePrices(Store store){
+	List<OrderId> ids = store.getOrderArchive().listAllOrderIds(store);
+	for(OrderId id:ids){
+		Order order = store.getOrderSearcher().searchById(id.getOrderId());
 		List<CartItem> cartItems = order.getItems();
 		for(CartItem item:cartItems){
-			if(item.getWholesalePrice() == null || item.getWholesalePrice().isZero()){
-				Money retail = item.getYourPrice();
-				Money calcwholesale = retail.divide("1.10");
-				item.setWholesalePrice(calcwholesale);
-				log.info("Orders: updated ${order.getId()} wholesale price ${item.getWholesalePrice()}");
-			}
+			Money retail = item.getYourPrice();
+			Money wholesale = retail.divide("1.10");
+			item.setWholesalePrice(wholesale);
+			log.info("Orders: updated ${order.getId()} wholesale price ${item.getWholesalePrice()}");
 		}
-		ordersearcher.saveData(order, null);
+		store.saveOrder(order);
 	}
 }
 
