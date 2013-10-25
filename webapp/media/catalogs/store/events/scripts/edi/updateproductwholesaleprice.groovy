@@ -40,93 +40,65 @@ public void processProducts() {
 	
 	log.info("---- START Update Product Wholesale Price ----");
 	
-	
-	
 	WebPageRequest inReq = context;
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	String catalogID = archive.getCatalogId();
 	
-	int numberUpdated = 0;
-	int ordersUpdated = 0;
 	SearcherManager manager = archive.getSearcherManager();
 	Searcher productsearcher = archive.getSearcher("product");
 	Searcher ordersearcher = archive.getSearcher("storeOrder");
 	HitTracker hits = productsearcher.getAllHits();
+	log.info("staring processing ${hits.size()} products");
 	hits.each{
 		Product product = (Product) productsearcher.searchById(it.id);
-		//synchronize the wholesale prices for each order
-		ordersUpdated += synchronizeWholesalePrices(manager,ordersearcher,product.getId());
 		List<InventoryItem> inventoryItems = product.getInventoryItems();
-		boolean updateProduct = false;
+		log.info("Item size: ${inventoryItems.size()}");
 		for(InventoryItem inventoryItem:inventoryItems){
 			PriceSupport support = inventoryItem.getPriceSupport();
+			if (support == null){
+				log.error("problem with product ${product.id}: inventory item has no price support");
+				continue;//problem with one of the inventory item
+			}
 			for (Iterator<?> itr = support.getTiers().iterator(); itr.hasNext();)
 			{
 				PriceTier tier = (PriceTier)itr.next();
 				Price price = tier.getPrice();
 				Money retail = price.getRetailPrice();
-				Money wholesale = price.getWholesalePrice();
 				Money calcwholesale = retail.divide("1.10");
-				if (wholesale==null || !calcwholesale.equals(wholesale)){
-					price.setWholesalePrice(calcwholesale);
-					updateProduct = true;
-					log.info("updating ${product.id} wholesale price ${calcwholesale}");
-				}
+				price.setWholesalePrice(calcwholesale);
+				log.info("Products: updated ${product.getId()}(${product}) price: ${price}");
 			}
 		}
-		if (updateProduct){
-			numberUpdated ++;
-			productsearcher.saveData(product, null);
-		}
+		productsearcher.saveData(product, null);
 	}
-	log.info("Number of products updated ${numberUpdated}, Number of orders updated ${ordersUpdated} (may include duplicates)");
+	updateWholesalePricesForAllOrders(manager,ordersearcher);
 	log.info("---- END Update Product Wholesale Price ----");
 }
 
-public int synchronizeWholesalePrices(SearcherManager searchermanager, Searcher ordersearcher, String productid){
-	int numberUpdated = 0;
+public void updateWholesalePricesForAllOrders(SearcherManager searchermanager, Searcher ordersearcher){
 	HitTracker hits = ordersearcher.getAllHits();
 	hits.each{
 		Order order = null;
 		try{
 			order = (Order) ordersearcher.searchById(it.id);
 		}catch (Exception e){
-//			System.err.println("Exception caught searching for ${it.id}, ${e.getMessage()}");
+			System.err.println("Exception caught searching for ${it.id}, ${e.getMessage()}");
+			log.error("Exception caught searching for ${it.id}, ${e.getMessage()}");
 		}//bug with one of the orders
-		if (order == null)
-			return;
-		
-		boolean updateOrder = false;
+		if (order == null){
+			return;//continue to next
+		}
 		List<CartItem> cartItems = order.getItems();
 		for(CartItem item:cartItems){
-			Product product = item.getProduct();
-			if (product.getId().equals(productid)){
-				updateOrder = true;
-				List<InventoryItem> inventoryItems = product.getInventoryItems();
-				for(InventoryItem inventoryItem:inventoryItems){
-					PriceSupport support = inventoryItem.getPriceSupport();
-					for (Iterator<?> itr = support.getTiers().iterator(); itr.hasNext();)
-					{
-						PriceTier tier = (PriceTier)itr.next();
-						Price price = tier.getPrice();
-						Money retail = price.getRetailPrice();
-						Money wholesale = price.getWholesalePrice();
-						Money calcwholesale = retail.divide("1.10");
-						if (wholesale==null || !calcwholesale.equals(wholesale)){
-							price.setWholesalePrice(calcwholesale);
-						}
-					}
-				}
-				break;
+			if(item.getWholesalePrice() == null || item.getWholesalePrice().isZero()){
+				Money retail = item.getYourPrice();
+				Money calcwholesale = retail.divide("1.10");
+				item.setWholesalePrice(calcwholesale);
+				log.info("Orders: updated ${order.getId()} wholesale price ${item.getWholesalePrice()}");
 			}
 		}
-		if (updateOrder){
-			log.info("updating ${order.getId()} with ${productid}");
-			ordersearcher.saveData(order, null);
-			numberUpdated++;
-		}
+		ordersearcher.saveData(order, null);
 	}
-	return numberUpdated;
 }
 
 processProducts();

@@ -844,9 +844,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		CartItem item = new CartItem();
 		// item.setSku(inItemElem.attributeValue("sku"));
 		item.setQuantity(Integer.parseInt(inItemElem.attributeValue("quantity")));
-
 		item.setYourPrice(new Money(inItemElem.attributeValue("price")));
-		
+		item.setWholesalePrice(inItemElem.attributeValue("wholesaleprice")==null ? null : new Money(inItemElem.attributeValue("wholesaleprice")));
 		item.setShippingPrefix(inItemElem.attributeValue("shipto"));
 		item.setStatus(inItemElem.attributeValue("status"));
 		for (Iterator it = inItemElem.elementIterator("option"); it.hasNext();) {

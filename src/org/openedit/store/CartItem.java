@@ -96,7 +96,7 @@ public class CartItem extends BaseData
 		}
 		return price;
 	}
-	public void setWholeSalePrice(Money inMoney)
+	public void setWholesalePrice(Money inMoney)
 	{
 		fieldWholesalePrice = inMoney;
 	}

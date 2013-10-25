@@ -87,8 +87,8 @@ public class BaseXmlArchive extends BaseArchive
 
 			Element tierElement = inElement.addElement("price");
 			Price price = priceTier.getPrice();
-			if (price.getSalePrice() != null)
-			{
+//			if (price.getSalePrice() != null)
+//			{
 				Money money = price.getSalePrice();
 				if (money != null)
 				{
@@ -101,18 +101,24 @@ public class BaseXmlArchive extends BaseArchive
 					Element retailPriceElement = tierElement.addElement("retail");
 					retailPriceElement.setText(money.toShortString());
 				}
-			}
-			else
-			{
-				if (price.getRetailPrice() != null)
+				money = price.getWholesalePrice();
+				if (money != null)
 				{
-					tierElement.setText(price.getRetailPrice().toShortString());
+					Element wholesalePriceElement = tierElement.addElement("wholesale");
+					wholesalePriceElement.setText(money.toShortString());
 				}
-				else
-				{
-					tierElement.setText("0.00");
-				}
-			}
+//			}
+//			else
+//			{
+//				if (price.getRetailPrice() != null)
+//				{
+//					tierElement.setText(price.getRetailPrice().toShortString());
+//				}
+//				else
+//				{
+//					tierElement.setText("0.00");
+//				}
+//			}
 			if ( price.getRegion() != null)
 			{
 				tierElement.addAttribute("region", price.getRegion() );
@@ -148,6 +154,7 @@ public class BaseXmlArchive extends BaseArchive
 
 			Configuration salePrice = priceConfig.getChild("sale");
 			Configuration retailPrice = priceConfig.getChild("retail");
+			Configuration wholesaleprice = priceConfig.getChild("wholesale");
 			if (retailPrice != null)
 			{
 				price.setRetailPrice(new Money(retailPrice.getValue()));
@@ -156,9 +163,14 @@ public class BaseXmlArchive extends BaseArchive
 			{
 				price.setSalePrice(new Money(salePrice.getValue()));
 			}
+			if (wholesaleprice != null)
+			{
+				price.setWholesalePrice(new Money(wholesaleprice.getValue()));
+			}
 			if (retailPrice == null && salePrice == null && priceConfig.getValue() != null)
 			{
 				price.setRetailPrice(new Money(priceConfig.getValue()));
+				System.err.println("&&&&&&& wholesale price not set in product ");
 			}
 			if( priceSupport == null)
 			{

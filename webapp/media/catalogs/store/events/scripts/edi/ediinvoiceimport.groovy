@@ -178,13 +178,17 @@ public void doImport() {
 					if(shipment != null){
 						if (product!=null){
 							CartItem cartItem = order.getCartItemByProductID(product.getId());
-							ShipmentEntry entry = new ShipmentEntry();
-							entry.setCartItem(cartItem);
-							entry.setQuantity(Integer.parseInt(quantity));
-							shipment.addEntry(entry);
-							order.addShipment(shipment);
-							order.setProperty("shippingstatus", order.isFullyShipped() ? "shipped" : "partialshipped");
-							store.saveOrder(order);
+							if (cartItem!=null && cartItem.getSku()!=null){
+								ShipmentEntry entry = new ShipmentEntry();
+								entry.setCartItem(cartItem);
+								entry.setQuantity(Integer.parseInt(quantity));
+								shipment.addEntry(entry);
+								order.addShipment(shipment);
+								order.setProperty("shippingstatus", order.isFullyShipped() ? "shipped" : "partialshipped");
+								store.saveOrder(order);
+							} else {
+								log.error("Warning: Unable to find ${product.getId()} in order ${order.getId()} ($cartItem)");
+							}
 						}//don't need to log this case: already logged error in notes above
 					}
 				}
