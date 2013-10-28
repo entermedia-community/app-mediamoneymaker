@@ -7,5 +7,5 @@
   <path-action name="Script.run">
     <script>/${catalogid}/events/scripts/dailysummary.groovy</script>
   </path-action>
-  <property name="sendemail">true</property>
+  <property name="sendemail">false</property>
 </page>

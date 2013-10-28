@@ -37,6 +37,7 @@ import org.openedit.store.Product;
 import org.openedit.store.RelatedFile;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.page.Page;
@@ -430,14 +431,14 @@ public class ProductLuceneIndexer {
 					String date = inProduct.getProperty(det.getId());
 					if (date != null && date.length() > 0) {
 						try {
-							Date realdate = det.getDateFormat().parse(date);
+							Date realdate = DateStorageUtil.getStorageUtil().parseFromStorage(date);
 							prop = DateTools.dateToString(realdate,
 									Resolution.SECOND);
 							inDoc.add(new Field(det.getId(), prop,
 									Field.Store.YES,
 									Field.Index.NOT_ANALYZED_NO_NORMS));
 						} catch (Exception ex) {
-							log.debug("Problem parsing date: "
+							log.error("Problem parsing date: "
 									+ ex.getMessage());
 						}
 					}

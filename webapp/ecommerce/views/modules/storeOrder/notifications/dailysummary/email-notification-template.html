@@ -1,18 +1,20 @@
 
 #if(!$headers)
-	#set($headers = ["Date","Order Number", "Customer ID", "Customer Name", "Company", "Number of Items", "Shipping Status", "Total Price"])
+	#set($headers = ["Level","Date","Order Number", "Customer ID", "Customer Name", "Company", "Number of Items", "Shipping Status", "Total Price"])
 #end
 #if(!$rows)
 	#set($rows = [])
-	##sequence white, yellow, red
-	#set($null = $rows.add( ["#FFF5EE", "Mon Jul 08 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
-	#set($null = $rows.add( ["#FFF380", "Sun Jul 07 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
-	#set($null = $rows.add( ["#E42217", "Sat Jul 06 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
+	#set($null = $rows.add( ["attention-green.png", "Mon Jul 08 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
+	#set($null = $rows.add( ["attention-yellow.png", "Sun Jul 07 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
+	#set($null = $rows.add( ["attention-red.png", "Sat Jul 06 16:31:21 EDT 2013", "WEB0000091", "admin", "The Administrator",  "The Administrator", "1", "", "$85.43"] ) )
 #end
 
-<p>Daily summary of orders that have yet to be processed.</p>
+<h2>Daily Summary</h2>
 
-<table cellspacing="1" cellpadding="3" border="0">
+<h3>Order Summary</h3>
+<p>The following is a list of orders that have yet to be processed.</p>
+
+<table cellspacing="1" cellpadding="3" border="2">
 	<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent; color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
 		<tr>
 			#foreach($header in $headers)
@@ -21,17 +23,19 @@
 		</tr>
 	</thead>
 	#foreach($row in $rows)
-		#set($color = $row.get(0))
+		#set($img = $row.get(0))
+		#set($imgsrc = "$content.siteroot$home/ecommerce/theme/images/alerts/${img}")
 		#set($date = $row.get(1))
 		#set($number = $row.get(2))
-		#set($url = "$content.siteroot$home$apphome/views/modules/storeOrder/edit/edit.html?id=${number}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details&hitssessionid=&searchtype=storeOrder")
+		#set($url = "$content.siteroot$home/ecommerce/views/modules/storeOrder/edit/edit.html?id=${number}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details&hitssessionid=&searchtype=storeOrder")
 		#set($customerid = $row.get(3))
 		#set($customer = $row.get(4))
 		#set($company = $row.get(5))
 		#set($items = $row.get(6))
 		#set($shipping = $row.get(7))
 		#set($price = $row.get(8))
-	<tr style="background-color:${color}">
+	<tr style="background-color:#fff5ee;">
+		<td align="left"><img src="${imgsrc}" alt="${img}"></td>
 		<td align="left"><p>$!date</p></td>
 		<td align="center"><p><a href="$url" target="_blank">$!number</p></td>
 		<td align="center"><p>$!customerid</p></td>
@@ -43,4 +47,28 @@
 	</tr>
 	#end
 </table>
+
+#if($hits)
+	<br>
+	<h3>Product Summary</h3>
+	<p>The following is a list of products inventory items that have not been updated within the past 48 hours.</p>
+	
+	<table cellspacing="1" cellpadding="3" border="2">
+		<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent; color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
+			<tr>
+				<th align="center" nowrap>Last Inventory Date</th>
+				<th align="center" nowrap>ID</th>
+				<th align="center" nowrap>Name</th>
+			</tr>
+		</thead>
+		#foreach($hit in $hits)
+		#set($url = "$content.siteroot$home/ecommerce/views/modules/product/edit/edit.html?id=${hit.id}&viewid=productproduct_details&viewpath=product/productproduct_details&hitssessionid=hitsproductmedia/catalogs/store&searchtype=product")
+		<tr style="background-color:#fff5ee;">
+			<td align="center"><p>$context.getDate($hit.inventoryupdated)</p></td>
+			<td align="left"><p><a href="${url}" target="_blank">$hit.id</a></p></td>
+			<td align="left"><p>$hit.name</p></td>
+		</tr>
+		#end
+	</table>
+#end
 

@@ -1,0 +1,11 @@
+<properties>
+    <property id="weekly">Every Week</property>
+    <property id="2 weeks">Every 2 Weeks</property>
+    <property id="4 weeks">Every 4 Weeks</property>
+    <property id="monthly">Every Month</property>
+    <property id="2 months">Every 2 Months</property>
+    <property id="3 months">Every 3 Months</property>
+    <property id="6 months">Every 6 Months</property>
+    <property id="yearly">Every Year</property>
+    <property id="2 years">Every 2 Years</property>
+</properties>

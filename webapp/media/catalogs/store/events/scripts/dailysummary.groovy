@@ -13,6 +13,7 @@ import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.store.Store
 import org.openedit.store.orders.Order
@@ -42,8 +43,6 @@ public void init()
 	query.addMatches("orderstatus", "authorized");//authorized - payment processed
 	query.addSortBy("orderdateDown");
 	
-	
-	
 	ArrayList<String[]> list = new ArrayList<String[]>();
 	
 	HitTracker hits = ordersearcher.search(query);
@@ -56,10 +55,16 @@ public void init()
 			long hours = TimeUnit.HOURS.convert(milli, TimeUnit.MILLISECONDS);
 			
 			String alertstatus = "#E42217";//red
-			if (hours < 48) alertstatus = "#FFF5EE";//white
-			else if (hours >= 48 && hours < 72) alertstatus = "#FFF380";//yellow
+			String img = "attention-red.png";
+			if (hours < 48){
+				alertstatus = "#FFF5EE";//white
+				img = "attention-green.png";
+			} else if (hours >= 48 && hours < 72){
+				alertstatus = "#FFF380";//yellow
+				img = "attention-yellow.png";
+			}
 			
-			String date = order.getDate().toString();
+			String date = context.getDate(order.getDate());
 			String number = order.getId();
 			String customerid = order.getCustomer().getId();
 			String customer = "${order.getCustomer().getFirstName()} ${order.getCustomer().getLastName()}";
@@ -68,49 +73,64 @@ public void init()
 			String shipping = shippingstatus == null ? "" : shippingstatus;
 			String price = "${order.getTotalPrice()}";
 			
-			String[] info = [alertstatus,date,number,customerid,customer,company,items,shipping,price] as String[];
+			String[] info = [img,date,number,customerid,customer,company,items,shipping,price] as String[];
 			list.add(info);
 		}
 	}
+	//create headers
+	String [] headers = ["Level","Date","Order Number", "Customer ID", "Customer Name", "Company", "Number of Items", "Shipping Status", "Total Price"] as String[];
 	
-	String [] headers = ["Date","Order Number", "Customer ID", "Customer Name", "Company", "Number of Items", "Shipping Status", "Total Price"] as String[];
+	//add header and rows to context
+	context.putPageValue("rows", list);
+	context.putPageValue("headers",headers);
+	//check for inventory dates
+	checkOther(archive,context);
 	
-	//load template email page
-	String templatePage = "/ecommerce/views/modules/storeOrder/notifications/dailysummary/email-notification-template.html";
-	Page template = pageManager.getPage(templatePage);
-	WebPageRequest newcontext = context.copy(template);
-	
-	newcontext.putPageValue("rows", list);
-	newcontext.putPageValue("headers",headers);
-	
-	//get list of storeadmins
-	ArrayList emails = new ArrayList();
-	HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
-	if (results.size() > 0) {
-		for(Iterator detail = results.iterator(); detail.hasNext();) {
-			Data userInfo = (Data)detail.next();
-			emails.add(userInfo.get("email"));
+	if("TRUE".equalsIgnoreCase(context.findValue("sendemail"))){
+		//get list of storeadmins
+		ArrayList emails = new ArrayList();
+		HitTracker results = userprofilesearcher.fieldSearch("storeadmin", "true");
+		if (results.size() > 0) {
+			for(Iterator detail = results.iterator(); detail.hasNext();) {
+				Data userInfo = (Data)detail.next();
+				emails.add(userInfo.get("email"));
+			}
 		}
+		if (emails.isEmpty())
+		{
+			log.info("No store administrators found on the system, aborting");
+			return;
+		}
+		log.info("Sending emails to the following store administrators: ${emails}");
+		PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
+		String templatePage = "/ecommerce/views/modules/storeOrder/notifications/dailysummary/email-notification-template.html";
+		Page template = pageManager.getPage(templatePage);
+		WebPageRequest newcontext = context.copy(template);
+		TemplateWebEmail mailer = mail.getTemplateWebEmail();
+		mailer.setFrom("info@wirelessarea.ca");
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setRecipientsFromStrings(emails);
+		mailer.setSubject("Daily Orders Summary");
+		mailer.send();
+		log.info("Finishing sending daily summary to store admins");
+	} else {
+		log.info("Finishing running daily summary");
 	}
-	
-	log.info("Sending emails to ${emails}");
-	
-	if (emails.isEmpty())
-	{
-		log.info("No store administrators found on the system, aborting");
-		return;
+}
+
+public void checkOther(MediaArchive archive, WebPageRequest inReq){
+	Date date = new Date();
+	date.setTime(System.currentTimeMillis() - (48*60*60*1000));//2 days ago
+	SearcherManager sm = archive.getSearcherManager();
+	String catalogid = archive.getCatalogId();
+	Searcher searcher = sm.getSearcher(catalogid, "product");
+	SearchQuery query = searcher.createSearchQuery();
+	query.addBefore("inventoryupdated", date);
+	HitTracker hits = searcher.search(query);
+	if (!hits.isEmpty()){
+		inReq.putPageValue("hits", hits);
 	}
-	
-	PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
-	TemplateWebEmail mailer = mail.getTemplateWebEmail();
-	mailer.setFrom("info@wirelessarea.ca");
-	mailer.loadSettings(newcontext);
-	mailer.setMailTemplatePath(templatePage);
-	mailer.setRecipientsFromStrings(emails);
-	mailer.setSubject("Daily Orders Summary");
-	mailer.send();
-	
-	log.info("Finishing sending daily summary to store admins");
 }
 
 init();
