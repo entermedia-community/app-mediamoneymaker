@@ -52,6 +52,8 @@ public void doImport() {
 
 	// Get XML File
 	String invoiceFolder = "/WEB-INF/data/" + archive.getCatalogId() + "/incoming/invoices/";
+	String processedFolder = "/WEB-INF/data/${catalogid}/processed/invoices/";
+	
 	PageManager pageManager = archive.getPageManager();
 	List dirList = pageManager.getChildrenPaths(invoiceFolder);
 	log.info("Initial directory size: " + dirList.size().toString());
@@ -85,8 +87,9 @@ public void doImport() {
 				Data invoice = invoicesearcher.searchByField("invoicenumber", invoicenumber);
 				if(invoice == null){
 					invoice = invoicesearcher.createNewData();
+					invoice.setId(invoicesearcher.nextId());
 				} else {
-					invoice = invoicesearcher.searchById(invoice.getId());
+					return;//continue to next because already found
 				}
 				Order order = null;
 				if(ponumber) {
@@ -100,7 +103,7 @@ public void doImport() {
 					}
 				}
 				
-				invoice.setId(invoicesearcher.nextId());
+				
 				invoice.setProperty("terms", it.Attributes.TblTermsOfSale.TermsDescription.text());
 				String termsdate = it.Attributes.TblTermsOfSale.NetDueDate.text();
 				if(termsdate != null && !termsdate.isEmpty()){
@@ -202,6 +205,10 @@ public void doImport() {
 				invoicesearcher.saveData(invoice, null);
 				itemsearcher.saveAllData(items, null);
 			}
+			
+			String destinationFile = processedFolder + page.getName();
+			Page destination = pageManager.getPage(destinationFile);
+			pageManager.movePage(page, destination);
 		}
 	}
 	
