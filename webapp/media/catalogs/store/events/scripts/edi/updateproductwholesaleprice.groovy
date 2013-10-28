@@ -51,15 +51,31 @@ public void processProducts() {
 	Searcher productsearcher = archive.getSearcher("product");
 	HitTracker hits = productsearcher.getAllHits();
 	log.info("staring processing ${hits.size()} products");
+	List productstosave = new ArrayList();
 	hits.each{
 		Product product = store.getProduct(it.id);
 		List<InventoryItem> inventoryItems = product.getInventoryItems();
 		log.info("Item size: ${inventoryItems.size()}");
+		PriceSupport productsupport = product.getPriceSupport();
+		if(productsupport != null){
+			for (Iterator<?> itr = productsupport.getTiers().iterator(); itr.hasNext();)
+			{
+				PriceTier tier = (PriceTier)itr.next();
+				Price price = tier.getPrice();
+				Money retail = price.getRetailPrice();
+				Money calcwholesale = retail.divide("1.10");
+				price.setWholesalePrice(calcwholesale);
+				log.info("Products: updated ${product.getId()}(${product}) price: ${price}");
+			}
+		}
 		for(InventoryItem inventoryItem:inventoryItems){
 			PriceSupport support = inventoryItem.getPriceSupport();
 			if (support == null){
 				log.error("problem with product ${product.id}: inventory item has no price support");
 				continue;//problem with one of the inventory item
+			}
+			if(support.getTiers().size() == 0){
+				log.info("NO TIERS ON PRODUCT ${product.id}");
 			}
 			for (Iterator<?> itr = support.getTiers().iterator(); itr.hasNext();)
 			{
@@ -71,8 +87,11 @@ public void processProducts() {
 				log.info("Products: updated ${product.getId()}(${product}) price: ${price}");
 			}
 		}
-		store.saveProduct(product);
+		productstosave.add(product);
+		
 	}
+	//store.saveProducts(productstosave);
+	store.getProductSearcher().saveAllData(productstosave, null);
 	store.clearProducts();//forces products to be loaded from disc
 	updateWholesalePrices(store);
 	log.info("---- END Update Product Wholesale Price ----");
