@@ -63,38 +63,5 @@
   <property id="validerrormessage" index="true" stored="true" editable="true" searchtype="product">Valid Error Message</property>
   <property id="as400id" index="true" stored="true" editable="true" searchtype="product">AS400 ID</property>
   <property id="inventoryupdated" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="product" internalfield="false" datatype="date">Inventory Updated</property>
-  <property id="product_id" index="true" stored="true" editable="true">Product ID</property>
-  <property id="model_code" index="true" stored="true" editable="true">Model Code</property>
-  <property id="keyword_search" index="true" stored="true" editable="true">Keyword Search</property>
-  <property id="product_type" index="true" stored="true" editable="true">Product Type</property>
-  <property id="accessory_id" index="true" stored="true" editable="true">Accessory ID</property>
-  <property id="accessory_name_fr" index="true" stored="true" editable="true">Accessory Name FR</property>
-  <property id="manufacturer" index="true" stored="true" editable="true">Manufacturer</property>
-  <property id="description__fr" index="true" stored="true" editable="true">Description - FR</property>
-  <property id="rogers__sku" index="true" stored="true" editable="true">Rogers - SKU</property>
-  <property id="manufacturer__sku" index="true" stored="true" editable="true">Manufacturer - SKU</property>
-  <property id="product_category" index="true" stored="true" editable="true">Product Category</property>
-  <property id="display_designation" index="true" stored="true" editable="true">Display Designation</property>
-  <property id="rogers_msrp" index="true" stored="true" editable="true">Rogers MSRP</property>
-  <property id="fido_msrp" index="true" stored="true" editable="true">Fido MSRP</property>
-  <property id="wholesale_cost" index="true" stored="true" editable="true">Wholesale Cost</property>
-  <property id="standard_price" index="true" stored="true" editable="true">Standard Price</property>
-  <property id="wholesale_price" index="true" stored="true" editable="true">Wholesale Price</property>
-  <property id="fido_wholesale_price" index="true" stored="true" editable="true">Fido Wholesale Price</property>
-  <property id="featured_on_main_page" index="true" stored="true" editable="true">Featured On Main Page</property>
-  <property id="approved_on" index="true" stored="true" editable="true">Approved On</property>
-  <property id="approved_comment" index="true" stored="true" editable="true">Approved Comment</property>
-  <property id="created_on" index="true" stored="true" editable="true">Created On</property>
-  <property id="expected_end_of_life" index="true" stored="true" editable="true">Expected End Of Life</property>
-  <property id="phone_compatability" index="true" stored="true" editable="true">Phone Compatability</property>
-  <property id="top_selling_product" index="true" stored="true" editable="true">Top Selling Product</property>
-  <property id="rogers_status" index="true" stored="true" editable="true">Rogers Status</property>
-  <property id="distributor_status" index="true" stored="true" editable="true">Distributor Status</property>
-  <property id="clearance_centre" index="true" stored="true" editable="true">Clearance Centre</property>
-  <property id="profile_id" index="true" stored="true" editable="true">Profile ID</property>
-  <property id="accessory_name" index="true" stored="true" editable="true">Accessory Name</property>
-  <property id="active_status" index="true" stored="true" editable="true">Active Status</property>
-  <property id="as_400_id" index="true" stored="true" editable="true">AS 400 ID</property>
-  <property id="coming_soon" index="true" stored="true" editable="true">Coming Soon</property>
-  <property id="inventory_updated" index="true" stored="true" editable="true">Inventory Updated</property>
+
 </properties>
