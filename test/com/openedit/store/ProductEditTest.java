@@ -28,7 +28,7 @@ public class ProductEditTest extends StoreTestCase
 	}
 
 	
-	public void xxtestEditProductProperties() throws Exception
+	public void testEditProductProperties() throws Exception
 	{
 		String originaltext = "Some weird & whacky product attribute's to \"insert\"";
 		Product product = getStore().getProduct("1");
@@ -42,7 +42,7 @@ public class ProductEditTest extends StoreTestCase
 		
 	}
 
-	public void xxtestEditItemProperties() throws Exception
+	public void testEditItemProperties() throws Exception
 	{
 		String originaltext = "weird & whacky data insert'ed at \"item\" level";
 		Product product = getStore().getProduct("1");
@@ -60,7 +60,7 @@ public class ProductEditTest extends StoreTestCase
 		
 	}
 	
-	public void xxtestAvailableFlag() throws Exception
+	public void testAvailableFlag() throws Exception
 	{
 		Product product = getStore().getProduct("1");
 		product.setAvailable(false);
