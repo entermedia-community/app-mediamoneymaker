@@ -49,9 +49,13 @@
 </table>
 
 #if($hits)
+
+	#set($searchermanager = $mediaarchive.getSearcherManager())
+	#set($searcher = $searchermanager.getSearcher("$catalogid","distributor"))
+	
 	<br>
 	<h3>Product Summary</h3>
-	<p>The following is a list of products inventory items that have not been updated within the past 48 hours.</p>
+	<p>The following is a list of active products with inventory items that have not been updated within the past 48 hours.</p>
 	
 	<table cellspacing="1" cellpadding="3" border="2">
 		<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent; color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
@@ -59,6 +63,7 @@
 				<th align="center" nowrap>Last Inventory Date</th>
 				<th align="center" nowrap>ID</th>
 				<th align="center" nowrap>Name</th>
+				<th align="center" nowrap>Distributor</th>
 			</tr>
 		</thead>
 		#foreach($hit in $hits)
@@ -67,6 +72,9 @@
 			<td align="center"><p>$context.getDate($hit.inventoryupdated)</p></td>
 			<td align="left"><p><a href="${url}" target="_blank">$hit.id</a></p></td>
 			<td align="left"><p>$hit.name</p></td>
+			#set($distributor = $searcher.searchById("${hit.distributor}"))
+			<td align="left"><p>$!distributor</p></td>
+			#set($distributor = false)
 		</tr>
 		#end
 	</table>

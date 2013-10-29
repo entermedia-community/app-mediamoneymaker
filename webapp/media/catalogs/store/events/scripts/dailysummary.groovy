@@ -127,8 +127,10 @@ public void checkOther(MediaArchive archive, WebPageRequest inReq){
 	Searcher searcher = sm.getSearcher(catalogid, "product");
 	SearchQuery query = searcher.createSearchQuery();
 	query.addBefore("inventoryupdated", date);
+	query.addExact("active","true");
 	HitTracker hits = searcher.search(query);
 	if (!hits.isEmpty()){
+		//show distributor, filter whether is active
 		inReq.putPageValue("hits", hits);
 	}
 }
