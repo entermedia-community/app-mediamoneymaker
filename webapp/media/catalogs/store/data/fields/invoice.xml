@@ -17,4 +17,7 @@
   <property id="subtotal" index="true" stored="true" editable="true" searchtype="invoice">Sub Total</property>
   <property id="provtaxamount" index="true" stored="true" editable="true" searchtype="invoice" internalfield="false">Provincial Tax Amount</property>
   <property id="fedtaxid" index="true" stored="true" editable="true">Fed Tax ID</property>
+  
+  <property id="notes" index="true" stored="true" editable="true" searchtype="invoice" internalfield="false">Notes</property>
+  <property id="orderid" index="true" stored="true" editable="true">Order ID</property>
 </properties>

@@ -7,4 +7,9 @@
   <invoicestatus id="updated">Updated</invoicestatus>
   <invoicestatus id="submitted">Submitted</invoicestatus>
   <invoicestatus id="waiting">Waiting for Approval</invoicestatus>
+  <invoicestatus id="paid" name="Paid">Paid</invoicestatus>
+  <invoicestatus id="printed" name="Printed">Printed</invoicestatus>
+  <invoicestatus id="error" name="Error">Error</invoicestatus>
+  <invoicestatus id="conflictdetection" name="Conflict Detection">Conflict Detection</invoicestatus>
+  <invoicestatus id="verified" name="Verified">Verified</invoicestatus>
 </invoicestatuss>

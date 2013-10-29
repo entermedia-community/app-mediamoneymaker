@@ -121,7 +121,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		ftp.login(username, ftpPassword);
 		reply = ftp.getReplyCode();
 		if(FTPReply.isPositiveCompletion(reply)) {
-			log.info("FTP: User(${username} successfully logged in.");
+			log.info("FTP: User(${username}) successfully logged in.");
 		}
 		else {
 			result.setErrorMessage("Unable to login to ${serverName}, error code: ${reply}");
@@ -179,7 +179,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		if (files.length > 0) {
 			strMsg += "<ul>\n";
 			for (int i = 0; i < files.length; i++) {
-				
+				//@todo: fix this - no file info is ever printed to strMsg
 				FTPFile file = files[i];
 				if (file.getName().endsWith(this.fileExtension) || 
 					file.getName().endsWith(this.fileExtension.toUpperCase()))
@@ -196,21 +196,26 @@ public class GetFilesFromFTP extends EnterMediaObject {
 							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
 						}
 					} else {
+						//should we skip this?
 						log.info("FTP: Download skipped: " + downloadFile.getName());
 					}
 				}
 			}
-			strMsg += "</li>\n";
+			strMsg += "</ul>\n";
 			if (ctr == 0) {
 				log.info("There are no files to upload at this time.");
 				log.info("Logging out.");
 				ftp.disconnect();
+				result.setCompleteMessage("<p>There are no files to upload at this time.</p>");
+				result.setComplete(true);
 				return result;
 			}
 		} else {
 			log.info("There are no files to upload at this time.");
 			log.info("Logging out.");
 			ftp.disconnect();
+			result.setCompleteMessage("<p>There are no files to upload at this time.</p>");
+			result.setComplete(true);
 			return result;
 		}
 		log.info("Logging out.");
@@ -251,6 +256,7 @@ try {
 	//Read the production value
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 	
+	
 	String ftpID = "";
 	String ftpIDProd = media.getContext().findValue('ftpidprod');
 	String ftpIDTest = media.getContext().findValue('ftpidtest');
@@ -282,7 +288,9 @@ try {
 
 	result = ftpInvoice.getFiles();
 	if (result.isComplete()) {
-		//Output value to CSV file!
+		//print output of files
+		String out = result.getCompleteMessage();
+		log.info(out);
 	} else {
 		//ERROR: Throw exception
 		log.info("ERROR: " + result.getErrorMessage());
