@@ -165,10 +165,18 @@ public void doImport() {
 						product = productsearcher.searchById(hit.id);
 						invoiceitem.setProperty("productid", hit.id);
 					} else {
-						Data hit = hits.get(0);
-						product = productsearcher.searchById(hit.id);
-						invoiceitem.setProperty("productid", hit.id);
-						invoiceitem.setProperty("notes", "Found multiple matches for this product.  Used first.");
+//						Data hit = hits.get(0);
+//						product = productsearcher.searchById(hit.id);
+//						invoiceitem.setProperty("productid", hit.id);
+//						invoiceitem.setProperty("notes", "Found multiple matches for this product.  Used first.");
+						
+						CartItem cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode);
+						if (cartItem!=null){
+							product = cartItem.getProduct();
+							invoiceitem.setProperty("productid",product.getId());
+						} else {
+							invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
+						}
 					}
 					
 					String itemamount = it.Attributes.TblAmount.find {it.Qualifier == "LI"}.Amount.text()

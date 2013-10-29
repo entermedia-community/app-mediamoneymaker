@@ -80,12 +80,12 @@
 								<td valign="top">
 									#set($address = $order.getShippingAddress())
 									<span style="font-size:14px"><strong>$address.getName()</strong><br>
-									$address.get("address1")<br>
+									$!address.get("address1")<br>
 									#if ($address.get("address2") && $address.get("address2")!="")
 										$!address.get("address2")<br>
 									#end
-									$address.get("city"), $distributor.get("province")<br>
-									$address.get("zip")<br>
+									$!address.get("city"), $!distributor.get("province")<br>
+									$!address.get("zip")<br>
 									</span>
 								</td>
 							</tr>
@@ -115,13 +115,18 @@
 				<tr>
 					#set($qty=$inv.get("quantity"))
 					<td align="center">$qty</td>
-					#set($product = $productsearcher.searchById($inv.get("product")))
+					#set($productid = $inv.get("product"))
+					#if(!$productid)
+						#set($productid = $inv.get("productid"))
+					#end
+					#set($product = $productsearcher.searchById($productid))
 					<td align="center">$product.getId()</td>
 					<td align="center">$inv.vendorcode</td>
 					<td align="left">$inv.descrip</td>
 					#set($price=$inv.get("price"))
 					<td align="center">$formatutil.formatString($inv.unitprice)</td>
 					<td align="right">$formatutil.formatString($price)</td>
+					#set($productid = false)
 				</tr>
 				#end
 				<tr>

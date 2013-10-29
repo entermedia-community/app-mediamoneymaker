@@ -97,11 +97,13 @@ public void processInvoice(Data data, Order order, Searcher invoiceSearcher, Sea
 		}
 		if (productid!=null){
 			CartItem target = null;
+			StringBuilder prods = new StringBuilder();
 			for(CartItem cartItem:cartItems){
 				if (productid.equals(cartItem.getProduct().getId())){
 					target = cartItem;
 					break;
 				}
+				prods.append(cartItem.getProduct().getId()).append(",");
 			}
 			if (target!=null){
 				Money listedPrice = target.getWholesalePrice();
@@ -120,6 +122,7 @@ public void processInvoice(Data data, Order order, Searcher invoiceSearcher, Sea
 			} else {
 				if (!msg.toString().isEmpty()) msg.append("; ");
 				msg.append("Cannot find item in order (${productid})");
+				msg.append(" ["+prods.toString()+"]");
 				isItemsOk = false;
 			}
 		} else {

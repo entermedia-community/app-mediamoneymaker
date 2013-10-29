@@ -170,38 +170,46 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		}
 		
 		String replyString = "";
-		String strMsg = "<p>The following files have been uploaded.</p>";\
+		StringBuilder buf = new StringBuilder();
+		buf.append("<p>The following files have been uploaded.</p>\n");
 		String downloadFolder = "/WEB-INF/data/media/catalogs/store/" + this.localUploadFolder + "/";
 		
 		FTPFile[] files = ftp.listFiles();
 		log.info("length: " + files.length);
 		int ctr = 0;
-		if (files.length > 0) {
-			strMsg += "<ul>\n";
+		if (files!=null && files.length > 0) {
+			buf.append("<ul>\n");
 			for (int i = 0; i < files.length; i++) {
 				//@todo: fix this - no file info is ever printed to strMsg
 				FTPFile file = files[i];
 				if (file.getName().endsWith(this.fileExtension) || 
 					file.getName().endsWith(this.fileExtension.toUpperCase()))
 				{
+					ctr++;//increment files found
 					log.info("found file: " + file.getName());
+					buf.append("<li>").append(file.getName()).append(" - ");
 					Page downloadFile = pageManager.getPage(downloadFolder + file.getName());
 					if (!downloadFile.exists()){
+						buf.append("New - ");
 						ftp.retrieveFile(file.getName(), downloadFile.getContentItem().getOutputStream());
 						reply = ftp.getReplyCode();
 						if(FTPReply.isPositiveCompletion(reply)) {
 							replyString = ftp.getReplyString();
 							log.info("Reply: " + replyString);
+							buf.append("Success");
 						} else {
 							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
+							buf.append("Fail (").append(reply).append(")");
 						}
 					} else {
 						//should we skip this?
 						log.info("FTP: Download skipped: " + downloadFile.getName());
+						buf.append("Duplicate - Skipped");
 					}
+					buf.append("</li>\n");
 				}
 			}
-			strMsg += "</ul>\n";
+			buf.append("</ul>\n");
 			if (ctr == 0) {
 				log.info("There are no files to upload at this time.");
 				log.info("Logging out.");
@@ -221,7 +229,7 @@ public class GetFilesFromFTP extends EnterMediaObject {
 		log.info("Logging out.");
 		ftp.disconnect();
 		
-		result.setCompleteMessage(strMsg);
+		result.setCompleteMessage(buf.toString());
 		result.setComplete(true);
 		return result;
 	}
@@ -244,22 +252,18 @@ logs.startCapture();
 
 try {
 	
-	MediaUtilities media = new MediaUtilities();
-	media.setContext(context);
-	
 	GetFilesFromFTP ftpInvoice = new GetFilesFromFTP();
 	ftpInvoice.setLog(logs);
-	ftpInvoice.setContext(media.getContext());
+	ftpInvoice.setContext(context);
 	ftpInvoice.setModuleManager(moduleManager);
 	ftpInvoice.setPageManager(pageManager);
 	
 	//Read the production value
 	boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 	
-	
 	String ftpID = "";
-	String ftpIDProd = media.getContext().findValue('ftpidprod');
-	String ftpIDTest = media.getContext().findValue('ftpidtest');
+	String ftpIDProd = context.findValue('ftpidprod');
+	String ftpIDTest = context.findValue('ftpidtest');
 	if (production) {
 		ftpID = ftpIDProd;
 		if (ftpID == null) {
@@ -282,18 +286,16 @@ try {
 	///////////////////////
 	
 	//Get the FTP Info
-	Data ftpInfo = ftpInvoice.getFtpInfo(media.getCatalogid(), ftpID);
+	Data ftpInfo = ftpInvoice.getFtpInfo(catalogid, ftpID);
 	ftpInvoice.setInfo(ftpInfo);
-	ftpInvoice.setFileExtension("xml");
 
 	result = ftpInvoice.getFiles();
 	if (result.isComplete()) {
-		//print output of files
-		String out = result.getCompleteMessage();
-		log.info(out);
+		//print output from result object
+		log.info(result.getCompleteMessage());
 	} else {
 		//ERROR: Throw exception
-		log.info("ERROR: " + result.getErrorMessage());
+		log.error(result.getErrorMessage());
 	}
 }
 finally {
