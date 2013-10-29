@@ -25,6 +25,9 @@ import com.openedit.page.Page
 
 import java.util.concurrent.TimeUnit
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public void init()
 {
 	log.info("Starting daily summary of pending orders");

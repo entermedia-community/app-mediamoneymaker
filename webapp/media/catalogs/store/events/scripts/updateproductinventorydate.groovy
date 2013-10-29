@@ -30,12 +30,17 @@ import java.util.concurrent.TimeUnit
 
 import org.openedit.util.DateStorageUtil
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public init(){
 	log.info("Starting update of inventory date fields");
-	Date date = new Date();
-	long ms = System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000);//2 weeks ago
-	date.setTime(ms);
-	String df = DateStorageUtil.getStorageUtil().formatForStorage(date);
+//	Date date = new Date();
+//	long ms = System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000);//2 weeks ago
+//	date.setTime(ms);
+	//make date really old
+	Calendar cal = new GregorianCalendar(2012, 0, 1);
+	String df = DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime());
 	Store store = context.getPageValue("store");
 	//Create the MediaArchive object
 	MediaArchive archive = context.getPageValue("mediaarchive");
