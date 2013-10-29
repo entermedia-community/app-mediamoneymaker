@@ -35,16 +35,8 @@ public init(){
 	Date date = new Date();
 	long ms = System.currentTimeMillis() - (14 * 24 * 60 * 60 * 1000);//2 weeks ago
 	date.setTime(ms);
-	
-	System.out.println("Inventory Date: ${date}");
-	
 	String df = DateStorageUtil.getStorageUtil().formatForStorage(date);
-	
-	System.out.println("Formatted data ${df}");
-	
 	Store store = context.getPageValue("store");
-	System.out.println("Store ${store}");
-	
 	//Create the MediaArchive object
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	SearcherManager searcherManager = archive.getSearcherManager();
@@ -56,13 +48,8 @@ public init(){
 		if (data.get("inventoryupdated") == null){
 			Product product = store.getProduct(data.getId());
 			product.setProperty("inventoryupdated", df);
-			//store.saveProduct(product);
-			productsearcher.saveData(product, null);
-//			
-//			Product product = productsearcher.searchById(data.getId());
-//			product.setProperty("inventoryupdated", df);
-//			productsearcher.saveData(product, null);
-			log.info("&&&& Updated the inventory date to ${df} for of ${product} PRODUCT ID ${data.getId()}");
+			store.saveProduct(product);
+			log.info("Updated inventory date to ${df} of ${product} (${data.getId()})");
 		}
 	}
 	log.info("Finished updating inventory dates");
