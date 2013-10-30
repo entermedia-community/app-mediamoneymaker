@@ -20,6 +20,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 
 import com.openedit.OpenEditRuntimeException;
@@ -29,7 +30,7 @@ import com.openedit.page.Page;
  * @author cburkey
  *
  */
-public class Product implements Data
+public class Product extends BaseData implements Data
 {
 	protected String fieldId;
 	protected String fieldName;
@@ -1216,33 +1217,33 @@ public class Product implements Data
 
 	
 	//TODO: Add these methods to the Data interface
-		public Collection getValues(String inPreference)
-		{
-			String val = get(inPreference);
-			
-			if (val == null)
-				return null;
-			
-			String[] vals = val.split("\\s+");
-
-			Collection collection = Arrays.asList(vals);
-			//if null check parent
-			return collection;
-		}
-		
-		public void setValues(String inKey, Collection<String> inValues)
-		{
-			StringBuffer values = new StringBuffer();
-			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-			{
-				String detail = (String) iterator.next();
-				values.append(detail);
-				if( iterator.hasNext())
-				{
-					values.append(" ");
-				}
-			}
-			setProperty(inKey,values.toString());
-		}
+//		public Collection getValues(String inPreference)
+//		{
+//			String val = get(inPreference);
+//			
+//			if (val == null)
+//				return null;
+//			
+//			String[] vals = val.split("\\s+");
+//
+//			Collection collection = Arrays.asList(vals);
+//			//if null check parent
+//			return collection;
+//		}
+//		
+//		public void setValues(String inKey, Collection<String> inValues)
+//		{
+//			StringBuffer values = new StringBuffer();
+//			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+//			{
+//				String detail = (String) iterator.next();
+//				values.append(detail);
+//				if( iterator.hasNext())
+//				{
+//					values.append(" ");
+//				}
+//			}
+//			setProperty(inKey,values.toString());
+//		}
 	
 }

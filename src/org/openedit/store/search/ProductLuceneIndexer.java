@@ -325,15 +325,16 @@ public class ProductLuceneIndexer {
 			buffer.append(allow);
 		}
 		if (p.get("group") != null) {
-			String[] groups = p.get("group").split("\\s");
-			if (groups.length > 0) {
+			
+			Collection<?> groups = p.getValues("group");
+			if (groups.size() > 0) {
 				secure = true;
 			}
-			for (int i = 0; i < groups.length; i++) {
-				String group = groups[i];
+			Iterator<?> itr = groups.iterator();
+			while(itr.hasNext()) {
+				String group = (String) itr.next();
 				buffer.append(" ");
 				buffer.append("group_" + group);
-
 			}
 		}
 		

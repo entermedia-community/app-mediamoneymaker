@@ -87,15 +87,14 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 			$pages.stream("$apphome/layout/productoptions.html")
 			$pages.stream("$apphome/layout/productprice.html")
 			<strong>Carrier&nbsp;:</strong><br>
-			#if($product.displaydesignationid == "1")
+			#set($groups = $product.getValues("group"))
+			#if($groups.contains("fido") && $groups.contains("rogers"))
+				<p style="text-align: center"/><img align="center" src="$apphome/theme/images/logo.png"/></p>
+				<p style="text-align: center"/><img align="center" src="$apphome/theme/images/fido.png"/></p>
+			#elseif($product.group.equals("rogers"))
 				<img src="$apphome/theme/images/logo.png"/>
-			#end
-			#if($product.displaydesignationid == "2")
-			<img src="$apphome/theme/images/fido.png"/>
-			#end
-			#if($product.displaydesignationid == "3")
-			<p style="text-align: center"/><img align="center" src="$apphome/theme/images/logo.png"/></p>
-			<p style="text-align: center"/><img align="center" src="$apphome/theme/images/fido.png"/></p>
+			#elseif($product.group.equals("fido"))
+				<img src="$apphome/theme/images/fido.png"/>
 			#end
 			
     </ul>

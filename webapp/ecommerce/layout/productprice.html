@@ -61,7 +61,6 @@
 	</li>
 	#end
 	<li class="price">
-	
 		#if($canviewdevelopertools)
 			<strong>Product ID:</strong>&nbsp;$product.getId()<br>
 		#end
@@ -79,20 +78,20 @@
 		#end
 		#set($msrpprice = $product.get("msrp"))
 		#set($fidoprice = $product.get("fidomsrp"))
-		#if($product.displaydesignationid == "1")
+		
+		#set($groups = $product.getValues("group"))
+		#if($groups.contains("fido") && $groups.contains("rogers"))
 			#if($msrpprice)
 				<strong>ROGERS MSRP:</strong>&nbsp;$msrpprice<br>
 			#end
-		#end
-		#if($product.displaydesignationid == "2")
 			#if($fidomsrp)
 				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
-		#end
-		#if($product.displaydesignationid == "3")
+		#elseif($product.group.equals("rogers"))
 			#if($msrpprice)
 				<strong>ROGERS MSRP:</strong>&nbsp;$msrpprice<br>
 			#end
+		#elseif($product.group.equals("fido"))
 			#if($fidomsrp)
 				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end

@@ -19,19 +19,20 @@ public void init(){
 	products.each{
 		Product p = store.getProduct(it.id);
 		String display = p.getProperty('displaydesignationid');
-		log.info("display ${display}");
-		if(display != null){
-			if("1".equals(display)){
-				p.setProperty("groups", "rogers");
-			}
-			if("2".equals(display)){
-				p.setProperty("groups", "fido");
-			}
-
-			if("3".equals(display)){
-				p.setProperty("groups", "rogers fido");
-			}
+		log.info("${p}: display designation id = ${display}");
+		if(display == null){
+			return;
 		}
+		if("1".equals(display)){
+			p.setProperty("group", "rogers");
+		} else if("2".equals(display)){
+			p.setProperty("group", "fido");
+		} else if("3".equals(display)){
+			p.setValues("group", new ArrayList<String>(["fido","rogers"]));
+		} else {
+			return;
+		}
+		tosave.add(p);
 	}
 	searcher.saveAllData(tosave, null);
 }
