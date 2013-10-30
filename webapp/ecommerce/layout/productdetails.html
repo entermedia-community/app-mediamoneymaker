@@ -91,9 +91,9 @@ $pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
 			#if($groups.contains("fido") && $groups.contains("rogers"))
 				<p style="text-align: center"/><img align="center" src="$apphome/theme/images/logo.png"/></p>
 				<p style="text-align: center"/><img align="center" src="$apphome/theme/images/fido.png"/></p>
-			#elseif($product.group.equals("rogers"))
+			#elseif($groups.contains("rogers"))
 				<img src="$apphome/theme/images/logo.png"/>
-			#elseif($product.group.equals("fido"))
+			#elseif($groups.contains("fido"))
 				<img src="$apphome/theme/images/fido.png"/>
 			#end
 			

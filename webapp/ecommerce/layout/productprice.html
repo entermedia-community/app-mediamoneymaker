@@ -87,11 +87,11 @@
 			#if($fidomsrp)
 				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
-		#elseif($product.group.equals("rogers"))
+		#elseif($groups.contains("rogers"))
 			#if($msrpprice)
 				<strong>ROGERS MSRP:</strong>&nbsp;$msrpprice<br>
 			#end
-		#elseif($product.group.equals("fido"))
+		#elseif($groups.contains("fido"))
 			#if($fidomsrp)
 				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
