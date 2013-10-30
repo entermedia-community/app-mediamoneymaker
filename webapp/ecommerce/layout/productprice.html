@@ -96,21 +96,21 @@
 				<strong>FIDO MSRP:</strong>&nbsp;$fidomsrp<br>
 			#end
 		#end
-
-		#set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
+		
+		#set($mansearcher = $searcherManager.getSearcher($catalogid, "manufacturer"))
         #set($mans = $mansearcher.searchById($product.get("manufacturerid")))
         #if($mans)
-        	<strong>Manufacturer:</strong>&nbsp;$mans.getName() 
+        	<strong>Manufacturer:</strong>&nbsp;$mans.getName() <br>
         	#if($canviewdevelopertools)
         		#if($product.get("manufacturerid"))
-        			($product.get("manufacturerid")) 
+        			<strong>Manufacturer ID:</strong>&nbsp; $product.get("manufacturerid") <br>
         		#end 
         	#end 
         #else
-        	<strong>Manufacturer:</strong>&nbsp;[[Not found!]]
+        	<strong>Manufacturer:</strong>&nbsp;[[Not found!]] <br>
         	#if($canviewdevelopertools)
         		#if($product.get("manufacturerid"))
-        			($product.get("manufacturerid"))
+        			<strong>Manufacturer ID:</strong>&nbsp; $product.get("manufacturerid") <br>
         		#end
         	#end 
         #end
