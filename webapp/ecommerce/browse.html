@@ -6,7 +6,7 @@
 </div>
 #if($canbrowseproducts)
 
-#set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true"))
+#set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true","random",$context))
 $featured.setHitsPerPage(4)
 $context.putPageValue("hits", $featured)
 <div class="featured-browse">
