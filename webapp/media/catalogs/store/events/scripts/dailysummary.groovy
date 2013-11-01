@@ -87,7 +87,7 @@ public void init()
 	context.putPageValue("rows", list);
 	context.putPageValue("headers",headers);
 	//check for inventory dates
-	checkOther(archive,context);
+	checkForRecentInventoryUpdates(archive,context);
 	
 	if("TRUE".equalsIgnoreCase(context.findValue("sendemail"))){
 		//get list of storeadmins
@@ -122,7 +122,7 @@ public void init()
 	}
 }
 
-public void checkOther(MediaArchive archive, WebPageRequest inReq){
+public void checkForRecentInventoryUpdates(MediaArchive archive, WebPageRequest inReq){
 	Date date = new Date();
 	date.setTime(System.currentTimeMillis() - (48*60*60*1000));//2 days ago
 	SearcherManager sm = archive.getSearcherManager();
@@ -131,6 +131,9 @@ public void checkOther(MediaArchive archive, WebPageRequest inReq){
 	SearchQuery query = searcher.createSearchQuery();
 	query.addBefore("inventoryupdated", date);
 	query.addExact("active","true");
+	query.addSortBy("distributor");
+	query.addSortBy("inventoryupdated");
+	query.addSortBy("id");
 	HitTracker hits = searcher.search(query);
 	if (!hits.isEmpty()){
 		//show distributor, filter whether is active

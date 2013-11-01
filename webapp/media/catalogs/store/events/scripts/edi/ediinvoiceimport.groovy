@@ -151,26 +151,10 @@ public void doImport() {
 					invoiceitem.setProperty("quantity", quantity);
 					String vendorCode = it.Attributes.TblReferenceNbr.find{it.Qualifier == "VN"}.ReferenceNbr.text();
 					String productName = it.Attributes.TblTextMessage.find{it.Qualifier == "08"}.TextMessage.text();
-					SearchQuery q = productsearcher.createSearchQuery();
-					q.addExact("manufacturersku", vendorCode);
-					if(distributorData != null){
-						q.addExact("distributor", distributorData.getId());
-					}
-					HitTracker hits = productsearcher.search(q);
 					Product product = null;
-					if (hits.size() == 0){
-						invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
-					} else if (hits.size() == 1){
-						Data hit = hits.get(0);
-						product = productsearcher.searchById(hit.id);
-						invoiceitem.setProperty("productid", hit.id);
-					} else {
-//						Data hit = hits.get(0);
-//						product = productsearcher.searchById(hit.id);
-//						invoiceitem.setProperty("productid", hit.id);
-//						invoiceitem.setProperty("notes", "Found multiple matches for this product.  Used first.");
-						
-						CartItem cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode);
+					CartItem cartItem = null;
+					if (order!=null){
+						cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode);
 						if (cartItem!=null){
 							product = cartItem.getProduct();
 							invoiceitem.setProperty("productid",product.getId());
@@ -178,6 +162,33 @@ public void doImport() {
 							invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
 						}
 					}
+					//old way
+//					SearchQuery q = productsearcher.createSearchQuery();
+//					q.addExact("manufacturersku", vendorCode);
+//					if(distributorData != null){
+//						q.addExact("distributor", distributorData.getId());
+//					}
+//					HitTracker hits = productsearcher.search(q);
+//					if (hits.size() == 0){
+//						invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
+//					} else if (hits.size() == 1){
+//						Data hit = hits.get(0);
+//						product = productsearcher.searchById(hit.id);
+//						invoiceitem.setProperty("productid", hit.id);
+//					} else {
+//						Data hit = hits.get(0);
+//						product = productsearcher.searchById(hit.id);
+//						invoiceitem.setProperty("productid", hit.id);
+//						invoiceitem.setProperty("notes", "Found multiple matches for this product.  Used first.");
+//						
+//						CartItem cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode);
+//						if (cartItem!=null){
+//							product = cartItem.getProduct();
+//							invoiceitem.setProperty("productid",product.getId());
+//						} else {
+//							invoiceitem.setProperty("notes", "Could not find product : ${vendorCode}");
+//						}
+//					}
 					
 					String itemamount = it.Attributes.TblAmount.find {it.Qualifier == "LI"}.Amount.text()
 					invoiceitem.setProperty("price", it.ExtendedAmount.text());
@@ -188,7 +199,7 @@ public void doImport() {
 					//Check to see if we need to handle shipping
 					if(shipment != null){
 						if (product!=null){
-							CartItem cartItem = order.getCartItemByProductID(product.getId());
+//							CartItem cartItem = order.getCartItemByProductID(product.getId());
 							if (cartItem!=null && cartItem.getSku()!=null){
 								ShipmentEntry entry = new ShipmentEntry();
 								entry.setCartItem(cartItem);
