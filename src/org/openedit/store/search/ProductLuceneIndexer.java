@@ -481,6 +481,19 @@ public class ProductLuceneIndexer {
 				populatePermission(inDoc, inProduct, det.getId());
 
 			}
+			
+			else if (det.isList() && det.isSortable()){
+				String listcatalogid = det.getListCatalogId();
+				String listid = det.getListId();
+				String remoteid = inProduct.get(det.getId());
+				if (remoteid!=null){
+					Data remote = getSearcherManager().getData(listcatalogid, listid, remoteid);
+					if (remote!=null){
+						inDoc.add(new Field(det.getId() + "_sorted",	remote.getName(), Field.Store.YES, 
+								Field.Index.NOT_ANALYZED_NO_NORMS));
+					}
+				}
+			}
 		}
 
 	}

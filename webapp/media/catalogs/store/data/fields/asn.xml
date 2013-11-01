@@ -1,0 +1,17 @@
+
+<properties prefix="asns" beanname="dataSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="asn" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" searchtype="asn" internalfield="false">Name</property>
+  <property id="sourcepath" searchtype="asn">SourcePath</property>
+  <property id="processdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="datetime" searchtype="asn" internalfield="false" datatype="date">Process Date</property>
+  <property id="shippingdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="asn" internalfield="false" datatype="date">Shipping Date</property>
+  <property id="waybill" index="true" stored="true" editable="true" searchtype="asn">Waybill</property>
+  <property id="carrier" index="true" stored="true" editable="true" searchtype="asn">Carrier</property>
+  <property id="purchaseorder" index="true" stored="true" editable="true" searchtype="asn">Purchase Order</property>
+  <property id="vendorcode" index="true" stored="true" editable="true" searchtype="asn">Vendor Code</property>
+  <property id="quantity" index="true" stored="true" editable="true" searchtype="asn">Quantity</property>
+  <property id="notes" index="true" stored="true" editable="true" viewtype="html" searchtype="asn" internalfield="false">Notes</property>
+  <property id="asnfile" index="true" stored="true" editable="true" searchtype="asn">ASN File</property>
+  <property id="distributor" index="true" stored="true" editable="true" searchtype="asn">Distributor</property>
+  <property id="asnstatus" index="true" stored="true" editable="true" type="list" searchtype="asn" internalfield="false" datatype="list">Status</property>
+</properties>
