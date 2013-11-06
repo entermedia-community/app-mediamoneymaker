@@ -38,14 +38,15 @@ public void init(){
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Store store = context.getPageValue("store");
 	//check for new asn processing entries
-	Date date = new Date();
-	date.setTime(System.currentTimeMillis() - (48*60*60*1000));//2 days ago
+//	Date date = new Date();
+//	date.setTime(System.currentTimeMillis() - (48*60*60*1000));//2 days ago
 	SearcherManager sm = archive.getSearcherManager();
 	String catalogid = archive.getCatalogId();
 	Searcher searcher = sm.getSearcher(catalogid, "asn");
-	SearchQuery query = searcher.createSearchQuery();
-	query.addAfter("processdate", date);
-	HitTracker hits = searcher.search(query);
+//	SearchQuery query = searcher.createSearchQuery();
+//	query.addAfter("processdate", date);
+//	HitTracker hits = searcher.search(query);
+	HitTracker hits = searcher.getAllHits();
 	if (!hits.isEmpty()){
 		context.putPageValue("hits",hits);
 	}
