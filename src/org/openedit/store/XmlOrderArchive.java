@@ -274,7 +274,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						.iterator(); iterator3.hasNext();) {
 					ShipmentEntry entry = (ShipmentEntry) iterator3.next();
 					Element shipEntry = shipElem.addElement("shipping-entry");
-					shipEntry.addAttribute("sku", entry.getItem().getSku());
+//					shipEntry.addAttribute("sku", entry.getItem().getSku());
+					shipEntry.addAttribute("sku", entry.getSku());
 					shipEntry.addAttribute("quantity",
 							String.valueOf(entry.getQuantity()));
 					for (Iterator iterator4 = entry.getProperties().keySet()
@@ -826,12 +827,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					ShipmentEntry entry = new ShipmentEntry();
 					String sku = details.attributeValue("sku");
 					String quantity = details.attributeValue("quantity");
-					entry.setCartItem(inOrder.getItem(sku));
+//					entry.setCartItem(inOrder.getItem(sku));
+					entry.setSku(sku);
 					
 					entry.setQuantity(Integer.parseInt(quantity));
 					shipment.addEntry(entry);
 				}
 				inOrder.addShipment(shipment);
+				
+				
 			}
 			
 		}

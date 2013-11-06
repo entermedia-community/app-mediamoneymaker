@@ -423,7 +423,8 @@ public class Order extends BaseData implements Comparable {
 			for (Iterator iterator2 = shipment.getShipmentEntries().iterator(); iterator2
 					.hasNext();) {
 				ShipmentEntry entry = (ShipmentEntry) iterator2.next();
-				if (entry.getItem().equals(inItem)) {
+//				if (entry.getItem().equals(inItem)) {
+				if (entry.getSku().equals(inItem.getSku())) {
 					total += entry.getQuantity();
 				}
 			}

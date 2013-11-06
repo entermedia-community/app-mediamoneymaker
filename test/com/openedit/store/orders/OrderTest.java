@@ -247,13 +247,14 @@ public class OrderTest extends StoreTestCase {
 		Shipment shipment = new Shipment();
 		shipment.setProperty("TESTPROPERTIES", "IAN");
 		ShipmentEntry entry1 = new ShipmentEntry();
-		entry1.setCartItem(item);
+//		entry1.setCartItem(item);
+		entry1.setSku(item.getSku());
 		entry1.setQuantity(5);
 		
 		shipment.addEntry(entry1);
 
 		ShipmentEntry entry2 = new ShipmentEntry();
-		entry2.setCartItem(item2);
+		entry2.setSku(item2.getSku());
 		entry2.setQuantity(10);
 		
 		shipment.addEntry(entry2);
@@ -268,7 +269,7 @@ public class OrderTest extends StoreTestCase {
 		Shipment shipment2 = new Shipment();
 		
 		ShipmentEntry entry3 = new ShipmentEntry();
-		entry3.setCartItem(item);
+		entry3.setSku(item.getSku());
 		entry3.setQuantity(5);
 		shipment2.addEntry(entry3);
 		

@@ -1,12 +1,13 @@
 package org.openedit.store.orders;
 
 import org.openedit.data.BaseData;
-import org.openedit.store.CartItem;
+//import org.openedit.store.CartItem;
 
 public class ShipmentEntry extends BaseData{
 
 	protected int quantity;
-	protected CartItem cartItem;
+	protected String sku;
+//	protected CartItem cartItem;
 	
 	
 	public int getQuantity() {
@@ -16,15 +17,22 @@ public class ShipmentEntry extends BaseData{
 		quantity = inQuantity;
 	}
 	
-	public CartItem getItem() {
-		if (cartItem == null) {
-			cartItem = new CartItem();
-		}
-		return cartItem;
+	public String getSku(){
+		return sku;
 	}
-	public void setCartItem(CartItem inCartItem) {
-		cartItem = inCartItem;
+	public void setSku(String sku){
+		this.sku = sku;
 	}
+	
+//	public CartItem getItem() {
+//		if (cartItem == null) {
+//			cartItem = new CartItem();
+//		}
+//		return cartItem;
+//	}
+//	public void setCartItem(CartItem inCartItem) {
+//		cartItem = inCartItem;
+//	}
 	
 	
 }
