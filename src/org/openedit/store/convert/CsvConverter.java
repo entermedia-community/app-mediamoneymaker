@@ -47,7 +47,7 @@ public class CsvConverter extends CatalogConverter
 				boolean done = false;
 
 				BufferedReader in = new BufferedReader(reader);
-				String[] headers = in.readLine().split("\t");
+				String[] headers = in.readLine().split(",");
 				String line = null;
 				int rowNum = 0;
 				Product product = null;
@@ -55,7 +55,7 @@ public class CsvConverter extends CatalogConverter
 				while( (line = in.readLine() ) != null)
 				{
 					rowNum++;
-					String[] tabs = line.split("\t");
+					String[] tabs = line.split(",");
 					
 					String skuCell = tabs[SKU_CELL];
 					if (skuCell == null || skuCell.length() == 0)
@@ -113,7 +113,7 @@ public class CsvConverter extends CatalogConverter
 			String retail = inTabs[RETAILPRICE_CELL];
 			String yourPrice = inTabs[YOURPRICE_CELL];
 			
-			if ( yourPrice != null)
+			if ( yourPrice != null && yourPrice.trim().length() > 0)
 			{
 				Price price = new Price();
 				if(retail != null && retail.trim().length() > 0){

@@ -138,7 +138,7 @@
        <bean id="directPaymentProcessor" class="org.openedit.cart.paypal.DirectPaymentsProcessor">
          <property name="userManager"><ref bean="userManager" /></property>     
   </bean>   
-  <bean id="catalogImportConverter" class="org.openedit.store.convert.CompositeConverter" >
+  <bean id="storeCatalogImportConverter" class="org.openedit.store.convert.CompositeConverter" >
   	<property name="moduleManager"><ref bean="moduleManager"/></property>
   	
 	<property name="catalogConverters">

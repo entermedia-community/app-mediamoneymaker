@@ -496,7 +496,7 @@ public class Store {
 	{
 		if( fieldImportConverter == null)
 		{
-			fieldImportConverter = (CatalogConverter)getModuleManager().getBean(getCatalogId(),"catalogImportConverter");
+			fieldImportConverter = (CatalogConverter)getModuleManager().getBean(getCatalogId(),"storeCatalogImportConverter");
 		}
 		return fieldImportConverter;
 	}
