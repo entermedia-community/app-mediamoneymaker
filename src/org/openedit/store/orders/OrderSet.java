@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -15,6 +13,7 @@ import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
+import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Customer;
 
 import com.openedit.OpenEditException;
@@ -119,14 +118,9 @@ public class OrderSet {
 	public int getQuantityForProduct(Product product){
 		//loop over all orders and total up number request.
 		int qty = 0;
-		for (Iterator<Order> iterator = getOrders().iterator(); iterator.hasNext();) {
-			Order order = iterator.next();
-			for (Iterator<CartItem> items = order.getItems().iterator(); items.hasNext();) {
-				CartItem item = items.next();
-				if (item.getProduct().equals(product)) {
-					qty += item.getQuantity();
-				}
-			}
+		for (Object orderObject : getOrders()) {
+			Order order = (Order) orderObject;
+			qty = getQuantityForProductInOrder(order, product);
 		}
 		return qty;
 	}
@@ -138,8 +132,8 @@ public class OrderSet {
 	
 	public int getQuantityForProductInOrder(Order inOrder, Product inProduct) {
 		int qty = 0;
-		for (Iterator<CartItem> items = inOrder.getItems().iterator(); items.hasNext();) {
-			CartItem item = items.next();
+		for (Object cartItemObject : inOrder.getCart().getItems()) {
+			CartItem item = (CartItem) cartItemObject;
 			if (item.getProduct().equals(inProduct)) {
 				qty += item.getQuantity();
 			}
@@ -149,11 +143,12 @@ public class OrderSet {
 
 	public Set<String> getOutOfStockOrders(){
 		Set<String> problemorders = new TreeSet<String>();
-		for (Iterator<Order> iterator = getOrders().iterator(); iterator.hasNext();) {
-			Order order = iterator.next();
-			for (Iterator<CartItem> iterator2 = order.getItems().iterator(); iterator2.hasNext();) {
-				CartItem item = iterator2.next();
-				if(!item.getProduct().isInStock()){
+		for (Object orderObject : getOrders()) {
+			Order order = (Order) orderObject;
+			Cart cart = order.getCart();
+			for (Object item : cart.getItems()) {
+				CartItem cartItem = (CartItem) item;
+				if(!cartItem.getProduct().isInStock()){
 					problemorders.add(order.getId());	
 					continue;
 				}
@@ -164,15 +159,16 @@ public class OrderSet {
 	
 	public Set<String> getOutOfStockPerOrder(Order inOrder) {
 		Set<String> badProducts = new TreeSet<String>();
-		for (Iterator<CartItem> iterator2 = inOrder.getItems().iterator(); iterator2.hasNext();) {
-			CartItem item = iterator2.next();
-			Product product = item.getProduct();
+		Cart cart = inOrder.getCart();
+		for (Object item : cart.getItems()) {
+			CartItem cartItem = (CartItem) item;
+			Product product = cartItem.getProduct();
 			if(!product.isInStock()){
 				badProducts.add(product.getId());
 				continue;
 			}
 			int totalrequested = getQuantityForProduct(product);
-			if(totalrequested > item.getInventoryItem().getQuantityInStock()){
+			if(totalrequested > cartItem.getInventoryItem().getQuantityInStock()){
 				badProducts.add(product.getId());
 			}
 		}
@@ -181,8 +177,8 @@ public class OrderSet {
 	
 	public Set<String> getAllOutOfStockProductsFromAllOrders() {
 		Set<String> badProducts = new TreeSet<String>();
-		for (Iterator<Order> orderIterator = getOrders().iterator(); orderIterator.hasNext();) {
-			Order order = (Order) orderIterator.next();
+		for (Object orderObject : getOrders()) {
+			Order order = (Order) orderObject;
 			badProducts.addAll(getOutOfStockPerOrder(order));
 		}
 		return badProducts;
@@ -192,10 +188,14 @@ public class OrderSet {
 		return (getOutOfStockPerOrder(inOrder).size() > 0);
 	}
 	
+	public boolean doesOrderSetHaveOutOfStockProducts() {
+		return (getOutOfStockOrders().size() > 0);
+	}
+	
 	public Set<String> getAllBadProducts() {
 		Set<String> badProducts = new TreeSet<String>();
-		for (Iterator<Order> iterator = getOrders().iterator(); iterator.hasNext();) {
-			Order order = iterator.next();
+		for (Object orderObject : getOrders()) {
+			Order order = (Order) orderObject;
 			for(String badProduct : getBadProductsPerOrder(order)) {
 				badProducts.add(badProduct);
 			}
@@ -216,15 +216,11 @@ public class OrderSet {
 	}
 	
 	public void recalculateOrder( Order inOrder, Store store ) {
-		if (inOrder.getNumItems() > 0) {
-			Cart cart = inOrder.getCart();
-			cart.setStore(store);
-			cart.setItems(inOrder.getItems());
+		Cart cart = inOrder.getCart();
+		if (cart.getItems().size() > 0) {
 			inOrder.setSubTotal(cart.getSubTotal());
 	
 			Customer customer = inOrder.getCustomer();
-			cart.setCustomer(customer);
-
 			if (customer.getShippingAddress().getState().equals("NF")) {
 				customer.getShippingAddress().setState("NL");
 			}
@@ -232,17 +228,18 @@ public class OrderSet {
 				customer.getBillingAddress().setState("NL");
 			}
 	
-			List taxrates = cart.getStore().getTaxRatesFor(
-					customer.getShippingAddress().getState());
-			if (customer.getShippingAddress().getState() == null) {
-				taxrates = cart.getStore().getTaxRatesFor(
-						customer.getBillingAddress().getState());
+			String state = customer.getShippingAddress().getState(); 
+			List<TaxRate> taxrates = store.getTaxRatesFor(state);
+			if (state == null) {
+				String billingState = customer.getBillingAddress().getState();
+				taxrates = cart.getStore().getTaxRatesFor(billingState);
 			}
 			
 			if (taxrates == null || taxrates.size()==0) {
 				throw new OpenEditException("Taxrates is null");
 			}
 			customer.setTaxRates(taxrates);
+			cart.setCustomer(customer);
 			inOrder.setCustomer(customer);
 			inOrder.setTaxes(cart.getTaxes());
 			
@@ -255,36 +252,101 @@ public class OrderSet {
 			inOrder.setTotalTax(cart.getTotalTax());
 			inOrder.setSubTotal(cart.getSubTotal());
 			inOrder.setTotalPrice(cart.getTotalPrice());
+			store.saveOrder(inOrder);
 		} else {
 			System.out.println("Order skipped. No Cart Items");
 		}
 	}
 	
 	public void recalculateAll( Store store ) {
-		for (Iterator<Order> iterator = getOrders().iterator(); iterator.hasNext();) {
-			Order order = (Order) iterator.next();
-			if (order.getItems().size() > 0) {
+		for (Object object : getOrders()) {
+			Order order = (Order) object;
+			Cart cart = order.getCart();
+			if (cart.getItems().size() > 0) {
 				recalculateOrder(order, store);
 			}
 		}
-		removeEmptyOrders();
+		removeEmptyOrders(store);
 	}
-	public void removeEmptyOrders() {
-		List<Order> removeOrders = new ArrayList<Order>();
-		for (Iterator<Order> iterator = getOrders().iterator(); iterator.hasNext();) {
-			Order order = iterator.next();
-			if (order.getItems().size() == 0) {
-				removeOrders.add(order);
+	
+	public void removeEmptyOrders(Store store) {
+		List<Order> ordersToRemove = new ArrayList<Order>();
+		for (Object orderObject : getOrders()) {
+			Order order = (Order) orderObject;
+			Cart cart = order.getCart();
+			List<CartItem> removeItemList = new ArrayList<CartItem>();
+			for (Object cartItemObject : cart.getItems()) {
+				CartItem item = (CartItem) cartItemObject;
+				if (item.getQuantity() == 0) {
+					removeItemList.add(item);
+				}
+			}
+			if (removeItemList.size() > 0) {
+				for (CartItem item : removeItemList) {
+					cart.getItems().remove(item);
+				}
+			}
+			if (cart.getItems().size() == 0) {
 				addRemovedOrder(order);
-				continue;
+				ordersToRemove.add(order);
 			}
 		}
-		if (removeOrders.size() > 0) {
-			for (Iterator<Order> iterator = removeOrders.iterator(); iterator.hasNext();) {
-				Order order = (Order) iterator.next();
-				System.out.println("Order #" + order.getId() + " removed from OrderSet (no items) ");
-				getOrders().remove(order);
+		if (ordersToRemove.size() > 0) {
+			for (Order orderObject : ordersToRemove) {
+				getOrders().remove(orderObject);
 			}
 		}
 	}
+	
+	public void removeOutOfStockItemsFromOrder( Order inOrder, Store store ) {
+		Cart cart = inOrder.getCart();
+		List<CartItem> outOfStockItems = new ArrayList<CartItem>();
+		for (Object object : cart.getItems()) {
+			CartItem item = (CartItem) object;
+			if (getQuantityInStock(item.getProduct()) == 0) {
+				outOfStockItems.add(item);
+			}
+		}
+		if (outOfStockItems.size() > 0) {
+			for (Object item : outOfStockItems) {
+				CartItem cartItem = (CartItem) item;
+				removeItemFromOrder(cartItem.getProduct().getId(), inOrder, store);
+			}
+		}
+	}
+	
+	public void removeItemFromAllOrders( String inProduct, Store store ) {
+		for (Object object : getOrders()) {
+			Order order = (Order) object;
+			if (order != null) {
+				removeItemFromOrder(inProduct, order, store);
+			}
+		}
+		recalculateAll(store);
+	}
+	
+	public void removeItemFromOrders(String inProduct, List<String> orders, Store store) {
+		for (String orderID : orders) {
+			Order order = getOrder(orderID);
+			removeItemFromOrder(inProduct, order, store);
+		}
+	}
+	
+	public void removeItemFromOrder( String inProduct, Order inOrder, Store store ) {
+		Cart cart = inOrder.getCart();
+		Product product = cart.findProduct(inProduct);
+		if (product != null) {
+			if (inOrder.containsProduct(product)) {
+				for ( Object item : cart.getItems()) {
+					CartItem cartItem = (CartItem) item;
+					if (cartItem.getProduct().getId().equals(inProduct)) {
+						cart.getItems().remove(cartItem);
+						store.saveOrder(inOrder);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 }

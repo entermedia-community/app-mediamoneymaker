@@ -296,10 +296,6 @@ public class OrderTest extends StoreTestCase {
 		
 	}
 	
-	
-	
-	
-	
 	public void xtestOrderRefunds() throws Exception {
 		Store store = getStore();
 		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
@@ -369,7 +365,5 @@ public class OrderTest extends StoreTestCase {
 		
 		
 	}
-	
-	
 	
 }
