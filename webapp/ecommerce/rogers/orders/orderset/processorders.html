@@ -1,4 +1,10 @@
 #set($orderlist = $context.getPageValue("orderlist"))
+#set($batchsearcher = $searcherManager.getSearcher($catalogid, "as400"))
+#set($batch = $batchsearcher.searchById($id))
+#set($batchid = $batch.get("batchid"))
+#set($batchname = $batch.get("name"))
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "storeOrder"))
+#set($storesearcher = $searcherManager.getSearcher($catalogid, "rogersstore"))
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Rogers Corporate Orders</div>
 	<div class="ui-widget-content">
@@ -8,14 +14,23 @@
 			<tr>
 				<th style="padding: 3px;">View</th>
 				<th style="padding: 3px;">Order ID</th>
+				<th style="padding: 3px;">Store</th>
+				<th style="padding: 3px;">Total</th>
 			</tr>
-		#foreach($order in $orderlist)
+		#foreach($orderid in $orderlist)
+			#set($order = $ordersearcher.searchById($orderid))
+			#set($customerid = $order.getCustomer().getId())
+			#set($id = $customerid.split("-"))
+			#set($storeid = $id.get(1))
+			#set($rogersstore = $storesearcher.searchById($storeid))
 			<tr>
 				<td style="padding: 3px;">
-					<a href="$home$apphome/views/myaccount/storeorders/view/index.html?id=${order}" target="_blank"><img 
+					<a href="$home$apphome/views/myaccount/storeorders/view/index.html?id=${orderid}" target="_blank"><img 
 					src="$home$apphome/theme/images/y-button.png"/></a>
 				</td>
-				<td style="padding: 3px; margin-top: 3px;">$order</td>
+				<td style="padding: 3px; margin-top: 3px;">$orderid</td>
+				<td style="padding: 3px; margin-top: 3px;">$rogersstore.get("name")</td>
+				<td style="padding: 3px; margin-top: 3px;">$order.getTotalPrice()</td>
 			</tr>
 		#end
 		</table>
