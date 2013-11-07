@@ -1298,10 +1298,10 @@ public class Store {
 
 
 
-	public List getTaxRatesFor(String inState) {
-		ArrayList list = new ArrayList();
-		for (Iterator iterator = getTaxRates().iterator(); iterator.hasNext();) {
-			TaxRate rate = (TaxRate) iterator.next();
+	public List<TaxRate> getTaxRatesFor(String inState) {
+		ArrayList<TaxRate> list = new ArrayList<TaxRate>();
+		for (Object rateObject : getTaxRates()) {
+			TaxRate rate = (TaxRate) rateObject;
 			if(rate.getState().equalsIgnoreCase(inState)){
 				list.add(rate);
 			}
