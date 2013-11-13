@@ -439,7 +439,7 @@ public class ProductLuceneIndexer {
 									Field.Store.YES,
 									Field.Index.NOT_ANALYZED_NO_NORMS));
 						} catch (Exception ex) {
-							log.error("Problem parsing date: "
+							log.error("Problem parsing date (input="+date+"): "
 									+ ex.getMessage());
 						}
 					}
