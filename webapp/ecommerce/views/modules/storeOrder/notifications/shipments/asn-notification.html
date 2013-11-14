@@ -1,4 +1,7 @@
-#if($hits)
+#set($asnsearcher = $mediaarchive.getSearcherManager().getSearcher($catalogid, "asn"))
+#set($hits = $asnsearcher.getAllHits())
+
+#if($hits.isEmpty() == false)
 
 <h1>ASN Notifications</h1>
 <p>Errors found in ASN files.</p>
@@ -11,7 +14,7 @@
 <table width="98%" id="main-results-table" class="emselectable striped download-table emdata">
 	<tbody>
 		<tr id="tableheader">
-			<!-- <th>Processed Date</th> -->
+			<th>Processed Date</th>
 		    <th>Shipping Date</th>
 		    <th>Waybill</th>
 		    <th>Carrier</th>
@@ -38,7 +41,7 @@
 	 		#set($product = $productsearcher.searchByField("manufacturersku", "${hit.vendorcode}"))
 	 		#set($status = $asnstatussearcher.searchByField("id", "${hit.asnstatus}"))
  		<tr class="$classname">
- 			<!-- <td>$!hit.processdate</td> -->
+ 			<td>$context.getDateTime($!hit.processdate)</td>
  			<td>$context.getDate($hit.shippingdate)</td>
  			<td>$!hit.waybill</td>
  			<td>$!hit.carrier</td>

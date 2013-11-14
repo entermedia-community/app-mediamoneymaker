@@ -47,13 +47,13 @@ public void init(){
 //	query.addAfter("processdate", date);
 //	HitTracker hits = searcher.search(query);
 	HitTracker hits = searcher.getAllHits();
-	if (!hits.isEmpty()){
-		context.putPageValue("hits",hits);
-	}
-	String send = context.findValue("sendemail");
-	if ("true".equalsIgnoreCase(send)){
-		
-	}
+//	if (!hits.isEmpty()){
+//		context.putPageValue("hits",hits);
+//	}
+//	String send = context.findValue("sendemail");
+//	if ("true".equalsIgnoreCase(send)){
+//		
+//	}
 }
 
 init();
