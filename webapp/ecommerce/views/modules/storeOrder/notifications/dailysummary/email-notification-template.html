@@ -48,11 +48,37 @@
 	#end
 </table>
 
-#if($hits)
+#set($searchermanager = $mediaarchive.getSearcherManager())
+#set($searcher = $searchermanager.getSearcher("$catalogid","distributor"))
+#set($query = $searcher.createSearchQuery()) ### don't want all hits
+#set($null = $query.append("name","*"))
+#set($null = $query.appendNot("id","area")) ### omit area from results
+#set($null = $query.setAndTogether(true))
+#set($null = $query.addSortBy("name"))
+#set($distributors = $searcher.search($query))
 
-	#set($searchermanager = $mediaarchive.getSearcherManager())
-	#set($searcher = $searchermanager.getSearcher("$catalogid","distributor"))
-	
+<br/>
+<h3>Distributor Summary</h3>
+
+<p>The following displays the last time an inventory file was imported to the system for each distributor.</p>
+
+<table cellspacing="1" cellpadding="3" border="2">
+	<thead style="background: linear-gradient(to bottom, #FF3019 0%, #CC0000 100%) repeat scroll 0 0 transparent; color: #ffffff; border-radius: 5px 5px 0 0; font-size: 13px;font-weight: bold;padding: 5px 0 5px 14px;font-family: 'helvetica neue',helvetica,arial,sans-serif;line-height: 1.231;">
+		<tr>
+			<th align="center" nowrap>Distributor</th>
+			<th align="center" nowrap>Inventory File Processed</th>
+		</tr>
+	</thead>
+	#foreach($distributor in $distributors)
+	<tr style="background-color:#fff5ee;">
+		<td align="left"><p>$!distributor.name</p></td>
+		<td align="center"><p>$!context.getDateTime($distributor.lastinventoryupdate)</p></td>
+	</tr>
+	#end
+</table>
+
+
+#if($hits)
 	<br>
 	<h3>Product Summary</h3>
 	<p>The following is a list of active products with inventory items that have not been updated within the past 48 hours.</p>
