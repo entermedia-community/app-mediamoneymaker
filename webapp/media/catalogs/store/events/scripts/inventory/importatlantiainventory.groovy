@@ -311,6 +311,7 @@ class RemotePathProcessor {
 					} else {
 						item.setQuantityInStock(quantity);
 					}
+					product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));//also update inventory updated field of product
 					return product;
 				}catch (Exception e){
 					log.error("Exception caught parsing inventory quantity update, ${inQuantity}, ${e.getMessage()}");
