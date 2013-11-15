@@ -20,4 +20,5 @@
   <property id="email" index="true" stored="true" editable="true" searchtype="distributor">Email</property>
   <property id="hstnumber" index="true" stored="true" editable="true" searchtype="distributor">HST Number</property>
   <property id="pstnumber" index="true" stored="true" editable="true">PST Number</property>
+  <property id="lastinventoryupdate" index="true" stored="true" sortable="true" editable="true" type="date" searchtype="distributor" datatype="date">Last Inventory Update</property>
 </properties>

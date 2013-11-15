@@ -21,6 +21,7 @@ import org.openedit.repository.ContentItem
 import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
+import org.openedit.util.DateStorageUtil;
 
 
 public void init(){
@@ -52,6 +53,7 @@ class RemotePathProcessor {
 	String incomingDirectory;
 	HashMap<String,HashMap<String,String>> map;
 	Downloader downloader;
+	boolean productsUpdated = false;
 	
 	public void setIncomingDirectory(String inIncomingDir){
 		incomingDirectory = inIncomingDir;
@@ -101,6 +103,14 @@ class RemotePathProcessor {
 		return url;
 	}
 	
+	public void setProductsUpdated(boolean inUpdate){
+		productsUpdated = inUpdate;
+	}
+	
+	public boolean isProductsUpdated(){
+		return productsUpdated;
+	}
+	
 	public void addContains(String inTag, String inAttribute, String inValue){
 		HashMap<String,String> attributeMap = null;
 		if (getMap().containsKey(inTag.toLowerCase())){
@@ -140,6 +150,7 @@ class RemotePathProcessor {
 		}catch (Exception e){
 			log.error("Exception caught processing ${getUrl()}, ${e.getMessage()}");
 		}
+		setLastInventoryUpdate();
 	}
 	
 	protected void downloadContent(String link) throws Exception {
@@ -266,6 +277,7 @@ class RemotePathProcessor {
 		}
 		if (!productsToUpdate.isEmpty()){
 			getStore().saveProducts(productsToUpdate);
+			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
 		getArchive().getPageManager().movePage(inPage, toPage);
@@ -310,6 +322,29 @@ class RemotePathProcessor {
 			log.info("Warning, unable to find product, UPC = ${inUpc}, Rogers Sku = ${inRogersSku}, Manufact Sku = ${inManufacturerSku}");
 		}
 		return null;
+	}
+	
+	public void setLastInventoryUpdate(){
+		if (!isProductsUpdated()){
+			log.info("No products were updated so Last Inventory Update will not be changed for Atlantia");
+			return;
+		}
+		log.info("Updating Last Inventory Update for Atlantia");
+		Searcher searcher = getArchive().getSearcherManager().getSearcher(getArchive().getCatalogId(), "distributor");
+		Data data = searcher.searchById("atlantia");
+		if (data == null){
+			data = searcher.searchByField("name", "Atlantia");
+		}
+		if (data == null){
+			data = searcher.searchByField("fullname", "Atlantia");
+		}
+		if (data!=null){
+			data.setProperty("lastinventoryupdate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			searcher.saveData(data, null);
+		} else {
+			log.info("Warning: Unable to find Atlantia in distributor table");
+		}
+		
 	}
 }
 
