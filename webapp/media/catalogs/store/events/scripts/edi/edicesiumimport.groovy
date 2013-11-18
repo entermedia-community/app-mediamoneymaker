@@ -471,7 +471,7 @@ public class EdiCesiumImport extends EnterMediaObject {
 												if (!order.containsShipmentByWaybill(waybill)) {
 													if (!shipment.containsEntryForSku(cartItem.getProduct().getInventoryItem(0).getSku()) && cartItem !=  null ) {
 														ShipmentEntry entry = new ShipmentEntry();
-														entry.setCartItem(cartItem);
+														entry.setSku(cartItem.getSku());
 														entry.setQuantity(Integer.parseInt(quantity));
 														shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
 														shipment.setProperty("waybill", waybill);
@@ -503,7 +503,7 @@ public class EdiCesiumImport extends EnterMediaObject {
 														int qtyShipped = Integer.parseInt(quantity);
 														if (qtyShipped <= (cartQty - totalShipped)) {
 															ShipmentEntry entry = new ShipmentEntry();
-															entry.setCartItem(cartItem);
+															entry.setSku(cartItem.getSku());
 															entry.setQuantity(Integer.parseInt(quantity));
 															shipment.setProperty("waybill", waybill);
 															shipment.setProperty("courier", "NOT PROVIDED");
@@ -535,7 +535,7 @@ public class EdiCesiumImport extends EnterMediaObject {
 													int qtyShipped = Integer.parseInt(quantity);
 													if (qtyShipped <= (cartQty - totalShipped)) {
 														ShipmentEntry entry = new ShipmentEntry();
-														entry.setCartItem(cartItem);
+														entry.setSku(cartItem.getSku());
 														entry.setQuantity(Integer.parseInt(quantity));
 														shipment.setProperty("waybill", waybill);
 														shipment.setProperty("courier", "NOT PROVIDED");

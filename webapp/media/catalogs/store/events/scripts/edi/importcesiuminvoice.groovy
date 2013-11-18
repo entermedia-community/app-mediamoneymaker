@@ -488,7 +488,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 														if (!order.containsShipmentByWaybill(waybill)) {
 															if (!shipment.containsEntryForSku(productInventory.getSku()) && item !=  null ) {
 																ShipmentEntry entry = new ShipmentEntry();
-																entry.setCartItem(item);
+																entry.setSku(item.getSku());
 																entry.setQuantity(Integer.parseInt(quantity));
 																entry.setProperty("waybill", waybill);
 																shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(newDate));
@@ -526,7 +526,7 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 															int qtyShipped = Integer.parseInt(quantity);
 															if (qtyShipped <= (cartQty - totalShipped)) {
 																ShipmentEntry entry = new ShipmentEntry();
-																entry.setCartItem(item);
+																entry.setSku(item.getSku());
 																entry.setQuantity(Integer.parseInt(quantity));
 																entry.setProperty("waybill", waybill);
 																shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().formatForStorage(dateShipped));

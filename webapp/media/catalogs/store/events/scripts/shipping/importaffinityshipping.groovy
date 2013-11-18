@@ -263,7 +263,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 						//Load the existing Shipment
 						Shipment existShipment = order.getShipmentByWaybill(waybill);
 						ShipmentEntry entry = new ShipmentEntry();
-						entry.setCartItem(item);
+						entry.setSku(item.getSku());
 						entry.setQuantity(qtyShipped);
 						existShipment.setProperty("distributor", distributor.getId());
 						existShipment.setProperty("courier", courier);
@@ -302,7 +302,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 				} else {
 					shipment = new Shipment(); 
 					ShipmentEntry entry = new ShipmentEntry();
-					entry.setCartItem(item);
+					entry.setSku(item.getSku());
 					entry.setQuantity(Integer.parseInt(quantity));
 					shipment.setProperty("distributor", distributor.getId());
 					shipment.setProperty("waybill", waybill);

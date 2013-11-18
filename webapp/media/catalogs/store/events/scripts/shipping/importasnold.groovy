@@ -244,7 +244,7 @@ public class ImportASN extends EnterMediaObject {
 											if (!order.containsShipmentByWaybill(waybill)) {
 												if (!shipment.containsEntryForSku(item.getSku()) && item !=  null ) {
 													ShipmentEntry entry = new ShipmentEntry();
-													entry.setCartItem(item);
+													entry.setSku(item.getSku());
 													entry.setQuantity(Integer.parseInt(quantityShipped));
 													shipment.setProperty("courier", carrier);
 													shipment.setProperty("waybill", waybill);
@@ -277,7 +277,7 @@ public class ImportASN extends EnterMediaObject {
 												for (Shipment eShipment in shipments) {
 													ArrayList<ShipmentEntry> entries = eShipment.getShipmentEntries();
 													for (ShipmentEntry eEntry in entries) {
-														if(eEntry.getItem().getSku() == item.getSku()) {
+														if(eEntry.getSku() == item.getSku()) {
 															totalShipped += eEntry.getQuantity();
 														}
 													}
@@ -287,7 +287,7 @@ public class ImportASN extends EnterMediaObject {
 												if (qtyShipped <= (cartQty - totalShipped)) {
 													foundFlag = true;
 													ShipmentEntry entry = new ShipmentEntry();
-													entry.setCartItem(item);
+													entry.setSku(item.getSku());
 													entry.setQuantity(qtyShipped);
 													shipment.setProperty("courier", carrier);
 													shipment.setProperty("waybill", waybill);
