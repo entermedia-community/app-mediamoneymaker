@@ -88,10 +88,16 @@ public void processProducts() {
 			}
 		}
 		productstosave.add(product);
+		if (productstosave.size() == 100){
+			store.saveProducts(productstosave);
+			productstosave.clear();
+			log.info("Saved 100 products");
+		}
 		
 	}
-	//store.saveProducts(productstosave);
-	store.getProductSearcher().saveAllData(productstosave, null);
+	store.saveProducts(productstosave);
+	log.info("Saved ${productstosave.size()} products");
+//	store.getProductSearcher().saveAllData(productstosave, null);
 	store.clearProducts();//forces products to be loaded from disc
 	updateWholesalePrices(store);
 	log.info("---- END Update Product Wholesale Price ----");
