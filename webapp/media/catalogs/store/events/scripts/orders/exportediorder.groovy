@@ -197,7 +197,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 					log.info(inMsg);
 				}
 			} else {
-				inMsg = "Order Passed (" + order.getId() + "): Status is rejected";
+				inMsg = "Order Passed (" + order.getId() + "): Status is " + orderStatus;
 				log.info(inMsg);
 			}
 		}
