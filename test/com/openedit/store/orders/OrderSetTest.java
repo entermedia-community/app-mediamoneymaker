@@ -539,6 +539,164 @@ public class OrderSetTest  extends StoreTestCase {
 		
 	}
 	
+	@Test
+	public void testOrderModuleRemoveItem() throws Exception {
+		
+		Store store = getStore();
+		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
+		OrderModule orderModule = (OrderModule) getFixture().getModuleManager().getModule("StoreOrderModule");
+		WebPageRequest context = getFixture().createPageRequest("/store/index.html");
+		Cart cart = cartModule.getCart(context);
+		cart.setCustomer(new Customer(context.getUser()));
+
+		Product product1 = setUpProduct("abcd", "abcd1", 10, 5.0);
+		store.saveProduct(product1);
+
+		Product product2 = setUpProduct("defg", "defg1", 10, 10.0);
+		store.saveProduct(product2);
+		
+		CustomerArchive archive = getStore().getCustomerArchive();
+		Customer customer = archive.createNewCustomer("1006","sdfdsf");
+		assertNotNull(customer);
+		customer.setFirstName("Bob");
+		customer.setLastName("Smith");
+		
+		customer.setShippingAddress(setupAddress1());
+		customer.setBillingAddress(setupAddress2());
+		
+		archive.saveCustomer(customer);
+		
+		OrderSet orderSet = new OrderSet();
+
+		CartItem item = new CartItem();
+		item.setProduct(product1);
+		item.setQuantity(1);
+		item.setStatus("accepted");
+		cart.addItem(item);
+
+		CartItem item2 = new CartItem();
+		item2.setProduct(product2);
+		item2.setQuantity(1);
+		item2.setStatus("accepted");
+		cart.addItem(item2);
+
+		Order order = store.getOrderGenerator().createNewOrder(store, cart);
+		order.setProperty("notes", "This is a note");
+		order.setId("test0001");
+		order.setCustomer(customer);
+		order.setCart(cart);
+		
+		orderSet.addOrder(order);
+		assertEquals(1, orderSet.getNumberOfOrders());
+		
+		context.putSessionValue("orderset", orderSet);
+		
+		orderSet = null;
+		orderModule.loadCurrentOrderSet(context);
+		orderSet = (OrderSet) context.getSessionValue("orderset");
+		assertEquals(1, orderSet.getNumberOfOrders());
+		
+		order = null;
+		order = orderSet.getOrder("test0001");
+		context.setRequestParameter("product", product2.getId());
+		orderModule.removeItem(context);
+		
+		orderModule.loadCurrentOrderSet(context);
+		order = null;
+		order = orderSet.getOrder("test0001");
+		Cart testCart = order.getCart();
+		assertEquals(1, testCart.getItems().size());
+		assertNull(testCart.getItemForProduct(product2.getId()));
+
+		//Add the item back into the order
+		CartItem item3 = new CartItem();
+		item3.setProduct(product2);
+		item3.setQuantity(1);
+		item3.setStatus("accepted");
+		testCart.addItem(item2);
+		order.addItem(item3);
+		assertEquals(2, testCart.getItems().size());
+		assertNotNull(testCart.getItemForProduct(product2.getId()));
+
+		context = getFixture().createPageRequest("/ecommerce/remove.html");
+		getFixture().getEngine().executePathActions(context);
+		
+	}
+
+	@Test
+	public void testOrderModuleWebRequests() throws Exception {
+		
+		Store store = getStore();
+		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
+		OrderModule orderModule = (OrderModule) getFixture().getModuleManager().getModule("StoreOrderModule");
+		WebPageRequest context = getFixture().createPageRequest("/store/index.html");
+		Cart cart = cartModule.getCart(context);
+		cart.setCustomer(new Customer(context.getUser()));
+
+		Product product1 = setUpProduct("abcd", "abcd1", 10, 5.0);
+		store.saveProduct(product1);
+
+		Product product2 = setUpProduct("defg", "defg1", 10, 10.0);
+		store.saveProduct(product2);
+		
+		CustomerArchive archive = getStore().getCustomerArchive();
+		Customer customer = archive.createNewCustomer("1006","sdfdsf");
+		assertNotNull(customer);
+		customer.setFirstName("Bob");
+		customer.setLastName("Smith");
+		
+		customer.setShippingAddress(setupAddress1());
+		customer.setBillingAddress(setupAddress2());
+		
+		archive.saveCustomer(customer);
+		
+		OrderSet orderSet = new OrderSet();
+
+		CartItem item = new CartItem();
+		item.setProduct(product1);
+		item.setQuantity(1);
+		item.setStatus("accepted");
+		cart.addItem(item);
+
+		CartItem item2 = new CartItem();
+		item2.setProduct(product2);
+		item2.setQuantity(1);
+		item2.setStatus("accepted");
+		cart.addItem(item2);
+
+		Order order = store.getOrderGenerator().createNewOrder(store, cart);
+		order.setProperty("notes", "This is a note");
+		order.setId("test0001");
+		order.setCustomer(customer);
+		order.setCart(cart);
+		
+		orderSet.addOrder(order);
+		assertEquals(1, orderSet.getNumberOfOrders());
+		
+		context.putSessionValue("orderset", orderSet);
+		
+		orderSet = null;
+		orderModule.loadCurrentOrderSet(context);
+		orderSet = (OrderSet) context.getSessionValue("orderset");
+		assertEquals(1, orderSet.getNumberOfOrders());
+		
+		order = null;
+		order = orderSet.getOrder("test0001");
+		context = (WebPageRequest) getFixture().createPageRequest("/ecommerce/rogers/orders/orderset/removeitem.html");
+		context.putSessionValue("orderset", orderSet);
+		context.setRequestParameter("product", product2.getId());
+		context.setRequestParameter("order", order.getId());
+		getFixture().getEngine().executePathActions(context);
+		
+		orderModule.loadCurrentOrderSet(context);
+		order = null;
+		order = orderSet.getOrder("test0001");
+		Cart testCart = order.getCart();
+		assertEquals(1, testCart.getItems().size());
+		assertNull(testCart.getItemForProduct(product2.getId()));
+		
+	}
+	
 	private Product setUpProduct(String inID, String inInventoryID, int inQtyInStock, double inPrice) {
 		Product product = new Product();
 		product.setId(inID);
