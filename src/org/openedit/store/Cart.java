@@ -390,6 +390,9 @@ public class Cart extends BaseData
 
 	public void addItem(CartItem inItem)
 	{
+		if(inItem.getYourPrice().isNegative()){
+			inItem.setQuantity(1);
+		}
 		if (inItem.getId() == null)
 		{
 			inItem.setId(nextId());
@@ -589,7 +592,7 @@ public class Cart extends BaseData
 	public Map getTaxes()
 	{
 		HashMap map = new HashMap();
-
+		
 		for (Iterator iterator = getCustomer().getTaxRates().iterator(); iterator.hasNext();)
 		{
 			TaxRate rate = (TaxRate) iterator.next();

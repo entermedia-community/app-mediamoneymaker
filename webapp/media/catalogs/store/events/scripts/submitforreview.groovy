@@ -107,9 +107,14 @@ public void handleSubmission(){
 	
 	//Create the new item
 	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
+	
 	Money money = new Money(product.get("rogersprice"));
-	money = money.multiply(1.1);
+	
 	Price price = new Price(money);
+	price.setWholesalePrice(money);
+	
+	money = money.multiply(1.1);
+	
 	PriceSupport pricing = new PriceSupport();
 	
 	if(product.clearancecentre == "true"){
