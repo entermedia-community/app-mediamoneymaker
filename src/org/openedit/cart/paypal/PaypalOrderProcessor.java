@@ -52,6 +52,7 @@ public class PaypalOrderProcessor extends BaseOrderProcessor implements OrderPro
 	public void processNewOrder( WebPageRequest inContext, Store inStore,
 		Order inOrder ) throws StoreException
 	{
+		
 		String usepaypal = inContext.getPageProperty("usepaypal");
 		if(Boolean.parseBoolean(usepaypal)){
 			try {
