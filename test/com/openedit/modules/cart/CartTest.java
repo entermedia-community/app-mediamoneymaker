@@ -100,7 +100,7 @@ public class CartTest extends StoreTestCase {
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
-		context.setRequestParameter("productid", "3");
+		context.setRequestParameter("productid", "2");
 		// context.setRequestParameter( "color", "red" );
 		// context.setRequestParameter( "size", "NB" );
 		cartModule.updateCart(context);
@@ -109,7 +109,7 @@ public class CartTest extends StoreTestCase {
 		assertNotNull(cart);
 		assertEquals(1, cart.getNumItems());
 
-		final String NOSIZE_ITEM_SKU = "abdefg";
+		final String NOSIZE_ITEM_SKU = "2001";
 
 		CartItem firstItem = (CartItem) cart.getItemIterator().next();
 		assertEquals(NOSIZE_ITEM_SKU, firstItem.getSku());
@@ -121,7 +121,7 @@ public class CartTest extends StoreTestCase {
 
 		// This should swap out the item
 		updatecontext.setRequestParameter("reloadcart", "true");
-		updatecontext.setRequestParameter("productid.1", "3");
+		updatecontext.setRequestParameter("productid.1", "2");
 		updatecontext.setRequestParameter("quantity.1", "5");
 		// context.setRequestParameter( "color.1", "black" );
 		// context.setRequestParameter( "size.1", "large" ); //change the size
@@ -147,7 +147,7 @@ public class CartTest extends StoreTestCase {
 		Store store = cartModule.getStore(context);
 		assertNotNull(store);
 
-		context.setRequestParameter("productid", "3");
+		context.setRequestParameter("productid", "2");
 		context
 				.setRequestParameter("option.specialrequest",
 						"My special order");
@@ -157,7 +157,7 @@ public class CartTest extends StoreTestCase {
 		assertNotNull(cart);
 		assertEquals(1, cart.getNumItems());
 
-		final String ITEM_SKU = "abdefg";
+		final String ITEM_SKU = "2001";
 
 		CartItem firstItem = (CartItem) cart.getItems().get(0);
 		assertEquals("My special order", firstItem.getOption("specialrequest")
@@ -171,7 +171,7 @@ public class CartTest extends StoreTestCase {
 		updatecontext.putSessionValue(store.getCatalogId() + "cart", cart);
 		updatecontext.setRequestParameter("reloadcart", "true");
 		// This should swap out the item
-		updatecontext.setRequestParameter("productid.1", "3");
+		updatecontext.setRequestParameter("productid.1", "2");
 		updatecontext.setRequestParameter("quantity.1", "5");
 		updatecontext.setRequestParameter("option.1.specialrequest",
 				"My special order");
