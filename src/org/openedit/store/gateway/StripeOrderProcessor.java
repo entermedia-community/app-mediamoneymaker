@@ -90,7 +90,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
 
-		Page page = getPageManager().getPage(inStore.getStoreHome() + "/configuration/stripe.xml");
+		Page page = getPageManager().getPage("/WEB-INF/data/" + inStore.getCatalogId() + "/configuration/stripe.xml");
 
 		if (page.exists())
 		{
@@ -127,13 +127,20 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		// load properties (e.g. IP address, username, password) for
 		// accessing authorize.net
 		// load customer address info from order (in case needed for AVS)
-		Page page = getPageManager().getPage(inStore.getStoreHome() + "/configuration/stripe.xml");
+		Page page = getPageManager().getPage("/WEB-INF/data/" + inStore.getCatalogId() + "/configuration/stripe.xml");
 		Element conf = getXmlUtil().getXml(page.getReader(), "UTF-8");
-
-		Stripe.apiKey = "sk_test_OtslXwuulKN03U7uK8PzWOSL";
-
+		String testkey = conf.element("testkey").getText();
+		String prodkey = conf.element("prodkey").getText();
+		if(inStore.isProductionMode()){
+			Stripe.apiKey = prodkey;
+		} else{
+			Stripe.apiKey = testkey;
+		}
+	
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
-		chargeParams.put("amount", 400);
+		String amountstring = inOrder.getTotalPrice().toShortString();
+		//.replaceAll(".", "").replaceAll("$", "");
+		chargeParams.put("amount", amountstring);
 		chargeParams.put("currency", "cad");
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained with
 																// Stripe.js
@@ -176,6 +183,6 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
-		getBeanstreamUtil().refund(inStore, inOrder, inRefund);
+	//	getBeanstreamUtil().refund(inStore, inOrder, inRefund);
 	}
 }

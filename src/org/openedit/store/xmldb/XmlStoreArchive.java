@@ -153,6 +153,19 @@ public class XmlStoreArchive implements StoreArchive
 		}
 		inStore.setHostName(hostName);
 		inStore.setName(rootElement.elementTextTrim("name"));
+		
+		String mode = rootElement.elementTextTrim("mode");
+		if(mode != null && !mode.equals("production")){
+			
+			inStore.setProductionMode(false);
+		} else{
+			inStore.setProductionMode(true);
+		}
+		
+		inStore.setName(rootElement.elementTextTrim("name"));
+		
+		
+		
 		Element coup = rootElement.element("coupons");
 		inStore.setCouponsAccepted(coup != null && "true".equals( coup.attributeValue("enabled")));
 		

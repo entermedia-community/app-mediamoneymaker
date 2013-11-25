@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import org.openedit.store.orders.OrderProcessor;
 import org.openedit.store.orders.OrderSearcher;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.process.ElectronicOrderManager;
-
 import org.openedit.store.search.ProductSearcher;
 import org.openedit.store.search.ProductSecurityArchive;
 import org.openedit.store.search.SearchFilterArchive;
@@ -88,6 +86,8 @@ public class Store {
 	protected OrderSearcher fieldOrderSearch;
 	protected OrderGenerator fieldOrderGenerator;
 	protected ProductExport fieldProductExport;
+
+
 	protected boolean fieldAssignShippingMethod;
 	protected boolean fieldAllowSpecialRequest;
 	protected boolean fieldCouponsAccepted;
@@ -97,6 +97,8 @@ public class Store {
 	protected boolean fieldAllowDuplicateAccounts;
 	protected boolean fieldAutoCapture;
 	protected boolean fieldUseSearchSecurity;
+	protected boolean fieldProductionMode;
+
 	protected ProductPathFinder fieldProductPathFinder;
 	protected Configuration fieldConfiguration;
 	protected XmlArchive fieldXmlArchive;
@@ -1308,5 +1310,16 @@ public class Store {
 		}
 		return list;
 	
+	}
+	
+	
+	public boolean isProductionMode()
+	{
+		return fieldProductionMode;
+	}
+
+	public void setProductionMode(boolean inProductionMode)
+	{
+		fieldProductionMode = inProductionMode;
 	}
 }
