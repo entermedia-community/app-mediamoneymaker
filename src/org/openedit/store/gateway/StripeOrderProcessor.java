@@ -139,7 +139,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 		String amountstring = inOrder.getTotalPrice().toShortString();
-		//.replaceAll(".", "").replaceAll("$", "");
+		amountstring = amountstring.replace(".", "").replace("$", "").replace(",", "");
 		chargeParams.put("amount", amountstring);
 		chargeParams.put("currency", "cad");
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained with

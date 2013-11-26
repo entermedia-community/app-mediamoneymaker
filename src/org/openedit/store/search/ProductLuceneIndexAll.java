@@ -27,7 +27,7 @@ public class ProductLuceneIndexAll extends ProductProcessor
 	{
 		if (fieldIndexFolders == null)
 		{
-			PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings("/" + getIndexer().getStore().getCatalogId() + "/products/");
+			PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings("/WEB-INF/data/" + getIndexer().getStore().getCatalogId() + "/products/");
 			String val = settings.getPropertyValue("indexfolders", null);
 			if (val != null && Boolean.valueOf(val).booleanValue())
 			{

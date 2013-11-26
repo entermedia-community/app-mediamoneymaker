@@ -492,7 +492,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		{
 			ProductLuceneIndexAll reindexer = new ProductLuceneIndexAll();
 			reindexer.setWriter(writer);
-			reindexer.setRootPath("/" + getCatalogId() + "/products/");
+			reindexer.setRootPath("/WEB-INF/data/" + getCatalogId() + "/products/");
 			reindexer.setPageManager(getPageManager());
 			reindexer.setProductArchive(getProductArchive());
 			reindexer.setIndexer(getIndexer());

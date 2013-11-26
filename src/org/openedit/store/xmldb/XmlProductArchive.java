@@ -181,7 +181,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		{
 			suffix = "";
 		}
-		String url = "/" + catalogId + "/products/" + sourcePath + suffix;
+		String url = "/WEB-INF/data/" + catalogId + "/products/" + sourcePath + suffix;
 		return url;
 	}
 	
@@ -200,7 +200,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		{
 			suffix = "_site.xconf";
 		}
-		String path = "/" + catalogId + "/products/" + inProduct.getSourcePath() + suffix;
+		String path = "/WEB-INF/data/" + catalogId + "/products/" + inProduct.getSourcePath() + suffix;
 		
 		return path;
 	}
@@ -1040,7 +1040,8 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		{
 			fieldIntCounter = new IntCounter();
 			fieldIntCounter.setLabelName("productIdCount");
-			File file = new File(getStore().getStoreDirectory(), "data/product.properties");
+			File file = new File("/WEB-INF/data/" + getStore().getCatalogId() +  "/products/product.properties");
+					
 			fieldIntCounter.setCounterFile(file);
 		}
 		return fieldIntCounter;
