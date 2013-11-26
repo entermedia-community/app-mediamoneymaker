@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <product id="test">
+    <item inventory="0">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <price quantity="1">
+        <retail>100.00</retail>
+      </price>
+    </item>
+  </product>
+</page>
