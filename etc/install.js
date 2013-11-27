@@ -28,6 +28,9 @@ files.deleteMatch( web + "/lib/openedit-money*.jar");
 files.deleteMatch( web + "/lib/openecho*.jar");
 files.deleteMatch( web + "/lib/money*.jar");
 files.deleteMatch( web + "/lib/bsh*.jar");
+files.deleteMatch( web + "/lib/gson*.jar");
+files.deleteMatch( web + "/lib/stripe*.jar");
+
 
 files.copyFileByMatch( tmp + "/WEB-INF/lib/app-mediamoney*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/poi*.jar", web + "/lib/");
@@ -35,6 +38,9 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/jcsAnet*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/openecho*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/openedit-money*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/bsh*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/gson*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/stripe*.jar", web + "/lib/");
+
 
 log.add("5. UPGRADE CART FILES");
 files.deleteAll( root + "/WEB-INF/base/store");
