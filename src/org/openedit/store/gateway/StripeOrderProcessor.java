@@ -57,15 +57,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public BeanstreamUtil getBeanstreamUtil()
-	{
-		return fieldBeanstreamUtil;
-	}
-
-	public void setBeanstreamUtil(BeanstreamUtil inBeanstreamUtil)
-	{
-		fieldBeanstreamUtil = inBeanstreamUtil;
-	}
+	
 
 	public UserManager getUserManager()
 	{
@@ -89,13 +81,10 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
-
-		Page page = getPageManager().getPage("/WEB-INF/data/" + inStore.getCatalogId() + "/configuration/stripe.xml");
-
-		if (page.exists())
-		{
-			return inOrder.getPaymentMethod().requiresValidation();
+		if(inStore.get("gateway").equals("stripe")){
+			return true;
 		}
+		
 		return false;
 	}
 
@@ -127,14 +116,13 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		// load properties (e.g. IP address, username, password) for
 		// accessing authorize.net
 		// load customer address info from order (in case needed for AVS)
-		Page page = getPageManager().getPage("/WEB-INF/data/" + inStore.getCatalogId() + "/configuration/stripe.xml");
-		Element conf = getXmlUtil().getXml(page.getReader(), "UTF-8");
-		String testkey = conf.element("testkey").getText();
-		String prodkey = conf.element("prodkey").getText();
+		
 		if(inStore.isProductionMode()){
-			Stripe.apiKey = prodkey;
+			Stripe.apiKey = inStore.get("secretkey");
 		} else{
-			Stripe.apiKey = testkey;
+			Stripe.apiKey = inStore.get("testsecretkey");
+
+
 		}
 	
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
@@ -143,9 +131,13 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		chargeParams.put("amount", amountstring);
 		chargeParams.put("currency", "cad");
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained with
-																// Stripe.js
-		chargeParams.put("description", "Charge for test@example.com");
-		// chargeParams.put("metadata", initialMetadata);
+		
+		// Stripe.js
+		HashMap initialMetadata = new HashMap();
+		initialMetadata.put("email", inOrder.getCustomer().getEmail());
+		
+		chargeParams.put("description",inOrder.getOrderNumber());
+		 chargeParams.put("metadata", initialMetadata);
 
 		try
 		{

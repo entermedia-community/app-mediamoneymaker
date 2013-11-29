@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
@@ -56,7 +58,7 @@ import com.openedit.web.Crumb;
  * @author cburkey
  * 
  */
-public class Store {
+public class Store extends BaseData {
 	protected File fieldRootDirectory;
 	protected File fieldStoreDirectory;
 	protected long fieldLastModified;
@@ -108,6 +110,7 @@ public class Store {
 	protected List fieldImageList;
 	protected PageManager fieldPageManager;
 	protected StoreMediaManager fieldStoreMediaManager;
+	protected HashMap fieldProperties;
 	
 	
 	
