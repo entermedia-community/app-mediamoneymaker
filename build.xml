@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="default" name="app-mediamoneymaker">
 
-  <target name="default" depends="clean,  source, update-dependencies, compile, junit, jar,  war"/>
+  <target name="default" depends="clean,  source, update-dependencies, compile,  jar,  war"/>
   <target name="dependency" depends="default"/>
    
     <property name="appname" value="${ant.project.name}"/>
