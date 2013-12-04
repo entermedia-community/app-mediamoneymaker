@@ -81,7 +81,8 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
-		if(inStore.get("gateway").equals("stripe")){
+		
+		if(inStore.get("gateway") != null && inStore.get("gateway").equals("stripe")){
 			return true;
 		}
 		

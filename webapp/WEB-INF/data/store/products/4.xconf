@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="virtual">true</property>
+  <product name="Coupons" id="4" ordering="4">
+    <item sku="4444" inventory="1000">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+    </item>
+    <category id="SEARCHME"/>
+    <category id="SEA_R,Ch-ME.txt"/>
+    <price quantity="1">
+      <retail>2.00</retail>
+    </price>
+  </product>
+</page>

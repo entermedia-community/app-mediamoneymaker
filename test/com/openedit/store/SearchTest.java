@@ -231,7 +231,7 @@ public class SearchTest extends StoreTestCase
 	 	//assertTrue(query.startsWith(q));
 	 }
  
-	 public void testFieldSearch() throws Exception
+	 public void xtestFieldSearch() throws Exception
 	 {
 		StoreSearchModule module = (StoreSearchModule)getStaticFixture().getModuleManager().getModule("StoreSearchModule");
 		WebPageRequest context = getStaticFixture().createPageRequest("/store/index.html");

@@ -40,10 +40,12 @@ public class CatalogEditTest extends StoreTestCase
 		Category blank = getStoreEditor().addNewCatalog( "GOODSTUFF","Some Good Stuff");
 		assertNotNull( blank );
 		getStoreEditor().saveCatalog( blank );
+		
 	}
 	
 	public void testExtraInfo() throws Exception
 	{
+		getStore().getProductSearcher().reIndexAll();
 		Category catalog = getStoreEditor().getCatalog("GOODSTUFF");
 		catalog.setDescription("This is a long description");
 		catalog.setProperty("includequickship",true);

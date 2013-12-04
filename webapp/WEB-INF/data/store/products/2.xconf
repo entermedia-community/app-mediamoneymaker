@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <product name="Quantity discount product" id="2" available="false">
+    <item sku="2001" inventory="1000">
+      <weight value="3.2"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <option id="color" name="Color" value="red"/>
+      <option id="size" name="Size" value="NB"/>
+    </item>
+    <item sku="2002" inventory="50">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <option id="color" name="Color" value="black"/>
+      <option id="size" name="Size" value="large"/>
+      <price quantity="1">20.00</price>
+      <price quantity="3">18.75</price>
+    </item>
+    <item sku="2003" inventory="50">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <option id="color" name="Color" value="red"/>
+      <option id="size" name="Size" value="1"/>
+    </item>
+    <item sku="2004" inventory="50">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <option id="color" name="Color" value="blue"/>
+      <option id="size" name="Size" value="1"/>
+    </item>
+    <item sku="2005" inventory="50">
+      <weight value="0.0"/>
+      <height value="0.0"/>
+      <width value="0.0"/>
+      <length value="0.0"/>
+      <option id="color" name="Color" value="green"/>
+      <option id="size" name="Size" value="1"/>
+    </item>
+    <price quantity="1">19.95</price>
+    <price quantity="3">18.50</price>
+    <handling-charge-level>A</handling-charge-level>
+    <property name="votecount">1</property>
+  </product>
+</page>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <product name="Photo Purchase" id="electronicproduct" ordering="2">
+    <item sku="7727" inventory="1">
+      <weight value="0.0"/>
+      <option id="color" name="Color" value="book"/>
+      <option id="size" name="Size"/>
+      <price quantity="1">24.95</price>
+      <property name="RTP_sid">PAAAAACMDDMCHMAM</property>
+    </item>
+    <category id="index"/>
+    <property name="importfilepath"/>
+    <property name="originalpath">./images/electronicproduct.jpg</property>
+  </product>
+</page>
