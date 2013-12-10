@@ -252,7 +252,7 @@ public class OrderSet {
 			inOrder.setTotalTax(cart.getTotalTax());
 			inOrder.setSubTotal(cart.getSubTotal());
 			inOrder.setTotalPrice(cart.getTotalPrice());
-			store.saveOrder(inOrder);
+//			store.saveOrder(inOrder);
 		} else {
 			System.out.println("Order skipped. No Cart Items");
 		}
@@ -341,7 +341,7 @@ public class OrderSet {
 					CartItem cartItem = (CartItem) item;
 					if (cartItem.getProduct().getId().equals(inProduct)) {
 						cart.getItems().remove(cartItem);
-						store.saveOrder(inOrder);
+						//store.saveOrder(inOrder);
 						break;
 					}
 				}
