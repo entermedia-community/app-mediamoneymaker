@@ -133,7 +133,7 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 		Data distributor = distributorsearcher.searchById(inDistributor);
 		if (distributor == null) {
 			context.putPageValue("errorout", "Distributor does not exist.");
-			log.info("Distributor does not exist.");
+			log.info("Distributor ${inDistributor} does not exist.");
 			return;
 		}
 		log.info("Distributor: " + distributor.getName());
@@ -369,6 +369,9 @@ public class ImportInventoryFromUrl  extends EnterMediaObject {
 					csvFields.setProperty("lastimportdate", parseDateTime(now));
 				}
 				inventorysearcher.saveData(csvFields, inReq.getUser());
+				//update distributor.lastinventoryupdate
+				distributor.setProperty("lastinventoryupdate", DateStorageUtil.getStorageUtil().formatForStorage(now))
+				distributorsearcher.saveData(distributor, null);
 			
 				context.putPageValue("export", inURL);
 				context.putPageValue("url", inURL);
