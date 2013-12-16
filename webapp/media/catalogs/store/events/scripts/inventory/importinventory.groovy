@@ -240,6 +240,9 @@ public class ImportInventory  extends EnterMediaObject {
 				}
 				increaseTotalRows();
 			}
+			//update last inventory update
+			distributor.setProperty("lastinventoryupdate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			distributorsearcher.saveData(distributor, null);
 			
 			context.putPageValue("totalrows", getTotalRows());
 			context.putPageValue("goodproductlist", getGoodProductList());
