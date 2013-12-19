@@ -10,4 +10,6 @@
   <property id="rogerssku"/>
   <property id="distributor"/>
   <property id="upc"/>
+  <property id="groups"/>
+  <property id="displaydesignationid"/>
 </root>

@@ -2,6 +2,7 @@
 
 <root>
   <property id="id"/>
+  <property id="enabled"/>
   <property id="firstName"/>
   <property id="lastName"/>
   <property id="business"/>

@@ -1,0 +1,7 @@
+<page>
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
+	<path-action name="Script.run" alltypes="true">
+		<script>/${catalogid}/events/scripts/inventory/exportinventorycsv.groovy</script>
+	</path-action>
+	<generator name="velocity"/>
+</page>

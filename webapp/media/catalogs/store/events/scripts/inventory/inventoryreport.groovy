@@ -24,6 +24,7 @@ public class InventoryReport extends EnterMediaObject {
 	private ArrayList<Product> badProductList;
 	private ArrayList<Product> goodProductList;
 	private ArrayList<Product> fullProductList;
+	private ArrayList<String> badInventoryList;
 	private List<String> headerRow;
 
 	/* GET LISTS */
@@ -45,6 +46,12 @@ public class InventoryReport extends EnterMediaObject {
 		}
 		return fullProductList;
 	}
+	public ArrayList<String> getBadInventoryList() {
+		if (badInventoryList == null) {
+			badInventoryList = new ArrayList<String>();
+		}
+		return badInventoryList;
+	}
 
 	/* ADD TO LISTS */
 	public void addToBadProductList(Product inProduct) {
@@ -65,6 +72,13 @@ public class InventoryReport extends EnterMediaObject {
 		}
 		fullProductList.add(inProduct);
 	}
+	public void addToBadInventoryList(String inString) {
+		if (badInventoryList == null) {
+			badInventoryList = new ArrayList<String>();
+		}
+		badInventoryList.add(inString);
+	}
+	
 	public void doCheck() {
 		
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
@@ -97,14 +111,30 @@ public class InventoryReport extends EnterMediaObject {
 		
 		for (Iterator hit = selectedHits.iterator(); hit.hasNext();) {
 			Data p = hit.next();
-			Product product =  productsearcher.searchById(p.getId());
-			InventoryItem item = product.getInventoryItem(0);
-			if (item.getQuantityInStock() <= level) {
-				addToBadProductList(product);
+			if (p != null) {
+				Product product =  productsearcher.searchById(p.getId());
+				if (product != null) {
+					InventoryItem item = product.getInventoryItem(0);
+					if (item != null) {
+						if (item.getQuantityInStock() <= level) {
+							addToBadProductList(product);
+						} else {
+							addToGoodProductList(product);
+						}
+						addToFullProductList(product);
+					} else {
+						addToBadInventoryList(product.getId() + ":" + product.getName());
+						String msg = "Bad Inventory Item for Product";
+						msg += "(" + product.getId() + ":" + product.getName() + ")"; 
+						log.info(msg);
+					}
+				} else {
+					addToBadProductList(p);
+					log.info("Bad Product Object - Skipping");
+				}
 			} else {
-				addToGoodProductList(product);
+				log.info("Bad Data Object - Skipping");
 			}
-			addToFullProductList(product);
 		}
 		
 		//Create the Header Row
@@ -117,11 +147,10 @@ public class InventoryReport extends EnterMediaObject {
 			//Write the Header Line
 			writeRowToWriter(headerRow, writer);
 			//Process the Bad Product List
-			processProductList(getBadProductList(), searcherManager, archive, writer, output, "export-bad-inventory.csv");
+			String strFilename = "export-bad-inventory.csv";
+			processProductList(getBadProductList(), searcherManager, archive, writer, output, strFilename);
 			inReq.putPageValue("badlistcsv", "true");
 			inReq.putPageValue("badlist", getBadProductList());
-			writer = null;
-			output = null;
 		}
 		
 					
@@ -132,11 +161,10 @@ public class InventoryReport extends EnterMediaObject {
 			//Write the Header Line
 			writeRowToWriter(headerRow, writer);
 			//Process the Bad Product List
-			processProductList(getGoodProductList(), searcherManager, archive, writer, output, "export-good-inventory.csv");
+			String strFilename = "export-good-inventory.csv";
+			processProductList(getGoodProductList(), searcherManager, archive, writer, output, strFilename);
 			inReq.putPageValue("goodlistcsv", "true");
 			inReq.putPageValue("goodlist", getGoodProductList());
-			writer = null;
-			output = null;
 		}
 		
 		if (getFullProductList().size() > 0) {
@@ -146,11 +174,23 @@ public class InventoryReport extends EnterMediaObject {
 			//Write the Header Line
 			writeRowToWriter(headerRow, writer);
 			//Process the Bad Product List
-			processProductList(getFullProductList(), searcherManager, archive, writer, output, "export-full-inventory.csv");
+			String strFilename = "export-full-inventory.csv";
+			processProductList(getFullProductList(), searcherManager, archive, writer, output, strFilename);
 			inReq.putPageValue("fulllistcsv", "true");
 			inReq.putPageValue("fulllist", getBadProductList());
-			writer = null;
-			output = null;
+		}
+		if (getBadInventoryList().size() > 0) {
+			StringWriter output  = new StringWriter();
+			CSVWriter writer  = new CSVWriter(output, (char)',');
+			//Write the Header Line
+			ArrayList<String> row = new ArrayList<String>();
+			row.add("Products with Bad Inventory Items");
+			writeRowToWriter(row, writer);
+			//Process the Bad Product List
+			String strFilename = "export-bad-inventory-items.csv";
+			processBadInventoryList(getBadInventoryList(), searcherManager, archive, writer, output, strFilename);
+			inReq.putPageValue("badinventorylistcsv", "true");
+			inReq.putPageValue("badinventorylist", getBadInventoryList());
 		}
 		
 		inReq.putPageValue("hitssessionid", sessionid);
@@ -189,7 +229,26 @@ public class InventoryReport extends EnterMediaObject {
 		}
 
 	}
-	
+
+	private void processBadInventoryList( ArrayList<String> inBadList, 
+		SearcherManager inManager, MediaArchive inArchive, CSVWriter inWriter, 
+		StringWriter inOutput, String inFilename) {
+		
+		for (String outValue : inBadList) {
+			writeValueToWriter(outValue, inWriter);
+		}
+		
+		String inventoryFolder = "/WEB-INF/data/" + inArchive.getCatalogId() + "/inventory/";
+		Page page = pageManager.getPage(inventoryFolder + inFilename);
+
+		Boolean processCSV = writeOrderToFile(page, inOutput, inFilename);
+		if (processCSV) {
+			log.info(inventoryFolder + inFilename + " created sucessfully.");
+		} else {
+			log.info("ERROR: " + inventoryFolder + inFilename + " could not be created.");
+		}
+	}
+
 	private ArrayList createRowItem(Product inProduct, SearcherManager inManager, MediaArchive inArchive) {
 		ArrayList<String> row = new ArrayList<String>();
 		row.add(inProduct.getId());
@@ -210,8 +269,13 @@ public class InventoryReport extends EnterMediaObject {
 		row.add(checkProductValue(inProduct, "rogerssku"));
 		row.add(checkProductValue(inProduct, "manufacturersku"));
 		row.add(checkProductValue(inProduct, "upc"));
+		row.add(checkProductValue(inProduct, "approved"));
 		InventoryItem item = inProduct.getInventoryItem(0);
-		row.add(item.getQuantityInStock().toString());
+		if (item != null) {
+			row.add(item.getQuantityInStock().toString());
+		} else {
+			row.add("N/A");
+		}
 		
 		log.info(row.toString());
 		return row;
@@ -234,6 +298,17 @@ public class InventoryReport extends EnterMediaObject {
 		}
 		try	{
 			writer.writeNext(nextrow);
+		}
+		catch (Exception e) {
+			log.info(e.message);
+			log.info(e.getStackTrace().toString());
+		}
+	}
+	
+	private void writeValueToWriter( String inValue, CSVWriter writer) {
+		
+		try	{
+			writer.writeNext(inValue);
 		}
 		catch (Exception e) {
 			log.info(e.message);
