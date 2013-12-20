@@ -1040,8 +1040,13 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		{
 			fieldIntCounter = new IntCounter();
 			fieldIntCounter.setLabelName("productIdCount");
-			File file = new File("/WEB-INF/data/" + getStore().getCatalogId() +  "/products/product.properties");
-					
+			
+			
+			Page prop = getPageManager().getPage("/WEB-INF/data/" + getStore().getCatalogId() +  "/products/product.properties");
+			File file = new File(prop.getContentItem().getAbsolutePath());
+			file.getParentFile().mkdirs();
+			
+			
 			fieldIntCounter.setCounterFile(file);
 		}
 		return fieldIntCounter;

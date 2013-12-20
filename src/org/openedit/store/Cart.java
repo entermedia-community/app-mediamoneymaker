@@ -618,6 +618,9 @@ public class Cart extends BaseData
 
 	public boolean requiresShipping()
 	{
+		if(Boolean.parseBoolean(getStore().get("skipshipping"))){
+			return false;
+		}
 		int regularshipping = 0;
 		Iterator<?> itr = getItems().iterator();
 		while (itr.hasNext())
