@@ -45,7 +45,7 @@ public void doProcess() {
 			log.info("Saved 100 products");
 		}
 	}
-	searcher.saveAllData(productsToSave, null);
+	store.saveProducts(productsToSave);
 	log.info("Saved ${productsToSave.size()} products");
 //	searcher.clearIndex();//forces them to be loaded from disc
 	log.info("Finished setting products to active");
