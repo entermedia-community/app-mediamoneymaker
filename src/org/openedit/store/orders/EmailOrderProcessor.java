@@ -3,6 +3,8 @@
  */
 package org.openedit.store.orders;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.email.PostMail;
@@ -80,10 +82,11 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			if(email == null){
 				email = inContext.getUser().getEmail();
 			}
-			Recipient recipient = new Recipient();
-			recipient.setEmailAddress(email);
-			recipient.setLastName(inOrder.getCustomer().getLastName());
-			recipient.setFirstName(inOrder.getCustomer().getFirstName());
+			InternetAddress recipient = new InternetAddress();
+			recipient.setAddress(email);
+			recipient.setPersonal(inOrder.getCustomer().getName());
+//			recipient.setLastName(inOrder.getCustomer().getLastName());
+//			recipient.setFirstName(inOrder.getCustomer().getFirstName());
 			mailer.setRecipient(recipient);
 			mailer.setMailTemplatePage(customerLayout);
 			mailer.send();
