@@ -206,6 +206,7 @@ public class InventoryReport extends EnterMediaObject {
 		headerRow.add("Rogers SKU");
 		headerRow.add("Manufacturer SKU");
 		headerRow.add("UPC Code");
+		headerRow.add("Approved");
 		headerRow.add("Quantity in Stock");
 		log.info(headerRow.toString());
 		return headerRow

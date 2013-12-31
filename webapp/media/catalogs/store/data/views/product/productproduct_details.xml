@@ -20,4 +20,5 @@
   <property id="featuredonmainpage"/>
   <property id="clearancecentre"/>
   <property id="clearanceprice"/>
+  <property id="createdon"/>
 </root>

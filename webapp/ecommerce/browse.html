@@ -5,7 +5,6 @@
 	</ul>
 </div>
 #if($canbrowseproducts)
-
 #set($featured = $store.getProductSearcher().fieldSearch("featuredonmainpage", "true","random",$context))
 $featured.setHitsPerPage(4)
 $context.putPageValue("hits", $featured)
@@ -15,11 +14,9 @@ $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 
 <div class="featured-browse">
-<h1 style="color: FF3019;">[[Recently Added]]</h1>
-
-#set($topsellers = $store.getProductSearcher().fieldSearch("category", "index", "random",  $context))
-$topsellers.setHitsPerPage(4)
-$context.putPageValue("hits", $topsellers)
+<h1 style="color: FF3019;">[[Recently Added]]</h1>&nbsp;
+$recentlyadded.setHitsPerPage(4)
+$context.putPageValue("hits", $recentlyadded)
 $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 

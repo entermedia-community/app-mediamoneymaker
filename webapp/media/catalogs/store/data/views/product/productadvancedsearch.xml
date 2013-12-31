@@ -12,4 +12,5 @@
   <property id="upc"/>
   <property id="groups"/>
   <property id="displaydesignationid"/>
+  <property id="createdon"/>
 </root>

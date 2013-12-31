@@ -6,9 +6,9 @@
   <property id="distributor"/>
   <property id="manufacturersku"/>
   <property id="rogerssku"/>
-  <property id="msrp"/>
   <property id="rogersprice"/>
+  <property id="msrp"/>
   <property id="fidomsrp"/>
-  <property id="image"/>
-  <property id="inventoryupdated"/>
+  <property id="createdon"/>
+  <property id="displaydesignationid"/>
 </root>
