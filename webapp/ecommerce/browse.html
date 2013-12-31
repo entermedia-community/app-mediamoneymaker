@@ -14,7 +14,8 @@ $pages.include("$apphome/search/resultssection.html", $context)
 </div>
 
 <div class="featured-browse">
-<h1 style="color: FF3019;">[[Recently Added]]</h1>&nbsp;
+<h1 style="color: FF3019;">[[Recently Added]]</h1>
+#set($recentlyadded = $store.getProductSearcher().fieldSearch("category", "index", "createdonDown",  $context))
 $recentlyadded.setHitsPerPage(4)
 $context.putPageValue("hits", $recentlyadded)
 $pages.include("$apphome/search/resultssection.html", $context)
