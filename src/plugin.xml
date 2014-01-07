@@ -110,6 +110,8 @@
  	<property name="orderProcessors">
 		<list>
 			<value>stripeOrderProcessor</value>		
+		    <value>monerisOrderProcessor</value>
+		    
 		    <value>directPaymentProcessor</value>
 			<value>paypalOrderProcessor</value>
 			<value>beanstreamOrderProcessor</value>		
@@ -203,6 +205,16 @@
   
   </bean>	
   
+   <bean id="monerisOrderProcessor" class="org.openedit.store.gateway.MonerisOrderProcessor">
+    	<property name="pageManager">
+    		<ref bean="pageManager" />
+    	</property>
+    
+    	<property name="searcherManager">
+    		<ref bean="searcherManager"/>
+    	</property>  
+  
+  </bean>	
   
   
    

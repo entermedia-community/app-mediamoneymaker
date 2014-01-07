@@ -1325,4 +1325,8 @@ public class Store extends BaseData {
 	{
 		fieldProductionMode = inProductionMode;
 	}
+	
+	public String getProperty(String inKey){
+		return get(inKey);
+	}
 }
