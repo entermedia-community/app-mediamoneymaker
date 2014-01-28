@@ -1,3 +1,9 @@
+#set($product = $context.getPageValue("product"))
+#set($error = $context.getPageValue("error"))
+
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+
 <div class="ui-widget uipanel">
 	<div class="ui-widget-header">Peter's Testing Section</div>
 	<div class="ui-widget-content">
@@ -27,22 +33,40 @@
 		</form>
 		</p>
 	</div> 
-	#if ($export)
+	#if ($product)
 	<div class="ui-widget-content">
 		<p>Results</p>
-		<p><table cellpadding="1" cellspacing="0" width="100%">
-		<thead>
-			<td>ID</td>
-			<td>Name</td>
-			<td>Distributor</td>
-			<td>Rogers SKU</td>
-			<td>Manfacturer's SKU</td>
-			<td>UPC</td>
-			<td>Rogers Price</td>
-		</thead>
-		<tbody>
-		$export
-		</tbody>
+		<p>
+		<table cellpadding="1" cellspacing="0" width="100%" border="1">
+			<thead>
+				<td>ID</td>
+				<td>Name</td>
+				<td>Distributor</td>
+				<td>Rogers SKU</td>
+				<td>Manfacturer's SKU</td>
+				<td>UPC</td>
+				<td>Rogers Price</td>
+				<td>Approved</td>
+			</thead>
+			<tbody>
+		#set($id = $product.getId())
+		#set($name = $product.getName())
+		#set($distributor = $distributorsearcher.searchById($product.get("distributor")))
+		#set($d = $distributor.getName())
+		#set($rs = $product.get("rogerssku"))
+		#set($ms = $product.get("manufacturersku"))
+		#set($upc = $product.get("upc"))
+		#set($rp = $product.get("rogersprice"))
+		#set($ap = $product.get("approved"))
+				<td>$id</td>
+				<td>$name</td>
+				<td>$d</td>
+				<td>$rs</td>
+				<td>$ms</td>
+				<td>$upc</td>
+				<td>$rp</td>
+				<td>$ap</td>
+			</tbody>
 		</table></p>
 	</div> 
 	#end

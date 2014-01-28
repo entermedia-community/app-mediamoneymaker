@@ -1,0 +1,159 @@
+#set($products = $context.getPageValue("products"))
+#set($error = $context.getPageValue("error"))
+#set($productid = $context.getPageValue("productid"))
+#if(!$productid)
+	#set($productid = "")
+#end
+#set($rogerssku = $context.getPageValue("rogerssku"))
+#if(!$rogerssku)
+	#set($rogerssku = "")
+#end
+#set($upccode = $context.getPageValue("upccode"))
+#if(!$upccode)
+	#set($upccode = "")
+#end
+
+#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+#set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
+<style>
+table.getinfo {
+	border: 0px;
+}
+table.getinfo thead tr th {
+	border: 1px solid #C0C0C0;
+	padding: 5px;
+}
+table.getinfo tbody tr td {
+	margin-top: 4px;
+	padding: 5px;
+	vertical-align: middle;
+}
+table.showinfo {
+	border: 0px;
+	width: 100%;
+}
+table.showinfo thead tr th {
+	border: 1px solid #C0C0C0;
+	padding: 5px;
+}
+table.showinfo tbody tr td {
+	padding: 5px;
+}
+</style>
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">Product Update</div>
+	<div class="ui-widget-content">
+		<p>
+		<form action="updateapproved.html" method="post">
+		<table class="getinfo">
+			<thead>
+			<tr>
+				<th colspan=2 align=center><strong>Rogers Product Lookup</strong></td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td colspan="2" style="text-align: center;">
+				<span style="font-size: 11px;">Note: To enter multiple values, separate values with a colon(:)</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Enter Product ID:</td><td><input type="text" name="productid" value="${productid}" size="90"/></td>
+			</tr>
+			<tr>
+				<td>Enter Rogers SKU:</td><td><input type="text" name="rogerssku" value="${rogerssku}" size="90"/></td>
+			</tr>
+			<tr>
+				<td>Enter UPC Code:</td><td><input type="text" name="upccode" value="${upccode}" size="90"/></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" name="Submit"/></td>
+			</tr>
+			</tbody>
+		</table>
+		</form>
+		</p>
+	</div> 
+	#if ($products)
+	<div class="ui-widget-content">
+		<p>Results</p>
+		<p>
+		<form action="updateapproved.html" method="post">
+			<table class="showinfo">
+				<thead>
+					<tr>
+						<th>Update</th>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Distributor</th>
+						<th>Rogers<br/>SKU</th>
+						<th>Manfacturer's<br/>SKU</th>
+						<th>UPC</th>
+						<th>Approved</th>
+					</tr>
+				</thead>
+				<tbody>
+		#foreach($product in $products)
+			#set($p = $productsearcher.searchById($product))
+			#set($id = $p.getId())
+			#set($name = $p.getName())
+			#set($distributor = $distributorsearcher.searchById($p.get("distributor")))
+			#set($d = $distributor.getName())
+			#set($rs = $p.get("rogerssku"))
+			#set($ms = $p.get("manufacturersku"))
+			#set($upc = $p.get("upc"))
+			#set($ap = $p.get("approved"))
+					<tr>
+						<td><input type="checkbox" name="updates" value="${id}"/>
+						<td>$id</td>
+						<td>$name</td>
+						<td>$d</td>
+						<td>$rs</td>
+						<td>$ms</td>
+						<td>$upc</td>
+						<td>$ap</td>
+					</tr>
+		#end
+					<tr>
+						<td colspan="8">
+							<input type="checkbox" name="check-all" id="check-all"/>&nbsp;Check All
+							<script type="text/javascript">
+								$(document).ready(function() {
+									$('#check-all').click(function(event) {   
+									    if(this.checked) {
+									        // Iterate each checkbox
+									        $(':checkbox').each(function() {
+									            this.checked = true;                        
+									        });
+									    } else {
+									        $(':checkbox').each(function() {
+									            this.checked = false;                        
+									        });
+									    }
+									});									
+								});
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="8">Approved:&nbsp;
+							<select name="approved">
+								<option value="true" selected>True</option>
+								<option value="false">False</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="8">
+							<input type="hidden" name="productid" value="${productid}"/>
+							<input type="hidden" name="rogerssku" value="${rogerssku}"/>
+							<input type="hidden" name="upccode" value="${upccode}"/>
+							<input type="submit" name="submit" value="Update Value"/>
+						</td>
+					</tr>
+				</tbody>
+			</table></p>
+		</form>
+	</div> 
+	#end
+</div>
