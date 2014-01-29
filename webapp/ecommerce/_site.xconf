@@ -11,16 +11,15 @@
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
     <property name="productshowonly">+approved:true</property>
   	  	<property name="oetextfilter">xmltranslation</property>
-  
+  <property name="catalogid">media/catalogs/store</property>
+  <permission name="viewspecialorder">
+    <userprofile value="true" name="viewspecialorder"/>
+  </permission>
   <permission name="viewdevelopertools">
-  
-  
     <or>
       <group id="administrators"/>
     </or>
   </permission>
-  
-  
   <permission name="maximize">
     <userprofile value="true" name="maximize"/>
   </permission>
@@ -48,80 +47,61 @@
       <pagevalue equals="true" name="caneditasset"/>
     </and>
   </permission>
-  
   <permission name="viewdistributorsection">
       <userprofile value="true" name="distributorsection"/>  
   </permission>
-  
-  
   <permission name="viewrogerstools">
     <or>
       <group id="administrators"/>
       <group id="rogersadministrators"/>
+      <group id="1390934232241"/>
+      <group id="rogersspecial"/>
     </or>
   </permission>
-  
    <permission name="vieweol">
     <or>
       <group id="administrators"/>
       <group id="distributors"/>
     </or>
   </permission>
-  
    <permission name="manageorders">
     <or>
       <group id="administrators"/>
-      
     </or>
   </permission>
- 
   <permission name="edituserprofile">
    	<user/>
   </permission>
-  
   <permission name="browseproducts">
       <userprofile value="true" name="browseproducts"/>
   </permission>
-  
   <permission name="viewcart">
       <userprofile value="true" name="viewcart"/>
   </permission>
-   
   <permission name="checkout">
     <userprofile value="true" name="purchase"/>
   </permission>
-   
   <permission name="rogersprice">
       <userprofile value="true" name="rogersprice"/>
   </permission>
-  
   <permission name="createwishlist">
       <userprofile value="true" name="wishlist"/>
   </permission>
-  
   <permission name="viewtesting">
       <userprofile value="true" name="viewtesting"/>
   </permission>
-  
    <permission name="dealertools">
       <userprofile value="true" name="dealertools"/>
   </permission>
-
   <permission name="viewaddresslist">
       <userprofile value="true" name="dealertools"/>
   </permission>
-  
-  
    <permission name="requestquote">
       <userprofile value="true" name="requestquote"/>
   </permission>
-  
-  
-  
   <permission name="viewwishlists">
       <userprofile value="true" name="dealertools"/>
   </permission>
-
   <permission name="vieworderhistory">
       <userprofile value="true" name="dealertools"/>
   </permission>

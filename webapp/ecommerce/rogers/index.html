@@ -14,14 +14,17 @@
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/reversecheckrogersproducts.html">[[Reverse Check Rogers Products]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/changeprofile.html">[[Update Product User Profile]]</a></td></tr>
     </table></p>
-        
+    #end
+	#if($canviewspecialorder)
 	<p><table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Orders]]</div></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/rogersorder.html">[[Import Rogers Order]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/exportaffinityorders.html">[[Export Affinity Orders to CSV]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/exportbud.html">[[Export Orders to BUD]]</a></td></tr>
 	</table></p>
+	#end
        
+	#if($canviewtesting)
 	<p><table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Inventory]]</div></td></tr>
 <!-- 	
