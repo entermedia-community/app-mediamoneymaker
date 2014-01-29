@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.openedit.Data;
@@ -20,6 +19,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEventListener;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Product;
@@ -44,6 +44,7 @@ import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.modules.BaseModule;
+import com.openedit.users.User;
 
 /**
  * @author dbrown
@@ -773,6 +774,7 @@ public class OrderModule extends BaseModule
 			String catalogid = archive.getCatalogId();
 			SearcherManager searcherManager = archive.getSearcherManager();
 			Searcher as400Searcher = searcherManager.getSearcher(catalogid, "as400");
+			Searcher roleSearcher = searcherManager.getSearcher(catalogid, "settingsgroup");
 			
 			Store store = getStore(inContext);
 			OrderSearcher orderSearcher = store.getOrderSearcher();
@@ -795,9 +797,18 @@ public class OrderModule extends BaseModule
 					as400Searcher.saveData(as400Record, inContext.getUser());
 				}
 				
+				String authorized = "authorized";
+				UserProfile user = inContext.getUserProfile();
+				String userRole = user.get("settingsgroup");
+				Data role = (Data) roleSearcher.searchById(userRole);
+				String roleName = role.getName();
+				if (roleName.equalsIgnoreCase("Rogers Special Order")) {
+					authorized = "open";
+				}
+				
 				OrderState orderState = new OrderState();
-				orderState.setId("authorized");
-				orderState.setDescription("authorized");
+				orderState.setId(authorized);
+				orderState.setDescription(authorized);
 				orderState.setOk(true);
 				order.setOrderState(orderState);
 				
@@ -805,8 +816,8 @@ public class OrderModule extends BaseModule
 				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
 				order.setProperty("orderdate", newDate);
 				
-				order.setProperty("orderstatus", "authorized");
-				order.setProperty("order_status", "authorized");
+				order.setProperty("orderstatus", authorized);
+				order.setProperty("order_status", authorized);
 				
 				orderSearcher.saveData(order, inContext.getUser());
 				orderList.add(order.getId());
