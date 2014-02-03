@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.openedit.data.SearcherManager;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
@@ -21,7 +22,9 @@ import JavaAPI.Purchase;
 import JavaAPI.Receipt;
 
 import com.openedit.WebPageRequest;
+import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
+import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.util.XmlUtil;
 
@@ -102,12 +105,15 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 
 	protected void process(Store inStore, Order inOrder, String inType) throws StoreException
 	{
-		Date createDate = new Date();
-		String host = "esqa.moneris.com";
-		String store_id = "store5";
-		String api_token = "yesguy";
+//		String host = "esqa.moneris.com";
+//		String store_id = "store5";
+//		String api_token = "yesguy";
+		
+		String host = inStore.get("moneris_host");
+		String store_id = inStore.get("moneris_store_id");
+		String api_token = inStore.get("moneris_api_token");
+		
 		String order_id = inOrder.getId();
-		String cust_id = inOrder.getCustomer().getId();
 		String amount = inOrder.getTotalPrice().toShortString();
 		CreditPaymentMethod cc = (CreditPaymentMethod) inOrder.getPaymentMethod();
 		String pan = cc.getCardNumber();
@@ -197,16 +203,13 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
-		Date createDate = new Date();
-		String host = "esqa.moneris.com";
-		String store_id = "store5";
-		String api_token = "yesguy";
+		String host = inStore.get("moneris_host");
+		String store_id = inStore.get("moneris_store_id");
+		String api_token = inStore.get("moneris_api_token");
+		
 		String order_id = inOrder.getId();
-		String cust_id = inOrder.getCustomer().getId();
 		String amount = inRefund.getTotalAmount().toShortString();
-		CreditPaymentMethod cc = (CreditPaymentMethod) inOrder.getPaymentMethod();
-		String pan = cc.getCardNumber();
-		String expdate = cc.getExpirationDateString().replace("/", "");
+		
 		String crypt = "7";
 		String txn_number = inOrder.get("txn_number");
 		

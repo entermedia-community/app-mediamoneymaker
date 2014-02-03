@@ -28,6 +28,9 @@ public class MonerisTest extends StoreTestCase {
 		Store store = getStore();
 		if (store.get("gateway") == null || !store.get("gateway").equals("moneris")){
 			store.setProperty("gateway","moneris");
+			store.setProperty("moneris_host","esqa.moneris.com");
+			store.setProperty("moneris_store_id","store5");
+			store.setProperty("moneris_api_token","yesguy");
 		}
 		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
 		WebPageRequest context = getFixture().createPageRequest();
