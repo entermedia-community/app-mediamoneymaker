@@ -104,7 +104,7 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 	{
 		Date createDate = new Date();
 		String host = "esqa.moneris.com";
-		String store_id = "store3";
+		String store_id = "store5";
 		String api_token = "yesguy";
 		String order_id = inOrder.getId();
 		String cust_id = inOrder.getCustomer().getId();
@@ -199,7 +199,7 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 	{
 		Date createDate = new Date();
 		String host = "esqa.moneris.com";
-		String store_id = "store3";
+		String store_id = "store5";
 		String api_token = "yesguy";
 		String order_id = inOrder.getId();
 		String cust_id = inOrder.getCustomer().getId();
