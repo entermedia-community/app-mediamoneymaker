@@ -1,5 +1,6 @@
 package org.openedit.store.gateway;
 
+import java.net.URLDecoder;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -95,7 +96,6 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		{
 			return;
 		}
-
 		process(inStore, inOrder, "AUTH_CAPTURE");
 
 	}
@@ -160,6 +160,7 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 				orderState.setDescription("Your transaction has been authorized.");
 				orderState.setOk(true);
 				inOrder.setOrderState(orderState);
+				inOrder.setProperty("txn_number", receipt.getTxnNumber());
 
 			}
 			else
@@ -196,6 +197,62 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
-		// getBeanstreamUtil().refund(inStore, inOrder, inRefund);
+		Date createDate = new Date();
+		String host = "esqa.moneris.com";
+		String store_id = "store3";
+		String api_token = "yesguy";
+		String order_id = inOrder.getId();
+		String cust_id = inOrder.getCustomer().getId();
+		String amount = inRefund.getTotalAmount().toShortString();
+		CreditPaymentMethod cc = (CreditPaymentMethod) inOrder.getPaymentMethod();
+		String pan = cc.getCardNumber();
+		String expdate = cc.getExpirationDateString().replace("/", "");
+		String crypt = "7";
+		String txn_number = inOrder.get("txn_number");
+		
+		JavaAPI.Refund refund = new JavaAPI.Refund(order_id, amount, txn_number, crypt);
+		HttpsPostRequest mpgReq = new HttpsPostRequest(host, store_id, api_token, refund);
+		try
+		{
+			Receipt receipt = mpgReq.getReceipt();
+			System.out.println("CardType = " + receipt.getCardType());
+			System.out.println("TransAmount = " + receipt.getTransAmount());
+			System.out.println("TxnNumber = " + receipt.getTxnNumber());
+			System.out.println("ReceiptId = " + receipt.getReceiptId());
+			System.out.println("TransType = " + receipt.getTransType());
+			System.out.println("ReferenceNum = " + receipt.getReferenceNum());
+			System.out.println("ResponseCode = " + receipt.getResponseCode());
+			System.out.println("ISO = " + receipt.getISO());
+			System.out.println("BankTotals = " + receipt.getBankTotals());
+			System.out.println("Message = " + receipt.getMessage());
+			System.out.println("AuthCode = " + receipt.getAuthCode());
+			System.out.println("Complete = " + receipt.getComplete());
+			System.out.println("TransDate = " + receipt.getTransDate());
+			System.out.println("TransTime = " + receipt.getTransTime());
+			System.out.println("Ticket = " + receipt.getTicket());
+			System.out.println("TimedOut = " + receipt.getTimedOut());
+			
+			if(receipt.getMessage() != null && receipt.getMessage().contains("APPROVED")){
+				inRefund.setSuccess(true);
+				inRefund.setAuthorizationCode(receipt.getAuthCode());
+				inRefund.setTransactionId(receipt.getTxnNumber());
+				inRefund.setDate(new Date());
+			} else{
+				inRefund.setSuccess(false);
+				String message = receipt.getMessage();
+				message = message!=null ? URLDecoder.decode(message,"UTF-8").replaceAll("\\<.*?\\>", "") : "Unknown declined response";
+				inRefund.setMessage(message);
+				inRefund.setDate(new Date());//or parse trnDate
+				
+			}
+		}
+		catch (Exception e)
+		{
+			inRefund.setSuccess(false);
+			inRefund.setMessage("An error occurred while processing your transaction.");
+			e.printStackTrace();
+			throw new StoreException(e);
+		}
+
 	}
 }
