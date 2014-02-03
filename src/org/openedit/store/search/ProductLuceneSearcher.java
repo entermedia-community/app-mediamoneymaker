@@ -876,20 +876,28 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			inSearch.addOrsGroup("viewproduct", buffer.toString().toLowerCase());
 			inSearch.setSecurityAttached(true);
 		}
-		String filter = inPageRequest.findValue("enableprofilefilters");
-		if( Boolean.parseBoolean(filter))
-		{
-			if( inSearch.getTermByDetailId("album") == null )
-			{
-				addUserProfileSearchFilters( inPageRequest,inSearch);
-			}
-		}
+		//add user profile search filters
+		addUserProfileSearchFilters( inPageRequest,inSearch);
 
 		HitTracker hits = super.cachedSearch(inPageRequest, inSearch);
 
 		return hits;
 	}
-public String nextId() {
+	
+	public void addUserProfileSearchFilters(WebPageRequest inReq, SearchQuery search) 
+	{
+		if( inReq.getUserProfile() == null)
+		{
+			return;
+		}
+		String filters = inReq.getUserProfile().get("productsearchfilters");
+		if (filters != null && !filters.isEmpty())
+		{
+			addShowOnly(inReq,filters,search);
+		}
+	}
+	
+	public String nextId() {
 	return getProductArchive().nextProductNumber();
 }	
 }
