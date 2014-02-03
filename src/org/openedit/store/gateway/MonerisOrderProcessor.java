@@ -132,25 +132,28 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		{
 			HttpsPostRequest mpgReq = new HttpsPostRequest(host, store_id, api_token, p, false);
 			Receipt receipt = mpgReq.getReceipt();
-			System.out.println("CardType = " + receipt.getCardType());
-			System.out.println("TransAmount = " + receipt.getTransAmount());
-			System.out.println("TxnNumber = " + receipt.getTxnNumber());
-			System.out.println("ReceiptId = " + receipt.getReceiptId());
-			System.out.println("TransType = " + receipt.getTransType());
-			System.out.println("ReferenceNum = " + receipt.getReferenceNum());
-			System.out.println("ResponseCode = " + receipt.getResponseCode());
-			System.out.println("ISO = " + receipt.getISO());
-			System.out.println("BankTotals = " + receipt.getBankTotals());
-			System.out.println("Message = " + receipt.getMessage());
-			System.out.println("AuthCode = " + receipt.getAuthCode());
-			System.out.println("Complete = " + receipt.getComplete());
-			System.out.println("TransDate = " + receipt.getTransDate());
-			System.out.println("TransTime = " + receipt.getTransTime());
-			System.out.println("Ticket = " + receipt.getTicket());
-			System.out.println("TimedOut = " + receipt.getTimedOut());
-			System.out.println("StatusCode = " + receipt.getStatusCode());
-			System.out.println("StatusMessage = " + receipt.getStatusMessage());
-			System.out.println("IsVisaDebit = " + receipt.getIsVisaDebit());
+			StringBuilder buf = new StringBuilder();
+			buf.append("Receipt Details:\n\tCardType = " + receipt.getCardType()).append("\n\t");
+			buf.append("TransAmount = " + receipt.getTransAmount()).append("\n\t");
+			buf.append("TxnNumber = " + receipt.getTxnNumber()).append("\n\t");
+			buf.append("ReceiptId = " + receipt.getReceiptId()).append("\n\t");
+			buf.append("TransType = " + receipt.getTransType()).append("\n\t");
+			buf.append("ReferenceNum = " + receipt.getReferenceNum()).append("\n\t");
+			buf.append("ResponseCode = " + receipt.getResponseCode()).append("\n\t");
+			buf.append("ISO = " + receipt.getISO()).append("\n\t");
+			buf.append("BankTotals = " + receipt.getBankTotals()).append("\n\t");
+			buf.append("Message = " + receipt.getMessage()).append("\n\t");
+			buf.append("AuthCode = " + receipt.getAuthCode()).append("\n\t");
+			buf.append("Complete = " + receipt.getComplete()).append("\n\t");
+			buf.append("TransDate = " + receipt.getTransDate()).append("\n\t");
+			buf.append("TransTime = " + receipt.getTransTime()).append("\n\t");
+			buf.append("Ticket = " + receipt.getTicket()).append("\n\t");
+			buf.append("TimedOut = " + receipt.getTimedOut()).append("\n\t");
+			buf.append("StatusCode = " + receipt.getStatusCode()).append("\n\t");
+			buf.append("StatusMessage = " + receipt.getStatusMessage()).append("\n\t");
+			buf.append("IsVisaDebit = " + receipt.getIsVisaDebit());
+			log.info(buf.toString());
+			
 			/*
 			 * CardType = V TransAmount = 25.99 TxnNumber = 89175-0_9 ReceiptId
 			 * = WEB0000003 TransType = 00 ReferenceNum = 660109290015501270
@@ -172,7 +175,6 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 			else
 			{
 				OrderState orderState = inStore.getOrderState(Order.REJECTED);
-				// e.printStackTrace();
 				orderState.setDescription(receipt.getMessage());
 				orderState.setOk(false);
 				inOrder.setOrderState(orderState);
@@ -218,22 +220,24 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		try
 		{
 			Receipt receipt = mpgReq.getReceipt();
-			System.out.println("CardType = " + receipt.getCardType());
-			System.out.println("TransAmount = " + receipt.getTransAmount());
-			System.out.println("TxnNumber = " + receipt.getTxnNumber());
-			System.out.println("ReceiptId = " + receipt.getReceiptId());
-			System.out.println("TransType = " + receipt.getTransType());
-			System.out.println("ReferenceNum = " + receipt.getReferenceNum());
-			System.out.println("ResponseCode = " + receipt.getResponseCode());
-			System.out.println("ISO = " + receipt.getISO());
-			System.out.println("BankTotals = " + receipt.getBankTotals());
-			System.out.println("Message = " + receipt.getMessage());
-			System.out.println("AuthCode = " + receipt.getAuthCode());
-			System.out.println("Complete = " + receipt.getComplete());
-			System.out.println("TransDate = " + receipt.getTransDate());
-			System.out.println("TransTime = " + receipt.getTransTime());
-			System.out.println("Ticket = " + receipt.getTicket());
-			System.out.println("TimedOut = " + receipt.getTimedOut());
+			StringBuilder buf = new StringBuilder();
+			buf.append("Receipt Details:\n\tCardType = " + receipt.getCardType()).append("\n\t");
+			buf.append("TransAmount = " + receipt.getTransAmount()).append("\n\t");
+			buf.append("TxnNumber = " + receipt.getTxnNumber()).append("\n\t");
+			buf.append("ReceiptId = " + receipt.getReceiptId()).append("\n\t");
+			buf.append("TransType = " + receipt.getTransType()).append("\n\t");
+			buf.append("ReferenceNum = " + receipt.getReferenceNum()).append("\n\t");
+			buf.append("ResponseCode = " + receipt.getResponseCode()).append("\n\t");
+			buf.append("ISO = " + receipt.getISO()).append("\n\t");
+			buf.append("BankTotals = " + receipt.getBankTotals()).append("\n\t");
+			buf.append("Message = " + receipt.getMessage()).append("\n\t");
+			buf.append("AuthCode = " + receipt.getAuthCode()).append("\n\t");
+			buf.append("Complete = " + receipt.getComplete()).append("\n\t");
+			buf.append("TransDate = " + receipt.getTransDate()).append("\n\t");
+			buf.append("TransTime = " + receipt.getTransTime()).append("\n\t");
+			buf.append("Ticket = " + receipt.getTicket()).append("\n\t");
+			buf.append("TimedOut = " + receipt.getTimedOut());
+			log.info(buf.toString());
 			
 			if(receipt.getMessage() != null && receipt.getMessage().contains("APPROVED")){
 				inRefund.setSuccess(true);
