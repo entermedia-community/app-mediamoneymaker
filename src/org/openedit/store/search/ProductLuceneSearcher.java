@@ -893,7 +893,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		String filters = inReq.getUserProfile().get("productsearchfilters");
 		if (filters != null && !filters.isEmpty())
 		{
-			addShowOnly(inReq,filters,search);
+			addShowOnlyFilter(inReq,filters,search);
 		}
 	}
 	
