@@ -113,9 +113,6 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		String store_id = inStore.get("store_id");
 		String api_token = getAPIToken(inStore);
 		
-		log.info("&&&& moneris transaction, using "+host+", "+store_id+", "+api_token);
-		
-		
 		String order_id = inOrder.getId();
 		String amount = inOrder.getTotalPrice().toShortString();
 		CreditPaymentMethod cc = (CreditPaymentMethod) inOrder.getPaymentMethod();
@@ -233,9 +230,6 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		String host = inStore.get("host");
 		String store_id = inStore.get("store_id");
 		String api_token = getAPIToken(inStore);//use an encrypted api_token
-		
-		log.info("&&&& moneris transaction, using "+host+", "+store_id+", "+api_token);
-		
 		
 		String order_id = inOrder.getId();
 		String amount = inRefund.getTotalAmount().toShortString();
