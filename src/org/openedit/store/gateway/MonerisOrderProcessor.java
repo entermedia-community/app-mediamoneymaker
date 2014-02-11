@@ -120,13 +120,17 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		String expdate = cc.getExpirationDateString().replace("/", "");
 		String crypt = "7";
 
-		// AvsInfo avs = new AvsInfo ("123", "Edgar Street", "M1M1M1");
-		CvdInfo cvd = new CvdInfo("1", cc.getCardVerificationCode());
+		
 
 		Purchase p = new Purchase(order_id, amount, pan, expdate, crypt);
-
-		// p.setAvsInfo (avs);
-		p.setCvdInfo(cvd);
+		if (inStore.get("enable_avs")!=null && Boolean.parseBoolean(inStore.get("enable_avs")) ){
+			// AvsInfo avs = new AvsInfo ("123", "Edgar Street", "M1M1M1");
+			// p.setAvsInfo (avs);
+		}
+		if (inStore.get("enable_cvd")!=null && Boolean.parseBoolean(inStore.get("enable_cvd")) ){
+			CvdInfo cvd = new CvdInfo("1", cc.getCardVerificationCode());
+			p.setCvdInfo(cvd);
+		}
 
 		try
 		{
