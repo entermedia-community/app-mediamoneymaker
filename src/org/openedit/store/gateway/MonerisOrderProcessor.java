@@ -109,9 +109,9 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 //		String store_id = "store5";
 //		String api_token = "yesguy";
 		
-		String host = inStore.get("moneris_host");
-		String store_id = inStore.get("moneris_store_id");
-		String api_token = inStore.get("moneris_api_token");
+		String host = inStore.get("host");
+		String store_id = inStore.get("store_id");
+		String api_token = inStore.get("api_token");
 		
 		String order_id = inOrder.getId();
 		String amount = inOrder.getTotalPrice().toShortString();
@@ -205,9 +205,13 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
-		String host = inStore.get("moneris_host");
-		String store_id = inStore.get("moneris_store_id");
-		String api_token = inStore.get("moneris_api_token");
+		if (!requiresValidation(inStore, inOrder))
+		{
+			return;
+		}
+		String host = inStore.get("host");
+		String store_id = inStore.get("store_id");
+		String api_token = inStore.get("api_token");
 		
 		String order_id = inOrder.getId();
 		String amount = inRefund.getTotalAmount().toShortString();

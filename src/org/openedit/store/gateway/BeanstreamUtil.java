@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -44,20 +45,13 @@ public class BeanstreamUtil {
 		fieldUserManager = inUserManager;
 	}
 
-
-
-
 	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
-
-
-
-
+	
 	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
-	
 	
 	public void refund(Store inStore, Order inOrder, Refund inRefund)
 			throws StoreException {
@@ -74,13 +68,12 @@ public class BeanstreamUtil {
 			String merchant = conf.element("merchantid").getText();
 			String userid = conf.element("user").getText();
 			String password = conf.element("password") != null && !conf.element("password").getText().isEmpty() ? conf.element("password").getText() : null;
+			boolean avsEnabled = conf.element("avs") != null ? Boolean.parseBoolean(conf.element("avs").getText()) : false;
 			if (password == null)
 			{
 				User user = getUserManager().getUser(userid);
 				password = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
 			}
-			
-//			System.out.println(" &&&&&& using "+userid+" "+password);
 			
 			HttpClient client = new HttpClient();
 			String url = "https://www.beanstream.com/scripts/process_transaction.asp";
@@ -110,6 +103,12 @@ public class BeanstreamUtil {
 				}
 			}
 			
+			boolean avsPassed = false;
+			if (avsEnabled)
+			{
+				avsPassed = verifyAVS(pairs);
+			}
+			
 			//get trnId 
 			//approved response			
 			//trnApproved=1&trnId=10002118&messageId=1&messageText=Approved&
@@ -123,7 +122,6 @@ public class BeanstreamUtil {
 					inRefund.setAuthorizationCode(pairs.get("authCode"));
 					inRefund.setTransactionId(pairs.get("trnId"));
 					inRefund.setDate(new Date());// or parse trnDate
-					
 			} else{
 				//declined response:
 				//trnApproved=0&trnId=10002120&messageId=205&messageText=Transaction+only+voidable+on+the+date+processed
@@ -157,5 +155,59 @@ public class BeanstreamUtil {
 
 	public void setXmlUtil(XmlUtil inXmlUtil) {
 		fieldXmlUtil = inXmlUtil;
+	}
+	
+	/*
+	 * AVS Variables:
+	 * 	avsProcessed=0
+	 *  avsId=U
+	 *  avsResult=0
+	 *  avsAddrMatch=0
+	 *  avsPostalMatch=0
+	 *  avsMessage=<some message>
+	 *  
+	 * AVS Response Codes
+		ID	Result	Processed	Address	Postal/ZIP	Message
+		0 	0 		0 			0 		0 			Address Verification not performed for this transaction.
+		5 	0 		0 			0 		0 			Invalid AVS Response.
+		9 	0 		0 			0 		0 			Address Verification Data contains edit error.
+		E 	0 		0 			0 		0 			Transaction ineligible.
+		G 	0 		0 			0 		0 			Non AVS participant. Information not verified.
+		I 	0 		0 			0 		0 			Address information not verified for international transaction.
+		R 	0 		0 			0 		0 			System unavailable or timeout.
+		S 	0 		0 			0 		0 			AVS not supported at this time.
+		U 	0 		0 			0 		0 			Address information is unavailable.
+		
+		A 	0 		1 			1 		0 			Street address matches, Postal/ZIP does not match.
+		B 	0 		1 			1 		0 			Street address matches, Postal/ZIP not verified.
+		C 	0 		1 			0 		0 			Street address and Postal/ZIP not verified.
+		N 	0 		1 			0 		0 			Street address and Postal/ZIP do not match.
+		P 	0 		1 			0 		1 			Postal/ZIP matches. Street address not verified.
+		W 	0 		1 			0 		1 			Postal/ZIP matches, street address does not match.
+		Z 	0 		1 			0 		1 			Postal/ZIP matches, street address does not match.
+		
+		D 	1 		1 			1 		1 			Street address and Postal/ZIP match.
+		M 	1 		1 			1 		1 			Street address and Postal/ZIP match.
+		X 	1 		1 			1 		1 			Street address and Postal/ZIP match.
+		Y 	1 		1 			1 		1 			Street address and Postal/ZIP match.
+		
+		
+	 * 
+	 * 
+	 */
+	public boolean verifyAVS(Map<String,String> inMap){
+		boolean passed = false;
+		if (inMap.containsKey("avsProcessed") && inMap.containsKey("avsId") && inMap.containsKey("avsResult") &&
+			inMap.containsKey("avsAddrMatch") && inMap.containsKey("avsPostalMatch") && inMap.containsKey("avsMessage"))
+		{
+			String id = inMap.get("avsId");
+			boolean result = "1".equals(inMap.get("avsResult"));
+			boolean proc = "1".equals(inMap.get("avsProcessed"));
+			boolean addr = "1".equals(inMap.get("avsAddrMatch"));
+			boolean postal = "1".equals(inMap.get("avsPostalMatch"));
+			String message = inMap.get("avsMessage");
+			passed = proc && result;
+		}
+		return passed;
 	}
 }
