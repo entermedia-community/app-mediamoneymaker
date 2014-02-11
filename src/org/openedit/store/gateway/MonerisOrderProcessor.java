@@ -111,7 +111,7 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		
 		String host = inStore.get("host");
 		String store_id = inStore.get("store_id");
-		String api_token = inStore.get("api_token");
+		String api_token = getAPIToken(inStore);
 		
 		String order_id = inOrder.getId();
 		String amount = inOrder.getTotalPrice().toShortString();
@@ -201,6 +201,20 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		}
 		process(inStore, inOrder, "");
 	}
+	
+	protected String getAPIToken(Store inStore) throws StoreException{
+		String store_id = inStore.get("store_id");
+		String api_token = inStore.get("api_token");
+		if (api_token == null && store_id!=null)
+		{
+			User user = getUserManager().getUser(store_id);
+			if (user!=null)
+			{
+				api_token = getUserManager().getStringEncryption().decrypt(user.getPassword()); 
+			}
+		}
+		return api_token;
+	}
 
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
@@ -211,7 +225,7 @@ public class MonerisOrderProcessor extends BaseOrderProcessor
 		}
 		String host = inStore.get("host");
 		String store_id = inStore.get("store_id");
-		String api_token = inStore.get("api_token");
+		String api_token = getAPIToken(inStore);//use an encrypted api_token
 		
 		String order_id = inOrder.getId();
 		String amount = inRefund.getTotalAmount().toShortString();

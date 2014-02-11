@@ -109,9 +109,8 @@
  	<property name="moduleManager"><ref bean="moduleManager"/></property>
  	<property name="orderProcessors">
 		<list>
-			<value>stripeOrderProcessor</value>		
+			<value>stripeOrderProcessor</value>	
 		    <value>monerisOrderProcessor</value>
-		    
 		    <value>directPaymentProcessor</value>
 			<value>paypalOrderProcessor</value>
 			<value>beanstreamOrderProcessor</value>		
@@ -121,8 +120,6 @@
 			<value>electronicGoodsOrderProcessor</value>
 			<value>scriptedOrderProcessor</value>
 			<value>emailOrderProcessor</value>
-						
-			
 		</list>
 	</property>
 </bean>
@@ -213,6 +210,10 @@
     	<property name="searcherManager">
     		<ref bean="searcherManager"/>
     	</property>  
+    	
+    	<property name="userManager">
+    		<ref bean="userManager" />
+    	</property>
   
   </bean>	
   
