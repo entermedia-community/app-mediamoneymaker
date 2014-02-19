@@ -349,15 +349,16 @@ public class Order extends BaseData implements Comparable {
 		if(inId.contains("shipping-") || inId.contains("billing-"))
 		{
 			String[] splits = inId.split("-");
-			if(splits[0].equals("shipping")){
-				String val = getShippingAddress().get(splits[1]);
-				return val;
-				
-			}
-			if(splits[0].equals("billing")){
-				String val = getBillingAddress().get(splits[1]);
-				return val;
-				
+			if (splits.length==2){
+				if(splits[0].equals("shipping")){
+					String val = getShippingAddress().get(splits[1]);
+					return val;
+				}
+				if(splits[0].equals("billing")){
+					String val = getBillingAddress().get(splits[1]);
+					return val;
+					
+				}
 			}
 			
 		}

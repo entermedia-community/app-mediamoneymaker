@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -19,6 +21,8 @@ import org.openedit.store.customer.Customer;
 import com.openedit.OpenEditException;
 
 public class OrderSet {
+	
+	private static final Log log = LogFactory.getLog( OrderSet.class );
 
 	protected List<Order> fieldOrders;
 	protected List<Order> fieldRemovedOrders;
@@ -254,7 +258,7 @@ public class OrderSet {
 			inOrder.setTotalPrice(cart.getTotalPrice());
 //			store.saveOrder(inOrder);
 		} else {
-			System.out.println("Order skipped. No Cart Items");
+			log.info("Recalculate Order ["+inOrder+"]: skipped, no cart items");
 		}
 	}
 	
