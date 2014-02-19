@@ -346,7 +346,29 @@ public class Order extends BaseData implements Comparable {
 			return getOrderStatus().getId();
 		}
 		
-		if(inId.contains("shipping-") || inId.contains("billing-"))
+		if ("subtotal".equals(inId)){
+			return getSubTotal()!=null ? getSubTotal().toShortString().replace(",","") : "0";
+		}
+		if ("totalshipping".equals(inId)){
+			return getTotalShipping()!= null ? getTotalShipping().toShortString().replace(",","") : "0";
+		}
+		if ("tax".equals(inId)){
+			return getTax()!=null ? getTax().toShortString().replace(",","") : "0";
+		}
+		if("total".equals(inId)){
+			return getTotalPrice()!=null ? getTotalPrice().toShortString().replace(",","") : "0";
+		}
+		if ("paymentmethod".equals(inId)){
+			return getPaymentMethod().getType();
+		}
+		if ("cardnumbermasked".equals(inId) && getPaymentMethod() instanceof CreditPaymentMethod){
+			return ((CreditPaymentMethod) getPaymentMethod()).getMaskedCardNumber();
+		}
+		if ("cardexpirydate".equals(inId) && getPaymentMethod() instanceof CreditPaymentMethod){
+			return ((CreditPaymentMethod) getPaymentMethod()).getExpirationDateString();
+		}
+		
+		if(inId.startsWith("shipping-") || inId.startsWith("billing-"))
 		{
 			String[] splits = inId.split("-");
 			if (splits.length==2){
