@@ -738,13 +738,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		Element billingaddress = inOrderElement.element("billing-address");
 		if (billingaddress != null) {
 			Address billing = new Address();
-			billing.setAddress1(shippingaddress.attributeValue("address1"));
-			billing.setAddress2(shippingaddress.attributeValue("address2"));
-			billing.setCity(shippingaddress.attributeValue("city"));
-			billing.setCountry(shippingaddress.attributeValue("country"));
-			billing.setState(shippingaddress.attributeValue("state"));
-			billing.setZipCode(shippingaddress.attributeValue("zip"));
-			billing.setDescription(shippingaddress
+			billing.setAddress1(billingaddress.attributeValue("address1"));
+			billing.setAddress2(billingaddress.attributeValue("address2"));
+			billing.setCity(billingaddress.attributeValue("city"));
+			billing.setCountry(billingaddress.attributeValue("country"));
+			billing.setState(billingaddress.attributeValue("state"));
+			billing.setZipCode(billingaddress.attributeValue("zip"));
+			billing.setDescription(billingaddress
 					.attributeValue("description"));
 			inOrder.setBillingAddress(billing);
 		}

@@ -346,6 +346,23 @@ public class Order extends BaseData implements Comparable {
 			return getOrderStatus().getId();
 		}
 		
+		if(inId.contains("shipping-") || inId.contains("billing-"))
+		{
+			String[] splits = inId.split("-");
+			if(splits[0].equals("shipping")){
+				String val = getShippingAddress().get(splits[1]);
+				return val;
+				
+			}
+			if(splits[0].equals("billing")){
+				String val = getBillingAddress().get(splits[1]);
+				return val;
+				
+			}
+			
+		}
+		
+		
 		if ("distributor".equals(inId)) {
 		
 			StringBuffer buffer = new StringBuffer();
