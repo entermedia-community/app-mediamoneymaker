@@ -336,16 +336,15 @@ public class Order extends BaseData implements Comparable {
 		if ("id".equals(inId)) {
 			return getId();
 		}
-		if ("orderdate".equals(inId)) {
+		if ("orderdate".equals(inId) && getDate()!=null) {
 			return DateStorageUtil.getStorageUtil().formatForStorage(getDate());
 		}
-		if ("customer".equals(inId)) {
+		if ("customer".equals(inId) && getCustomer()!=null) {
 			return getCustomer().getId();
 		}
-		if ("orderstatus".equals(inId)) {
+		if ("orderstatus".equals(inId) && getOrderStatus()!=null) {
 			return getOrderStatus().getId();
 		}
-		
 		if ("subtotal".equals(inId)){
 			return getSubTotal()!=null ? getSubTotal().toShortString().replace(",","") : "0";
 		}
@@ -358,13 +357,13 @@ public class Order extends BaseData implements Comparable {
 		if("total".equals(inId)){
 			return getTotalPrice()!=null ? getTotalPrice().toShortString().replace(",","") : "0";
 		}
-		if ("paymentmethod".equals(inId)){
+		if ("paymentmethod".equals(inId) && getPaymentMethod()!=null){
 			return getPaymentMethod().getType();
 		}
-		if ("cardnumbermasked".equals(inId) && getPaymentMethod() instanceof CreditPaymentMethod){
+		if ("cardnumbermasked".equals(inId) && getPaymentMethod()!=null && getPaymentMethod() instanceof CreditPaymentMethod){
 			return ((CreditPaymentMethod) getPaymentMethod()).getMaskedCardNumber();
 		}
-		if ("cardexpirydate".equals(inId) && getPaymentMethod() instanceof CreditPaymentMethod){
+		if ("cardexpirydate".equals(inId) && getPaymentMethod()!=null && getPaymentMethod() instanceof CreditPaymentMethod){
 			return ((CreditPaymentMethod) getPaymentMethod()).getExpirationDateString();
 		}
 		
@@ -372,17 +371,15 @@ public class Order extends BaseData implements Comparable {
 		{
 			String[] splits = inId.split("-");
 			if (splits.length==2){
-				if(splits[0].equals("shipping")){
+				if(splits[0].equals("shipping") && getShippingAddress()!=null){
 					String val = getShippingAddress().get(splits[1]);
 					return val;
 				}
-				if(splits[0].equals("billing")){
+				if(splits[0].equals("billing") && getBillingAddress()!=null){
 					String val = getBillingAddress().get(splits[1]);
 					return val;
-					
 				}
 			}
-			
 		}
 		
 		
