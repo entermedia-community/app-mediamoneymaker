@@ -20,7 +20,6 @@ import org.openedit.store.CartItem;
 import org.openedit.store.Category;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.InventoryItem;
-import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ProductAdder;
 import org.openedit.store.PurchaseOrderMethod;
@@ -951,6 +950,24 @@ public class CartModule extends BaseStoreModule {
 		}
 		
 		return cart;
+		
+	}
+	
+	
+	public void addItemBySku(WebPageRequest inReq) throws Exception{
+		Store store = getStore(inReq);
+		clearCart(inReq);
+		Cart cart = getCart(inReq);
+		String sku = inReq.getRequestParameter("sku");
+		
+		Product p = getProduct(inReq);
+		if(sku != null){
+			InventoryItem i = p.getInventoryItemBySku(sku);
+			CartItem item = new CartItem();
+			item.setInventoryItem(i);
+			item.setQuantity(1);
+			cart.addItem(item);
+		}
 		
 	}
 

@@ -125,6 +125,10 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 
 
 		}
+		if(inOrder.get("stripetoken") == null){
+			return;
+			
+		}
 	
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 		String amountstring = inOrder.getTotalPrice().toShortString();

@@ -1304,11 +1304,16 @@ public class Store extends BaseData {
 
 
 	public List<TaxRate> getTaxRatesFor(String inState) {
+		
 		ArrayList<TaxRate> list = new ArrayList<TaxRate>();
 		for (Object rateObject : getTaxRates()) {
 			TaxRate rate = (TaxRate) rateObject;
-			if(rate.getState().equalsIgnoreCase(inState)){
+			
+			if(rate.getState() != null && inState != null && rate.getState().equalsIgnoreCase(inState)){
 				list.add(rate);
+			}
+			if(rate.getState() == null){
+				list.add(rate);// Always apply taxes with no state.
 			}
 		}
 		return list;

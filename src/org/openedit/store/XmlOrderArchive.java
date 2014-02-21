@@ -338,9 +338,10 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			}
 
 			// add payment method
-			CreditPaymentMethod paymentMethod = (CreditPaymentMethod) inOrder
+			PaymentMethod paymentMethod = (PaymentMethod) inOrder
 					.getPaymentMethod();
-			if (paymentMethod != null) {
+			if (paymentMethod != null && paymentMethod instanceof CreditPaymentMethod) {
+				CreditPaymentMethod m = (CreditPaymentMethod) paymentMethod;
 				Element paymentElem = orderElem.addElement("payment_method");
 				paymentElem.addAttribute("payment_type", "credit");
 				if (paymentMethod instanceof PurchaseOrderMethod) {
@@ -349,19 +350,31 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 									((PurchaseOrderMethod) paymentMethod)
 											.getPoNumber());
 				}
-				paymentElem.addAttribute("card_type", paymentMethod
+				paymentElem.addAttribute("card_type", m
 						.getCreditCardType().getId());
 				paymentElem.addAttribute("card_number",
-						encrypt(paymentMethod.getCardNumber()));
+						encrypt(m.getCardNumber()));
 				/* THIS IS A HUGE NO NO!!!! */
 				// paymentElem.addAttribute("card_verification_code",
 				// encrypt(paymentMethod.getCardVerificationCode()));
 
 				paymentElem.addAttribute("expiration_date",
-						paymentMethod.getExpirationDateString());
-				boolean bill = paymentMethod.getBillMeLater();
+						m.getExpirationDateString());
+				boolean bill = m.getBillMeLater();
 				paymentElem.addAttribute("bill_me_later", String.valueOf(bill));
-				paymentElem.addAttribute("note", paymentMethod.getNote());
+				paymentElem.addAttribute("note", m.getNote());
+			}
+			
+			else if (paymentMethod != null && paymentMethod instanceof PrepaidPaymentMethod){
+				
+				
+				PrepaidPaymentMethod m = (PrepaidPaymentMethod) paymentMethod;
+				Element paymentElem = orderElem.addElement("payment_method");
+				paymentElem.addAttribute("payment_type", "prepaid");
+						
+				paymentElem.addAttribute("note", m.getPrepaidCode());
+				
+				
 			}
 			// inOrder.getOrderStatus().setOk(true); Why in the world would we
 			// reset this if it was just rejected?

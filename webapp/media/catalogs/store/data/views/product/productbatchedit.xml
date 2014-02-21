@@ -4,4 +4,8 @@
   <property id="accessoryname"/>
   <property id="approved"/>
   <property id="clearancecentre"/>
+  <property id="groups"/>
+  <property id="displaydesignationid" />
+  
+
 </root>
