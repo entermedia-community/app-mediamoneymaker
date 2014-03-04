@@ -18,6 +18,7 @@ public interface ShippingMethod
 {
 
 	public String getDescription() ;
+	public void setDescription(String inDescription);
 	public String getId() ;
 	public Money getCost(Cart inCart);
 	public Money getCost();

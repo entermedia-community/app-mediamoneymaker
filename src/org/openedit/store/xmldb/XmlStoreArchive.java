@@ -302,11 +302,12 @@ public class XmlStoreArchive implements StoreArchive
 		{
 			Element element = (Element) iter.next();
 			String pathtoscript = element.attributeValue("path");
-
+			
 			Script script = getScriptManager().loadScript(pathtoscript);
 			GroovyScriptRunner runner = (GroovyScriptRunner) getModuleManager().getBean("groovyScriptRunner");
 			ShippingMethod method = (ShippingMethod) runner.newInstance(script);
-
+			String desription = element.attributeValue("description");
+			method.setDescription(desription);
 			inStore.getAllShippingMethods().add(method);
 		}
 

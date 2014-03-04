@@ -38,7 +38,8 @@ public class CompositeShippingMethod extends BaseShippingMethod implements
 				.hasNext();) {
 			ShippingMethod type = (ShippingMethod) iterator.next();
 			if (type.applies(inCart)) {
-				total = total.add(type.getCost(inCart));
+				Money cost = type.getCost(inCart);
+				total = total.add(cost);
 			}
 		}
 		return total;
