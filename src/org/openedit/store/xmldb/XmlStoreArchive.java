@@ -307,6 +307,8 @@ public class XmlStoreArchive implements StoreArchive
 			GroovyScriptRunner runner = (GroovyScriptRunner) getModuleManager().getBean("groovyScriptRunner");
 			ShippingMethod method = (ShippingMethod) runner.newInstance(script);
 			String desription = element.attributeValue("description");
+			String id = element.attributeValue("id");
+			method.setId(id);
 			method.setDescription(desription);
 			inStore.getAllShippingMethods().add(method);
 		}

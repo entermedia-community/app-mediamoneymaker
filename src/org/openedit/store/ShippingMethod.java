@@ -20,6 +20,8 @@ public interface ShippingMethod
 	public String getDescription() ;
 	public void setDescription(String inDescription);
 	public String getId() ;
+	public void setId(String inId);
+
 	public Money getCost(Cart inCart);
 	public Money getCost();
 
