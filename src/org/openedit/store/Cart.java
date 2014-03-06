@@ -315,14 +315,15 @@ public class Cart extends BaseData
 				{
 
 					totalTax = totalTax.add(price.multiply(item.getQuantity()).multiply(inTaxRate.getFraction()));
-					if (inTaxRate.isApplyToShipping())
-					{
-						Money shipping = getTotalShipping();
-						totalTax = totalTax.add(shipping.multiply(inTaxRate.getFraction()));
-					}
+					
 
 				}
 			}
+		}
+		if (inTaxRate.isApplyToShipping())
+		{
+			Money shipping = getTotalShipping();
+			totalTax = totalTax.add(shipping.multiply(inTaxRate.getFraction()));
 		}
 		return totalTax;
 	}
