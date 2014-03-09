@@ -931,12 +931,19 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 	protected PaymentMethod makePaymentMethod(Store inStore,
 			Element inPaymentMethodElem) throws StoreException {
 		String poNumber = inPaymentMethodElem.attributeValue("po_number");
+		String payment_type = inPaymentMethodElem.attributeValue("payment_type");
 		CreditPaymentMethod paymentMethod;
 		if (poNumber != null && poNumber.length() > 0) {
 			paymentMethod = new PurchaseOrderMethod();
 			((PurchaseOrderMethod) paymentMethod).setPoNumber(poNumber);
 		} else {
 			paymentMethod = new CreditPaymentMethod();
+		}
+		if("prepaid".equals(payment_type)){
+			PaymentMethod realmethod = new PrepaidPaymentMethod();
+			return realmethod;
+			
+			
 		}
 		String ccId = inPaymentMethodElem.attributeValue("card_type");
 		if (ccId == null) {

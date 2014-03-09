@@ -133,22 +133,22 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		return new File(inStore.getStoreDirectory(), "orders");
 	}
 
-	public void updateIndex(Order inOrder) throws StoreException {
-		try {
-			Document doc = new Document();
-			PropertyDetails details = getPropertyDetailsArchive()
-					.getPropertyDetails("storeOrder");
-			updateIndex(inOrder, doc, details);
-			populateProductDetails(inOrder, doc);
-			Term term = new Term("id", inOrder.getId());
-			getIndexWriter().updateDocument(term, doc, getAnalyzer());
-			flush();
-			clearIndex();
-		} catch (Exception ex) {
-			throw new StoreException(ex);
-		}
-
-	}
+//	public void updateIndex(Order inOrder) throws StoreException {
+//		try {
+//			Document doc = new Document();
+//			PropertyDetails details = getPropertyDetailsArchive()
+//					.getPropertyDetails("storeOrder");
+//			updateIndex(inOrder, doc, details);
+//			populateProductDetails(inOrder, doc);
+//			Term term = new Term("id", inOrder.getId());
+//			getIndexWriter().updateDocument(term, doc, getAnalyzer());
+//			flush();
+//			clearIndex();
+//		} catch (Exception ex) {
+//			throw new StoreException(ex);
+//		}
+//
+//	}
 
 	protected void populateProductDetails(Order inOrder, Document doc) {
 

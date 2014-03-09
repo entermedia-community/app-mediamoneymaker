@@ -12,7 +12,7 @@ public class PrepaidPaymentMethod extends PaymentMethod
 {
 
 	protected String fieldPrepaidCode;
-	
+
 	
 	public String getPrepaidCode()
 	{
