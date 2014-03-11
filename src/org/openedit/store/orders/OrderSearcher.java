@@ -214,7 +214,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			Order order = (Order) inData;
 			getOrderArchive().saveOrder(getStore(), order);
 		}
-		super.updateIndex(inData);
+		updateIndex(inData);
 	}
 
 	@Override
