@@ -138,20 +138,7 @@ public class OrderModule extends BaseModule
 	}
 
 	
-	public HitTracker getOrdersForUser(WebPageRequest inReq) throws Exception
-	{
-		String pagenum = inReq.getRequestParameter("page");
-		Store store = getStore(inReq);
-		if (pagenum == null)
-		{
-			HitTracker orders = store.getOrderSearcher().fieldSearchForUser(inReq, inReq.getUser());
-			inReq.putPageValue("orderlist", orders);
-			return orders;
-		} else
-		{
-			return store.getOrderSearcher().loadPageOfSearch(inReq);
-		}
-	}
+	
 
 	public HitTracker getOrdersForAll(WebPageRequest inReq) throws Exception
 	{
