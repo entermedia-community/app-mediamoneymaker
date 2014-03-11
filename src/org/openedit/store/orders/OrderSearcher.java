@@ -52,29 +52,9 @@ public class OrderSearcher extends BaseLuceneSearcher {
 		fieldStoreArchive = inStoreArchive;
 	}
 
-	public HitTracker fieldSearch(WebPageRequest inReq)
-			throws OpenEditException {
-		SearchQuery search = addStandardSearchTerms(inReq);
-		if (search == null) {
-			search = new LuceneSearchQuery();
-			search.addOrsGroup("orderstatus", "accepted authorized");
-			// search.putInput("orderstatus", "accepted");
-		}
-		addActionFilters(inReq, search);
-		return cachedSearch(inReq, search);
-	}
+	
 
-	public HitTracker fieldSearchForUser(WebPageRequest inReq, User inUser)
-			throws OpenEditException {
-		SearchQuery search = addStandardSearchTerms(inReq);
-		if (search == null) {
-			search = new LuceneSearchQuery();
-		}
-		addActionFilters(inReq, search);
-		search.addMatches("customer", inUser.getUserName());
-		search.setSortBy(inReq.findValue("ordersort"));
-		return cachedSearch(inReq, search);
-	}
+	
 
 	private void buildIndex(IndexWriter inWriter,
 			TaxonomyWriter inTaxonomyWriter, List inList) throws Exception {
