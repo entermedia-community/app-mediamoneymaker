@@ -23,6 +23,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
 import org.entermedia.email.PostMail;
+import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
@@ -41,7 +42,6 @@ import org.openedit.store.orders.Shipment;
 import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.xml.ElementData;
 
 import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
@@ -90,11 +90,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		try {
 			Collection types = inStore.getProperties("orderstatus");
 			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
-				ElementData key = (ElementData) iterator.next();
-				Element element = key.getElement();
+				Data key = (Data) iterator.next();
+				//Element element = key.getElement();
 				OrderState state = new OrderState();
-				state.setId(element.attributeValue("id"));
-				state.setDescription(element.getText());
+				state.setId(key.getId());
+				state.setDescription(key.getName());
 
 				list.put(state.getId(), state);
 			}
