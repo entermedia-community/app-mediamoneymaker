@@ -272,6 +272,9 @@ public class ExportEdiOrder extends EnterMediaObject {
 					if (store.usesBillMeLater() && order.getOrderStatus().getId().equals("accepted")){
 						
 						Address billing = order.getBillingAddress();
+						if (billing == null) {
+							throw new OpenEditException("Invalid Billing Address (populateHeader) (" + order.getId() + ")");
+						}
 						AddressType("BT")
 						AddressName1(billing.getName())
 						AddressIDQual("92")//not sure about this
