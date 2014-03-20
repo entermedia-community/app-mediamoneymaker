@@ -135,7 +135,6 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			
 			
 			
-			
 			post.addParameter("requestType", "BACKEND");
 			post.addParameter("merchant_id", merchant);
 			post.addParameter("username", userid);
@@ -178,6 +177,21 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			if(country != null){
 				post.addParameter("ordCountry", country);
 			}
+			
+			log.info("Posting the following parameters to beanstream");
+			NameValuePair [] params = post.getParameters();
+			for(NameValuePair param:params){
+				if (param.getName().equals("password")){
+					log.info(param.getName()+": ********");
+				} else if (param.getName().equals("trnCardCvd")){
+					log.info(param.getName()+": ********");
+				} else if (param.getName().equals("trnCardNumber")){
+					log.info(param.getName()+": ********");
+				} else {
+					log.info(param.getName()+": "+param.getValue());
+				}
+			}
+			
 			
 			int result = client.executeMethod(post);
 		

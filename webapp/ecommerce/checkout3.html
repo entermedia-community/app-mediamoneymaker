@@ -53,7 +53,7 @@
 		$pages.include("$apphome/paypal/checkoutform.html")
 	
 	#end
-	#if ( $store.usesBillMeLater() )
+	#if ( $store.usesBillMeLater() && $content.isPropertyTrue("billmelater-enabled") )
 	<tr>
 		<td style="padding: 0;">
 			<table>

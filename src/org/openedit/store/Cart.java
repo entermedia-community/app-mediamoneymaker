@@ -640,32 +640,33 @@ public class Cart extends BaseData
 	{
 		if (getItems() == null || getItems().isEmpty() || getCustomer() == null)
 		{
-			System.out.println("no customer or orders");
+			log.info("Cannot place order: no customer or orders");
 			return false;
 		}
 		if (getCustomer().getAddressList() == null || getCustomer().getAddressList().isEmpty())
 		{
-			System.out.println("no addresses");
+			log.info("Cannot place order: no addresses");
 			return false;
 		}
 		if (getCustomer().getBillingAddress() == null || !getCustomer().getBillingAddress().isComplete())
 		{
-			System.out.println("no billing address");
+			log.info("Cannot place order: no billing address");
 			return false;
 		}
 		if (getCustomer().getPaymentMethod() == null)
 		{
-			System.out.println("no method of payment");
+			log.info("Cannot place order: no method of payment");
 			return false;
 		}
 		if (getCustomer().getTaxRates() == null || getCustomer().getTaxRates().isEmpty())
 		{
 			if (getCustomer().getTaxExemptId() == null || getCustomer().getTaxExemptId().isEmpty())
 			{
-				System.out.println("no tax rate and not tax exempt");
+				log.info("Cannot place order: no tax rate and not tax exempt");
 				return false;
 			}
 		}
+		log.info("Can proceed to place order");
 		return true;
 	}
 

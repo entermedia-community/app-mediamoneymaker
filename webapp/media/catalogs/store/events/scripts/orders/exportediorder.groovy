@@ -264,20 +264,41 @@ public class ExportEdiOrder extends EnterMediaObject {
 				//Write Billing Information
 				TblAddress()
 				{
-					AddressType("BT")
-					AddressName1("Area")
-					AddressIDQual("ZZ")
-					if(production) {
-						AddressIDCode("AREACOMM")
-					} else{
-						AddressIDCode("AREACOMMT")
+					// if order is in accepted state (ie., client has requested an invoice)
+					// then provide the customer's billing address 
+					// otherwise provide AREA address
+					
+					Store store  = context.getPageValue("store");
+					if (store.usesBillMeLater() && order.getOrderStatus().getId().equals("accepted")){
+						
+						Address billing = order.getBillingAddress();
+						AddressType("BT")
+						AddressName1(billing.getName())
+						AddressIDQual("92")//not sure about this
+						AddressIDCode(billing.getId())
+						AddressLine1(billing.getAddress1())
+						AddressLine2(billing.getAddress2())
+						AddressCity(billing.getCity())
+						AddressState(billing.getState())
+						AddressPostalCode(billing.getZipCode())
+						AddressCountry(getCountryCode(billing.getCountry()))// CA
+						
+					} else {
+						AddressType("BT")
+						AddressName1("Area")
+						AddressIDQual("ZZ")
+						if(production) {
+							AddressIDCode("AREACOMM")
+						} else{
+							AddressIDCode("AREACOMMT")
+						}
+						AddressLine1("Area Marketing")
+						AddressLine2("1 Hurontario Street, Suite 220")
+						AddressCity("Mississauga")
+						AddressState("ON")
+						AddressPostalCode("L5G 0A3")
+						AddressCountry("CA")
 					}
-					AddressLine1("Area Marketing")
-					AddressLine2("1 Hurontario Street, Suite 220")
-					AddressCity("Mississauga")
-					AddressState("ON")
-					AddressPostalCode("L5G 0A3")
-					AddressCountry("CA")
 				}
 				TblAmount()
 				{
