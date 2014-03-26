@@ -46,11 +46,32 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 		{
 			//notifyStoreOwners(inStore, inOrder);
 			//TODO: PathUtilities.buildRelative(store.getThanksLayout(),
-			Page clerkLayout= getPageManager().getPage(inStore.getOrderLayout() );
+			
+			/*
+			 * 
+			 * <email-layout>/ecommerce/thanksemail.html</email-layout>
+  <order-layout>/ecommerce/orderemail.html</order-layout>
+   <status-email-layout>/ecommerce/orders/statusemail.html</status-email-layout>
+			 */
+			
+			String pathtoclerk = inContext.findValue("store-clerk-layout");
+			Page clerkLayout = null;
+			if (pathtoclerk != null){
+				 clerkLayout= getPageManager().getPage(pathtoclerk);
+			} else{
+				clerkLayout= getPageManager().getPage(inStore.getOrderLayout() );
+			}
 			if (!clerkLayout.exists()) {
 				throw new StoreException("Clerklayout" + clerkLayout + "does not exist or is invalid");
 			}
-			Page customerLayout = getPageManager().getPage(inStore.getEmailLayout() );
+			
+			String pathtocustomer = inContext.findValue("store-customer-layout");
+			Page customerLayout = null;
+			if (pathtocustomer != null){
+				customerLayout = getPageManager().getPage(pathtocustomer);
+			} else{
+				customerLayout = getPageManager().getPage(inStore.getEmailLayout() );
+			}
 			if (!customerLayout.exists()) {
 				throw new StoreException("Customerlayout" + customerLayout + "does not exist or is invalid");
 			}
