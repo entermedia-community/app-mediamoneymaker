@@ -35,7 +35,6 @@ public void init(){
 	processor.setPageManager(archive.getPageManager());
 	processor.setContext(context);
 	processor.setIncludeExtensions("xml");
-	processor.setApplicationId(applicationid);
 	processor.init();
 	processor.process();
 	
@@ -53,7 +52,6 @@ class XMLPathProcessor extends PathProcessor
 	Searcher distributorsearcher;
 	Searcher asnsearcher;
 	String processedFolder;
-	String applicationId;
 	
 	public void setArchive(MediaArchive inArchive)
 	{
@@ -68,10 +66,6 @@ class XMLPathProcessor extends PathProcessor
 	public void setContext(WebPageRequest inReq)
 	{
 		context = inReq;
-	}
-	
-	public void setApplicationId(String inApplicationId){
-		applicationId = inApplicationId;
 	}
 	
 	public void init(){
@@ -123,7 +117,7 @@ class XMLPathProcessor extends PathProcessor
 	{
 		String path = inContent.getPath();
 		Page page = archive.getPageManager().getPage(path);
-		logger.info("Processing ${page.getName()}, path=${page.getParentPath()}");
+		logger.info("### Processing ${page.getName()}, path=${page.getParentPath()}");
 		GPathResult asnInfo = new XmlSlurper().parse(page.getReader());
 		ArrayList<String> asnOrders = new ArrayList<String>();
 		String gssnd = asnInfo.Attributes.TblReferenceNbr.find {it.Qualifier == "GSSND"}.ReferenceNbr.text();
@@ -207,6 +201,11 @@ class XMLPathProcessor extends PathProcessor
 					updateOrder = true;
 				}
 				if (updateOrder){
+					if(order.isFullyShipped()){
+						order.setProperty("shippingstatus", "shipped");
+					}else{
+						order.setProperty("shippingstatus", "partialshipped");
+					}
 					store.saveOrder(order);
 				}
 			}
