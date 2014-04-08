@@ -49,7 +49,9 @@ public void processProducts() {
 	
 	SearcherManager manager = archive.getSearcherManager();
 	Searcher productsearcher = archive.getSearcher("product");
-	HitTracker hits = productsearcher.getAllHits();
+	SearchQuery query = productsearcher.createSearchQuery();
+	query.addMatches("id","10495");
+	HitTracker hits = productsearcher.getAllHits();//.search(query) ;//getAllHits();
 	log.info("staring processing ${hits.size()} products");
 	List productstosave = new ArrayList();
 	hits.each{
@@ -71,8 +73,17 @@ public void processProducts() {
 		for(InventoryItem inventoryItem:inventoryItems){
 			PriceSupport support = inventoryItem.getPriceSupport();
 			if (support == null){
-				log.error("problem with product ${product.id}: inventory item has no price support");
-				continue;//problem with one of the inventory item
+				String rogersprice = product.getProperty("rogersprice");
+				if (rogersprice == null || rogersprice.isEmpty()){
+					log.info("Warning: Unable to update product $product price - rogersprice is not set, skipping");
+					continue;
+				}
+				Money money = new Money(rogersprice);
+				money = money.multiply(1.1);
+				Price price = new Price(money);
+				support = new PriceSupport();
+				support.addTierPrice(1, price);
+				inventoryItem.setPriceSupport(support);
 			}
 			if(support.getTiers().size() == 0){
 				log.info("NO TIERS ON PRODUCT ${product.id}");
@@ -97,7 +108,6 @@ public void processProducts() {
 	}
 	store.saveProducts(productstosave);
 	log.info("Saved ${productstosave.size()} products");
-//	store.getProductSearcher().saveAllData(productstosave, null);
 	store.clearProducts();//forces products to be loaded from disc
 	updateWholesalePrices(store);
 	log.info("---- END Update Product Wholesale Price ----");
@@ -107,6 +117,8 @@ public void updateWholesalePrices(Store store){
 	List<OrderId> ids = store.getOrderArchive().listAllOrderIds(store);
 	for(OrderId id:ids){
 		Order order = store.getOrderSearcher().searchById(id.getOrderId());
+		if (order == null) continue;
+		if (order.getItems() == null) continue;
 		List<CartItem> cartItems = order.getItems();
 		for(CartItem item:cartItems){
 			Money retail = item.getYourPrice();
