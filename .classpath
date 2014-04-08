@@ -10,10 +10,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/openedit-money-5.626.jar"/>
 	<classpathentry kind="lib" path="lib/paypal_base.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/extension-openedit"/>
-	<classpathentry kind="lib" path="lib/jtidy-r938.jar"/>
 	<classpathentry kind="lib" path="lib/bsh-2.0b4.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/stripe-java-latest.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stripe-java-latest.jar"/>
 	<classpathentry kind="lib" path="lib/JavaAPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
