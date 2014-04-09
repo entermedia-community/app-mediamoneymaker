@@ -18,8 +18,7 @@ public class atlantia extends BaseShippingMethod {
 	public Money getCost(Cart inCart) {
 		// TODO Auto-generated method stub
 		Money totalforatlantia = getDistributorTotal(inCart);
-		
-		if(totalforatlantia.doubleValue() > 0 && totalforatlantia.doubleValue() < this.threshold) {
+		if(inCart.getShippingAddress() != null && totalforatlantia.doubleValue() > 0 && totalforatlantia.doubleValue() < this.threshold) {
 			Address shippingAddress = inCart.getShippingAddress();
 			if ((shippingAddress.getState().equals("BC")) || 
 				(shippingAddress.getState().equals("AB")) || 
