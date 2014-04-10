@@ -43,6 +43,7 @@ import org.openedit.util.DateStorageUtil;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.modules.BaseModule;
 import com.openedit.users.User;
 
@@ -137,7 +138,29 @@ public class OrderModule extends BaseModule
 		store.getOrderSearcher().loadPageOfSearch(inReq);
 	}
 
-	
+	public HitTracker getOrdersForUser(WebPageRequest inReq) throws Exception
+	{
+		String pagenum = inReq.getRequestParameter("page");
+		Store store = getStore(inReq);
+		if (pagenum == null)
+		{
+			OrderSearcher searcher = store.getOrderSearcher();
+			SearchQuery query = searcher.addStandardSearchTerms(inReq);
+			if (query == null) 
+			{
+				query = searcher.createSearchQuery();
+			}
+			searcher.addActionFilters(inReq,query);
+			query.addMatches("customer",inReq.getUser().getUserName());
+			query.setSortBy(inReq.findValue("ordersort"));
+			HitTracker orders = searcher.cachedSearch(inReq,query);
+			inReq.putPageValue("orderlist", orders);
+			return orders;
+		} else
+		{
+			return store.getOrderSearcher().loadPageOfSearch(inReq);
+		}
+	}
 	
 
 	public HitTracker getOrdersForAll(WebPageRequest inReq) throws Exception
