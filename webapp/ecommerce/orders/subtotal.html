@@ -10,7 +10,7 @@
 #set( $method = $cart.getShippingMethod() )
 <table cellspacing="10">
 <tr><td align="right" class=body2>Subtotal:</td><td align="right" class=body2> $cart.getSubTotal()</td></tr>
-<tr><td align="right" class=body2><nobr>#if($method.getDescription()!="") $method.getDescription(): #else Shipping: #end</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td></tr>
+<tr><td align="right" class=body2><nobr>#if($method.getDescription().isEmpty()==false) $method.getDescription(): #else Shipping: #end</nobr></td><td align="right" class=body2>$cart.getTotalShipping()</td></tr>
 #if ( $cart.isAdditionalShippingCosts() )
 <tr><td colspan=2 >
 <font color="#ff0000"><b>Additional shipping costs will be added.</b></font>
