@@ -1,7 +1,7 @@
 #set($distributorsearcher = $searcherManager.getSearcher($catalogid, "distributor"))
 #set($manufacturersearcher = $searcherManager.getSearcher($catalogid, "manufacturer"))
 
-#set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
+####set($productsearcher = $searcherManager.getSearcher($catalogid, "product"))
 
 #if (!$value)
   #set ($value = $context.getRequestParameter("manufacturerid.value"))
