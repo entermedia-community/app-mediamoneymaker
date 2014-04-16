@@ -1,4 +1,3 @@
-
 <div class="subcolumns" style="border: 1px solid #CCC;">
     <div class="c25l" id="left-col">
         <div class="subcl" >
@@ -18,17 +17,23 @@
 			#else
 			<a href="$home$apphome/index.html" style="margin-left: -12px;">
 
-			<img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" />
+			<img class="logo" src="$home$themeprefix/images/rogers_acc_portal_logo_small.png" height="56px; alt="EnterMedia Share" />
 			</a>
 			#end
 
         </div>
 	</div>
     <div style="padding: 20px;">
-   		<div id="headernav">          
-			<h1 style="margin-top: 25px; color: #49494B;">                        
+   		#if($user)
+ <img class="arealogo" src="$home$themeprefix/images/area_acc_portal_logo_small.png" height="28px;" alt="Area Accessories Portal" />
+		<h1 style="margin-top: 1px; color: #49494B;">                        
       			[[Accessories Portal]]
       		</h1>
+#else
+<h1 style="margin-top: 25px; color: #49494B;">                        
+      			[[Accessories Portal]]
+      		</h1>
+#end
  
        	#set ($lastselected = $content.module )
 		 	#if(!$lastselected)
@@ -54,7 +59,11 @@
 	#end	
 		<a href="$home$apphome/authentication/logout.html">[[Logout]]</a>
 	#else
-	<a href="$home$apphome/authentication/login.html">[[Login]]</a>
+	###<a href="$home$apphome/authentication/login.html">[[Login]]</a>
+
+<a href="$home$apphome/index.html" style="margin-left: -12px;">
+<img class="logo" src="$home$themeprefix/images/area_acc_portal_logo_small.png" height="32px; alt="EnterMedia Share" />
+</a>
 #end	 
  			
  #if($canviewsettings)
