@@ -1,14 +1,16 @@
 package edi
 
 import java.text.SimpleDateFormat
+import java.util.List;
 
 import org.dom4j.Element
+import org.entermedia.email.PostMail
+import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.util.DateStorageUtil
-
 import org.openedit.store.CartItem
 import org.openedit.store.Store
 import org.openedit.store.Product
@@ -39,6 +41,16 @@ public void doImport() {
 	Searcher itemsearcher = archive.getSearcher("invoiceitem");
 	Searcher productsearcher = archive.getSearcher("product");
 	Searcher distributorsearcher = archive.getSearcher("distributor");
+	
+	//build list of store admin emails first
+	ArrayList emaillist = new ArrayList();
+	HitTracker storeadmins = userprofilesearcher.fieldSearch("storeadmin", "true");
+	for(Iterator detail = storeadmins.iterator(); detail.hasNext();)
+	{
+		Data userInfo = (Data)detail.next();
+		emaillist.add(userInfo.get("email"));
+	}
+	log.info("storeadmins: $emaillist");
 	
 	XmlUtil util =  new XmlUtil();
 	SimpleDateFormat ediformat = new SimpleDateFormat("yyyyMMdd");
@@ -85,10 +97,12 @@ public void doImport() {
 				String ponumber = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
 				String invoicenumber = it.InvoiceNumber.text()
 				Data invoice = invoicesearcher.searchByField("invoicenumber", invoicenumber);
+				
 				if(invoice == null){
 					invoice = invoicesearcher.createNewData();
 					invoice.setId(invoicesearcher.nextId());
 				} else {
+					log.info("already processed invoice $invoicenumber, skipping");
 					return;//continue to next because already found
 				}
 				Order order = null;
@@ -103,7 +117,6 @@ public void doImport() {
 					}
 				}
 				
-				
 				invoice.setProperty("terms", it.Attributes.TblTermsOfSale.TermsDescription.text());
 				String termsdate = it.Attributes.TblTermsOfSale.NetDueDate.text();
 				if(termsdate != null && !termsdate.isEmpty()){
@@ -116,6 +129,9 @@ public void doImport() {
 				} else{
 					invoice.setProperty("distributor","NOT FOUND: ${distributor}");
 				}
+				log.info("found distributor ${invoice.get('distributor')}");
+				
+				
 				invoice.setProperty("ponumber", ponumber);
 				invoice.setProperty("inputfile", page.getName());
 				invoice.setProperty("invoicetotal", it.InvoiceAmount.text());
@@ -195,6 +211,12 @@ public void doImport() {
 				}
 				invoicesearcher.saveData(invoice, null);
 				itemsearcher.saveAllData(items, null);
+				
+				if (order!=null && !emaillist.isEmpty())
+				{
+					prepareEmailAndSend(context,emaillist,invoice,order);
+				}
+				
 			}
 			
 			String destinationFile = processedFolder + page.getName();
@@ -206,6 +228,38 @@ public void doImport() {
 	log.info("---- Finished Importing EDI Invoice ----");
 }
 
+public void prepareEmailAndSend(WebPageRequest inReq, List emails, Data invoice, Order order)
+{
+	log.info("preparing email for $emails");
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	inReq.putPageValue("id", invoice.getId());
+	inReq.putPageValue("order", order);
+	inReq.putPageValue("distributorid", invoice.get("distributor"));
+	String templatePage = "/ecommerce/views/modules/invoice/workflow/invoice-notification.html";
+	String subject = "INVOICE has been generated: " + invoice.get("invoicenumber");
+	sendEmail(archive, inReq, emails, templatePage, subject);
+	log.info("Email sent to Store Admins");
+}
 
+
+protected void sendEmail(MediaArchive archive, WebPageRequest context, List inEmailList, String templatePage, String inSubject)
+{
+	PageManager pageManager = archive.getPageManager();
+	Page template = pageManager.getPage(templatePage);
+	WebPageRequest newcontext = context.copy(template);
+	TemplateWebEmail mailer = getMail(archive);
+	mailer.loadSettings(newcontext);
+	mailer.setMailTemplatePath(templatePage);
+	mailer.setFrom("info@wirelessarea.ca");
+	mailer.setRecipientsFromStrings(inEmailList);
+	mailer.setSubject(inSubject);
+	mailer.send();
+}
+
+protected TemplateWebEmail getMail(MediaArchive archive)
+{
+	PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
+	return mail.getTemplateWebEmail();
+}
 
 doImport();
