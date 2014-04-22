@@ -1,4 +1,4 @@
-<div class="subcolumns" style="border: 1px solid #CCC;">
+<div class="subcolumns">
     <div class="c25l" id="left-col">
         <div class="subcl" >
 			#if($user.isInGroup("fido") && !$user.isInGroup("rogers"))
@@ -16,7 +16,6 @@
 
 			#else
 			<a href="$home$apphome/index.html" style="margin-left: -12px;">
-
 			<img class="logo" src="$home$themeprefix/images/rogers_acc_portal_logo_small.png" height="56px; alt="EnterMedia Share" />
 			</a>
 			#end
@@ -24,18 +23,14 @@
         </div>
 	</div>
     <div style="padding: 20px;">
-   		#if($user)
- <img class="arealogo" src="$home$themeprefix/images/area_acc_portal_logo_small.png" height="28px;" alt="Area Accessories Portal" />
-		<h1 style="margin-top: 1px; color: #49494B;">                        
-      			[[Accessories Portal]]
-      		</h1>
-#else
-<h1 style="margin-top: 25px; color: #49494B;">                        
-      			[[Accessories Portal]]
-      		</h1>
-#end
+   		<div id="headernav">    
+		 	#if($user)
+		 	<h1 style="margin-top: 1px; color: #49494B;">                        
+      			<img class="arealogo" src="$home$themeprefix/images/area_acc_banner_logo.png" height="80px;" alt="Area Accessories Portal" />
+   		 	</h1>
+		 	#end
  
-       	#set ($lastselected = $content.module )
+		 	#set ($lastselected = $content.module )
 		 	#if(!$lastselected)
 		 		#set($lastselected = $userprofile.last_selected_module )
 		 	#end
@@ -59,11 +54,9 @@
 	#end	
 		<a href="$home$apphome/authentication/logout.html">[[Logout]]</a>
 	#else
-	###<a href="$home$apphome/authentication/login.html">[[Login]]</a>
-
-<a href="$home$apphome/index.html" style="margin-left: -12px;">
-<img class="logo" src="$home$themeprefix/images/area_acc_portal_logo_small.png" height="32px; alt="EnterMedia Share" />
-</a>
+		<a href="$home$apphome/index.html" style="top:25px;">                    
+      			<img class="arealogo" src="$home$themeprefix/images/area_acc_banner_logo.png" height="80px;" alt="Area Accessories Portal" />
+		</a>
 #end	 
  			
  #if($canviewsettings)
