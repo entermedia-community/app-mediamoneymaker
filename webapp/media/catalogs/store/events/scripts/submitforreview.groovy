@@ -107,13 +107,12 @@ public void handleSubmission(){
 	
 	//Create the new item
 	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
-	
 	Money money = new Money(product.get("rogersprice"));
-	
-	Price price = new Price(money);
-	price.setWholesalePrice(money);
-	
 	money = money.multiply(1.1);
+	//retail price
+	Price price = new Price(money);
+	//wholesale price
+	price.setWholesalePrice(new Money(product.get("rogersprice")));
 	
 	PriceSupport pricing = new PriceSupport();
 	

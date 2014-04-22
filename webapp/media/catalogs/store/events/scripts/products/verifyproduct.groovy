@@ -14,15 +14,19 @@ import com.openedit.OpenEditException
 
 public void doProcess() {
 	log.info("Verifying product");
+	
+	System.out.println("##### Verifying product");
+	
 	WebEvent webevent = context.getPageValue("webevent");
-	if(webevent == null){
+	if (webevent == null){
 		return;
 	}
 	MediaArchive archive = context.getPageValue("mediaarchive");
    
 	String dataid = webevent.get('dataid');
-	String applicationid = webevent.get('applicationid');
-	
+	if(dataid == null){
+		dataid = context.getRequestParameter("id");
+	}
 	Store store = context.getPageValue("store");
 	Product product = store.getProduct(dataid);
 	product.clearItems();
@@ -32,7 +36,10 @@ public void doProcess() {
 	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
 	Money money = new Money(product.getProperty("rogersprice"));
 	money = money.multiply(1.1);
+	//retail price
 	Price price = new Price(money);
+	//wholesale price
+	price.setWholesalePrice(new Money(product.getProperty("rogersprice")));
 	
 	if(product.clearancecentre == "true"){
 		if(!product.clearanceprice){
@@ -42,6 +49,8 @@ public void doProcess() {
 		clearanceprice = clearanceprice.multiply(1.1);
 		price.setSalePrice(clearanceprice)
 	}
+	
+	
 	
 	
 	PriceSupport pricing = new PriceSupport();
