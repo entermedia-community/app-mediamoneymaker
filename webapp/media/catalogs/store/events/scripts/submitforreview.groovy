@@ -105,14 +105,19 @@ public void handleSubmission(){
 	//Clear the items!
 	product.clearItems();
 	
+	double pricefactor = getPriceFactor(archive,product);
+	log.info("price factor for $product: $pricefactor");
+	
+	
 	//Create the new item
 	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
-	Money money = new Money(product.get("rogersprice"));
-	money = money.multiply(1.1);
+	Money wholesaleprice = new Money(product.get("rogersprice"));
+	Money retailprice = new Money(product.get("rogersprice"));
+	retailprice = retailprice.multiply(pricefactor);
 	//retail price
-	Price price = new Price(money);
+	Price price = new Price(retailprice);
 	//wholesale price
-	price.setWholesalePrice(new Money(product.get("rogersprice")));
+	price.setWholesalePrice(wholesaleprice);
 	
 	PriceSupport pricing = new PriceSupport();
 	
@@ -121,8 +126,8 @@ public void handleSubmission(){
 			throw new OpenEditException("Clearance price wasn't set but product is in clearance section!");
 		}
 		Money clearanceprice = new Money(product.get("clearanceprice"));
-		clearanceprice = clearanceprice.multiply(1.1);
-		price.setSalePrice(clearanceprice)				
+		clearanceprice = clearanceprice.multiply(pricefactor);
+		price.setSalePrice(clearanceprice);			
 	}
 	pricing.addTierPrice(1, price);
 	inventoryItem.setPriceSupport(pricing);
@@ -221,6 +226,46 @@ public void handleSubmission(){
 		templatePage = "/ecommerce/views/modules/ticket/workflow/admin-notification-template.html";
 		sendEmail(context, emailList, templatePage, "Support Ticket Update");
 	}
+}
+
+public double getPriceFactor(MediaArchive archive, Product product)
+{
+	//get price factor for authorized/non-authorized products
+	String distributorid = product.get("distributor");
+	if (distributorid)
+	{
+		Searcher distributorsearcher = archive.getSearcher("distributor");
+		Data distributordata = distributorsearcher.searchById(distributorid);
+		String auth = distributordata.get("rogersauthorizedpricefactor");
+		String nonauth = distributordata.get("rogersnonauthorizedpricefactor");
+		double authfact = toDouble(auth,1.1);//default 10%
+		double nonauthfact = toDouble(nonauth,1.02);// default 2%
+		if (authfact < 1.0) authfact +=1.0;
+		if (nonauthfact < 1.0) nonauthfact +=1.0;
+		log.info("retail price factor for $distributordata (${distributorid}): authorized $authfact, non-authorized $nonauthfact");
+		
+		String isauth = product.get("rogersauthorized");
+		if ("true".equalsIgnoreCase(isauth))
+		{
+			return authfact;
+		}
+		return nonauthfact;
+	}
+	return 1.1;//original default if all else fails
+}
+
+public double toDouble(String str, double inDefault)
+{
+	double out = inDefault;
+	if (str)
+	{
+		try
+		{
+			out = Double.parseDouble(str);
+		}
+		catch (Exception e){}
+	}
+	return out;
 }
 
 protected createTicketHistory(Searcher tickethistorysearcher, Data ticket, WebPageRequest inReq,

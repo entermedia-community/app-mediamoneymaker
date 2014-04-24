@@ -49,9 +49,9 @@ public void processProducts() {
 	
 	SearcherManager manager = archive.getSearcherManager();
 	Searcher productsearcher = archive.getSearcher("product");
-	SearchQuery query = productsearcher.createSearchQuery();
-	query.addMatches("id","10495");
-	HitTracker hits = productsearcher.getAllHits();//.search(query) ;//getAllHits();
+//	SearchQuery query = productsearcher.createSearchQuery();
+//	query.addMatches("id","10495");
+	HitTracker hits = productsearcher.getAllHits(); //search(query) ;//getAllHits();
 	log.info("staring processing ${hits.size()} products");
 	List productstosave = new ArrayList();
 	hits.each{

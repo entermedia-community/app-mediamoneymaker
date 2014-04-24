@@ -58,8 +58,12 @@ public void processProducts() {
 		if (wholesale == null || wholesale.isEmpty() || !isNumber(wholesale)){
 			return;//continue
 		}
+		
+		double pricefactor = getPriceFactor(archive,product);
+		log.info("price factor for $product: $pricefactor");
+		
 		Money wholesalePrice = new Money(wholesale);
-		Money retailPrice = wholesalePrice.multiply("1.10");
+		Money retailPrice = wholesalePrice.multiply(pricefactor);
 		List<InventoryItem> inventoryItems = product.getInventoryItems();
 		if (inventoryItems.size() != 1){
 			log.info("<span style='color:red;'>Warning: product # $product.id does not have ONE inventory item (${inventoryItems.size()}), skipping</span>");
@@ -106,6 +110,46 @@ public boolean isNumber(String str){
 	}catch(Exception e){
 		return false;
 	}
+}
+
+public double getPriceFactor(MediaArchive archive, Product product)
+{
+	//get price factor for authorized/non-authorized products
+	String distributorid = product.get("distributor");
+	if (distributorid)
+	{
+		Searcher distributorsearcher = archive.getSearcher("distributor");
+		Data distributordata = distributorsearcher.searchById(distributorid);
+		String auth = distributordata.get("rogersauthorizedpricefactor");
+		String nonauth = distributordata.get("rogersnonauthorizedpricefactor");
+		double authfact = toDouble(auth,1.1);//default 10%
+		double nonauthfact = toDouble(nonauth,1.02);// default 2%
+		if (authfact < 1.0) authfact +=1.0;
+		if (nonauthfact < 1.0) nonauthfact +=1.0;
+		log.info("retail price factor for $distributordata (${distributorid}): authorized $authfact, non-authorized $nonauthfact");
+		
+		String isauth = product.get("rogersauthorized");
+		if ("true".equalsIgnoreCase(isauth))
+		{
+			return authfact;
+		}
+		return nonauthfact;
+	}
+	return 1.1;//original default if all else fails
+}
+
+public double toDouble(String str, double inDefault)
+{
+	double out = inDefault;
+	if (str)
+	{
+		try
+		{
+			out = Double.parseDouble(str);
+		}
+		catch (Exception e){}
+	}
+	return out;
 }
 
 processProducts();
