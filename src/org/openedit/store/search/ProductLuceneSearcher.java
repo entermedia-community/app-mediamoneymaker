@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.openedit.store.ProductPathFinder;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
@@ -704,6 +706,10 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 				}
 				if(product.getSourcePath() == null){
 					product.setSourcePath(product.getId());
+				}
+				if (product.get("createdon") == null){
+					String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+					product.setProperty("createdon", date);
 				}
 				getProductArchive().saveProduct(product);
 				updateIndex(product);
