@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/gson-2.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/stripe-java-latest.jar"/>
 	<classpathentry kind="lib" path="lib/JavaAPI.jar"/>
+	<classpathentry kind="lib" path="lib/store-reports.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
