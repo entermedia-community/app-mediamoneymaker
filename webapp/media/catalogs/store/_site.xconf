@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="fallbackdirectory">/media/catalog</property>
+  <property name="fallbackdirectory">/WEB-INF/base/bootstrapfrontend/system</property>
   <property name="catalogid">media/catalogs/store</property>
   <path-action alltypes="true" name="storeArchive.loadStore"/>
   <path-action alltypes="true" name="CartModule.getCart"/>
