@@ -352,14 +352,16 @@ public class ExportEdiOrder extends EnterMediaObject {
 				CartItem orderItem = itemIterator.next();
 				if (orderItem.getProduct().getProperty("distributor") == distributor.getId()) {
 					orderCount++
-					populateDetail(xml, orderCount, orderItem);
+					populateDetail(xml, orderCount, orderItem, order);
 				}
 			} // End itemIterator loop
 		} // end POHeader
 	}
 
-	private void populateDetail(xml, int orderCount, CartItem orderItem) {
-
+	private void populateDetail(xml, int orderCount, CartItem orderItem, Order order) {
+		
+		String orderstatus = order.get("orderstatus");
+		boolean isAccepted = orderstatus!=null && orderstatus.equals("accepted");
 		xml.PODetail()
 		{
 			LineItemNumber(orderCount);
@@ -373,7 +375,11 @@ public class ExportEdiOrder extends EnterMediaObject {
 			if (saleprice != null && saleprice.toDouble() > 0) {
 				UnitPrice(saleprice)
 			} else {
-				UnitPrice(p.get("rogersprice"))
+				if (isAccepted){
+					UnitPrice(p.getYourPrice())
+				} else {
+					UnitPrice(p.get("rogersprice"))
+				}
 			}
 			UnitOfMeasure("EA")
 			Description(orderItem.getProduct().getName())
