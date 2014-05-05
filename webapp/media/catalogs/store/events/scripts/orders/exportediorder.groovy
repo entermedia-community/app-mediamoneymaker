@@ -372,15 +372,16 @@ public class ExportEdiOrder extends EnterMediaObject {
 			Product p = orderItem.getProduct();
 			String saleprice = p.get("clearanceprice");
 			
-			if (saleprice != null && saleprice.toDouble() > 0) {
-				UnitPrice(saleprice)
+			if (isAccepted){
+				UnitPrice(p.getYourPrice())
 			} else {
-				if (isAccepted){
-					UnitPrice(p.getYourPrice())
+				if (saleprice != null && saleprice.toDouble() > 0) {
+					UnitPrice(saleprice)
 				} else {
 					UnitPrice(p.get("rogersprice"))
 				}
 			}
+			
 			UnitOfMeasure("EA")
 			Description(orderItem.getProduct().getName())
 			Attributes()
