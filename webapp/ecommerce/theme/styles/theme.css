@@ -871,7 +871,7 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
     border-radius: 0 0 5px 5px;
     padding: 0;
     border: 1px solid #ccc;
-    border-top: none;
+    /*border-top: none;*/
 }
 .footer-p, .footer-p a {
     font-size: 12px;

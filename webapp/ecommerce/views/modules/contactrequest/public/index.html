@@ -1,0 +1,37 @@
+
+ 
+<div class="featured" style="width: 95%;">
+ <h1>Contact Us</h1>
+   <b> By Phone: </b> 1-888-583-6028</br>
+   <b> By Email: </b> info@wirelessarea.ca</br>
+   
+		#set ( $username = ${data.id} )
+ <b> Or Complete this form:</b></br>
+
+  <form role="form" action="submitcontact.html" method="post">
+   #set($contactsearcher = $searcherManager.getSearcher($catalogid,"contactrequest"))
+    #set($details = $contactsearcher.getDetailsForView("contactrequest/mobileform"))
+    #foreach($detail in $details)
+  	  	#if($detail.id == "subject")
+  	  		#set($val = "WirelessAREA.ca webform Inquiry")
+  	  	#end
+  	<div class="form-group">
+  	    <label for="$detail.id">$detail.text:</label>
+  	
+  	  	<input type="hidden" name="field" value="$detail.id"/>
+    	 <input class="form-control" id="$detail.id" type="text" name="${detail.id}.value" value="$!val"/>
+    	#set($val = "")
+    </div>
+
+    #end
+    #if($rep.email)
+    	<input type="hidden" name="to" value="$rep.email"/>
+    #else
+    	<input type="hidden" name="to" value="$content.defaultrecipient"/>
+    #end
+    <input type="submit" class="btn btn-default btn-block" value="[[Send Message]]"/>
+    </form>
+  
+    
+  
+			</div>
