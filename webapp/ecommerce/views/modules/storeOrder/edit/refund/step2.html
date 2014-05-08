@@ -1,6 +1,10 @@
 #set ( $orderNumber = $order.orderNumber )
 #set ( $customer = $order.customer )
 
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
 #set($title = "Refund details for $orderNumber")
 #set($description = "Confirm the following refund details the press <strong>Submit</strong>.")
 
@@ -15,6 +19,8 @@
 	<input type="hidden" name="subtotal" value="${subtotal.toShortString()}"/>
 	<input type="hidden" name="tax" value="${totaltaxes.toShortString()}"/>
 	<input type="hidden" name="shipping" value="$!{shipping.toShortString()}"/>
+	<input type="hidden" name="viewid" value="$viewid"/>
+	<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
 	
 	<table cellspacing="5" cellpadding="3" border="0">
 		<thead>

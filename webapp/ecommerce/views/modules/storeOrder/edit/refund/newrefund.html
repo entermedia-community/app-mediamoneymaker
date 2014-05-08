@@ -2,6 +2,10 @@
 #set ( $orderNumber = $order.orderNumber )
 #set ( $customer = $order.customer )
 
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
 #set($title = "Create a refund for $orderNumber")
 #set($description = "To refund an entire or partial order, select an item on the left, provide a quantity, then select <strong>Next</strong>.")
 
@@ -31,7 +35,11 @@
 				#set($goback="$home$apphome/views/modules/storeOrder/edit/edit.html?id=${orderNumber}&viewid=storeOrderorder_details&viewpath=storeOrder/storeOrderorder_details")
 		    	<td><input class="btn small" style="float: left" type="button" value="Cancel" onclick="window.location='${goback}'"/></td>
 		    	<td colspan="5"></td>
-		    	<td><input class="btn small" style="float: right" type="submit" value="Next" /></td>
+		    	<td>
+		    		<input type="hidden" name="viewid" value="$viewid"/>
+					<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+		    		<input class="btn small" style="float: right" type="submit" value="Next" />
+		    	</td>
 	   		</tr>
 		</tfoot>
 		

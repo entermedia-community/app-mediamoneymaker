@@ -5,6 +5,10 @@
 #set( $refunds = $order.getRefunds() )
 #set ( $orderNumber = $order.orderNumber )
 
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
 <h3>Refund History for $orderNumber</h3>
 
 #if($refunds.size() == 0)
@@ -12,6 +16,8 @@
 	
 	<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/newrefund.html">
 		<input type="hidden" name="ordernumber" value="$orderNumber"/>
+		<input type="hidden" name="viewid" value="$viewid"/>
+		<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
 		<input class="btn small" style="float: left" type="submit" value="New" />
 	</form>
 	<br/>	
@@ -35,6 +41,8 @@
 				<th>
 					<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/newrefund.html">
 						<input type="hidden" name="ordernumber" value="$orderNumber"/>
+						<input type="hidden" name="viewid" value="$viewid"/>
+						<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
 						<input class="btn small" style="float: left" type="submit" value="New" />
 					</form>
 				</th>
