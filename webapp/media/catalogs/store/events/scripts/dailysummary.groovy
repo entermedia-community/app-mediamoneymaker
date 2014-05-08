@@ -51,8 +51,9 @@ public void init()
 	HitTracker hits = ordersearcher.search(query);
 	hits.each{
 		Order order = ordersearcher.searchById(it.id);
+		boolean isFullyShipped = order.isFullyShipped();
 		String shippingstatus = order.get("shippingstatus");//shipped,partialshipped
-		if (shippingstatus == null || shippingstatus.equals("partialshipped"))
+		if (!isFullyShipped)
 		{
 			long milli = System.currentTimeMillis() - order.getDate().getTime();
 			long hours = TimeUnit.HOURS.convert(milli, TimeUnit.MILLISECONDS);

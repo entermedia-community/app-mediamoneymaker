@@ -1,15 +1,15 @@
-<div class="ui-widget-content no-padding-for-real">
+<div class="ui-widget-content no-padding-for-real_">
 #set ( $orderNumber = $order.orderNumber )
 #set ( $shippingAddress = $order.getShippingAddress() )
 #set ( $billingAddress = $order.getBillingAddress() )
 #set ( $customer = $order.customer )
 #set ( $searcherManager = $store.getSearcherManager())
 #set ( $orderitems = $order.getItems() )
-<h2 >Order #$orderNumber</h2>
+<h2>Order #$orderNumber</h2>
 (<a class="btn" href="$apphome/views/modules/storeOrder/actions/recreatecart.html?orderid=${order.orderNumber}">Re-order this</a>)
 
-<h3 >$order.dateOrdered</h3>
-<strong>Status:</strong>&nbsp;$order.getOrderStatus()
+<h3>Date: $order.dateOrdered</h3>
+<p><strong>Status:</strong>&nbsp;$order.getOrderStatus()</p>
 
 #if( $canmanageorders)
 	<p><a href="#" onclick="new Ajax.Updater('messagearea', '$home$apphome/orders/sendreceipt.html', { parameters: { orderid: '$order.id', customerid: '$customer.getUserName()' } } ); return false;">Send email</a> receipt</p>
@@ -54,17 +54,20 @@
 		$order.shippingAddress.city, $order.shippingAddress.state $order.shippingAddress.zipCode $!order.shippingAddress.country<br>
 	</p>
 #end
-<p>
-<b>Order Details:</b><br>
+
+<hr>
+<h3>Order Details</h3>
+
 <table cellspacing="5" class="standard-table" cellpadding="3" border="0">
 	<tr class="results-list-head">
 		<th align="left" class="results-list-head">Acc.<br>ID</th>
-		<th align="left" class="results-list-head" style="padding-left: 10px;">Product Name</th>
-		<th align="center" class="results-list-head">Manufacturer<br>SKU</th>
+		<th align="left" class="results-list-head" style="padding-left: 10px;">Product</th>
+		<th align="center" class="results-list-head">SKU</th>
 		<th align="center" width="100"  class="results-list-head">Quantity</th>
 		<th align="right" class="results-list-head">Unit Price</th>
-		<th align="right" class="results-list-head">Line<br>Total</th>
+		<th align="right" class="results-list-head">Subtotal</th>
 		<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
+		<th align="center" width="100" nowrap class="results-list-head">Refunds</th>
 		<th align="center" width="100" nowrap class="results-list-head">Distributor</th>
 	</tr>
 	#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
@@ -73,7 +76,7 @@
 #foreach ( $item in $orderitems )
 	#set( $productid = $item.getProduct().getId() )
 	#set( $product = $store.getProductSearcher().searchById($productid) )
-	#set( $path ="$apphome/products/$product.getSourcePath().html")
+	#set( $path ="$apphome/products/${product.getSourcePath()}.html")
 	#set( $itemCounter = $itemCounter + 1)
 	#set( $bkgrnd = $itemCounter % 2)
 	#if ( $bkgrnd == 0 )
@@ -81,7 +84,7 @@
 	#else
 		<tr class="results-list-b">
 	#end
-		<td>${productid}</td>
+		<td><p class="results-list">${productid}</p></td>
 		<td>
 			<p class="results-list" style="margin-left: 10px;">
 				<a class="results-list" href="$home$path" target="_blank" 
@@ -94,23 +97,33 @@
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
 		<td align="right">
-				<p class="results-list">$item.yourPrice</p></td>
+			<p class="results-list">$item.yourPrice</p></td>
 		<td align="right">
-				<p class="results-list">$item.getTotalPrice()</p></td>
+			<p class="results-list">$item.getTotalPrice()</p></td>
 		<td align="center" nowrap>
 			<p class="results-list">
-				#if( $order.isFullyShipped() == "true" )
+				#set($quantityrefunded = $order.getQuantityRefunded($item))
+				#set($delta = $item.quantity - $quantityrefunded)
+				#if ( $order.getQuantityShipped($item) == $delta )
 					Shipped
 				#else
-					#if ( $order.getQuantityShipped($item) == $item.quantity )
-						Shipped
+					#if ( $order.getQuantityShipped($item) > 0 )
+						Partially Shipped
 					#else
-						#if ( $order.getQuantityShipped($item) > 0 )
-							Partially Shipped
-						#else
-							Waiting<br>for Shipment
-						#end
+						Waiting<br/>for Shipment
 					#end
+				#end
+			</p>
+		</td>
+		<td align="center" nowrap>
+			<p class="results-list">
+				#set($quantityrefunded = $order.getQuantityRefunded($item))
+				#if($quantityrefunded > 0)
+					<a href="/ecommerce/views/modules/storeOrder/edit/refund/index.html?id=${order.id}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds" style="color:blue;text-decoration:underline;font-weight:normal;">
+						$quantityrefunded
+					</a>
+				#else
+					0
 				#end
 			</p>
 		</td>
@@ -188,7 +201,102 @@
 		<td align="right"><b>$order.totalPrice</b></td>
 		<td colspan="2">&nbsp;</td>
 	</tr>
-</table></p>
+</table>
+
+<hr>
+<h3>Refund Details</h3>
+
+#set( $refunds = $order.getRefunds() )
+#if($refunds.size() == 0)
+	<p>No refunds have been processed for this order. <a href="/ecommerce/views/modules/storeOrder/edit/refund/index.html?id=${order.id}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds" style="color:blue;text-decoration:none;font-weight:normal;">Click here to issue one.</a></p>
+#else
+	#foreach ($refund in $refunds)
+		#set($success = $refund.isSuccess())
+		#set($subtotal = $refund.getSubTotal())
+		#set($tax = $refund.getTaxAmount())
+		#set($total = $refund.getTotalAmount())
+		#if($success == "true")
+			#set($refunditems = $refund.getItems())
+			#foreach($refunditem in $refunditems)
+				#if($refunditem.isShipping())
+					#if(!$shippingrefunds)
+						#set($shippingrefunds = $refunditem.getTotalPrice())
+					#else
+						#set($shippingrefund = $refunditem.getTotalPrice())
+						#set($shippingrefunds = $shippingrefunds.add($shippingrefund))
+					#end
+				#end
+			#end
+			#if(!$sumsubtotal)
+				#set($sumsubtotal = $subtotal)
+			#else
+				#set($sumsubtotal = $sumsubtotal.add($subtotal))
+			#end
+			
+			#if(!$sumtax)
+				#set($sumtax = $tax)
+			#else
+				#set($sumtax = $sumtax.add($tax))
+			#end
+			
+			#if(!$sumtotal)
+				#set($sumtotal = $total)
+			#else
+				#set($sumtotal = $sumtotal.add($total))
+			#end
+		#end
+	#end
+	
+	#if($shippingrefunds)
+		#set($cartitemrefunds = $sumsubtotal.subtract($shippingrefunds))
+	#else
+		#set($D = "$")
+		#set($shippingrefunds = "${D}0.00")
+		#set($cartitemrefunds = $sumsubtotal)
+	#end
+
+	<table cellspacing="5" cellpadding="3" border="0">
+		<thead>
+			<tr class="results-list-head">
+				<th align="center" width="100" nowrap class="results-list-head">Shipping</th>
+				<th align="center" width="100" nowrap class="results-list-head">Cart Items</th>
+				<th align="center" width="100" nowrap class="results-list-head">Subtotal</th>
+				<th align="center" width="100" nowrap class="results-list-head">Taxes</th>
+				<th align="center" width="100" nowrap class="results-list-head">Total</th>
+			</tr>
+		</thead>
+		<tr>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!shippingrefunds
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!cartitemrefunds
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!sumsubtotal
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!sumtax
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!sumtotal
+				</p>
+			</td>
+		</tr>
+	</table>
+#end
+
+<hr>
+<h3>Payment Details</h3>
 <p>
 	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
 		#if( $order.getOrderState().getId() == "authorized" )
@@ -199,16 +307,12 @@
 			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
 		#end
 
-		#set($cardNumber = $order.paymentMethod.cardNumber)
-		#set($l = $cardNumber.length())
-		#if($l == "16")
-			#set($cardend = $cardNumber.substring(12, 16))
-			Card number: XXXXXXXXXXX$cardend<br>
+		#set($cardNumber = $order.getPaymentMethod().getMaskedCardNumber())
+		#if($cardNumber)
+			Card number: $cardNumber<br>
 		#else
 			Card number: Not possible to display.<br>
 		#end
-	
-		CVC: $!order.paymentMethod.cardVerificationCode<br/>
 		Expiration date: $order.paymentMethod.expirationDateString<br>
 		#if( $canmanageorders )
 
@@ -222,17 +326,18 @@
 				<input type="hidden" name="ordernumber" value="$order.getOrderNumber()" />
 			</form>
 		#end
+	#end
 #end
-	#end
-	#if ( $order.paymentMethod.poNumber )
-		<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
-	#end
-	#if ( $order.paymentMethod.billMeLater )
-		<strong>Payment Method:</strong> Bill Me Later<br />
-	#end
-	#if ( $order.paymentMethod.note )
-		<stong>Notes:</stong><br/>$order.paymentMethod.note
-	#end
+
+#if ( $order.paymentMethod.poNumber )
+	<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
+#end
+#if ( $order.paymentMethod.billMeLater )
+	<strong>Payment Method:</strong> Bill Me Later<br />
+#end
+#if ( $order.paymentMethod.note )
+	<stong>Notes:</stong><br/>$order.paymentMethod.note
+#end
 </p>
 </div>
 <!-- 

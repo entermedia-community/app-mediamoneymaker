@@ -6,18 +6,17 @@
 #set ( $orderNumber = $order.orderNumber )
 
 <h3>Refund History for $orderNumber</h3>
-<br>
 
 #if($refunds.size() == 0)
 	<p>No refunds have been processed for this order.</p>
-	<br>
-	<p>
-		<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/newrefund.html">
-			<input type="hidden" name="ordernumber" value="$orderNumber"/>
-			<input class="btn small" style="float: left" type="submit" value="New" />
-		</form>
-	</p>
+	
+	<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/newrefund.html">
+		<input type="hidden" name="ordernumber" value="$orderNumber"/>
+		<input class="btn small" style="float: left" type="submit" value="New" />
+	</form>
+	<br/>	
 #else
+	<br/>
 	<table cellspacing="5" cellpadding="3" border="0">
 		<thead>
 			<tr class="results-list-head">
@@ -124,17 +123,23 @@
 			<td align="center" style="font-weight:bold;">Sku</td>
 			<td align="center" style="font-weight:bold;">Unit Price</td>
 			<td align="center" style="font-weight:bold;">Quantity</td>
-			<td align="center" style="font-weight:bold;">Total</td>
+			<td align="center" style="font-weight:bold;">Subtotal</td>
 		</tr>
 		
 		#foreach ($item in $items)
 		<tr class="${itemCounter}-button-items" style="display:none;">
 			#if($item.isShipping() == false)
-				#set( $product = $store.getProductSearcher().searchByField("rogerssku",$item.getId()) ) 
-				#set( $displayname = $product.getName() )
+				#set( $product = $store.getProductSearcher().searchByField("id",$item.getId()) )
+				#if(!$product)
+					#set( $product = $store.getProductSearcher().searchByField("rogerssku",$item.getId()) )
+				#end
+				#set( $displayname = $product )
 			#else
 				#set( $shippingmethod = $order.getShippingMethod() )
 				#set( $displayname = $shippingmethod.getDescription() )
+				#if($displayname.isEmpty())
+					#set($displayname = "Shipping")
+				#end
 			#end
 			<td></td>
 			<td style="font-size:smaller;font-weight:bold;">$displayname</td>

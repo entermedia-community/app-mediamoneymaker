@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
@@ -33,6 +35,9 @@ import org.openedit.util.DateStorageUtil;
  * @author Eric Galluzzo, egalluzzo@einnovation.com
  */
 public class Order extends BaseData implements Comparable {
+	
+	private static final Log log = LogFactory.getLog( Order.class );
+	
 	public final static String ACCEPTED = "accepted";
 	public final static String AUTHORIZED = "authorized";
 	public final static String CAPTURED = "captured";
@@ -446,21 +451,41 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public boolean isFullyShipped(CartItem cartItem) {
-
-		return getQuantityShipped(cartItem) == cartItem.getQuantity();
+		int quantity = cartItem.getQuantity();
+		int quantityShipped = getQuantityShipped(cartItem);
+		int quantityRefunded = getQuantityRefunded(cartItem);
+		int quantityToBeShipped = quantity - quantityRefunded;
+		log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
+		//This assumes that refunds can only occur before a shipment is sent
+		return ( quantityToBeShipped == quantityShipped);
+	}
+	
+	public int getQuantityRefunded(CartItem cartItem){
+		List<Refund> refunds = getRefunds();
+		int tally = 0;
+		if (refunds!=null){
+			for(Refund refund:refunds){
+				if (refund.isSuccess()){
+					List<RefundItem> refunditems =  refund.getItems();
+					for(RefundItem refunditem:refunditems){
+						if (refunditem.getId()!=null && refunditem.getId().equals(cartItem.getSku())){
+							int quantityRefunded = refunditem.getQuantity();
+							tally += quantityRefunded;
+						}
+					}
+				}
+			}
+		}
+		return tally;
 	}
 
 	public int getQuantityShipped(CartItem inItem) {
-		boolean completed = false;
-
 		int total = 0;
-
 		for (Iterator iterator = getShipments().iterator(); iterator.hasNext();) {
 			Shipment shipment = (Shipment) iterator.next();
 			for (Iterator iterator2 = shipment.getShipmentEntries().iterator(); iterator2
 					.hasNext();) {
 				ShipmentEntry entry = (ShipmentEntry) iterator2.next();
-//				if (entry.getItem().equals(inItem)) {
 				if (entry.getSku().equals(inItem.getSku())) {
 					total += entry.getQuantity();
 				}
