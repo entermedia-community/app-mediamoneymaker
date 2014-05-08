@@ -106,6 +106,7 @@
 	    -->
 	    
 	    #set($shippingmethod = $order.getShippingMethod())
+	    
 	    #if($shippingmethod.isRefundable() == "true")
 	    	#set($itemCounter = $itemCounter + 1)
 			#set($bkgrnd = $itemCounter % 2)
@@ -134,13 +135,18 @@
 			<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
 					
+					#set($shippingcost = $shippingmethod.getCost().doubleValue())
+					#set($totalshipping = $order.getTotalShipping().doubleValue())
+					#if($shippingcost == false || $shippingmethod.getCost().isZero())
+						#if($totalshipping)
+							#set($shippingcost = $totalshipping)
+						#end
+					#end
+					
 					#set($shippingrefundtally = $order.get("shippingrefundtally"))
 					#if($shippingrefundtally)
 						#set($temp = $numberutils.toDouble("$shippingrefundtally"))
-						#set($shippingcost = $shippingmethod.getCost().doubleValue() )
 						#set($shippingcost = $shippingcost - $temp)
-					#else
-						#set($shippingcost = $shippingmethod.getCost().toShortString())
 					#end
 					
 					<input type="text" id="shipping-refund-quantity" name="shipping-refund-quantity" value="$shippingcost" onchange="validateInput('shipping-refund',$shippingcost);" disabled>

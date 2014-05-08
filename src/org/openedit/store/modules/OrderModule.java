@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -53,6 +55,8 @@ import com.openedit.users.User;
  */
 public class OrderModule extends BaseModule
 {
+	private static final Log log = LogFactory.getLog(OrderModule.class);
+	
 	protected static final String ORDERMODULE = "ordermodule";
 	protected static final String ORDERLIST = "orderlist";
 	protected static final String ORDERIDLIST = "orderidlist";
@@ -471,12 +475,12 @@ public class OrderModule extends BaseModule
 			String quantity = inContext.getRequestParameter(sku+"-refund-quantity");
 			if (sku.equals("shipping"))
 			{
-				ShippingMethod shippingmethod = order.getShippingMethod();
-				Money shippingcost = shippingmethod.getCost();
+//				ShippingMethod shippingmethod = order.getShippingMethod();
+				Money shippingcost = order.getTotalShipping();
 				Money shippingrefund = new Money(quantity);
 				if (shippingcost.doubleValue() < shippingrefund.doubleValue())
 				{
-//					System.out.println("OrderModule - Shipping cost too large - skipping!");
+					log.info("Shipping cost too large ("+shippingcost+"), skipping");
 					continue;
 				}
 				shipping = shippingrefund;
@@ -590,9 +594,12 @@ public class OrderModule extends BaseModule
 	public void refundOrder(WebPageRequest inContext) {
 		
 		String ordernumber = inContext.getRequestParameter("ordernumber");
+		if (ordernumber == null)
+		{
+			ordernumber = inContext.getRequestParameter("orderid");
+		}
 		Store store = getStore(inContext);
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
-		
 		String subtotalstr = inContext.getRequestParameter("subtotal");
 		String taxstr = inContext.getRequestParameter("tax");
 		String totalstr = inContext.getRequestParameter("total");
