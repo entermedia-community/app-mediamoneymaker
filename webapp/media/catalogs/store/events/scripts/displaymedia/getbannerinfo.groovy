@@ -11,6 +11,7 @@ import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery;
 
 public class GetBannerInfo extends EnterMediaObject {
 
@@ -39,7 +40,10 @@ public class GetBannerInfo extends EnterMediaObject {
 		String catalogid = archive.getCatalogId();
 		
 		Searcher bannerSearcher = manager.getSearcher(catalogid, "banner");
-		HitTracker bannerlist = bannerSearcher.fieldSearch("active", "true", "random");
+		SearchQuery query = bannerSearcher.createSearchQuery();
+		query.addMatches("active", "true");
+		query.addSortBy("accessoriesorder");
+		HitTracker bannerlist = bannerSearcher.search(query);//fieldSearch("active", "true", "random");
 		if (bannerlist != null && bannerlist.size() > 0) {
 			for (Iterator bannerIterator = bannerlist.iterator(); bannerIterator.hasNext();) {
 				Data currentBanner = bannerIterator.next();
@@ -49,6 +53,7 @@ public class GetBannerInfo extends EnterMediaObject {
 					Date endDate = DateStorageUtil.getStorageUtil().parseFromStorage(currentBanner.get("enddate"));
 					if (endDate != null) {
 						if ((today.compareTo(startDate) >= 0) && (today.compareTo(endDate) <= 0)) {
+							log.info("getbannerinfo: accessories order ${currentBanner.accessoriesorder}]");
 							addToBannerList(currentBanner);
 						}
 					}
