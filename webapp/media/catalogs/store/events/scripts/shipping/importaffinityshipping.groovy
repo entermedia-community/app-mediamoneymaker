@@ -251,7 +251,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 							ArrayList<ShipmentEntry> entries = null;
 							entries = eShipment.getShipmentEntries();
 							for (ShipmentEntry eEntry in entries) {
-								if (eEntry.getItem().getSku() == productSku) {
+								if (eEntry.getSku() == productSku) {
 									totalShipped += eEntry.getQuantity();
 								}
 							}
