@@ -4,6 +4,14 @@
 #set ( $customer = $cart.getCustomer() )
 #set ( $paymentMethod = $customer.getPaymentMethod() )
 
+#set ( $id = $context.getRequestParameter("id"))
+
+#if(!$order && $store && $id)
+	#set($order = $store.getOrderSearcher().searchById("$id"))
+	#set($cart = $order.getCart())
+	#set($null = $context.putSessionValue("cart",$cart))
+#end
+
 <p>Order Number: $order.getId()</p>
 
 $pages.stream("$apphome/orders/listing.html")

@@ -6,6 +6,18 @@
 	#set ( $customer = $order.getCustomer() )
 #end
 
+#if( !$store)
+	#set ( $store = $session.getAttribute( "store" ) )
+#end
+
+#set ( $id = $context.getRequestParameter("id"))
+
+#if(!$order && $store && $id)
+	#set($order = $store.getOrderSearcher().searchById("$id"))
+	#set($cart = $order.getCart())
+	#set($null = $context.putSessionValue("cart",$cart))
+#end
+
 <p>Thank you for your recent order.</p>
 
 <p>Here are the order details:</p> 
