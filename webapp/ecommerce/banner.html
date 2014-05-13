@@ -41,7 +41,9 @@
 
 <script>
 function bannerclicked(url,arg){
-	window.open(url,arg,"","");
+	if ( (!url || 0 === url.length) == false){
+		window.open(url,arg,"","");
+	}
 }
 </script>
 <style>
