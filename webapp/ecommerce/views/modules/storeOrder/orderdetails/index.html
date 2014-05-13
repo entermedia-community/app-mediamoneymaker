@@ -26,7 +26,7 @@
 	<b>Customer:</b><br>
 	$!customer.getFirstName() $!customer.getLastName()
 	#if( $user.hasPermission("oe.cart.admin" ) )
-	( <a href="$home/system/usermanager/modifyuser.html?username=$customer.userName">$!customer.userName</a> )
+	( <a href="$apphome/views/settings/users/usermanager/user/index.html?username=$customer.userName">$!customer.userName</a> )
 	#end<br/>
 	$!customerAddress.address1<br>
 	#if ( $customerAddress.address2 && $customerAddress.address2 != "" )
