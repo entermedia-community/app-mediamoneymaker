@@ -1,6 +1,7 @@
 #set($bannerlist = $context.getRequestParameter("bannerlist"))
-<div id="homepage-offers" style="position: relative; width: 700px; height: 288px;">
-	<div class="cycle-slideshow" data-cycle-fx="scrollHorz" data-cycle-timeout="2000">
+
+<div id="homepage-offers" class="draft1" style="position: relative; width: 700px; height: 322px;">
+	<div class="cycle-slideshow" data-cycle-fx="fade" data-cycle-timeout="8000" data-cycle-speed="1500" data-cycle-sync="true" data-cycle-pager-template="<img src='$apphome/layout/images/banner/white.png' width='18' >">
     	<div class="cycle-pager"></div>
 		#if($bannerlist.size() > 0)
 			#if($bannerlist.size() >= 2)
@@ -19,9 +20,7 @@
 					#else
 						#set($target = "_self")
 					#end
-					####<a href="$!first.url" target="$target">
-						<img src="$orig" class="offers">
-					###</a>
+					<img src="$orig" class="offers" onclick="bannerclicked('$!first.url','$target');" />
 				#end 
 			#else
 				#set($first  = $bannerlist.get(0))
@@ -33,22 +32,25 @@
 				#else
 					#set($target = "_self")
 				#end
-				###<a href="$!first.url" target="$target">
-					<img src="$orig" class="offers"/>
-				####</a>
+				<img src="$orig" class="offers" onclick="bannerclicked('$!first.url','$target');" />
 			#end
 		#end
 	</div>
 </div>
 <div style="clear: left;">&nbsp;</div>
 
+<script>
+function bannerclicked(url,arg){
+	window.open(url,arg,"","");
+}
+</script>
 <style>
 .cycle-pager { 
     text-align: center; 
     width: 100%; 
     z-index: 500; 
     position: absolute; 
-    bottom: -12px; 
+    bottom: -30px;
     overflow: hidden;
 }
 .cycle-pager span { 
@@ -59,11 +61,11 @@
     display: inline-block; 
     color: #fff;
     cursor: pointer; 
-    
-    
 }
-.cycle-pager span.cycle-pager-active {
-	color: #000;
+.cycle-pager-active {
+	background-image:url("$apphome/layout/images/banner/black.png");
+	background-size:18px 18px;
+	background-repeat:no-repeat;
 }
 .cycle-pager > * { 
 	cursor: pointer;
