@@ -108,7 +108,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 			String orderStatus = order.get("orderstatus");
 			if (orderStatus == "authorized") {
 				String ediStatus = order.get("edistatus");
-				if (ediStatus == null || ediStatus.equals("open")) {
+				if (ediStatus == null || ediStatus.isEmpty() || ediStatus.equals("open")) {
 
 					orderCount++;
 					String orderid = order.getId();
