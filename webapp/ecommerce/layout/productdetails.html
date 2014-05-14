@@ -27,37 +27,37 @@
  
 <div class="product-left-col">  
     <h2>$product.getName()</h2>
-	   $pages.stream("$apphome/layout/productimages.html")
-		<div style="clear: both;">
+		$pages.stream("$apphome/layout/productimages.html")
+	<div style="clear: both;">
 		$!product.get("descrip")
-		</div>
-		<div class="phone-compatibility">
-			<h3>[[Phone Compatibility]]</h3>
-				## bug in phone compatibility field
-				## remove duplicates
-				##Phones: $product.getValues("phone")<br/>
-				#set($phones = $product.getValues("phone"))
-				#set($list  = [])
-				#foreach ($phone in $phones)
-					#set($add = true)
-					#foreach ($item in $list)
-						#if($item.equals($phone))
-							#set($add = false)
-						#end
-					#end
-					#if($add == true)
-						#set($null = $list.add($phone))
+	</div>
+	<div class="phone-compatibility">
+		<h3>[[Phone Compatibility]]</h3>
+			## bug in phone compatibility field
+			## remove duplicates
+			### Phones: $product.getValues("phone")<br/>
+			#set($phones = $product.getValues("phone"))
+			#set($list  = [])
+			#foreach ($phone in $phones)
+				#set($add = true)
+				#foreach ($item in $list)
+					#if($item.equals($phone))
+						#set($add = false)
 					#end
 				#end
-				
-				#foreach($phone in $list)
-					#set($p = "")
-					#set($p = $searcherManager.getData($catalogid, "phone", $phone))
-					##if($p != "")
-						<img src="$apphome/theme/images/check.png" border="0"/>$p<br/>
-					##end
+				#if($add == true)
+					#set($null = $list.add($phone))
 				#end
-		</div>
+			#end
+			
+			#foreach($phone in $list)
+				#set($p = "")
+				#set($p = $searcherManager.getData($catalogid, "phone", $phone))
+				##if($p != "")
+					<img src="$apphome/theme/images/check.png" border="0"/>$p<br/>
+				##end
+			#end
+	</div>
 
 		#set( $productdetails = $store.getProductDetails("productdetails", $user) )
 

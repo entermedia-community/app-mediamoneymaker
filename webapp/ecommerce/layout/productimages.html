@@ -1,32 +1,19 @@
-#set( $image = "/$store.productPathFinder.idToPath($product.id)" )
+
+#if( $hits )
+   	#set( $prev = $hits.previousId($product.getId() ) )
+   	#set( $next = $hits.nextId($product.getId() ) )
+   	#if ( $prev )
+   		#if ( $next )
+           	<a href="$home$apphome/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a>
+           #else
+           	<a href="$home$apphome/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a><br/>
+		#end
+   	#end
+    #if ( $next )
+           <a href="$home$apphome/products/${store.productPathFinder.idToPath($next)}.html">next&gt;</a><br>
+	#end
+#end
+
+$pages.include("/$applicationid/layout/productslides.html",$context)
 
 
-#set ($mediumend = "$home$cataloghome/downloads/preview/mediumplus/productimages/$product.sourcepath/thumb.jpg")
-#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$product.sourcepath/thumb.jpg")
-			#if( $hits )
-		    	#set( $prev = $hits.previousId($product.getId() ) )
-		    	#set( $next = $hits.nextId($product.getId() ) )
-		    	#if ( $prev )
-		    		#if ( $next )
-		            	<a href="$home$apphome/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a>
-		            #else
-		            	<a href="$home$apphome/products/${store.productPathFinder.idToPath($prev)}.html">&lt;previous</a><br/>
-					#end
-		    	#end
-		
-		        #if ( $next )
-		            <a href="$home$apphome/products/${store.productPathFinder.idToPath($next)}.html">next&gt;</a><br>
-				#end
-			#end           
-            <a class="thickbox" href="$home$mediumend" target="_parent" title="[[$product]]">
-                <img id="main-media" class="emdropshadow" src="$home$mediumend" alt="$!asset.name"/>
-                <link rel="image_src" type="image/jpeg" href="$home$mediumplus" />
-            </a>
-						
-<script type="text/javascript" language="JavaScript">
-    function openWindow()
-    {
-
-        window.open("$home$apphome/viewer.html?path=$home$apphome/downloads/preview/large/productimages/$product.sourcepath/thumb.jpg","viewer","height=570, width=450, left=100, top=50, menubar=no, status=no, location=no, toolbar=no, scrollbars=no, resizable=yes");
-    }
-</script>
