@@ -1,4 +1,4 @@
-<script type="text/javascript" src="$home/system/javascript/datetimepicker.js"></script>
+####<script type="text/javascript" src="$home/system/javascript/datetimepicker.js"></script>
 <div>
     <table class="shoplisting" style="table-layout: fixed;">
         
@@ -32,6 +32,18 @@
           <input type="hidden" name="productid.${productcounter}" value="$!product.id" />
     
     	  <tr class="sc-tabledata">
+    	  #if($product.isCoupon())
+    	  	<td>
+            #set ( $thumbnailPath = "$home$cataloghome/downloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
+            <img border="0" src="$home$thumbnailPath" width="50" />
+    	  </td>
+    	  <td>
+    			 $product.name
+       	  </td>  
+    	  <td>
+    			 $item.sku
+       	  </td> 
+    	  #else
           <td>
             #set ( $thumbnailPath = "$home$cataloghome/downloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
             <a href="$home$apphome/products/${product.sourcePath}.html"><img border="0" src="$home$thumbnailPath" width="50" /></a>
@@ -40,8 +52,9 @@
     			 $product.name
        	  </td>  
     	  <td>
-    			 $!product.get("rogerssku")
-       	  </td>  
+    			 $!product.rogerssku
+       	  </td> 
+       	  #end 
      <ul>
           #foreach( $option in $item.getOtherOptions() )
     		<nobr>
@@ -125,7 +138,7 @@
     	 
      <ul>
     	  <td class="proddata2" style="text-align: center;">
-    	      <input size="1" type="text" style="text-align: center" value="$item.getQuantity()" name="quantity.${productcounter}" /></td>
+    	      <input size="1" type="text" style="text-align: center" value="$item.getQuantity()" name="quantity.${productcounter}" #if($product.isCoupon()) disabled #end/></td>
                #if($page.isPropertyTrue("multipleaddress"))
     	  <td>
     	   <select name = "address.${productcounter}">

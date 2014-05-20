@@ -4,6 +4,7 @@
 package org.openedit.store;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.SaleAdjustment;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -29,8 +31,8 @@ public class ProductAdder
 
 	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload) throws StoreException
 	{
-		// Get item info from request parameters
 		List olditems = new ArrayList(inCart.getItems());
+		// Get item info from request parameters
 		if (inReload)
 		{
 			inCart.removeAllItems();
@@ -76,7 +78,8 @@ public class ProductAdder
 			}
 			int quantity = 0;
 			String quantityStr = (String) params.get("quantity" + counter);
-			if(i == 0){
+			if(i == 0 /*|| product.isCoupon()*/)
+			{
 				quantity = 1;
 			}
 			boolean quantityspecified = false;
@@ -96,10 +99,10 @@ public class ProductAdder
 				quantity = 0;
 			}
 
-			if (quantity <= 0)
+			if (quantity <= 0 && !product.isCoupon())
 			{
 				//remove the product if quantity is less than or equal to zero
-				//inCart.removeProduct(product);
+				inCart.removeProduct(product);
 				continue;
 			}
 			// Look for any options being passed to us. Option can be a size,
@@ -119,19 +122,31 @@ public class ProductAdder
 				Option option = makeOption(product, "color", color);
 				options.add(option);
 			}
+			
+			InventoryItem inventory  = null;
+			if (product.isCoupon())
+			{
+				inventory = findInventoryItem(product,olditems);
+				if (inventory!=null && checked!=null)//removed so update adjustment
+				{
+					Coupon removedCoupon = new Coupon(inventory);
+					removedCoupon.removeCartAdjustment(inCart);
+				}
+			} else {
+				inventory = product.getInventoryItemByOptions(options);
+				if (inventory == null)
+				{
+					inventory = product.getCloseInventoryItemByOptions(options);
+				}
+				if (inventory == null && product.getInventoryItemCount() == 0)
+				{
+					inventory = new InventoryItem();
+					String sku = product.getId() + "-1";
+					inventory.setSku(sku);
+					inventory.setProduct(product);
+				}
+			}
 
-			InventoryItem inventory = product.getInventoryItemByOptions(options);
-			if (inventory == null)
-			{
-				inventory = product.getCloseInventoryItemByOptions(options);
-			}
-			if (inventory == null && product.getInventoryItemCount() == 0)
-			{
-				inventory = new InventoryItem();
-				String sku = product.getId() + "-1";
-				inventory.setSku(sku);
-				inventory.setProduct(product);
-			}
 			boolean alwaysadd = false;
 			String forcenew = inReq.getRequestParameter("forcenew");
 			if (forcenew != null)
@@ -149,7 +164,7 @@ public class ProductAdder
 			{
 				cartItem = new CartItem();
 				if(i == 0){
-				quantityspecified = true;
+					quantityspecified = true;
 				}
 			}
 			cartItem.setInventoryItem(inventory);
@@ -216,6 +231,64 @@ public class ProductAdder
 				}
 			}
 		}
+		//once products are updated check coupon dependencies
+		Iterator<Coupon> itr = getCoupons(inCart).iterator();
+		while(itr.hasNext())
+		{
+			Coupon coupon = itr.next();
+			if (coupon.hasCustomerUsedCoupon(inReq, inCart))
+			{
+				removeCoupon(inCart,coupon);
+				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (number of use restriction)");
+				inReq.putPageValue("couponerror", true);
+			}
+			else if (!coupon.isCartSubtotalOk(inCart))
+			{
+				removeCoupon(inCart,coupon);
+				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (subtotal restriction)");
+				inReq.putPageValue("couponerror", true);
+			} 
+			else if (!coupon.isCartItemsOk(inCart))
+			{
+				removeCoupon(inCart,coupon);
+				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (product restriction)");
+				inReq.putPageValue("couponerror", true);
+			}
+		}
+	}
+	
+	private void removeCoupon(Cart inCart, Coupon inCoupon)
+	{
+		Iterator itr = inCart.getInventoryItems().iterator();
+		while (itr.hasNext())
+		{
+			InventoryItem item = (InventoryItem) itr.next();
+			if (Coupon.isCoupon(item) && item == inCoupon.getInventoryItem())
+			{
+				CartItem cartitem = inCart.findCartItemWith(item);
+				if (cartitem!=null)
+				{
+					inCart.removeItem(cartitem);
+				}
+				inCoupon.removeCartAdjustment(inCart);
+				return;
+			}
+		}
+	}
+	
+	private List<Coupon> getCoupons(Cart inCart)
+	{
+		List<Coupon> coupons = new ArrayList<Coupon>();
+		Iterator itr = inCart.getInventoryItems().iterator();
+		while (itr.hasNext())
+		{
+			InventoryItem item = (InventoryItem) itr.next();
+			if (Coupon.isCoupon(item))
+			{
+				coupons.add(new Coupon(item));
+			}
+		}
+		return coupons;
 	}
 
 	private Product findProduct(String inProductId, List inOlditems)
@@ -226,6 +299,20 @@ public class ProductAdder
 			if (item.getProduct() != null && item.getProduct().getId() != null && item.getProduct().getId().equals(inProductId))
 			{
 				return item.getProduct();
+			}
+		}
+		return null;
+	}
+	
+	private InventoryItem findInventoryItem(Product inProduct, List inOlditems)
+	{
+		String productid = inProduct.getId();
+		for (Iterator iterator = inOlditems.iterator(); iterator.hasNext();)
+		{
+			CartItem item = (CartItem) iterator.next();
+			if (item.getProduct() != null && item.getProduct().getId() != null && item.getProduct().getId().equals(productid))
+			{
+				return item.getInventoryItem();
 			}
 		}
 		return null;
@@ -397,8 +484,8 @@ public class ProductAdder
 
 	public void addCoupon(WebPageRequest inReq, Cart inCart) throws Exception
 	{
-		String coupon = inReq.getRequestParameter("couponcode");
-		if (coupon != null && coupon.length() > 0)
+		String couponcode = inReq.getRequestParameter("couponcode");
+		if (couponcode != null && couponcode.length() > 0)
 		{
 			// make sure there is no negative product in there already then add
 			// the product ID in there
@@ -406,7 +493,7 @@ public class ProductAdder
 			// that
 			// use Lucene to search
 			Store store = inCart.getStore();
-			HitTracker hits = store.getProductSearcher().fieldSearch("items", coupon);
+			HitTracker hits = store.getProductSearcher().fieldSearch("items", couponcode);
 			if (hits.getTotal() > 0)
 			{
 				Data hit = (Data) hits.get(0);
@@ -414,70 +501,117 @@ public class ProductAdder
 				Product product = store.getProduct(productId);
 				if (product != null)
 				{
-					// Check the rules. This might have a dollar amount in it
-					String min = product.getProperty("fldDesc3");
-					if (min != null)
+					InventoryItem inventoryItem = product.getInventoryItemBySku(couponcode);
+					Coupon coupon = new Coupon(inventoryItem);
+					if (inventoryItem == null || !coupon.isInStock())
 					{
-						// do a check
-						double val = inCart.getSubTotal().doubleValue();
-						Money minmoney = new Money(min);
-						if (val < minmoney.doubleValue())
-						{
-							inReq.putPageValue("errorMessage", "That coupon can only be used on orders of " + minmoney.toString() + " or more");
-							return;
-						}
-					}
-
-					InventoryItem inventoryItem = product.getInventoryItemBySku(coupon);
-					if (inventoryItem == null || !inventoryItem.isInStock())
-					{
+						inReq.putPageValue("errorMessage", "That coupon is no longer available.");
 						inReq.putPageValue("couponerror", true);
 						return;
 					}
-					if (inventoryItem != null && inventoryItem.isInStock())
+					
+					//percentage, product, minquantity, minsubtotal, expirydate, acceptmultiple, restricttouser
+					double percentage = coupon.getPercentage();
+					String productid = coupon.getProductId();
+					int minquantity = coupon.getMininumProductQuantity();
+					double minsubtotal = coupon.getMinimumSubtotal();
+					Date expiry = coupon.getCouponExpiry();
+					boolean multiple = coupon.isAcceptsMultiple();
+					boolean oneperuser = coupon.isOnePerUser();
+					String restrict = coupon.getUserRestriction();
+					
+					log.info("Coupon Details - Precentage: "+percentage+", Product: "+productid+", Min quantity: "+minquantity+", Min Subtotal: "+minsubtotal+", Expiry: "+expiry+" ("+inventoryItem.getProperty("expirydate")+"), Multiple: "+multiple+", On per user? "+oneperuser+", User: "+restrict);
+					
+					if (coupon.hasCustomerUsedCoupon(inReq, inCart))
 					{
-						String percentage = inventoryItem.getProperty("percentage");
-
-						if (percentage != null)
+						inReq.putPageValue("errorMessage", "That coupon can only be used by you once.");
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
+					if (!coupon.isCustomerOk(inCart))
+					{
+						inReq.putPageValue("errorMessage", "That coupon is restricted only to certain customers.");
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
+					if (coupon.hasExpired())
+					{
+						inReq.putPageValue("errorMessage", "That coupon has expired.");
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
+					if (!coupon.isAcceptsMultiple())//more here...
+					{
+						for (Iterator iter = inCart.getItems().iterator(); iter.hasNext();)
 						{
-							if (inCart.getAdjustments().size() == 0)
+							CartItem olditem = (CartItem) iter.next();
+							if (Coupon.isCoupon(olditem))
 							{
-								Double percent = Double.parseDouble(percentage);
-
-								SaleAdjustment adjustment = new SaleAdjustment();
-								adjustment.setPercentDiscount(percent);
-
-								inCart.addAdjustment(adjustment);
-								CartItem cartItem = new CartItem();
-								cartItem.setInventoryItem(inventoryItem);
-								inCart.addItem(cartItem);
+								inReq.putPageValue("errorMessage", "That coupon is restricted to only one per cart.");
+								inReq.putPageValue("couponerror", true);
+								return;
 							}
 						}
-						else
+					}
+					//check minimum subtotal
+					if (!coupon.isCartSubtotalOk(inCart))//doesn't seem right: maybe minimum subtotal of a product?
+					{
+						inReq.putPageValue("errorMessage", "That coupon can only be used on orders of " + new Money(minsubtotal) + " or more");
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
+					// check product and minimum quantity
+					if (!coupon.isCartItemsOk(inCart))
+					{
+						StringBuilder buf = new StringBuilder();
+						buf.append("That coupon is restricted to only certain products ("+productid+")");
+						if (minquantity > 0)
 						{
+							buf.append(" with a minimum quantity of "+minquantity);
+						}
+						inReq.putPageValue("errorMessage", buf.toString());
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
+					//percentage
+					if (percentage > 0)
+					{
+						//change logic here
+						//don't need to look for cart adjustments like this
+						//maybe getAdjustments(), check productid on each one
+						//also check price --- when we remove a product from the list
+						// should also check whether adjustments are set
+						
+//						if (inCart.getAdjustments().size() == 0)
+//						{
+							SaleAdjustment adjustment = new SaleAdjustment();
+							if (productid!=null && !productid.isEmpty()) 
+							{
+								adjustment.setProductId(productid);
+							}
+							adjustment.setPercentDiscount(percentage);
+
+							inCart.addAdjustment(adjustment);
 							CartItem cartItem = new CartItem();
 							cartItem.setInventoryItem(inventoryItem);
-							// remove any other coupons
-							for (Iterator iter = inCart.getItems().iterator(); iter.hasNext();)
-							{
-								CartItem olditem = (CartItem) iter.next();
-								if (olditem.getYourPrice().isNegative())
-								{
-									inCart.removeItem(olditem);
-									break;
-								}
-							}
 							inCart.addItem(cartItem);
-							/*
-							 * //I need more than 50% :) if
-							 * (cartItem.getYourPrice().doubleValue() * 2 <
-							 * inCart .getSubTotal().doubleValue()) {
-							 * inCart.addItem(cartItem); } else { inReq
-							 * .putPageValue("errorMessage",
-							 * "Coupons may not be more than 50% off the total price"
-							 * ); }
-							 */
-						}
+//						}
+					}
+					else
+					{
+						CartItem cartItem = new CartItem();
+						cartItem.setInventoryItem(inventoryItem);
+						// remove any other coupons
+//						for (Iterator iter = inCart.getItems().iterator(); iter.hasNext();)
+//						{
+//							CartItem olditem = (CartItem) iter.next();
+//							if (olditem.getYourPrice().isNegative())
+//							{
+//								inCart.removeItem(olditem);
+//								break;
+//							}
+//						}
+						inCart.addItem(cartItem);
 					}
 				}
 			}

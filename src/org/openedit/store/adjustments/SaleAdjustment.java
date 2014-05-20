@@ -13,13 +13,23 @@ import org.openedit.store.CartItem;
  */
 public class SaleAdjustment implements Adjustment {
 	protected Fraction fieldPercentage;
+	protected String fieldProductId;
+	protected String fieldInventoryItemId;
 
 	public SaleAdjustment() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Money adjust(Cart inCart, CartItem inItem) {
+		if (getProductId()!=null)
+		{
+			if (inItem.getProduct()!=null && inItem.getProduct().getId().equals(getProductId()))
+			{
+				return inItem.getYourPrice().multiply(
+						Fraction.ONE.subtract(getPercentage()));
+			}
+			return null;
+		}
 		return inItem.getYourPrice().multiply(
 				Fraction.ONE.subtract(getPercentage()));
 	}
@@ -31,11 +41,36 @@ public class SaleAdjustment implements Adjustment {
 	public Fraction getPercentage() {
 		return fieldPercentage;
 	}
+	
+	public void setProductId(String fieldProductId)
+	{
+		this.fieldProductId = fieldProductId;
+	}
+	
+	public String getProductId()
+	{
+		return fieldProductId;
+	}
+	
+	public void setInventoryItemId(String fieldInventoryItemId)
+	{
+		this.fieldInventoryItemId = fieldInventoryItemId;
+	}
+	
+	public String getInventoryItemId()
+	{
+		return fieldInventoryItemId;
+	}
 
 	public String toString() {
 		Double percent = getPercentage().doubleValue() * 100;
-		String val = Integer.valueOf(percent.intValue()).toString();
-		return val;
+		StringBuilder buf = new StringBuilder();
+		buf.append(percent.intValue()).append("% discount");
+		if (getProductId()!=null)
+		{
+			buf.append(" on "+getProductId()+" products");
+		}
+		return buf.toString();
 
 	}
 }

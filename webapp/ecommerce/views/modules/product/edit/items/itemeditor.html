@@ -1,6 +1,7 @@
 #set ( $product = $storeeditor.getCurrentProduct() )
 #set ( $item = $storeeditor.getCurrentItem() )
 
+#set ( $iscoupon = $product.isCoupon() == "true")
 
 <table width="100%" class="oedivided-box" cellspacing="0" cellpadding="0">
 	<tr>
@@ -61,27 +62,29 @@
 					#if( $item && $selectedItemShown )
 						<form name="saveitem">
 					<td valign=top>
-						<table>
+						<table border="1">
 							#set( $hassize = false)
 						#foreach ($option in $item.getAllOptions())
 						<input type="hidden" name="optionid$option.id" value="$option.id" />
-						<tr>
-							<td>$option.name</td><td><input name="optionvalue$option.id" value="$!option.value"/>
+							#if(!$iscoupon)
+							<tr>
+								<td>$option.name</td><td><input name="optionvalue$option.id" value="$!option.value"/></td>
+							</tr>
+							#end
 							#if( $option.id == "size")
 								#set( $hassize = true)
 							#end
-							 </td>
-						</tr>
 						#end
-						#if( !$hassize && $content.isPropertyTrue("forceshowsizeoption") )
+						#if( !$hassize && $content.isPropertyTrue("forceshowsizeoption") && !$iscoupon)
 						<input type="hidden" name="optionidsize" value="size" />
 						<tr>
 							<td>[[Size]]</td><td><input name="optionvaluesize" value="$!item.getSize()" /> </td>
 						</tr>
 						#end	
 						 <tr>
-							<td>[[Sku ID]]:</td><td> $!item.sku </td>
+							<td>[[Sku ID]]:</td><td><strong>$!item.sku</strong></td>
 						 </tr>
+						 #if(!$detail.coupon && !$iscoupon)
 						 <tr>
 							<td>[[Retail Price]]:</td><td> <input name="retailprice" value="$!item.getPriceSupport().getRetailPrice().toShortString()" /> </td>
 						 </tr>
@@ -91,27 +94,41 @@
 						 <tr>
 							<td>[[Wholesale Price]]:</td><td> <input name="wholesaleprice" value="$!item.getPriceSupport().getWholesalePrice().toShortString()" /> </td>
 						 </tr>
+						 #elseif ($iscoupon == true)
+						 <tr>
+							<td>[[Value]]:</td><td> <input name="retailprice" value="$!item.getPriceSupport().getRetailPrice().toShortString()" /> </td>
+						 </tr>
+						 #end
 						 <tr>
 							<td>#[[In Stock]]:</td><td> <input name="qinstock" value="$item.getQuantityInStock()" /> </td>
 						 </tr>
+						 #if(!$detail.coupon && !$iscoupon)
 						 <tr>
 							<td>[[Weight]]:</td><td> <input name="weight" value="$!item.weight" /> format: 0.0 </td>
 						 </tr>
-						 #foreach ($detail in $storeeditor.getItemProperties())
-						 <tr>
-							#set( $value = $item.get($detail.id ) )
-						 	<td>${detail.text}:</td><td> <input name='${detail.id}' #if ( $value ) value="$url_util.xmlEscape($value)" #end /> </td>
-							#set( $value = "" )
-						 </tr>
-							 #if ($velocityCount == 6)
-							 	</table>
-							 	</td>
-							 	<td valign=top>
-							 	
-							 #end	
 						 #end
-						
-								<input type="hidden" name="oe-action" value="CatalogEditModule.saveItem" />
+						#foreach ($detail in $storeeditor.getItemProperties())
+							#if( ($detail.coupon == true && $iscoupon == true) || (!$detail.coupon && !$iscoupon) )
+								<tr>
+									#set( $value = $item.get($detail.id ) )
+									<td>${detail.text}:</td>
+									<td>
+										#if($detail.dataType == "date")
+											###$pages.include("/ecommerce/components/xml/types/${detail.dataType}.html", $context)
+											<input name='${detail.id}' #if ( $value ) value="$url_util.xmlEscape($value)" #end />
+										#elseif ($detail.dataType == "list")
+											#set($viewtype = "list") ###searchjoin?
+											<input name='${detail.id}' #if ( $value ) value="$url_util.xmlEscape($value)" #end />
+										#else
+										<input name='${detail.id}' #if ( $value ) value="$url_util.xmlEscape($value)" #end /> 
+										#end
+									</td>
+									#set( $value = "" )
+								</tr>
+							#end
+						#end
+						</table>
+						<input type="hidden" name="oe-action" value="CatalogEditModule.saveItem" />
 						</form>
 					<td>
 					</td>

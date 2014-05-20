@@ -87,13 +87,17 @@
 		<td><p class="results-list">${productid}</p></td>
 		<td>
 			<p class="results-list" style="margin-left: 10px;">
+				#if($product.isCoupon())
+					$product.getName()
+				#else
 				<a class="results-list" href="$home$path" target="_blank" 
 				style="font-size: 14px; color: blue;">$product.getName()</a>
+				#end
 			<input type="hidden" name="sku" value="$item.sku"/>
 			<input type="hidden" name="ordernumber" value="$orderNumber"/>
 			<input type="hidden" name="origURL" value="$content.path"/></p></td>
 		<td align="center">
-			<p class="results-list">$product.get("manufacturersku")</p></td>
+			<p class="results-list">#if($product.isCoupon()) $item.sku  #else $product.manufacturersku #end</p></td>
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
 		<td align="right">
@@ -102,15 +106,19 @@
 			<p class="results-list">$item.getTotalPrice()</p></td>
 		<td align="center" nowrap>
 			<p class="results-list">
-				#set($quantityrefunded = $order.getQuantityRefunded($item))
-				#set($delta = $item.quantity - $quantityrefunded)
-				#if ( $order.getQuantityShipped($item) == $delta )
-					Shipped
+				#if($product.isCoupon())
+					N/A
 				#else
-					#if ( $order.getQuantityShipped($item) > 0 )
-						Partially Shipped
+					#set($quantityrefunded = $order.getQuantityRefunded($item))
+					#set($delta = $item.quantity - $quantityrefunded)
+					#if ( $order.getQuantityShipped($item) == $delta )
+						Shipped
 					#else
-						Waiting<br/>for Shipment
+						#if ( $order.getQuantityShipped($item) > 0 )
+							Partially Shipped
+						#else
+							Waiting<br/>for Shipment
+						#end
 					#end
 				#end
 			</p>

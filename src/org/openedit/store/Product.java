@@ -1215,6 +1215,10 @@ public class Product extends BaseData implements Data
 		fieldCatalogId = inCatalogId;
 	}
 
+	public boolean isCoupon() {
+		return (getProperty("producttype")!=null && getProperty("producttype").equals("coupon"));
+	}
+
 	
 	//TODO: Add these methods to the Data interface
 //		public Collection getValues(String inPreference)

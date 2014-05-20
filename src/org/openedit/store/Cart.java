@@ -359,6 +359,26 @@ public class Cart extends BaseData
 		}
 		return totalPrice;
 	}
+	
+	public Money getSubtotalWithoutCoupons()
+	{
+		Money totalPrice = Money.ZERO;
+		for (Iterator it = getItemIterator(); it.hasNext();)
+		{
+			CartItem item = (CartItem) it.next();
+			if (Coupon.isCoupon(item))
+			{
+				continue;
+			}
+			Money toadd = calculateAdjustedPrice(item);
+			if (toadd != null)
+			{
+				toadd = toadd.multiply(item.getQuantity());
+				totalPrice = totalPrice.add(toadd);
+			}
+		}
+		return totalPrice;
+	}
 
 	protected Money calculateAdjustedPrice(CartItem inItem)
 	{
@@ -391,7 +411,7 @@ public class Cart extends BaseData
 
 	public void addItem(CartItem inItem)
 	{
-		if(inItem.getYourPrice().isNegative()){
+		if(inItem.getYourPrice()!=null && inItem.getYourPrice().isNegative()){
 			inItem.setQuantity(1);
 		}
 		if (inItem.getId() == null)
