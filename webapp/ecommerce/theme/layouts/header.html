@@ -25,8 +25,14 @@
     <div style="padding: 20px;">
    		<div id="headernav">    
 		 	#if($user)
-		 	<h1 style="margin-top: 1px; color: #49494B;">                        
-      			<img class="arealogo" src="$home$themeprefix/images/area_acc_banner_logo.png" height="80px;" alt="Area Accessories Portal" />
+		 	<h1 style="margin-top:1px; color: #49494B;">                        
+      			<img class="arealogo" src="$home$themeprefix/images/area_acc_banner_logo.png" height="80px;" alt="Area Accessories Portal" />	
+				<span style="margin-right: 20px;float:right;font-size:smaller;">
+				#set($firstname = $userprofile.get("firstname"))
+				#if ($firstname)
+					[[Welcome]] $firstname&nbsp;
+				#end
+				</span>
    		 	</h1>
 		 	#end
  
@@ -42,13 +48,10 @@
 
       
       <span class="navlinks">
-       
 
 #if( $user )
-	#set($firstname = $userprofile.get("firstname"))
-	#if ($firstname)
-		[[Welcome]] $firstname&nbsp;
-	#end
+	
+	
 	#if( $canviewmyaccount )
 		<a href="$home$apphome/views/myaccount/index.html">[[My Account]]</a> |
 				<a href="$home$apphome/views/modules/contactrequest/public/">[[Contact Us]]</a> |
