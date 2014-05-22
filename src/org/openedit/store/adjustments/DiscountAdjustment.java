@@ -44,6 +44,11 @@ public class DiscountAdjustment implements Adjustment{
 
 	@Override
 	public Money adjust(Cart inCart, CartItem inItem) {
+		return adjust(inItem);
+	}
+	
+	@Override
+	public Money adjust(CartItem inItem) {
 		if (inItem.getProduct().isCoupon())
 		{
 			return null;
@@ -53,8 +58,6 @@ public class DiscountAdjustment implements Adjustment{
 		Money adjusted = price;
 		if (getProductId()!=null && inItem.getProduct()!=null && inItem.getProduct().getId().equals(getProductId()))
 		{
-//			int quantity = inItem.getQuantity();
-//			discount = discount.multiply(quantity);
 			if (discount.isNegative())
 			{
 				adjusted = price.add(discount);

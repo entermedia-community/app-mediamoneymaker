@@ -80,9 +80,9 @@
 	#set( $itemCounter = $itemCounter + 1)
 	#set( $bkgrnd = $itemCounter % 2)
 	#if ( $bkgrnd == 0 )
-		<tr class="results-list-a">
+	<tr class="results-list-a">
 	#else
-		<tr class="results-list-b">
+	<tr class="results-list-b">
 	#end
 		<td><p class="results-list">${productid}</p></td>
 		<td>
@@ -97,13 +97,31 @@
 			<input type="hidden" name="ordernumber" value="$orderNumber"/>
 			<input type="hidden" name="origURL" value="$content.path"/></p></td>
 		<td align="center">
-			<p class="results-list">#if($product.isCoupon()) $item.sku  #else $product.manufacturersku #end</p></td>
+			<p class="results-list">
+				#if($product.isCoupon()) $item.sku  #else $product.manufacturersku #end
+			</p>
+		</td>
 		<td align="center">
 			<p class="results-list">$item.quantity</p></td>
 		<td align="right">
-			<p class="results-list">$item.yourPrice</p></td>
+			<p class="results-list">
+				#if($product.isCoupon())
+					$order.getCouponPrice($item)
+				#else
+					$item.yourPrice 
+					#set($priceadjustment = $order.getPriceAdjustment($item))
+					#if($priceadjustment && $priceadjustment.isZero() == false)
+						($priceadjustment)
+					#end
+					#set($priceadjustment = false)
+				#end
+			</p>
+		</td>
 		<td align="right">
-			<p class="results-list">$item.getTotalPrice()</p></td>
+			<p class="results-list">
+				$order.getTotalPrice($item)
+			</p>
+		</td>
 		<td align="center" nowrap>
 			<p class="results-list">
 				#if($product.isCoupon())
@@ -179,8 +197,26 @@
 			#end
 			</p>
 		</td>
-		</tr>
-    #end
+	</tr>
+#end
+#if(!$order.getAdjustments().isEmpty())
+	#set( $itemCounter = $itemCounter + 1)
+	#set( $bkgrnd = $itemCounter % 2)
+	#if ( $bkgrnd == 0 )
+	<tr class="results-list-a">
+	#else
+	<tr class="results-list-b">
+	#end
+		#### ID, Product, SKU, Quantity, Unit Price, Subtotal, Shipment Status, Refunds, Distributor
+		#### -- [check?] [?] 
+		<td colspan="9">
+		$order.getAdjustments()
+		#### we need:
+		#### order.getPriceAdjustment(inCartItem)
+		#### if coupon, order.getCouponPrice(inCartItem) ###only for single value discount on 
+		</td>
+	</tr>
+#end
 	<tr style="border-top: 1px solid black;">
 		<td colspan="5" align="right">Subtotal:&nbsp;&nbsp;</td>
 		<td align="right">$order.getSubTotal()</td>

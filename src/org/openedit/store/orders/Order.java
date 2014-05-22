@@ -19,6 +19,7 @@ import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
+import org.openedit.store.Coupon;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.InventoryItem;
 import org.openedit.store.PaymentMethod;
@@ -726,5 +727,43 @@ public class Order extends BaseData implements Comparable {
 	
 	public boolean requiresShipping(){
 		return getCart().requiresShipping();
+	}
+	
+	public Money getPriceAdjustment(CartItem inCartItem){
+		Money priceadjustment = new Money();
+		if (inCartItem.getProduct()!=null && !inCartItem.getProduct().isCoupon() && getAdjustments()!=null && !getAdjustments().isEmpty()){
+			Iterator itr = getAdjustments().iterator();
+			while (itr.hasNext()){
+				Adjustment adjustment = (Adjustment) itr.next();
+				Money value  = adjustment.adjust(inCartItem);
+				if (value != null && !value.isZero()){
+					priceadjustment = value;
+					break;
+				}
+			}
+		}
+		return priceadjustment;
+	}
+	
+	public Money getTotalPrice(CartItem inCartItem){
+		Money total = inCartItem.getTotalPrice();
+		Money adjustment = getPriceAdjustment(inCartItem);
+		if (adjustment.isNegative()){
+			return total.add(adjustment);
+		}
+		return total.subtract(adjustment);
+	}
+	
+	public Money getCouponPrice(CartItem inCartItem){
+		Money price = new Money();
+		if (inCartItem.getProduct()!=null && inCartItem.getProduct().isCoupon()){
+			//cartitem is a coupon so we need to provide a price IF it is a 
+			//single value coupon
+			if (new Coupon(inCartItem.getInventoryItem()).isSingleValueCoupon())
+			{
+				price = inCartItem.getYourPrice();
+			}
+		}
+		return price;
 	}
 }

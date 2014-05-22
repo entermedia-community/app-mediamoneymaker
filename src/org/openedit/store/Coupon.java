@@ -41,6 +41,19 @@ public class Coupon {
 		return (inProduct.getProperty("producttype")!=null && inProduct.getProperty("producttype").equals("coupon"));
 	}
 	
+	public boolean isSingleValueCoupon()
+	{
+		if (getPercentage() > 0)
+		{
+			return false;
+		}
+		if (getDiscount() > 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public void setInventoryItem(InventoryItem inItem)
 	{
 		fieldInventoryItem = inItem;

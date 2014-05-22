@@ -19,8 +19,14 @@ public class SaleAdjustment implements Adjustment {
 	public SaleAdjustment() {
 		super();
 	}
-
+	
+	@Override
 	public Money adjust(Cart inCart, CartItem inItem) {
+		return adjust(inItem);
+	}
+	
+	@Override
+	public Money adjust(CartItem inItem) {
 		if (getProductId()!=null)
 		{
 			if (inItem.getProduct()!=null && inItem.getProduct().getId().equals(getProductId()))
