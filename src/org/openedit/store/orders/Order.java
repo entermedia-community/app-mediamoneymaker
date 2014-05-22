@@ -24,6 +24,7 @@ import org.openedit.store.InventoryItem;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
+import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
@@ -118,11 +119,26 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public List getAdjustments() {
+		if (fieldAdjustments == null){
+			fieldAdjustments = new ArrayList();
+		}
 		return fieldAdjustments;
 	}
 
 	public void setAdjustments(List inAdjustments) {
 		fieldAdjustments = inAdjustments;
+	}
+	
+	public void copyAdjustments(Cart inCart){
+		if (inCart.getAdjustments()==null || inCart.getAdjustments().isEmpty()){
+			return;
+		}
+		getAdjustments().clear();//clear them first
+		Iterator itr = inCart.getAdjustments().iterator();
+		while(itr.hasNext()){
+			Adjustment adjument = (Adjustment) itr.next();
+			getAdjustments().add(adjument);
+		}
 	}
 
 	public Money getTotalShipping() {

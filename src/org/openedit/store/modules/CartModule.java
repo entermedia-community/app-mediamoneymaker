@@ -25,6 +25,7 @@ import org.openedit.store.ProductAdder;
 import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
+import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -714,11 +715,11 @@ public class CartModule extends BaseStoreModule {
 				cart.setShippingMethod((ShippingMethod) shippingMethods.get(0));
 			}
 		}
-		if (cart.getAdjustments() != null) {
-			order.setAdjustments(cart.getAdjustments());
-		}
+		order.copyAdjustments(cart);
 		order.setShippingAddress(cart.getShippingAddress());
 		order.setBillingAddress(cart.getBillingAddress());
+		
+		log.info("#### ADJUSTMENTS 1: "+order.getAdjustments());
 		
 		// Export order to XML
 		store.saveOrder(order);
@@ -781,6 +782,8 @@ public class CartModule extends BaseStoreModule {
 			cart.removeAllItems();
 			cart.getAdjustments().clear();
 		}
+		//export order again after state change
+		log.info("#### ADJUSTMENTS 2: "+order.getAdjustments());
 		store.saveOrder(order);
 		
 		//trigger webevent after the order has been saved

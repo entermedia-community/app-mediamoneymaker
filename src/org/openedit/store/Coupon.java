@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openedit.money.Money;
+import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.DiscountAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.orders.OrderId;
 import org.openedit.util.DateStorageUtil;
@@ -57,6 +59,15 @@ public class Coupon {
 			percentage = Double.parseDouble(getInventoryItem().getProperty("percentage"));
 		}
 		return percentage;
+	}
+	
+	public double getDiscount() {
+		double discount = 0.0d;
+		if (getInventoryItem().getProperty("discount")!=null && !getInventoryItem().getProperty("discount").isEmpty())
+		{
+			discount = Double.parseDouble(getInventoryItem().getProperty("discount"));
+		}
+		return discount;
 	}
 	
 	public String getProductId()
@@ -227,36 +238,35 @@ public class Coupon {
 	
 	public void removeCartAdjustment(Cart inCart)
 	{
-		double percentage = getPercentage();
-		if (percentage <= 0.0d)
-		{
-			return;
-		}
-		String productid = getProductId();
-		Iterator itr = inCart.getAdjustments().iterator();
+		Iterator<?> itr = inCart.getAdjustments().iterator();
 		while (itr.hasNext())
 		{
-			SaleAdjustment adjustment = (SaleAdjustment) itr.next();
-			String inventoryid = adjustment.getInventoryItemId();
-			if (inventoryid!=null && !inventoryid.isEmpty()){
-				if (getInventoryItem().getProperty("sku")!=null && getInventoryItem().getProperty("sku").equals(inventoryid)){
-					inCart.getAdjustments().remove(adjustment);//check inventory sku first
+			Adjustment adjust = (Adjustment) itr.next();
+			String inventoryid = null;
+			String adjproduct = null;
+			if (adjust instanceof SaleAdjustment){
+				inventoryid = ((SaleAdjustment) adjust).getInventoryItemId();
+				adjproduct = ((SaleAdjustment) adjust).getProductId();
+			} else if (adjust instanceof DiscountAdjustment){
+				inventoryid = ((DiscountAdjustment) adjust).getInventoryItemId();
+				adjproduct = ((DiscountAdjustment) adjust).getProductId();
+			} else {
+				continue;
+			}
+			if (inventoryid!=null){
+				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){ //.getProperty("sku")
+					inCart.getAdjustments().remove(adjust);//check inventory sku first
 					return;
 				}
 			}
-			String adjproduct = adjustment.getProductId();
-			if (adjproduct!=null && !adjproduct.isEmpty() && productid!=null && productid.equals(adjproduct))
+			if (adjproduct!=null)
 			{
-				inCart.getAdjustments().remove(adjustment);
-				return;//check product id if inventory sku isn't found
-			}
-			double adjusted = adjustment.getPercentage().doubleValue() * 100;
-			if (adjusted == percentage)
-			{
-				inCart.getAdjustments().remove(adjustment);
-				return;//last case: check percentage
+				String productid = getProductId();
+				if (productid!=null && productid.equals(adjproduct)){
+					inCart.getAdjustments().remove(adjust);
+					return;//check product id if inventory sku isn't found
+				}
 			}
 		}
-	}
-		
+	}	
 }

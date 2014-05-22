@@ -37,6 +37,10 @@ public class SaleAdjustment implements Adjustment {
 	public void setPercentDiscount(double inAdjustmentPercentage) {
 		fieldPercentage = new Fraction(inAdjustmentPercentage / 100);
 	}
+	
+	public void setPercentage(double inPercentage){
+		fieldPercentage = new Fraction(inPercentage);
+	}
 
 	public Fraction getPercentage() {
 		return fieldPercentage;

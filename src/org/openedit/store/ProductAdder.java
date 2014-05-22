@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
+import org.openedit.store.adjustments.DiscountAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.util.DateStorageUtil;
 
@@ -55,30 +56,33 @@ public class ProductAdder
 			{
 				continue;
 			}
-			String checked = inReq.getRequestParameter("remove" + counter);
-			if (checked != null)
-			{
-				continue;
-			}
-
 			Product product = inCart.getStore().getProduct(productId);
-
 			if (product == null)
 			{
-				// log
 				product = findProduct(productId, olditems);
 				if (product == null)
 				{
 					continue;
 				}
 			}
+			String checked = inReq.getRequestParameter("remove" + counter);
 			if (checked != null)
 			{
 				inCart.removeProduct(product);
+				if (product.isCoupon())
+				{
+					InventoryItem item = findInventoryItem(product,olditems);
+					if (item!=null)//removed so update adjustment
+					{
+						Coupon removedCoupon = new Coupon(item);
+						removedCoupon.removeCartAdjustment(inCart);
+					}
+				}
+				continue;
 			}
 			int quantity = 0;
 			String quantityStr = (String) params.get("quantity" + counter);
-			if(i == 0 /*|| product.isCoupon()*/)
+			if(i == 0)
 			{
 				quantity = 1;
 			}
@@ -231,6 +235,11 @@ public class ProductAdder
 				}
 			}
 		}
+		//make sure adjustments are removed if cart is empty (fail-safe)
+		if (inCart.isEmpty())
+		{
+			inCart.getAdjustments().clear();
+		}
 		//once products are updated check coupon dependencies
 		Iterator<Coupon> itr = getCoupons(inCart).iterator();
 		while(itr.hasNext())
@@ -255,6 +264,8 @@ public class ProductAdder
 				inReq.putPageValue("couponerror", true);
 			}
 		}
+		
+		
 	}
 	
 	private void removeCoupon(Cart inCart, Coupon inCoupon)
@@ -487,6 +498,7 @@ public class ProductAdder
 		String couponcode = inReq.getRequestParameter("couponcode");
 		if (couponcode != null && couponcode.length() > 0)
 		{
+			couponcode = couponcode.trim();
 			// make sure there is no negative product in there already then add
 			// the product ID in there
 			// we might have to look up the producinCartt ID up since W@W needs
@@ -510,8 +522,9 @@ public class ProductAdder
 						return;
 					}
 					
-					//percentage, product, minquantity, minsubtotal, expirydate, acceptmultiple, restricttouser
+					//percentage, discount, product, minquantity, minsubtotal, expirydate, acceptmultiple, restricttouser
 					double percentage = coupon.getPercentage();
+					double discount = coupon.getDiscount();
 					String productid = coupon.getProductId();
 					int minquantity = coupon.getMininumProductQuantity();
 					double minsubtotal = coupon.getMinimumSubtotal();
@@ -576,41 +589,38 @@ public class ProductAdder
 					//percentage
 					if (percentage > 0)
 					{
-						//change logic here
-						//don't need to look for cart adjustments like this
-						//maybe getAdjustments(), check productid on each one
-						//also check price --- when we remove a product from the list
-						// should also check whether adjustments are set
+						SaleAdjustment adjustment = new SaleAdjustment();
+						if (productid!=null && !productid.isEmpty()) 
+						{
+							adjustment.setProductId(productid);
+						}
+						adjustment.setInventoryItemId(couponcode);
+						adjustment.setPercentDiscount(percentage);
+						inCart.addAdjustment(adjustment);
 						
-//						if (inCart.getAdjustments().size() == 0)
-//						{
-							SaleAdjustment adjustment = new SaleAdjustment();
-							if (productid!=null && !productid.isEmpty()) 
-							{
-								adjustment.setProductId(productid);
-							}
-							adjustment.setPercentDiscount(percentage);
-
-							inCart.addAdjustment(adjustment);
-							CartItem cartItem = new CartItem();
-							cartItem.setInventoryItem(inventoryItem);
-							inCart.addItem(cartItem);
-//						}
+						CartItem cartItem = new CartItem();
+						cartItem.setInventoryItem(inventoryItem);
+						inCart.addItem(cartItem);
+					}
+					else if (discount > 0)
+					{
+						DiscountAdjustment adjustment = new DiscountAdjustment();
+						if (productid!=null && !productid.isEmpty()) 
+						{
+							adjustment.setProductId(productid);
+						}
+						adjustment.setInventoryItemId(couponcode);
+						adjustment.setDiscount(discount);
+						inCart.addAdjustment(adjustment);
+						
+						CartItem cartItem = new CartItem();
+						cartItem.setInventoryItem(inventoryItem);
+						inCart.addItem(cartItem);
 					}
 					else
 					{
 						CartItem cartItem = new CartItem();
 						cartItem.setInventoryItem(inventoryItem);
-						// remove any other coupons
-//						for (Iterator iter = inCart.getItems().iterator(); iter.hasNext();)
-//						{
-//							CartItem olditem = (CartItem) iter.next();
-//							if (olditem.getYourPrice().isNegative())
-//							{
-//								inCart.removeItem(olditem);
-//								break;
-//							}
-//						}
 						inCart.addItem(cartItem);
 					}
 				}

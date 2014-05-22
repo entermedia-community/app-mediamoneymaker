@@ -27,6 +27,8 @@ import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.DiscountAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -246,14 +248,38 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			}
 			
 			
-			List adjustments = inOrder.getAdjustments();
+			List<?> adjustments = inOrder.getAdjustments();
 			if (adjustments != null) {
 				for (Iterator iterator = adjustments.iterator(); iterator
 						.hasNext();) {
-					SaleAdjustment a = (SaleAdjustment) iterator.next();
-					Element adjustment = orderElem.addElement("adjustment");
-					String val = a.getPercentage().getFraction().toString();
-					adjustment.setText(val);
+					Adjustment adjustment = (Adjustment) iterator.next();
+					if (adjustment instanceof SaleAdjustment)
+					{
+						SaleAdjustment a = (SaleAdjustment) adjustment;
+						String val = a.getPercentage().getFraction().toString();
+						String inventoryid = a.getInventoryItemId();
+						String productid = a.getProductId();
+						Element e = orderElem.addElement("adjustment");
+						e.addAttribute("type", "saleadjustment");
+						e.addAttribute("value", val);
+						if (inventoryid!=null) e.addAttribute("inventoryid", inventoryid);
+						if (productid!=null) e.addAttribute("productid", productid);
+					}
+					else if (adjustment instanceof DiscountAdjustment)
+					{
+						DiscountAdjustment a = (DiscountAdjustment) adjustment;
+						String val = String.valueOf(a.getDiscount().doubleValue());
+						String inventoryid = a.getInventoryItemId();
+						String productid = a.getProductId();
+						Element e = orderElem.addElement("adjustment");
+						e.addAttribute("type", "discountadjustment");
+						e.addAttribute("value", val);
+						if (inventoryid!=null) e.addAttribute("inventoryid", inventoryid);
+						if (productid!=null) e.addAttribute("productid", productid);
+					}
+					else {
+						//more types of adjustments here
+					}
 				}
 			}
 			// add customer information, including address
@@ -632,15 +658,37 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		}
 		inOrder.setTaxes(taxes);
 
-		List adjustments = new ArrayList();
+		List<Adjustment> adjustments = new ArrayList<Adjustment>();
 
 		for (Iterator it = inOrderElement.elementIterator("adjustment"); it
 				.hasNext();) {
-			SaleAdjustment rate = new SaleAdjustment();
-			Element adjustment = (Element) it.next();
-			Double discount = Double.parseDouble(adjustment.getText());
-			rate.setPercentDiscount(discount);
-
+			
+			Element element = (Element) it.next();
+			String type = element.attributeValue("type");
+			String productid = element.attributeValue("productid");
+			String inventoryid = element.attributeValue("inventoryid");
+			String value = element.attributeValue("value");
+			if (type == null || type.isEmpty())//backwards compatible
+			{
+				type = "saleadjustment";
+				value = element.getText();
+			}
+			if (type.equals("saleadjustment"))
+			{
+				SaleAdjustment adjustment = new SaleAdjustment();
+				if (inventoryid!=null) adjustment.setInventoryItemId(inventoryid);
+				if (productid!=null) adjustment.setProductId(productid);
+				adjustment.setPercentage(Double.parseDouble(value));
+				adjustments.add(adjustment);
+			}
+			else if (type.equals("discountadjustment"))
+			{
+				DiscountAdjustment adjustment = new DiscountAdjustment();
+				if (inventoryid!=null) adjustment.setInventoryItemId(inventoryid);
+				if (productid!=null) adjustment.setProductId(productid);
+				adjustment.setDiscount(Double.parseDouble(value));
+				adjustments.add(adjustment);
+			}
 		}
 		inOrder.setAdjustments(adjustments);
 

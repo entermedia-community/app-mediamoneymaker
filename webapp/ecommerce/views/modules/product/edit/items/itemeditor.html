@@ -14,7 +14,7 @@
 			<form name="listitems" id="listitems" action="$home$apphome/views/modules/product/edit/items/itemeditor.html">
 			<input type="hidden" name="id" value="$product.getId()" />
 			<font color=red>$!editerror</font><br>
-			<select size="4" style="width: 200px;"  name="sku" onchange="document.listitems.submit();" >
+			<select size="9" style="width: 250px;"  name="sku" onchange="document.listitems.submit();" >
 				#foreach($itemOption in $product.getInventoryItems() )
 					<option value="$!itemOption.sku"
 					#if ( $itemOption.sku )
@@ -62,7 +62,7 @@
 					#if( $item && $selectedItemShown )
 						<form name="saveitem">
 					<td valign=top>
-						<table border="1">
+						<table border="0">
 							#set( $hassize = false)
 						#foreach ($option in $item.getAllOptions())
 						<input type="hidden" name="optionid$option.id" value="$option.id" />
@@ -94,9 +94,9 @@
 						 <tr>
 							<td>[[Wholesale Price]]:</td><td> <input name="wholesaleprice" value="$!item.getPriceSupport().getWholesalePrice().toShortString()" /> </td>
 						 </tr>
-						 #elseif ($iscoupon == true)
+						 #elseif ($iscoupon)
 						 <tr>
-							<td>[[Value]]:</td><td> <input name="retailprice" value="$!item.getPriceSupport().getRetailPrice().toShortString()" /> </td>
+							<td>[[Value]] ([[applied once]]):</td><td> <input name="retailprice" value="$!item.getPriceSupport().getRetailPrice().toShortString()" /> </td>
 						 </tr>
 						 #end
 						 <tr>

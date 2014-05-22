@@ -7,6 +7,7 @@
   <property id="saleenddate" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="item" internalfield="false" datatype="date">Sale End Date</property>
   
   <property id="percentage" coupon="true" index="true" stored="true" editable="true" sortable="true" type="double" searchtype="item" internalfield="false">Percentage</property>
+  <property id="discount" coupon="true" index="true" stored="true" editable="true" sortable="true" type="double" searchtype="item" internalfield="false">Discount</property>
   <property id="product" coupon="true" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="item" internalfield="false" datatype="list">Product</property>
   <property id="minquantity" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">Minimum Quantity</property>
   <property id="minsubtotal" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">Minimum Subtotal</property>
