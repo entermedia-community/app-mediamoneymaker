@@ -108,12 +108,12 @@
 				#if($product.isCoupon())
 					$order.getCouponPrice($item)
 				#else
-					$item.yourPrice 
-					#set($priceadjustment = $order.getPriceAdjustment($item))
-					#if($priceadjustment && $priceadjustment.isZero() == false)
-						($priceadjustment)
+					#set($adjustment = $order.getPriceAdjustment($item))
+					#if($adjustment.isZero())
+						$item.getYourPrice()
+					#else
+						$adjustment
 					#end
-					#set($priceadjustment = false)
 				#end
 			</p>
 		</td>
@@ -217,7 +217,7 @@
 		<td align="right">$order.getSubTotal()</td>
 		<td colspan="2">&nbsp;</td>
 	</tr>
-#if ( $order.getTotalShipping() && $order.getTotalShipping() != "0.00" )
+#if ( $order.getTotalShipping() && $order.getTotalShipping().isZero() == "false" )
 	<tr>
 		  <td colspan="5" align="right">Shipping:&nbsp;&nbsp;</td>
 		  <td align="right">$order.getTotalShipping()</td>
