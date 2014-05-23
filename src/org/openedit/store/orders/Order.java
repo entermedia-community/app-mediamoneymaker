@@ -735,11 +735,11 @@ public class Order extends BaseData implements Comparable {
 			Iterator itr = getAdjustments().iterator();
 			while (itr.hasNext()){
 				Adjustment adjustment = (Adjustment) itr.next();
-				Money value  = adjustment.adjust(inCartItem);
-				if (value != null && !value.isZero()){
-					priceadjustment = value;
-					break;
+				if (adjustment.getProductId()==null || !adjustment.getProductId().equals(inCartItem.getProduct().getId())){
+					continue;
 				}
+				priceadjustment  = adjustment.adjust(inCartItem);
+				break;
 			}
 		}
 		return priceadjustment;
@@ -748,10 +748,10 @@ public class Order extends BaseData implements Comparable {
 	public Money getTotalPrice(CartItem inCartItem){
 		Money total = inCartItem.getTotalPrice();
 		Money adjustment = getPriceAdjustment(inCartItem);
-		if (adjustment.isNegative()){
-			return total.add(adjustment);
+		if (adjustment.isZero()){
+			return total;
 		}
-		return total.subtract(adjustment);
+		return adjustment.multiply(inCartItem.getQuantity());
 	}
 	
 	public Money getCouponPrice(CartItem inCartItem){

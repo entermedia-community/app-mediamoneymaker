@@ -13,6 +13,7 @@ import org.openedit.store.CartItem;
  */
 public interface Adjustment
 {
+	public abstract String getProductId();
 	public abstract Money adjust( Cart inCart, CartItem inItem );
 	public abstract Money adjust( CartItem inItem );
 }
