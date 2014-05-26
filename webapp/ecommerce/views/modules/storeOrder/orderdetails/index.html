@@ -102,7 +102,8 @@
 			</p>
 		</td>
 		<td align="center">
-			<p class="results-list">$item.quantity</p></td>
+			<p class="results-list">$item.quantity</p>
+		</td>
 		<td align="right">
 			<p class="results-list">
 				#if($product.isCoupon())
@@ -112,7 +113,7 @@
 					#if($adjustment.isZero())
 						$item.getYourPrice()
 					#else
-						$adjustment
+						$adjustment ($item.getYourPrice())
 					#end
 				#end
 			</p>
