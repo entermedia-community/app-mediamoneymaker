@@ -2,10 +2,12 @@
 			   <div style="color:red">$!errorMessage</div>
 			   #if( $store.areCouponsAccepted() )
 				#if($cart.getAdjustments().size() >0)
-					[[The following coupons have been applied: ]] 
+					[[The following coupons have been applied: ]]
 					<ul>
 						#foreach($adjustment in $cart.getAdjustments())
-							<li>$adjustment</li>
+							#set($adjprod = $adjustment.getProductId())
+							<li>$adjustment #if($adjprod) off $store.getProduct($adjprod) #end</li>
+							#set($adjprod = false)
 						#end
 					</ul>
 				#end
