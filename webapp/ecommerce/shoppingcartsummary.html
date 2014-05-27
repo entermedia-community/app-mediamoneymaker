@@ -2,7 +2,7 @@
 			   <div style="color:red">$!errorMessage</div>
 			   #if( $store.areCouponsAccepted() )
 				#if($cart.getAdjustments().size() >0)
-					[[The following coupons have been applied: ]]
+					[[The following adjustments have been applied: ]]
 					<ul>
 						#foreach($adjustment in $cart.getAdjustments())
 							#set($adjprod = $adjustment.getProductId())
@@ -12,7 +12,7 @@
 					</ul>
 				#end
 				<div class="coupon">
-				    [[Gift Certificate/Coupon Code]]: <input style="margin-left: 5px;" type=text name=couponcode size=8 />
+				    [[Promotional Code]]: <input style="margin-left: 5px;" type=text name=couponcode size=8 />
 				</div>
 			   #end
                 <div class="cart-price clearfix">
