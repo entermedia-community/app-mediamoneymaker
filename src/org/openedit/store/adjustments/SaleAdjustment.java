@@ -76,10 +76,10 @@ public class SaleAdjustment implements Adjustment {
 		Double percent = getPercentage().doubleValue() * 100;
 		StringBuilder buf = new StringBuilder();
 		buf.append(percent.intValue()).append("% discount");
-		if (getProductId()!=null)
-		{
-			buf.append(" on "+getProductId()+" products");
-		}
+//		if (getProductId()!=null)
+//		{
+//			buf.append(" on "+getProductId()+" products");
+//		}
 		return buf.toString();
 
 	}

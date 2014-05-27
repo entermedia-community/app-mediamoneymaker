@@ -73,10 +73,10 @@ public class DiscountAdjustment implements Adjustment{
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
 		buf.append(getDiscount()).append(" discount");
-		if (getProductId()!=null)
-		{
-			buf.append(" on "+getProductId()+" products");
-		}
+//		if (getProductId()!=null)
+//		{
+//			buf.append(" on "+getProductId()+" products");
+//		}
 		return buf.toString();
 	}
 
