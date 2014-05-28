@@ -6,7 +6,18 @@
 					<ul>
 						#foreach($adjustment in $cart.getAdjustments())
 							#set($adjprod = $adjustment.getProductId())
-							<li>$adjustment #if($adjprod) off $store.getProduct($adjprod) #end</li>
+							<li>
+								#set($classname = "${adjustment.class.name}")
+								#if( $classname.contains("SaleAdjustment") ) 
+								 	#set($discount = $adjustment.getPercentage().doubleValue())
+								 	#set($discount = $discount * 100)
+								 	$discount% off
+								#else
+									#set($discount = $adjustment.getDiscount())
+									$discount off
+								#end
+								#if($adjprod) $store.getProduct($adjprod) #end
+							</li>
 							#set($adjprod = false)
 						#end
 					</ul>
