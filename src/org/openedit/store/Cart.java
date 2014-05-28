@@ -739,5 +739,43 @@ public class Cart extends BaseData
 		}
 
 	}
+	
+	public Money getPriceAdjustment(CartItem inCartItem){
+		Money priceadjustment = new Money();
+		if (inCartItem.getProduct()!=null && !inCartItem.getProduct().isCoupon() && getAdjustments()!=null && !getAdjustments().isEmpty()){
+			Iterator itr = getAdjustments().iterator();
+			while (itr.hasNext()){
+				Adjustment adjustment = (Adjustment) itr.next();
+				if (adjustment.getProductId()==null || !adjustment.getProductId().equals(inCartItem.getProduct().getId())){
+					continue;
+				}
+				priceadjustment  = adjustment.adjust(inCartItem);
+				break;
+			}
+		}
+		return priceadjustment;
+	}
+	
+	public Money getTotalPrice(CartItem inCartItem){
+		Money total = inCartItem.getTotalPrice();
+		Money adjustment = getPriceAdjustment(inCartItem);
+		if (adjustment.isZero()){
+			return total;
+		}
+		return adjustment.multiply(inCartItem.getQuantity());
+	}
+	
+	public Money getCouponPrice(CartItem inCartItem){
+		Money price = new Money();
+		if (inCartItem.getProduct()!=null && inCartItem.getProduct().isCoupon()){
+			//cartitem is a coupon so we need to provide a price IF it is a 
+			//single value coupon
+			if (new Coupon(inCartItem.getInventoryItem()).isSingleValueCoupon())
+			{
+				price = inCartItem.getYourPrice();
+			}
+		}
+		return price;
+	}
 
 }

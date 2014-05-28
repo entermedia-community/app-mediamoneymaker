@@ -253,6 +253,11 @@ color: blue;
 text-align: center;
 }
 
+.draft{
+	border-style:solid;
+	border-width:1px;
+}
+
 .featured {
 width: 670px;
 border:1px solid #EEE;
@@ -276,7 +281,7 @@ border-radius:8px;
 list-style: none;
 display: block;
 float: left;
-padding: 5px 18px;
+padding: 20px 20px; /* 5px 18px; */
 
 }
  .logo-section{

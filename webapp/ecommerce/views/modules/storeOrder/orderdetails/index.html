@@ -113,7 +113,7 @@
 					#if($adjustment.isZero())
 						$item.getYourPrice()
 					#else
-						$adjustment ($item.getYourPrice())
+						$adjustment
 					#end
 				#end
 			</p>
@@ -197,19 +197,6 @@
 				#end
 			#end
 			</p>
-		</td>
-	</tr>
-#end
-#if(!$order.getAdjustments().isEmpty())
-	#set( $itemCounter = $itemCounter + 1)
-	#set( $bkgrnd = $itemCounter % 2)
-	#if ( $bkgrnd == 0 )
-	<tr class="results-list-a">
-	#else
-	<tr class="results-list-b">
-	#end
-		<td colspan="9">
-		$order.getAdjustments()
 		</td>
 	</tr>
 #end
