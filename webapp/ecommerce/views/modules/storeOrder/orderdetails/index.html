@@ -130,7 +130,9 @@
 				#else
 					#set($quantityrefunded = $order.getQuantityRefunded($item))
 					#set($delta = $item.quantity - $quantityrefunded)
-					#if ( $order.getQuantityShipped($item) == $delta )
+					#if ( $item.quantity == $quantityrefunded )
+						N/A
+					#elseif ( $order.getQuantityShipped($item) == $delta )
 						Shipped
 					#else
 						#if ( $order.getQuantityShipped($item) > 0 )
