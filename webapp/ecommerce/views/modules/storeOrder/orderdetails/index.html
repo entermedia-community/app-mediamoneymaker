@@ -226,19 +226,77 @@
 		<td colspan="2">&nbsp;</td>
 	</tr>
 	<tr>
-		<td colspan="5" align="right"><b>Grand Total:&nbsp;&nbsp;</b></td>
-		<td align="right"><b>$order.totalPrice</b></td>
+		<td colspan="5" align="right"><strong>Grand Total:&nbsp;&nbsp;</strong></td>
+		<td align="right"><strong>$order.totalPrice</strong></td>
 		<td colspan="2">&nbsp;</td>
 	</tr>
 </table>
 
 <hr>
-<h3>Refund Details</h3>
+<h3>Payment Details</h3>
+<p>
+	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
+		#if( $order.getOrderState().getId() == "authorized" )
+			Authorized $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+		#elseif( $order.getOrderState().getId() == "captured" )
+			Captured $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+		#else
+			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
+		#end
 
+		#set($cardNumber = $order.getPaymentMethod().getMaskedCardNumber())
+		#if($cardNumber)
+			Card number: $cardNumber<br>
+		#else
+			Card number: Not possible to display.<br>
+		#end
+		Expiration date: $order.paymentMethod.expirationDateString<br>
+		#if( $canmanageorders )
+
+		#if( $order.getOrderState().getId() == "authorized" )
+		<br>
+			<form action="$home$apphome/admin/orders/captureorder.html" name="capture">
+				Once the product is shipped then charges can be applied
+				<!-- 
+				Note to customer: <br><textarea rows=5 cols=20 name="note"></textarea>
+				-->
+				<br> 
+				<input type="submit" value="Capture Order" />			
+				<input type="hidden" name="ordernumber" value="$order.getOrderNumber()" />
+			</form>
+		#end
+	#end
+#end
+
+#if ( $order.paymentMethod.poNumber )
+	<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
+#end
+#if ( $order.paymentMethod.billMeLater )
+	<strong>Payment Method:</strong> Bill Me Later<br />
+#end
+#if ( $order.paymentMethod.note && $order.paymentMethod.note.isEmpty() == false)
+	<stong>Notes:</stong><br/>$order.paymentMethod.note
+#end
+</p>
+
+<hr>
+<h3>Refund Details</h3>
 #set( $refunds = $order.getRefunds() )
 #if($refunds.size() == 0)
 	<p>No refunds have been processed for this order. <a href="/ecommerce/views/modules/storeOrder/edit/refund/index.html?id=${order.id}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds" style="color:blue;text-decoration:none;font-weight:normal;">Click here to issue one.</a></p>
 #else
+	<table cellspacing="5" cellpadding="3" border="0">
+		<thead>
+			<tr class="results-list-head">
+				<th align="center" width="260" nowrap class="results-list-head">Date</th>
+				<th align="center" width="200" nowrap class="results-list-head">Transaction ID</th>
+				<th align="center" width="100" nowrap class="results-list-head">Subtotal</th>
+				<th align="center" width="100" nowrap class="results-list-head">Taxes</th>
+				<th align="right" width="100" nowrap class="results-list-head">Total</th>
+				<th align="center" width="200" nowrap class="results-list-head">Note</th>
+			</tr>
+		</thead>
+	#set( $refunds = $order.getRefunds() )
 	#foreach ($refund in $refunds)
 		#set($success = $refund.isSuccess())
 		#set($subtotal = $refund.getSubTotal())
@@ -283,91 +341,91 @@
 		#set($shippingrefunds = "${D}0.00")
 		#set($cartitemrefunds = $sumsubtotal)
 	#end
-
-	<table cellspacing="5" cellpadding="3" border="0">
-		<thead>
-			<tr class="results-list-head">
-				<th align="center" width="100" nowrap class="results-list-head">Shipping</th>
-				<th align="center" width="100" nowrap class="results-list-head">Cart Items</th>
-				<th align="center" width="100" nowrap class="results-list-head">Subtotal</th>
-				<th align="center" width="100" nowrap class="results-list-head">Taxes</th>
-				<th align="center" width="100" nowrap class="results-list-head">Total</th>
-			</tr>
-		</thead>
-		<tr>
-			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+	
+	#set($itemCounter = 0)
+	#foreach ($refund in $refunds)
+		#set($itemCounter = $itemCounter + 1)
+		#set($bkgrnd = $itemCounter % 2)
+		#if ( $bkgrnd == 0 )
+			<tr class="results-list-a">
+		#else
+			<tr class="results-list-b">
+		#end
+		
+		#set($date = $refund.getDate())
+		#set($success = $refund.isSuccess())
+		#set($trnid = $refund.getTransactionId())
+		#set($subtotal = $refund.getSubTotal())
+		#set($tax = $refund.getTaxAmount())
+		#set($total = $refund.getTotalAmount())
+		#set($message = $refund.getMessage())
+		
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					$!shippingrefunds
+					$date
 				</p>
 			</td>
 			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					$!cartitemrefunds
+					#if($success == "true")
+						<a href="/ecommerce/views/modules/storeOrder/edit/refund/index.html?id=${order.id}&transid=${trnid}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds" style="color:blue;text-decoration:underline;font-weight:normal;"> 
+						$!trnid 
+						</a>
+					#end
 				</p>
 			</td>
 			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					$!sumsubtotal
+					#if($success == "true") $!subtotal #end
 				</p>
 			</td>
 			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					$!sumtax
+					#if($success == "true") $!tax #end
 				</p>
 			</td>
-			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+			<td align="right" style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					$!sumtotal
+					#if($success == "true") $!total #end
+				</p>
+			</td>
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					#if($success == "false") $!message #end
 				</p>
 			</td>
 		</tr>
+		#end
+		<tr style="border-top: 1px solid black;">
+			  <td colspan="4" align="right">Shipping Refunds:&nbsp;&nbsp;</td>
+			  <td align="right">$!shippingrefunds</td>
+			  <td colspan="1">&nbsp;</td>
+		</tr>
+		<tr>
+			  <td colspan="4" align="right">Product Refunds:&nbsp;&nbsp;</td>
+			  <td align="right">$!cartitemrefunds</td>
+			  <td colspan="1">&nbsp;</td>
+		</tr>
+		<!-- 
+		<tr>
+			  <td colspan="4" align="right">Subtotal:&nbsp;&nbsp;</td>
+			  <td align="right">$!sumsubtotal</td>
+			  <td colspan="1">&nbsp;</td>
+		</tr>
+		-->
+		<tr>
+			  <td colspan="4" align="right">Tax Refunds:&nbsp;&nbsp;</td>
+			  <td align="right">$!sumtax</td>
+			  <td colspan="1">&nbsp;</td>
+		</tr>
+		<tr>
+			  <td colspan="4" align="right"><strong>Total Refunds:&nbsp;&nbsp;</strong></td>
+			  <td align="right"><strong>$!sumtotal</strong></td>
+			  <td colspan="1">&nbsp;</td>
+		</tr>
 	</table>
+	<hr>
 #end
-
-<hr>
-<h3>Payment Details</h3>
-<p>
-	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
-		#if( $order.getOrderState().getId() == "authorized" )
-			Authorized $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
-		#elseif( $order.getOrderState().getId() == "captured" )
-			Captured $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
-		#else
-			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
-		#end
-
-		#set($cardNumber = $order.getPaymentMethod().getMaskedCardNumber())
-		#if($cardNumber)
-			Card number: $cardNumber<br>
-		#else
-			Card number: Not possible to display.<br>
-		#end
-		Expiration date: $order.paymentMethod.expirationDateString<br>
-		#if( $canmanageorders )
-
-		#if( $order.getOrderState().getId() == "authorized" )
-		<br>
-			<form action="$home$apphome/admin/orders/captureorder.html" name="capture">
-				Once the product is shipped then charges can be applied:
-				<!-- Note to customer: <br><textarea rows=5 cols=20 name="note"></textarea>
-				<br> -->
-				<input type="submit" value="Capture Order" />			
-				<input type="hidden" name="ordernumber" value="$order.getOrderNumber()" />
-			</form>
-		#end
-	#end
-#end
-
-#if ( $order.paymentMethod.poNumber )
-	<strong>Purchase Order:</strong> $order.paymentMethod.poNumber<br>
-#end
-#if ( $order.paymentMethod.billMeLater )
-	<strong>Payment Method:</strong> Bill Me Later<br />
-#end
-#if ( $order.paymentMethod.note )
-	<stong>Notes:</stong><br/>$order.paymentMethod.note
-#end
-</p>
 </div>
 <!-- 
 <a href="$home$apphome/views/modules/storeOrder/shippingdetails/index.html?id=$orderNumber&oemaxlevel=1" class="results-list thickbox uibutton">

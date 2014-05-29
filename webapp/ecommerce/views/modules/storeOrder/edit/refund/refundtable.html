@@ -9,6 +9,8 @@
 #set( $viewid = $context.findValue("viewid") )
 #set( $viewpath = $context.findValue("viewpath") )
 
+#set( $active = $context.findValue("transid"))
+
 <h3>Refund History for $orderNumber</h3>
 
 #if($refunds.size() == 0)
@@ -99,7 +101,12 @@
 			</td>
 			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list">
-					#if($success == "true") $!trnid #end
+					#if($success == "true") 
+						$!trnid 
+						#if ($active && $trnid == $active)
+							#set($activebutton = "${itemCounter}-button")
+						#end
+					#end
 				</p>
 			</td>
 			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
@@ -141,6 +148,10 @@
 				#if(!$product)
 					#set( $product = $store.getProductSearcher().searchByField("rogerssku",$item.getId()) )
 				#end
+				#if(!$product)
+					#set( $cartitem = $order.getCartItemByProductSku($item.getId()))
+					#set( $product = $cartitem.getProduct())
+				#end
 				#set( $displayname = $product )
 			#else
 				#set( $shippingmethod = $order.getShippingMethod() )
@@ -155,6 +166,7 @@
 			<td align="center" style="font-size:smaller;font-weight:bold;">$item.getUnitPrice()</td>
 			<td align="center" style="font-size:smaller;font-weight:bold;">$item.getQuantity()</td>
 			<td align="center" style="font-size:smaller;font-weight:bold;">$item.getTotalPrice()</td>
+			#set($product = false)
 		</tr>
 		#end
 		
@@ -198,8 +210,6 @@
 		$(this).val(state);
 		$(tableclass).toggle();
 		
-		
-		
 		/*var checked = $(this).attr('checked');
 		var source = $(this).attr('name');
 		var available = $("#"+source+"-available").val();
@@ -214,4 +224,11 @@
 			$("#"+source+"-quantity").val(available);
 		}*/
 	});
+	
+#if($activebutton)
+	$(document).ready(function(){
+		$("#${activebutton}").click();
+	});	
+#end
+
 </script>
