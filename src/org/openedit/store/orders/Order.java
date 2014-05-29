@@ -422,6 +422,10 @@ public class Order extends BaseData implements Comparable {
 			return buffer.toString();
 		}
 		
+		if ("totalrefunds".equals(inId)){
+			Money refundamount = calculateRefundTotal();
+			return refundamount.toShortString();
+		}
 
 		return (String) getProperties().get(inId);
 	}
