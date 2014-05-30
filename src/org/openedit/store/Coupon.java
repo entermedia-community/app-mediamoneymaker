@@ -1,8 +1,10 @@
 package org.openedit.store;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
@@ -131,6 +133,41 @@ public class Coupon {
 	{
 		String user = getInventoryItem().getProperty("restricttouser");
 		return user;
+	}
+	
+	public List<String> getSiteRestrictions()
+	{
+		List<String> list = new ArrayList<String>();
+		String sites = getInventoryItem().getProperty("siteredemption");
+		if (sites!=null && !sites.isEmpty()){
+			StringTokenizer tok = new StringTokenizer(sites,"|");
+			while(tok.hasMoreTokens())
+			{
+				list.add(tok.nextToken().trim());
+			}
+		}
+		return list;
+	}
+	
+	public boolean isSiteAllowed(WebPageRequest inReq)
+	{
+		List<String> sites = getSiteRestrictions();
+		if (!sites.isEmpty())
+		{
+			StringBuffer buf = inReq.getRequest().getRequestURL();
+			Iterator<String> itr = sites.iterator();
+			boolean isFound = false;
+			while (itr.hasNext())
+			{
+				if (buf.toString().contains(itr.next()))
+				{
+					isFound = true;
+					break;
+				}
+			}
+			return isFound;
+		}
+		return true;
 	}
 	
 	public boolean hasExpired()

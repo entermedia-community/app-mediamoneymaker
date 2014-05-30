@@ -14,7 +14,6 @@
   <property id="acceptmultiple" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">Accept Multiple?</property>
   <property id="restricttouser" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">Restrict to User</property>
   <property id="oneperuser" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">One per User</property>
+  <property id="siteredemption" coupon="true" index="true" stored="true" editable="true" sortable="true" searchtype="item" internalfield="false">Site Redemption</property>
   <property id="expirydate" coupon="true" type="date" searchtype="item" datatype="date">Coupon Expiry</property>
-  
-
 </properties>

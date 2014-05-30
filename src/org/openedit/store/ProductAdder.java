@@ -532,9 +532,16 @@ public class ProductAdder
 					boolean multiple = coupon.isAcceptsMultiple();
 					boolean oneperuser = coupon.isOnePerUser();
 					String restrict = coupon.getUserRestriction();
+					List<String> sites = coupon.getSiteRestrictions();
 					
-					log.info("Coupon Details - Precentage: "+percentage+", Product: "+productid+", Min quantity: "+minquantity+", Min Subtotal: "+minsubtotal+", Expiry: "+expiry+" ("+inventoryItem.getProperty("expirydate")+"), Multiple: "+multiple+", On per user? "+oneperuser+", User: "+restrict);
+					log.info("Coupon Details - Precentage: "+percentage+", Product: "+productid+", Min quantity: "+minquantity+", Min Subtotal: "+minsubtotal+", Expiry: "+expiry+" ("+inventoryItem.getProperty("expirydate")+"), Multiple: "+multiple+", On per user? "+oneperuser+", User: "+restrict+", Restricted to Sites: "+sites);
 					
+					if (!coupon.isSiteAllowed(inReq))
+					{
+						inReq.putPageValue("errorMessage", "That coupon cannot be used on this site.");
+						inReq.putPageValue("couponerror", true);
+						return;
+					}
 					if (coupon.hasCustomerUsedCoupon(inReq, inCart))
 					{
 						inReq.putPageValue("errorMessage", "That coupon can only be used by you once.");
