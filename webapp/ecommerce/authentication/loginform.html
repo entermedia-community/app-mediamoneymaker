@@ -5,8 +5,8 @@ $!request.getAttribute( "oe-exception")
 	#end
 		#set($loginok = $context.getRequestParameter("loginokpage"))
 
-		<p class="note">Please enter your email address (or Login ID) and password to log in or 
-		email <a href="mailto:AccessoryMgmt@rci.rogers.com?Subject=Request%20Login%20To%20Accessory%20Portal">AccessoryMgmt@rci.rogers.com</a> to request a login.</p>
+		<p class="note loginform">Please enter your email address (or Login ID) and password to login. If you do not have a login and would like to register, please e-mail
+		<a href="mailto:AccessoryMgmt@rci.rogers.com?Subject=Request%20Login%20To%20Accessory%20Portal">AccessoryMgmt@rci.rogers.com</a> to request one.</p>
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="$!loginok"/>
@@ -22,7 +22,7 @@ $!request.getAttribute( "oe-exception")
 				$context.removePageValue("oe-exception")
 			#end
 		</form>
-		<p class="note" style="margin-top: 26px; margin-bottom: 10px;"><a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a></p>
+		<p class="note loginform" style="margin-top: 26px; margin-bottom: 10px;"><a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a></p>
 </div>	
 
 
@@ -46,3 +46,15 @@ $!request.getAttribute( "oe-exception")
 		}
 	}
 	</script> 
+
+<style>
+.loginform a {
+    color: darkblue;
+}
+.loginform a:hover {
+    color: darkblue;
+    text-decoration:underline;
+}
+.loginform {
+}
+</style>
