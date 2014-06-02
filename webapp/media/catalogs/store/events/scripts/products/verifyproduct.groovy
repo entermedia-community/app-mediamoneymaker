@@ -1,4 +1,4 @@
-package products;
+//package products;
 
 import java.util.logging.Logger;
 
@@ -25,20 +25,16 @@ public void doProcess() {
 	MediaArchive archive = context.getPageValue("mediaarchive");
    
 	String dataid = webevent.get('dataid');
-	if(dataid == null){
+	if(dataid == null){ 
 		dataid = context.getRequestParameter("id");
 	}
 	Store store = context.getPageValue("store");
 	Product product = store.getProduct(dataid);
-	product.clearItems();
-	
-	double pricefactor = getPriceFactor(archive,product);
-	log.info("price factor for $product: $pricefactor");
-	
-
 	Searcher productsearcher = store.getProductSearcher();
-	
-	if (product.isCoupon() == false){
+	if (!product.isCoupon()){
+		product.clearItems();
+		double pricefactor = getPriceFactor(archive,product);
+		log.info("price factor for $product: $pricefactor");
 		InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
 		Money wholesaleprice = new Money(product.getProperty("rogersprice"));
 		Money retailprice = new Money(product.getProperty("rogersprice"));
