@@ -1,4 +1,4 @@
-package edi
+package products
 
 import java.text.SimpleDateFormat
 import java.util.Iterator;
