@@ -29,6 +29,14 @@
       #foreach( $item in $cart.getItems() )
     	  #set ($productcounter = ${velocityCount} )
           #set( $product = $item.getProduct() )
+          #if($product.isCoupon() == false)
+          	#set($instock = $product.getInventoryItem(0).getQuantityInStock())
+          	#if($product.isInStock() == false)
+          		#set($instock = 0)
+          	#end
+          #else
+          	#set($instock = 1)
+          #end
           <input type="hidden" name="productid.${productcounter}" value="$!product.id" />
     
     	  <tr class="sc-tabledata">
@@ -138,8 +146,18 @@
     	 
      <ul>
     	  <td class="proddata2" style="text-align: center;">
-    	      <input size="1" type="text" style="text-align: center" value="$item.getQuantity()" name="quantity.${productcounter}" #if($product.isCoupon()) disabled #end/></td>
-               #if($page.isPropertyTrue("multipleaddress"))
+    	      <input 
+    	      		size="1" 
+    	      		type="text" 
+    	      		style="text-align: center" 
+    	      		value="$item.getQuantity()" 
+    	      		name="quantity.${productcounter}" 
+    	      		data-original="${item.getQuantity()}"
+    	      		class="product-quantity"
+    	      		data-instock="${instock}" 
+    	      		#if($product.isCoupon()) disabled #end />
+    	  </td>
+          #if($page.isPropertyTrue("multipleaddress"))
     	  <td>
     	   <select name = "address.${productcounter}">
     	   #foreach ($address in $customer.getAddressList())		
@@ -177,3 +195,25 @@
        #end
      </table>
 </div>
+
+<script>
+#set($D = '$')
+$(document).ready(function(){
+	$(".product-quantity").change(function(e){
+		var max = $(this).data("instock");
+		var original = $(this).data("original");
+		var val = $(this).val();
+		if (${D}.isNumeric(val) && val.indexOf('.') == -1){
+			if (val > max){
+				alert("Sorry. Quantity Requested exceeds Quantity Available. Please specify another amount.");
+				$(this).val(original);
+			} else {
+				$(this).data("original",val);
+			}
+		} else {
+			alert("Sorry. Please provide a valid quantity.");
+			$(this).val(original);
+		}
+	});
+});
+</script>

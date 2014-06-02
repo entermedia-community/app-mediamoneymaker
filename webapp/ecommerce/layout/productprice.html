@@ -1,3 +1,8 @@
+#set($instock = $product.getInventoryItem(0).getQuantityInStock())
+#if($product.isInStock() == false)
+	#set($instock = 0)
+#end
+
 #if($cancheckout || $canviewcart)
 <li class="price">
 		<input type="hidden" name="productid" value="$product.getId()" />
@@ -20,15 +25,13 @@
 #end
 #if($canviewcart)
 	#if($product.isInStock())
-	<div style="margin-top:3px;float:right; width: 150px;">
-		<select name="quantity">
-		#foreach($numb in [1..100])
-			<option value="$numb">$numb</option>
-		#end
-		</select>
-		<input class="btn right" type="submit" value="[[Add to Cart]]" />
+	<div style="margin-top:3px;float:right; width: 200px;" class="">
+		#set( $addtocartlink = "$home$apphome/shoppingbag.html?productid=${product.id}" )
+		<input  type="text" id="quantity" value="" style="width:60px;float:left;" data-href="$addtocartlink" placeholder="Quantity">	  
+		<a class="btn" href="javascript:void(0);" style="float:right;margin-top:3px;" id="addtocart"  onclick="validate('quantity');">[[Add to Cart]]</a>
 	</div>
-	<br/><br/>
+	<br/>
+	<br/>
 	#end
  #end
 
@@ -156,5 +159,49 @@
 
 
 </li>
+
+#end
+
+#if($product.isAvailable() && $product.isInStock())
+
+<script>
+#set($D = '$')
+function validate(id){
+	var isOk = false;
+	var max = $instock;
+	var val = $("#"+id).val();
+	var url = $("#"+id).data("href");
+	if (${D}.isNumeric(val) && val.indexOf('.') == -1){
+		if (val > max){
+			alert("Sorry. Quantity Requested exceeds Quantity Available. Please specify another amount.");
+		} else {
+			//ok so open link
+			window.open(url+"&quantity="+val,"_self");
+		}
+	} else {
+		//not number
+		alert("Sorry. Please provide a valid quantity.");
+	}
+	return true;
+}
+$(document).ready(function(){
+	$("#quantity").change(function(e){
+		var max = $instock;
+		var val = $(this).val();
+		if (${D}.isNumeric(val) && val.indexOf('.') == -1){
+			if (val > max){
+				alert("Sorry. Quantity Requested exceeds Quantity Available. Please specify another amount.");
+				$(this).val("");
+			} else {
+				/* $(this).closest('.control-group').removeClass('has-error');
+				$("#error-div").empty(); */
+			}
+		} else {
+			alert("Sorry. Please provide a valid quantity.");
+			$(this).val("");
+		}
+	});
+});
+</script>
 
 #end
