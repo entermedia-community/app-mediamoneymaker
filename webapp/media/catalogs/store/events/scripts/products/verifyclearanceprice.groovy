@@ -38,45 +38,52 @@ import com.openedit.util.XmlUtil
 import groovy.util.slurpersupport.GPathResult
 
 
-public void processProducts() {
+public void init() {
 	
-	log.info("---- START Synchronize Product Wholesale Price ----");
+	log.info("---- START Checking Clearance Prices ----");
 	
 	WebPageRequest inReq = context;
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	Store store = inReq.getPageValue("store");
-	String catalogID = archive.getCatalogId();
+	
+	ArrayList<String> list = new ArrayList<String>();
 	
 	SearcherManager manager = archive.getSearcherManager();
 	Searcher productsearcher = archive.getSearcher("product");
 	HitTracker hits = productsearcher.getAllHits();
-	log.info("staring processing ${hits.size()} products");
 	List productstosave = new ArrayList();
 	hits.each{
 		Product product = store.getProduct(it.id);
-		String wholesale = product.get("rogersprice");//rogersprice IS wholesale
-		if (wholesale == null || wholesale.isEmpty() || !isNumber(wholesale)){
-			return;//continue
+		if (Boolean.parseBoolean("${product.clearancecentre}")==false){
+			return;
 		}
-		
+		Money clearanceprice = new Money(toDouble("${product.clearanceprice}",0.00));
+		if (clearanceprice.isZero() || clearanceprice.isNegative()) {
+			return;
+		}
 		double pricefactor = getPriceFactor(archive,product);
-		log.info("price factor for $product: $pricefactor");
-		
-		Money wholesalePrice = new Money(wholesale);
-		Money retailPrice = wholesalePrice.multiply(pricefactor);
-		List<InventoryItem> inventoryItems = product.getInventoryItems();
-		if (inventoryItems.size() != 1){
-			log.info("<span style='color:red;'>Warning: product # $product.id does not have ONE inventory item (${inventoryItems.size()}), skipping</span>");
-			return; //continue
+		clearanceprice = clearanceprice.multiply(pricefactor);
+		//check product price support
+		PriceSupport productsupport = product.getPriceSupport();
+		if(productsupport == null){
+			log.error("Product Price Support is null: ${product.getId()} - ${product}");
+		} else {
+			if (productsupport.getTiers() !=null){
+				for (Iterator<?> itr = productsupport.getTiers().iterator(); itr.hasNext();)
+				{
+					PriceTier tier = (PriceTier)itr.next();
+					Price price = tier.getPrice();
+					price.setSalePrice(clearanceprice);
+					list.add("${product.getId()} - ${product} - sale price ${price.getSalePrice()}");
+				}
+			}
 		}
+		List<InventoryItem> inventoryItems = product.getInventoryItems();
 		for(InventoryItem inventoryItem:inventoryItems){
 			PriceSupport support = inventoryItem.getPriceSupport();
 			if (support == null){
-				Price price = new Price(retailPrice);
-				price.setWholesalePrice(wholesalePrice);
-				support = new PriceSupport();
-				support.addTierPrice(1, price);
-				inventoryItem.setPriceSupport(support);
+				log.error("problem with product ${product.id}: inventory item has no price support");
+				continue;//problem with one of the inventory item
 			}
 			if(support.getTiers().size() == 0){
 				log.info("NO TIERS ON PRODUCT ${product.id}");
@@ -85,31 +92,32 @@ public void processProducts() {
 			{
 				PriceTier tier = (PriceTier)itr.next();
 				Price price = tier.getPrice();
-				price.setWholesalePrice(wholesalePrice);
-				price.setRetailPrice(retailPrice);
-				log.info("Products: updated ${product.getId()}(${product}) price: ${price}");
+				price.setSalePrice(clearanceprice);
+				list.add("${product.getId()} - ${product} - sale price ${price.getSalePrice()}");
 			}
 		}
 		productstosave.add(product);
-		if (productstosave.size() == 100){
+		if (productstosave.size() == 1000){
 			store.saveProducts(productstosave);
 			productstosave.clear();
-			log.info("Saved 100 products");
 		}
-		
 	}
-	store.saveProducts(productstosave);
-	log.info("Saved ${productstosave.size()} products");
-	store.clearProducts();//forces products to be loaded from disc
-	log.info("---- END Synchronize Product Wholesale Price ----");
-}
-
-public boolean isNumber(String str){
-	try{
-		Double.parseDouble(str);
-	}catch(Exception e){
-		return false;
+	
+	if (!productstosave.isEmpty()){
+		store.saveProducts(productstosave);
+		productstosave.clear();
 	}
+	
+	if (list.isEmpty()){
+		log.info("All Clearance prices are accounted for");
+	} else {
+		log.info("-----------------------------------------------");
+		for(String element:list){
+			log.error(element);
+		}
+		log.info("-----------------------------------------------");
+	}
+	log.info("---- END Checking Clearance Prices ----");
 }
 
 public double getPriceFactor(MediaArchive archive, Product product)
@@ -152,4 +160,4 @@ public double toDouble(String str, double inDefault)
 	return out;
 }
 
-processProducts();
+init();

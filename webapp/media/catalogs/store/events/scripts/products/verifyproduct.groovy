@@ -36,9 +36,9 @@ public void doProcess() {
 		double pricefactor = getPriceFactor(archive,product);
 		log.info("price factor for $product: $pricefactor");
 		InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
-		Money wholesaleprice = new Money(product.getProperty("rogersprice"));
+		Money wholesaleprice = new Money(product.getProperty("rogersprice"));//Wholesale Cost
 		Money retailprice = new Money(product.getProperty("rogersprice"));
-		retailprice = retailprice.multiply(pricefactor);
+		retailprice = retailprice.multiply(pricefactor);//retail is calculated based on wholesale * factor
 		//retail price
 		Price price = new Price(retailprice);
 		//wholesale price
