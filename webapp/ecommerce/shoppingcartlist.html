@@ -1,11 +1,9 @@
-####<script type="text/javascript" src="$home/system/javascript/datetimepicker.js"></script>
 <div>
-    <table class="shoplisting" style="table-layout: fixed;">
-        
+    <table class="shoplisting" style="table-layout: fixed;">        
         <tr class="sc-tableheader">
             <td class="thumbnail" style="width:70px; padding: 0; margin: 0;">&nbsp;</td>
             <td class="prodhead" style="text-align: left;">[[Description]]</td>
-            <td class="prodhead" style="text-align: left;">SKU</td>
+            <td class="prodhead" style="text-align: left;width: 120px;">SKU</td>
             #if ($cart.hasItemWithOption('size') ) 
                 <td class="prodhead" style="text-align : center;">[[Size]]</td>
             #end
@@ -13,17 +11,17 @@
             	<td class="prodhead">[[Color]]</td>
             #end
             <td class="prodhead" style="width: 100px;">[[Quantity]]</td>
-           
-           
-             #if($page.isPropertyTrue("multipleaddress"))
+            <td class="prodhead" style="width: 100px;">[[Unit Price]]</td>
+            <td class="prodhead" style="width: 100px;">[[Subtotal]]</td>
+            #if($page.isPropertyTrue("multipleaddress"))
             <td class="prodhead">Ship to (<a href="$home$apphome/myaccount/index.html">[[Manage Addresses]]</a>)</td>
             #end
             <!--
             #if($canvieweol)
             	<td class="prodhead" style="width: 200px;">[[EOL]]</td>
             #end
--->
-            <td class="prodhead" style="width: 60px;">[[Remove]]</td>
+			-->
+            <td class="prodhead" style="width: 50px;">[[Remove]]</td>
         </tr>
         
       #foreach( $item in $cart.getItems() )
@@ -41,10 +39,7 @@
     
     	  <tr class="sc-tabledata">
     	  #if($product.isCoupon())
-    	  	<td>
-            #set ( $thumbnailPath = "$home$cataloghome/downloads/preview/thumb/productimages/$product.sourcepath/thumb.jpg")
-            <img border="0" src="$home$thumbnailPath" width="50" />
-    	  </td>
+    	  <td>&nbsp;</td>
     	  <td>
     			 $product.name
        	  </td>  
@@ -106,11 +101,10 @@
           </td>
         #if( $item.hasSize() )
     	  <td class=proddata2 style="font-size : smaller; text-align : center;">
-              			<select name="size.$productcounter"  onChange="javascript:this.form.submit()">
+          		<select name="size.$productcounter"  onChange="javascript:this.form.submit()">
     			#if ( $store.isAllowSpecialRequest() )
-                                            <option value="na"></option>
+                	<option value="na"></option>
                 #end
-    			
     			#foreach( $size in $product.sizes )
     				#if ( $item.hasOption( $size ) )
     					<option selected>$size</option>
@@ -119,10 +113,6 @@
     				#end				
     			#end
     			</select>
-    		
-          
-          
-          	
     	  </td>
     	  #end
     	  #if ($cart.hasItemWithOption('color'))
@@ -137,25 +127,35 @@
     					<option>$color</option>
     				#end				
     			#end
-    			</select>			
-    		#else
-    					
+    			</select>	
     		#end	
     	  </td>	  
     	  #end
     	 
-     <ul>
+    ### <ul>
     	  <td class="proddata2" style="text-align: center;">
-    	      <input 
-    	      		size="1" 
-    	      		type="text" 
-    	      		style="text-align: center" 
-    	      		value="$item.getQuantity()" 
+    	      <input size="8" type="text"  style="text-align: center"  value="$item.getQuantity()" 
     	      		name="quantity.${productcounter}" 
     	      		data-original="${item.getQuantity()}"
     	      		class="product-quantity"
     	      		data-instock="${instock}" 
     	      		#if($product.isCoupon()) disabled #end />
+    	  </td>
+    	  
+    	  <td class="proddata2" style="text-align: center;">
+    	      #if($product.isCoupon())
+					$cart.getCouponPrice($item)
+				#else
+					#set($adjustment = $cart.getPriceAdjustment($item))
+					#if($adjustment.isZero())
+						$item.getYourPrice()
+					#else
+						$adjustment
+					#end
+				#end
+    	  </td>
+    	  <td class="proddata2" style="text-align: center;">
+    	     $cart.getTotalPrice($item)
     	  </td>
           #if($page.isPropertyTrue("multipleaddress"))
     	  <td>
@@ -167,30 +167,21 @@
      	</td>
      	#end
      	
-     	<!--
+<!--
      	#if($canvieweol)
-        
-      
-        		
-        		            	<td class="prodhead" style="width: 120px;">
-        		 				
-        		 				
-        		 				#if($product.expectedendoflife)
-        		 				
-        		 				
-        		 				
-        		 					#set($end = $DateStorageUtil.parseFromStorage($product.expectedendoflife))
-        		 					#set($start = $DateStorageUtil.parseFromStorage($product.createdon))
-        		 					#set($high = (($end.time - $start.time) * .8) + $start.time)
-        		 					
-	        		            	$product.createdon <meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter> $product.expectedendoflife  
-        		            	#end
-        		            	</td>
-        	     
+       		<td class="prodhead" style="width: 120px;">
+        	#if($product.expectedendoflife)
+        		#set($end = $DateStorageUtil.parseFromStorage($product.expectedendoflife))
+        		#set($start = $DateStorageUtil.parseFromStorage($product.createdon))
+        		#set($high = (($end.time - $start.time) * .8) + $start.time)
+	        	$product.createdon <meter value="$now.time" min="$start.getTime()" max="$end.getTime()" high="$high"></meter> $product.expectedendoflife  
+        	#end
+        	</td>     
         #end
 -->
-    	  <td class="proddata2" style="text-align: center;"><input type="checkbox" name="remove.${productcounter}"/>
-    	
+    	  <td class="proddata2" style="text-align: center;">
+    	  	<input type="checkbox" name="remove.${productcounter}"/>
+    	  </td>
      	</tr>	  
        #end
      </table>
