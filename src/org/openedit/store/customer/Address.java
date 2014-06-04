@@ -145,11 +145,15 @@ public class Address extends ElementData
 		String str = super.toString();
 		if (str==null || str.isEmpty()){
 			StringBuilder buf = new StringBuilder();
+			String prefix = getPrefix();
+			if (prefix!=null && !prefix.isEmpty()) {
+				buf.append(prefix).append(": ");
+			}
 			buf.append(getAddress1())
 				.append(getAddress2()!=null && !getAddress2().isEmpty() ? " "+getAddress2() : "")
 				.append(", ").append(getCity()).append(", ").append(getState())
 				.append(", ").append(getZipCode()).append(", ").append(getCountry());
-			str = getPrefix()+": "+buf.toString().replace("null,", "").replace("null","");
+			str = buf.toString().replace("null,", "").replace("null","");
 		}
 		return str;
 	}
