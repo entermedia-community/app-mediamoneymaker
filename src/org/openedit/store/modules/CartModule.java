@@ -371,12 +371,19 @@ public class CartModule extends BaseStoreModule {
 		if (inReq.getRequestParameter("billing.address1.value") != null && 
 				!inReq.getRequestParameter("billing.address1.value").isEmpty()) {
 			populateCustomerAddress(inReq, customer.getBillingAddress());
+			
+			log.info("billing address " +customer.getBillingAddress()); 
+			
+			cart.setBillingAddress(customer.getBillingAddress());
 		}
 		if (inReq.getRequestParameter("shipping.address1.value") != null && 
 				!inReq.getRequestParameter("shipping.address1.value").isEmpty()) {
-			log.debug("Shipping address found, saving it");
+			log.info("Shipping address found, saving it");
 			populateCustomerAddress(inReq,
 					customer.getShippingAddress());
+			log.info("Shipping address " +customer.getShippingAddress()); 
+			
+			cart.setShippingAddress(customer.getShippingAddress());
 		}
 		
 		Address taxRateAddress = null;
@@ -408,9 +415,8 @@ public class CartModule extends BaseStoreModule {
 		log.debug("Setting cart customer to " + customer);
 		cart.setCustomer(customer);
 		cart.getStore().getCustomerArchive().saveCustomer(customer);
-		
-		cart.setShippingAddress(customer.getShippingAddress());
-		cart.setBillingAddress(customer.getBillingAddress());
+//		cart.setShippingAddress(customer.getShippingAddress());
+//		cart.setBillingAddress(customer.getBillingAddress());
 		customer.getUser().setEnabled(true);
 
 		inReq.putPageValue("customer", customer);

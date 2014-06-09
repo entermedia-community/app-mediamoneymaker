@@ -205,8 +205,6 @@ public class Customer implements Data {
 		if (billing == null && create) {
 			billing = new Address();
 			billing.setPrefix("billing"); // only used to store the data
-		}
-		if(billing != null){
 			addAddress(billing);
 		}
 		return billing;
@@ -245,9 +243,9 @@ public class Customer implements Data {
 			shipping.setPrefix("shipping");
 			addAddress(shipping);
 		}
-		addAddress(shipping);
+//		addAddress(shipping);
 
-		return shipping;
+		return shipping; 
 	}
 	
 	public Address getShippingAddress() 
