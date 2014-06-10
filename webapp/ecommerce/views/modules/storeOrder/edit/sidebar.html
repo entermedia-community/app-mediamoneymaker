@@ -9,7 +9,7 @@
     
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
-$!query.addSortBy("ordering")   
+#set($null = $query.addSortBy("ordering"))
 #set($views = $viewsearcher.search($query))
 
 ##if( !$viewid && $views.size() > 0)               
@@ -17,12 +17,13 @@ $!query.addSortBy("ordering")
     ##set( $viewpath = "${moduleid}/$viewid" )
 ##end
 $context.putPageValue("view", $viewpath)
-	#set($hitssessionid = $context.findValue("hitssessionid"))
-    #set ($lastselected = $content.module )
-    #if(!$lastselected)
-        #set($lastselected = $userprofile.last_selected_module )
-    #end
-    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+#set($hitssessionid = $context.findValue("hitssessionid"))
+#set($lastselected = $content.module )
+#if(!$lastselected)
+	#set($lastselected = $userprofile.last_selected_module )
+#end
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
 <ul id="assetmenu" class="sidebar-list">
       
               #foreach( $target in $views)       

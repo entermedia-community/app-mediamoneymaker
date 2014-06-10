@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<detailedorderhistorystates>
+  <detailedorderhistorystate id="open" name="Open">Open</detailedorderhistorystate>
+  <detailedorderhistorystate id="closed" name="Closed">Closed</detailedorderhistorystate>
+  <detailedorderhistorystate id="orderplaced" name="Order Placed">Order Placed</detailedorderhistorystate>
+  <detailedorderhistorystate id="generatededi" name="Generated EDI">Generated EDI</detailedorderhistorystate>
+  <detailedorderhistorystate id="senttoedi" name="Sent to EDI">Sent to EDI</detailedorderhistorystate>
+  <detailedorderhistorystate id="distributorcontacted" name="Distributor Contacted">Distributor Contacted</detailedorderhistorystate>
+  <detailedorderhistorystate id="shippingnoticereceived" name="Shipping Notice Received">Shipping Notice Received</detailedorderhistorystate>
+  <detailedorderhistorystate id="invoicereceived" name="Invoice Received">Invoice Received</detailedorderhistorystate>
+  <detailedorderhistorystate id="invoicepaid" name="Invoice Paid">Invoice Paid</detailedorderhistorystate>
+  <detailedorderhistorystate id="shippingupdatedmanually" name="Shipping Updated Manually">Shipping Updated Manually</detailedorderhistorystate>
+</detailedorderhistorystates>

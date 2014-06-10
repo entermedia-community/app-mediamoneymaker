@@ -1,0 +1,5 @@
+<page>
+	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+	<path-action name="StoreOrderModule.loadOrderById"/>
+	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
+</page>

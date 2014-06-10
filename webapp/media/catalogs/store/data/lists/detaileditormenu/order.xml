@@ -2,7 +2,5 @@
 	<a folder="orderdetails" module="storeOrder"  id="storeorderdetails"  useajax="false" multiedit="false" name="Additional Details" />
 	<a folder="shippingdetails" module="storeOrder"  id="ordershippingdetails"  useajax="false" multiedit="false" name="Shipping Status" />
 	<a folder="edit/refund" module="storeOrder"  id="orderrefunds"  useajax="false" multiedit="false" name="Refunds" permission="superadmin" />
-	<!-- 
-	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
- -->
+	<a folder="orderhistory" module="storeOrder"  id="orderhistory"  useajax="false" multiedit="false" name="Order History" permission="superadmin" />
 </linktree>

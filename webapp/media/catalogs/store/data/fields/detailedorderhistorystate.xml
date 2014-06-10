@@ -1,0 +1,5 @@
+
+<properties>
+  <property id="id" index="true" stored="true" editable="true" searchtype="detailedorderhistorystate" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="detailedorderhistorystate">Name</property>
+</properties>
