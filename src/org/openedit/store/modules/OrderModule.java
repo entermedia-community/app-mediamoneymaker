@@ -25,7 +25,6 @@ import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Product;
-import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
 import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Address;
@@ -47,7 +46,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.modules.BaseModule;
-import com.openedit.users.User;
 
 /**
  * @author dbrown
@@ -136,6 +134,7 @@ public class OrderModule extends BaseModule
 		}
 		return null;
 	}
+	
 	public void loadPageOfSearch(WebPageRequest inReq) throws Exception
 	{
 		Store store = getStore(inReq);
@@ -842,6 +841,90 @@ public class OrderModule extends BaseModule
 			}
 			inContext.putPageValue("orderlist", orderList);
 			inContext.putSessionValue("orderset", null);
+		}
+	}
+	
+	public HitTracker loadOrderHistory(WebPageRequest inContext) 
+	{
+		SubmittedOrder order = (SubmittedOrder) inContext.getPageValue("order");
+		if (order == null)
+		{
+			order = loadOrderById(inContext);
+		}
+		if (order == null)
+		{
+			return null;
+		}
+		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+		String catalogid = archive.getCatalogId();
+		SearcherManager searcherManager = archive.getSearcherManager();
+		Searcher historysearcher = searcherManager.getSearcher(catalogid, "detailedorderhistory");
+		SearchQuery query = historysearcher.createSearchQuery();
+		query.addMatches("orderid", order.getId());
+		query.addSortBy("date");
+		HitTracker hits = historysearcher.search(query);
+		inContext.putPageValue("orderhistory",hits);
+		return hits;
+	}
+	
+	public void addOrderState(WebPageRequest inContext) 
+	{
+		SubmittedOrder order = (SubmittedOrder) inContext.getPageValue("order");
+		if (order == null)
+		{
+			order = loadOrderById(inContext);
+		}
+		if (order != null)
+		{
+			String state = inContext.getRequestParameter("state");//required
+			if (state == null || state.isEmpty())
+			{
+				return;
+			}
+			String type = inContext.getRequestParameter("type");
+			if (type == null)
+			{
+				type = "automatic";
+			}
+			String note = inContext.getRequestParameter("note");
+			
+			MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+			String catalogid = archive.getCatalogId();
+			SearcherManager searcherManager = archive.getSearcherManager();
+			Searcher historysearcher = searcherManager.getSearcher(catalogid, "detailedorderhistory");
+			
+			Data data = historysearcher.createNewData();
+			data.setProperty("orderid",order.getId());
+			data.setProperty("state",state);
+			data.setProperty("entrytype",type);
+			data.setProperty("note",note);
+			data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			historysearcher.saveData(data, null);
+		}
+	}
+	
+	public void deleteOrderState(WebPageRequest inContext) 
+	{
+		SubmittedOrder order = (SubmittedOrder) inContext.getPageValue("order");
+		if (order == null)
+		{
+			order = loadOrderById(inContext);
+		}
+		if (order != null)
+		{
+			String historyid = inContext.getRequestParameter("historyid");
+			if (historyid == null || historyid.isEmpty()){
+				return;
+			}
+			MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+			String catalogid = archive.getCatalogId();
+			SearcherManager searcherManager = archive.getSearcherManager();
+			Searcher historysearcher = searcherManager.getSearcher(catalogid, "detailedorderhistory");
+			Data data = (Data) historysearcher.searchById(historyid);
+			if (data == null){
+				return;
+			}
+			historysearcher.delete(data,null);
 		}
 	}
 }

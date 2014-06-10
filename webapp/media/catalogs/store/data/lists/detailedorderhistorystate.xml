@@ -11,4 +11,5 @@
   <detailedorderhistorystate id="invoicereceived" name="Invoice Received">Invoice Received</detailedorderhistorystate>
   <detailedorderhistorystate id="invoicepaid" name="Invoice Paid">Invoice Paid</detailedorderhistorystate>
   <detailedorderhistorystate id="shippingupdatedmanually" name="Shipping Updated Manually">Shipping Updated Manually</detailedorderhistorystate>
+  <detailedorderhistorystate id="itemsrefunded" name="Items Refunded">Items Refunded</detailedorderhistorystate>
 </detailedorderhistorystates>

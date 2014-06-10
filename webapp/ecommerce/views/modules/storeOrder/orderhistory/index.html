@@ -1,3 +1,101 @@
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
 <div class="ui-widget-content">
-	<h2>${order.orderNumber} Status History</h2>
+	<h2>Detailed Order History for ${order.orderNumber}</h2>
+	
+		#set($statesearcher = $mediaarchive.getSearcher("detailedorderhistorystate"))
+		#set($typesearcher = $mediaarchive.getSearcher("detailedorderhistorytype"))
+		
+		<form id="orderhistory-form" method="post" action="$home$apphome/views/modules/storeOrder/orderhistory/index.html">
+			<input type="hidden" name="ordernumber" value="${order.orderNumber}"/>
+			<input type="hidden" name="id" value="${order.orderNumber}"/>
+			<input type="hidden" name="viewid" value="$viewid"/>
+			<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+			<input type="hidden" name="type" value="userinput"/>
+			<input type="hidden" name="historyid" id="historyid" value=""/>
+			
+			<table cellspacing="5" cellpadding="3" border="0">
+				<thead>
+					<tr class="results-list-head">
+						<th align="center" width="200" nowrap class="results-list-head">Date</th>
+						<th align="center" width="200" nowrap class="results-list-head">Type</th>
+						<th align="center" width="100" nowrap class="results-list-head">State</th>
+						<th align="center" width="200" nowrap class="results-list-head">Note</th>
+						<th align="center" width="100" nowrap class="results-list-head">Action</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr height="10"></tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							###<input type="text" name="state" value=""/>
+							#set($allstates = $statesearcher.getAllHits())
+							<select class="choose-select detail-select form-control" name="state">
+								<option value=""></option>
+								#foreach($state in $allstates)
+								<option value="$state.id">$state</option>
+								#end
+       						</select>
+						</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<input type="text" name="note" value=""/>
+						</td>
+						<th style="margin: 3px 0 5px; padding: 5px 10px;">
+							<input class="btn small" type="submit" value="Add" />
+						</th>
+					</tr>
+				</tfoot>
+				#set($itemCounter = 0)
+				#foreach($entry in $orderhistory)
+					#set($itemCounter = $itemCounter + 1)
+					#set($bkgrnd = $itemCounter % 2)
+					#if ( $bkgrnd == 0 )
+					<tr class="results-list-a">
+					#else
+					<tr class="results-list-b">
+					#end
+						### date, entrytype, state, note
+						### detailedorderhistorystate detailedorderhistorytype
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<p class="results-list">
+								$context.getDateTime($entry.date)
+							</p>
+						</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<p class="results-list">
+								$typesearcher.searchById($entry.entrytype)
+							</p>
+						</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<p class="results-list">
+								$statesearcher.searchById($entry.state)
+							</p>
+						</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<p class="results-list">
+								$!entry.note
+							</p>
+						</td>
+						<td style="margin: 3px 0 5px; padding: 5px 10px;">
+							<input class="btn small deleteentry" type="button" data-delete="${entry.id}" value="Delete" />
+						</td>
+					</tr>
+				#end
+			</table>
+		</form>
 </div>
+<script>
+$(document).ready(function(){
+	$(".deleteentry").click(function(){
+		var entry = $(this).data("delete");
+		if (entry.length == 0){
+			return false;
+		}
+		$("#historyid").val(entry);
+		$("#orderhistory-form").submit();
+	});
+});
+</script>
