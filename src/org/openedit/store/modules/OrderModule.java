@@ -887,6 +887,11 @@ public class OrderModule extends BaseModule
 			{
 				type = "automatic";
 			}
+			String userid = "";
+			if (!type.equals("automatic"))
+			{
+				userid = inContext.getUser()==null ? "" : inContext.getUser().getId();
+			}
 			String note = inContext.getRequestParameter("note");
 			
 			MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
@@ -897,7 +902,7 @@ public class OrderModule extends BaseModule
 			Data data = historysearcher.createNewData();
 			data.setProperty("orderid",order.getId());
 			data.setProperty("state",state);
-			data.setProperty("userid",inContext.getUser()==null ? "" : inContext.getUser().getId());
+			data.setProperty("userid",userid);
 			data.setProperty("entrytype",type);
 			data.setProperty("note",note);
 			data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));

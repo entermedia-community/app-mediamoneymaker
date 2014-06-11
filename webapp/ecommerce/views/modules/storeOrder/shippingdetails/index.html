@@ -62,7 +62,12 @@
 						<td class="results-list-left">
 						#set($waybill = $shipment.get("waybill"))
 						#if (!$waybill.equals("") && $waybill.length()>0)
-							$waybill
+							#set($wb = $context.getRequestParameter("waybill"))
+							#if($wb == $waybill)
+								<span style="color:blue;font-weight:bold;">$waybill</span>
+							#else
+								$waybill
+							#end
 						#else
 							N/A
 						#end
@@ -102,9 +107,18 @@
 					<tr class="results-list-b">
 				#end
 				#if (!$waybill.equals("") && $waybill.length()>0)
-					<td class="results-list"><a href="$home$apphome/views/modules/storeOrder/shippingdetails/waybilldetails.html?waybill=$waybill&id=$orderid&oemaxlevel=1"
-							class="thickbox" data-fancybox-type="ajax"><img 
-						src="$home$apphome/theme/images/details_open.png"/></a>$waybill</a></td>
+					<td class="results-list">
+						<a href="$home$apphome/views/modules/storeOrder/shippingdetails/waybilldetails.html?waybill=$waybill&id=$orderid&oemaxlevel=1"
+						class="thickbox" data-fancybox-type="ajax">
+							<img src="$home$apphome/theme/images/details_open.png"/>
+						</a>
+						#set($wb = $context.getRequestParameter("waybill"))
+						#if($wb == $waybill)
+							<span style="color:blue;font-weight:bold;">$waybill</span>
+						#else
+							$waybill
+						#end
+					</td>
 				#else
 					<td class="results-list">N/A</td>
 				#end
