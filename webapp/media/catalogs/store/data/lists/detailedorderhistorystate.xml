@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <detailedorderhistorystates>
-  <detailedorderhistorystate id="open" name="Open">Open</detailedorderhistorystate>
+  <detailedorderhistorystate id="opened" name="Opened">Opened</detailedorderhistorystate>
   <detailedorderhistorystate id="closed" name="Closed">Closed</detailedorderhistorystate>
   <detailedorderhistorystate id="orderplaced" name="Order Placed">Order Placed</detailedorderhistorystate>
   <detailedorderhistorystate id="generatededi" name="Generated EDI">Generated EDI</detailedorderhistorystate>
@@ -12,4 +12,5 @@
   <detailedorderhistorystate id="invoicepaid" name="Invoice Paid">Invoice Paid</detailedorderhistorystate>
   <detailedorderhistorystate id="shippingupdatedmanually" name="Shipping Updated Manually">Shipping Updated Manually</detailedorderhistorystate>
   <detailedorderhistorystate id="itemsrefunded" name="Items Refunded">Items Refunded</detailedorderhistorystate>
+  <detailedorderhistorystate id="fullyshipped" name="Fully Shipped">Fully Shipped</detailedorderhistorystate>
 </detailedorderhistorystates>

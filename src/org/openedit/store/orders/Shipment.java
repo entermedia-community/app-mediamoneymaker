@@ -20,8 +20,6 @@ public class Shipment extends BaseData{
 	public void setShipmentEntries(ArrayList<ShipmentEntry> inShipmentEntry) {
 		fieldShipmentEntries = inShipmentEntry;
 	}
-
-	
 	
 	public void addEntry(ShipmentEntry inEntry) {
 		getShipmentEntries().add(inEntry);
@@ -30,7 +28,6 @@ public class Shipment extends BaseData{
 	public ShipmentEntry getEntryForSku(String inSku){
 		for (Iterator<ShipmentEntry> iterator = getShipmentEntries().iterator(); iterator.hasNext();) {
 			ShipmentEntry entry = (ShipmentEntry) iterator.next();
-//			if(inSku.equals(entry.getItem().getSku())){
 			if(inSku.equals(entry.getSku())){
 				return entry;
 			}

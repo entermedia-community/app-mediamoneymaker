@@ -46,6 +46,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.modules.BaseModule;
+import com.openedit.users.User;
 
 /**
  * @author dbrown
@@ -861,7 +862,7 @@ public class OrderModule extends BaseModule
 		Searcher historysearcher = searcherManager.getSearcher(catalogid, "detailedorderhistory");
 		SearchQuery query = historysearcher.createSearchQuery();
 		query.addMatches("orderid", order.getId());
-		query.addSortBy("date");
+		query.addSortBy("id");
 		HitTracker hits = historysearcher.search(query);
 		inContext.putPageValue("orderhistory",hits);
 		return hits;
@@ -896,6 +897,7 @@ public class OrderModule extends BaseModule
 			Data data = historysearcher.createNewData();
 			data.setProperty("orderid",order.getId());
 			data.setProperty("state",state);
+			data.setProperty("userid",inContext.getUser()==null ? "" : inContext.getUser().getId());
 			data.setProperty("entrytype",type);
 			data.setProperty("note",note);
 			data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
