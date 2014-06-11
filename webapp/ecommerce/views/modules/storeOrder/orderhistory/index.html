@@ -69,43 +69,19 @@
 							#set($state = $statesearcher.searchById($entry.state))
 							#if($entry.invoiceid)
 								#set($link = "/$applicationid/views/modules/invoice/edit/edit.html?id=${entry.invoiceid}&viewid=invoiceinvoice&viewpath=invoice/invoiceinvoice&hitssessionid=hitsinvoicemedia/catalogs/store&searchtype=invoice&detailsreadonly=true&preview=true")
-								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;">$state</a>
+								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;">$state</a>
 							#elseif ($entry.refundid)
 								#set($link = "/$applicationid/views/modules/storeOrder/edit/refund/index.html?id=${order.orderNumber}&transid=${entry.refundid}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds")
-								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;">$state</a>
+								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;">$state</a>
 							#elseif ($entry.shipmentid)
 								#set($link = "/$applicationid/views/modules/storeOrder/shippingdetails/index.html?id=${order.orderNumber}&viewid=ordershippingdetails&viewpath=storeOrder/ordershippingdetails&hitssessionid=hitsstoreOrdermedia/catalogs/store&searchtype=storeOrder&waybill=${entry.shipmentid}")
-								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;">$state</a>
+								<a href="$link" style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;">$state</a>
 							#else
 								$state
 							#end
 							#set($state = false)
 						</p>
 					</td>
-					
-					<!--
-					 <td style="margin: 3px 0 5px; padding: 5px 10px;">
-						<p class="results-list">
-							$!{entry.userid}
-						</p>
-					</td>
-					<td style="margin: 3px 0 5px; padding: 5px 10px;">
-						<p class="results-list">
-							$!{entry.invoiceid}
-						</p>
-					</td>
-					<td style="margin: 3px 0 5px; padding: 5px 10px;">
-						<p class="results-list">
-							$!{entry.refundid}
-						</p>
-					</td>
-					<td style="margin: 3px 0 5px; padding: 5px 10px;">
-						<p class="results-list">
-							$!{entry.shipmentid}
-						</p>
-					</td>
-					-->
-					
 					<td style="margin: 3px 0 5px; padding: 5px 10px;">
 						<p class="results-list">
 							$!entry.note
