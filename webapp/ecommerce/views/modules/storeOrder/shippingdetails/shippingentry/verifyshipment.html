@@ -1,0 +1,157 @@
+#set( $orderid = $context.findValue("ordernumber") )
+#set( $store = $store.getOrder($orderid) )
+#set( $order = $store.getOrderSearcher().searchById($orderid) )
+#set( $orderNumber = $order.orderNumber )
+#set( $customer = $order.customer )
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
+#set( $shipment = $context.getPageValue("shipment"))
+#set( $shipmententries = $shipment.getShipmentEntries())
+
+#set($title = "Verify the Shipment Details for $orderNumber")
+#set($description = "Enter the shipping details then select <strong>Submit</strong>, or edit your request by selecting <strong>Edit</strong>.")
+
+<div class="ui-widget-content">
+	<h3>$title</h3>
+	<br>
+	<p class="shipment-description">$description</p>
+	<br>
+	
+	<form id="usereditform" method="post" action="$home$apphome/views/modules/storeOrder/shippingdetails/shippingentry/submitshipment.html">
+		<input type="hidden" name="ordernumber" value="$orderNumber"/>
+		<input type="hidden" name="viewid" value="$viewid"/>
+		<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+		
+		<table cellspacing="5" cellpadding="2" border="0">
+			<thead>
+				<tr class="results-list-head">
+					<th align="center" width="300" class="results-list-head">Product</th>
+					<th align="center" width="200" nowrap class="results-list-head">Sku</th>
+					<th align="center" width="100" nowrap class="results-list-head">Quantity</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr height="30"></tr>
+				<tr>
+					<td>
+						<input class="btn small" style="float: left" type="button" value="Edit" onclick="window.history.back()"/>
+					</td>
+					<td></td>
+					<td>
+						<input class="btn small" style="float: right" type="submit" value="Submit" />
+					</td>
+				</tr>
+			</tfoot>
+			
+	#set($itemCounter = 0)
+	#foreach ( $entry in $shipmententries )
+		#set($itemCounter = $itemCounter + 1)
+		#set($bkgrnd = $itemCounter % 2)
+		#if ( $bkgrnd == 0 )
+		<tr class="results-list-a">
+		#else
+		<tr class="results-list-b">
+		#end
+		#set($quantity = $entry.getQuantity())
+		#set($sku = $entry.getSku())
+		#set($item = $order.getCartItemByProductSku($sku))
+		#set($product = $item.getProduct())
+			<td style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" style="font-size: 11px; font-weight: bold; color: #222222;">
+					&nbsp;&nbsp;$!product
+				</p>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list" style="font-size: 11px; font-weight: bold; color: #222222;">
+					$!sku
+				</p>
+				<input type="hidden" name="sku" value="$!sku"/>
+			</td>
+			<td align="center" style="margin: 3px 0 5px; padding: 5px 10px;">
+				<p class="results-list">
+					$!quantity
+				</p>
+				<input type="hidden" name="${sku}-shipment-quantity" value="$!quantity"/>
+			</td>
+		</tr>
+	#end
+		<tr><td colspan="3"><hr></td></tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="right">
+				<p class="results-list" style="font-size:larger;margin-right:4px;">
+					<strong>Shipping Date</strong>
+				</p>
+			</td>
+			<td>
+				<p class="results-list">
+					<input type="text" name="date" value="" placeholder="MM/DD/YYYY"/>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="right">
+				<p class="results-list" style="font-size:larger;margin-right:4px;">
+					<strong>Waybill</strong>
+				</p>
+			</td>
+			<td>
+				<p class="results-list">
+					<input type="text" name="waybill" value="" placeholder="Waybill Number"/>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="right">
+				<p class="results-list" style="font-size:larger;margin-right:4px;">
+					<strong>Distributor</strong>
+				</p>
+			</td>
+			<td>
+				<p class="results-list">
+					#set($distributors = $context.getPageValue("distributors"))
+					#if($distributors && $distributors.isEmpty() == false)
+						#set($distributorids = $distributors.keySet())
+						<select name="distributor">
+						#foreach($distributorid in $distributorids)
+							#set($distributorname = $distributors.get($distributorid))
+							<option value="$distributorid">$distributorname</option>
+						#end
+						</select>
+					#else
+						#set($searcher = $mediaarchive.getSearcher("distributor"))
+						#set($hits = $searcher.getAllHits())
+						<select name="distributor">
+							<option value="" selected></option>
+							#foreach($hit in $hits)
+								<option value="$hit.id">$hit</option>
+							#end
+						</select>
+					#end
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="right">
+				<p class="results-list" style="font-size:larger;margin-right:4px;">
+					<strong>Courier</strong>
+				</p>
+			</td>
+			<td>
+				<p class="results-list">
+					<input type="text" name="courier" value="" placeholder="e.g., UNITED PARCEL POST"/>
+				</p>
+			</td>
+		</tr>
+		</table>
+	</form>
+</div>
+
+
+
+

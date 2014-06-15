@@ -1,3 +1,6 @@
+#if(!$order)
+	#set($order = $data)
+#end
 #set ( $customer = $order.customer ) 
 #set ( $orderid = $order.getId() )
 #set ( $shippingAddress = $order.getShippingAddress() ) 
@@ -7,6 +10,12 @@
 #set ( $shipments = $order.getShipments() ) 
 #set ( $isFullyShipped = $order.isFullyShipped() )
 #set ( $sSize = $shipments.size() )
+
+#set ( $orderNumber = $order.orderNumber )
+
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
 
 <div class="ui-widget-content">
 	<h2>Shipping History</h2>
@@ -81,10 +90,6 @@
 			</tr>
 		</table>
 		
-		#foreach ( $shipmentEntry in $shipments )
-			#set( $shipCounter = $shipCounter + 1 )
-		#end
-		
 		<h3 style="margin-top: 10px;">Shipment Details per Waybill.</h3>
 		<table cellspacing="5" class="standard-table" cellpadding="3" border="0">
 			<tr class="results-list-head">
@@ -149,12 +154,25 @@
 			#end
 		</table>
 	#end
+	
+	
+	#if($order.isFullyShipped() == false)
+	<table cellspacing="5" cellpadding="3" border="0">
+		<tfoot>
+			<tr height="30"></tr>
+			<tr>
+				<th>
+					<form method="post" action="$home$apphome/views/modules/storeOrder/shippingdetails/shippingentry/createshipment.html">
+						<input type="hidden" name="ordernumber" value="$orderNumber"/>
+						<input type="hidden" name="viewid" value="$viewid"/>
+						<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+						<input class="btn small" style="float: left" type="submit" value="New" />
+					</form>
+				</th>
+			</tr>
+		</tfoot>
+	</table>
+	#end
+	
 </div>
-<!-- 
-#foreach ($detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user))
-	<th align="center">b - $!detail.text</th> 
-#end
-#foreach ( $detail in $store.fieldArchive.getDataProperties("product","orderdetails",$user)	)
-	<td>$!item.getProduct().get($detail.id)</td>
-#end
- -->
+

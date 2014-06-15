@@ -1,0 +1,121 @@
+#set( $orderid = $context.findValue("ordernumber") )
+#set( $store = $store.getOrder($orderid) )
+#set( $order = $store.getOrderSearcher().searchById($orderid) )
+#set( $orderNumber = $order.orderNumber )
+#set( $customer = $order.customer )
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
+#set($title = "Create a Shipment for $orderNumber")
+#set($description = "To ship an entire or partial order, select an item on the left, provide a quantity, then select <strong>Next</strong>.")
+
+<div class="ui-widget-content">
+
+	<h3>$title</h3>
+	<br>
+	<p class="shipment-description">$description</p>
+	<br>
+	
+	<form method="post" action="$home$apphome/views/modules/storeOrder/shippingdetails/shippingentry/verifyshipment.html">
+		<input type="hidden" name="ordernumber" value="$orderNumber"/>
+		
+		<table cellspacing="5" cellpadding="3" border="0">
+			<thead>
+				<tr class="results-list-head">
+					<th align="center" width="100"  class="results-list-head">&nbsp;</th>
+					<th align="center" class="results-list-head">Product ID</th>
+					<th align="center" class="results-list-head">Item SKU</th>
+					<th align="center" width="100" nowrap class="results-list-head">Shipment Status</th>
+					<th align="center" width="100" nowrap class="results-list-head">Available Quantity</th>
+					<th align="center" width="100" nowrap class="results-list-head">Ship Quantity</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr height="30"></tr>
+				<tr>
+					#set($goback="$home$apphome/views/modules/storeOrder/shippingdetails/index.html?id=${orderNumber}&viewid=ordershippingdetails&viewpath=storeOrder/ordershippingdetails&hitssessionid=&searchtype=storeOrder")
+			    	<td><input class="btn small" style="float: left" type="button" value="Cancel" onclick="window.location='${goback}'"/></td>
+			    	<td colspan="4"></td>
+			    	<td>
+			    		<input type="hidden" name="viewid" value="$viewid"/>
+						<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+			    		<input class="btn small" style="float: right" type="submit" value="Next" />
+			    	</td>
+		   		</tr>
+			</tfoot>
+			
+		#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
+		#set($itemCounter = 0)
+		#foreach ( $item in $order.items )
+			#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
+			#set($itemCounter = $itemCounter + 1)
+			#set($bkgrnd = $itemCounter % 2)
+			#if ( $bkgrnd == 0 )
+			<tr class="results-list-a">
+			#else
+			<tr class="results-list-b">
+			#end
+			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+				
+				#set($availablenum = $order.getQuantityAvailableForShipment($item))
+					<input type="checkbox" class="checkbox-entry" name="${item.sku}-shipment"  #if($order.isFullyShipped($item)) disabled #end>
+				</td>
+				<td  style="margin: 3px 0 5px; padding: 5px 10px;">
+					<p class="results-list">
+						<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>	
+					</p>
+					<input type="hidden" name="sku" value="$item.sku"/>
+				</td>
+				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+					<p class="results-list">$item.sku</p>
+				</td>
+				<td align="center" nowrap  style="margin: 3px 0 5px; padding: 5px 10px;">
+					<p class="results-list">
+						#if($order.isFullyShipped($item))
+							Fully Shipped
+						#else
+							Available to Ship
+						#end
+					</p>
+				</td>
+				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+					<p class="results-list">$availablenum</p>
+					<input type="hidden" id="${item.sku}-shipment-available" value="${availablenum}"/>
+				</td>
+				<td align="center">
+					<input type="text" id="${item.sku}-shipment-quantity" name="${item.sku}-shipment-quantity" value="${availablenum}" onchange="validateInput('${item.sku}-shipment',$availablenum);" disabled>
+				</td>
+			</tr>
+		    #end
+		</table>
+	</form>
+</div>
+<script type="text/javascript"">
+	$(".checkbox-entry").change(function(){
+		var checked = $(this).attr('checked');
+		var source = $(this).attr('name');
+		var available = $("#"+source+"-available").val();
+		if (checked == undefined)
+		{
+			$("#"+source+"-quantity").attr('disabled', 'disabled');
+			$("#"+source+"-quantity").val(available);
+		}
+		else
+		{
+			$("#"+source+"-quantity").removeAttr('disabled');
+			$("#"+source+"-quantity").val(available);
+		}
+	});
+	function validateInput(id,available)
+	{
+		var quantity = $("#"+id+"-quantity").val();
+		if ( !jQuery.isNumeric(quantity)){
+			console.log("not a number");
+		} else if (available < quantity){
+			console.log("too high");
+		}
+		return false;
+	}
+</script>

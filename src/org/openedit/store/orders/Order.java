@@ -470,6 +470,14 @@ public class Order extends BaseData implements Comparable {
 	public void setShipments(List inShipments) {
 		fieldShipments = inShipments;
 	}
+	
+	public int getQuantityAvailableForShipment(CartItem cartItem){
+		int quantity = cartItem.getQuantity();
+		int quantityShipped = getQuantityShipped(cartItem);
+		int quantityRefunded = getQuantityRefunded(cartItem);
+		int quantityToBeShipped = quantity - quantityRefunded;
+		return quantityToBeShipped - quantityShipped;
+	}
 
 	public boolean isFullyShipped(CartItem cartItem) {
 		int quantity = cartItem.getQuantity();

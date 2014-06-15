@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 import org.openedit.store.orders.RefundItem;
 import org.openedit.store.orders.RefundState;
+import org.openedit.store.orders.Shipment;
+import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
 import org.openedit.util.DateStorageUtil;
 
@@ -131,6 +134,7 @@ public class OrderModule extends BaseModule
 				order = store.getOrderArchive().loadSubmittedOrder(store, customerid, ordernum);
 			}
 			inContext.putPageValue("order",order);
+//			inContext.putPageValue("data",order);
 			return order;
 		}
 		return null;
@@ -437,6 +441,144 @@ public class OrderModule extends BaseModule
 			EmailOrderProcessor fieldEmailOrderProcessor) {
 		this.fieldEmailOrderProcessor = fieldEmailOrderProcessor;
 	}
+	
+	public void prepareShipment(WebPageRequest inReq)
+	{
+		String ordernumber = inReq.getRequestParameter("ordernumber");
+		Store store = getStore(inReq);
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
+		
+		Shipment shipment = null;
+		String [] skus = inReq.getRequestParameters("sku");
+		for (String sku:skus)
+		{
+			if (inReq.getRequestParameter(sku+"-shipment")==null ||
+					!inReq.getRequestParameter(sku+"-shipment").equals("on") ||
+					inReq.getRequestParameter(sku+"-shipment-quantity") == null ||
+					inReq.getRequestParameter(sku+"-shipment-quantity").isEmpty())
+			{
+				continue;
+			}
+			int quantity = Integer.parseInt(inReq.getRequestParameter(sku+"-shipment-quantity"));
+			
+			ShipmentEntry entry = new ShipmentEntry();
+			entry.setSku(sku);
+			entry.setQuantity(quantity);
+			if (shipment == null)
+			{
+				shipment = new Shipment();
+			}
+			shipment.addEntry(entry);
+		}
+		if (shipment != null)
+		{
+			inReq.putPageValue("shipment",shipment);
+		}
+		//prepare valid distributors
+		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+		Map<String,String> distributors = new HashMap<String,String>();
+		Iterator<?> itr = order.getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			String distributorid = item.getProduct()!=null ? item.getProduct().get("distributor") : null;
+			if (distributorid == null){
+				continue;
+			}
+			Data data = archive.getData("distributor", distributorid);
+			if (data==null || distributors.containsKey(data.getId())){
+				continue;
+			}
+			distributors.put(data.getId(),data.getName());
+		}
+		inReq.putPageValue("distributors",distributors);
+		inReq.putPageValue("data",order);
+		inReq.putPageValue("order",order);
+	}
+	
+	public void submitShipment(WebPageRequest inReq)
+	{
+		String ordernumber = inReq.getRequestParameter("ordernumber");
+		Store store = getStore(inReq);
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
+		
+		
+		Shipment shipment = null;
+		String [] skus = inReq.getRequestParameters("sku");
+		for (String sku:skus)
+		{
+			if (inReq.getRequestParameter(sku+"-shipment-quantity") == null ||
+					inReq.getRequestParameter(sku+"-shipment-quantity").isEmpty())
+			{
+				continue;
+			}
+			int quantity = Integer.parseInt(inReq.getRequestParameter(sku+"-shipment-quantity"));
+			ShipmentEntry entry = new ShipmentEntry();
+			entry.setSku(sku);
+			entry.setQuantity(quantity);
+			if (shipment == null)
+			{
+				shipment = new Shipment();
+			}
+			shipment.addEntry(entry);
+		}
+		
+		if (shipment!=null && !shipment.getShipmentEntries().isEmpty())
+		{
+			String waybill = inReq.getRequestParameter("waybill");
+			String distributor = inReq.getRequestParameter("distributor");
+			String shippingdate = inReq.getRequestParameter("date");
+			String courier = inReq.getRequestParameter("courier");
+			
+			if (waybill != null && !waybill.isEmpty() && 
+				distributor != null && !distributor.isEmpty() &&
+				shippingdate != null && !shippingdate.isEmpty() &&
+				courier != null && !courier.isEmpty() ){
+			
+				shipment.setProperty("courier", courier);
+				shipment.setProperty("waybill", waybill);
+				shipment.setProperty("distributor", distributor);
+				shipment.setProperty("shipdate", DateStorageUtil.getStorageUtil().checkFormat(shippingdate));
+				
+				order.addShipment(shipment);
+				if(order.isFullyShipped())
+				{
+					order.setProperty("shippingstatus", "shipped");
+				}
+				else
+				{
+					order.setProperty("shippingstatus", "partialshipped");
+				}
+				store.saveOrder(order);
+				
+				//record this in order history
+				MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+				Searcher historysearcher = archive.getSearcher("detailedorderhistory");
+				
+				Data data = historysearcher.createNewData();
+				data.setProperty("orderid",order.getId());
+				data.setProperty("state","shippingupdatedmanually");
+				data.setProperty("userid",inReq.getUser()==null ? "" : inReq.getUser().getId());
+				data.setProperty("entrytype", "userinput");
+				data.setProperty("shipmentid", waybill);
+				data.setProperty("note","Shipping entry added by user");
+				data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				historysearcher.saveData(data, null);
+				
+				if (order.isFullyShipped()){
+					data = historysearcher.createNewData();
+					data.setProperty("orderid",order.getId());
+					data.setProperty("state","fullyshipped");
+					data.setProperty("entrytype", "automatic");
+					data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+					historysearcher.saveData(data, null);
+				}
+			}
+		}
+		
+		inReq.putPageValue("data",order);
+		inReq.putPageValue("order",order);
+	}
+	
 	
 	public void prepareNewRefund(WebPageRequest inContext)
 	{
