@@ -88,7 +88,11 @@
 						</p>
 					</td>
 					<td style="margin: 3px 0 5px; padding: 5px 10px;">
-						<input class="btn small deleteentry" type="button" data-delete="${entry.id}" value="Delete" />
+						#if( $content.isPropertyTrue("deleteorderhistory") )
+							<input class="btn small deleteentry" type="button" data-delete="${entry.id}" value="Delete" />
+						#else
+							&nbsp;
+						#end
 					</td>
 				</tr>
 			#end

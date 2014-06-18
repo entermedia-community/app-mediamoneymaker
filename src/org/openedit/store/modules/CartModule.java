@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
@@ -725,10 +726,14 @@ public class CartModule extends BaseStoreModule {
 		order.setShippingAddress(cart.getShippingAddress());
 		order.setBillingAddress(cart.getBillingAddress());
 		
-		log.info("#### ADJUSTMENTS 1: "+order.getAdjustments());
+//		log.info("#### ADJUSTMENTS 1: "+order.getAdjustments());
 		
 		// Export order to XML
 		store.saveOrder(order);
+		//append this to order history, opened
+		inPageRequest.putPageValue("orderhistorystate", "opened");
+		appendToOrderHistory(inPageRequest);
+		
 		if (cart.getShippingAddress() != null
 				&& cart.getShippingAddress().getId() == null) {
 			Searcher addressSearcher = getSearcherManager().getSearcher(
@@ -789,8 +794,11 @@ public class CartModule extends BaseStoreModule {
 			cart.getAdjustments().clear();
 		}
 		//export order again after state change
-		log.info("#### ADJUSTMENTS 2: "+order.getAdjustments());
+//		log.info("#### ADJUSTMENTS 2: "+order.getAdjustments());
 		store.saveOrder(order);
+		//append this to order history, opened
+		inPageRequest.putPageValue("orderhistorystate", "orderplaced");
+		appendToOrderHistory(inPageRequest);
 		
 		//trigger webevent after the order has been saved
 		if (order.getOrderStatus().isOk()){
@@ -978,6 +986,33 @@ public class CartModule extends BaseStoreModule {
 			cart.addItem(item);
 		}
 		
+	}
+	
+	protected void appendToOrderHistory(WebPageRequest inReq)
+	{
+		Cart cart = getCart(inReq);
+		Order order = cart == null ? null : cart.getCurrentOrder();
+		if (order == null)
+		{
+			log.info("Error! Unable to load order, cannot append order history, skipping");
+			return;
+		}
+		if (inReq.getPageValue("orderhistorystate") == null)
+		{
+			log.info("Error! Unable to load orderhistorystate from webpagecontext, cannot append order history, skipping");
+			return;
+		}
+		String state = inReq.getPageValue("orderhistorystate").toString();
+		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+		WebEvent evt = new WebEvent();
+		evt.setSearchType("detailedorderhistory");
+		evt.setCatalogId(archive.getCatalogId());
+		evt.setProperty("applicationid", inReq.findValue("applicationid"));
+		evt.setOperation("orderhistory/appendorderhistory");
+		evt.setProperty("orderid", order.getId());
+		evt.setProperty("type","automatic");
+		evt.setProperty("state",state);
+		archive.getMediaEventHandler().eventFired(evt);
 	}
 
 }

@@ -472,6 +472,10 @@ public class Order extends BaseData implements Comparable {
 	}
 	
 	public int getQuantityAvailableForShipment(CartItem cartItem){
+		if (cartItem.getProduct()!=null && cartItem.getProduct().isCoupon())
+		{
+			return 0;
+		}
 		int quantity = cartItem.getQuantity();
 		int quantityShipped = getQuantityShipped(cartItem);
 		int quantityRefunded = getQuantityRefunded(cartItem);
@@ -480,6 +484,10 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public boolean isFullyShipped(CartItem cartItem) {
+		if (cartItem.getProduct()!=null && cartItem.getProduct().isCoupon())
+		{
+			return true;
+		}
 		int quantity = cartItem.getQuantity();
 		int quantityShipped = getQuantityShipped(cartItem);
 		int quantityRefunded = getQuantityRefunded(cartItem);

@@ -11,6 +11,9 @@ import javax.xml.validation.SchemaFactory
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
+import org.openedit.event.WebEvent
+import org.openedit.event.WebEventHandler
+import org.openedit.event.WebEventListener
 import org.openedit.entermedia.MediaArchive
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
@@ -27,6 +30,7 @@ import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
+
 
 public class ExportEdiOrder extends EnterMediaObject {
 
@@ -185,6 +189,8 @@ public class ExportEdiOrder extends EnterMediaObject {
 								ordersearcher.saveData(order, inReq.getUser());
 								inMsg = "Order (" + order.getId() + ") has been updated.";
 								log.info(inMsg);
+								//append to order history
+								appendToOrderHistory(order);
 
 							} else {
 								throw new OpenEditException("The XML did not validate.");
@@ -510,6 +516,19 @@ public class ExportEdiOrder extends EnterMediaObject {
 		} else {
 			return null;
 		}
+	}
+	
+	protected void appendToOrderHistory(Order order)
+	{
+		WebEvent event = new WebEvent();
+		event.setSearchType("detailedorderhistory");
+		event.setCatalogId(getMediaArchive().getCatalogId());
+		event.setProperty("applicationid", getContext().findValue("applicationid"));
+		event.setOperation("orderhistory/appendorderhistory");
+		event.setProperty("orderid", order.getId());
+		event.setProperty("type","automatic");
+		event.setProperty("state","generatededi");
+		getMediaArchive().getMediaEventHandler().eventFired(event);
 	}
 }
 

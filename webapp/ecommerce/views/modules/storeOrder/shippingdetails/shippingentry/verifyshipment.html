@@ -58,6 +58,7 @@
 		#set($sku = $entry.getSku())
 		#set($item = $order.getCartItemByProductSku($sku))
 		#set($product = $item.getProduct())
+		#if($product && $product.isCoupon() == false)
 			<td style="margin: 3px 0 5px; padding: 5px 10px;">
 				<p class="results-list" style="font-size: 11px; font-weight: bold; color: #222222;">
 					&nbsp;&nbsp;$!product
@@ -76,8 +77,11 @@
 				<input type="hidden" name="${sku}-shipment-quantity" value="$!quantity"/>
 			</td>
 		</tr>
+		#end
 	#end
-		<tr><td colspan="3"><hr></td></tr>
+		<tr>
+			<td colspan="3"><hr></td>
+		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td align="right">
@@ -87,7 +91,12 @@
 			</td>
 			<td>
 				<p class="results-list">
-					<input type="text" name="date" value="" placeholder="MM/DD/YYYY"/>
+					#set($inputid = "shippingdate")
+					#set($inputname = "shipdate")
+					<span id="datevalue${inputid}" style="display:block;width: 1px;">
+						<input type="text" class="datepicker" data-targetid="datebox${inputid}"/>
+						<input name="date"  id="datebox${inputid}" value="" size="8" type="hidden">
+					</span>
 				</p>
 			</td>
 		</tr>
@@ -152,6 +161,13 @@
 	</form>
 </div>
 
+<style>
+.results-list .datepicker + img {
+    left: 310px !important;
+    position: relative;
+    top: -34px !important;
+}
 
+</style>
 
 

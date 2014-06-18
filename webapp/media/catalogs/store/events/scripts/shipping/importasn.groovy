@@ -6,6 +6,9 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
+import org.openedit.event.WebEvent
+import org.openedit.event.WebEventHandler
+import org.openedit.event.WebEventListener
 import org.openedit.repository.ContentItem
 import org.openedit.store.CartItem
 import org.openedit.store.Store
@@ -201,12 +204,20 @@ class XMLPathProcessor extends PathProcessor
 					updateOrder = true;
 				}
 				if (updateOrder){
+					
 					if(order.isFullyShipped()){
 						order.setProperty("shippingstatus", "shipped");
 					}else{
 						order.setProperty("shippingstatus", "partialshipped");
 					}
 					store.saveOrder(order);
+					//append to order history
+					appendShippingNoticeToOrderHistory(order,waybill);
+					if(order.isFullyShipped())
+					{
+						appendFullyShippedNoticeToOrderHistory(order);
+					}
+					
 				}
 			}
 		}
@@ -214,6 +225,35 @@ class XMLPathProcessor extends PathProcessor
 		Page destination = archive.getPageManager().getPage(processedFolder+page.getName());
 		archive.getPageManager().movePage(page, destination);
 		logger.info("Moved ${page.getName()} to ${destination.getParentPath()}");
+	}
+	
+	protected appendShippingNoticeToOrderHistory(Order order, String waybill)
+	{
+		//record this in order history
+		WebEvent event = new WebEvent();
+		event.setSearchType("detailedorderhistory");
+		event.setCatalogId(archive.getCatalogId());
+		event.setProperty("applicationid", context.findValue("applicationid"));
+		event.setOperation("orderhistory/appendorderhistory");
+		event.setProperty("orderid", order.getId());
+		event.setProperty("type","automatic");
+		event.setProperty("state","shippingnoticereceived");
+		event.setProperty("shipmentid", waybill);
+		archive.getMediaEventHandler().eventFired(event);
+	}
+	
+	protected appendFullyShippedNoticeToOrderHistory(Order order)
+	{
+		//record this in order history
+		WebEvent event = new WebEvent();
+		event.setSearchType("detailedorderhistory");
+		event.setCatalogId(archive.getCatalogId());
+		event.setProperty("applicationid", context.findValue("applicationid"));
+		event.setOperation("orderhistory/appendorderhistory");
+		event.setProperty("orderid", order.getId());
+		event.setProperty("type","automatic");
+		event.setProperty("state","fullyshipped");
+		archive.getMediaEventHandler().eventFired(event);
 	}
 }
 

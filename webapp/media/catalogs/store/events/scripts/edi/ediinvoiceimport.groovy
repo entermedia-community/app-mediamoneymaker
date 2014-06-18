@@ -10,6 +10,9 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
+import org.openedit.event.WebEvent
+import org.openedit.event.WebEventHandler
+import org.openedit.event.WebEventListener
 import org.openedit.util.DateStorageUtil
 import org.openedit.store.CartItem
 import org.openedit.store.Store
@@ -196,6 +199,13 @@ public void doImport() {
 								order.addShipment(shipment);
 								order.setProperty("shippingstatus", order.isFullyShipped() ? "shipped" : "partialshipped");
 								store.saveOrder(order);
+								
+								//append to order history
+								appendShippingNoticeToOrderHistory(inReq,order,shipment.get("waybill"));
+								if (order.isFullyShipped()){
+									appendFullyShippedNoticeToOrderHistory(inReq,order);
+								}
+								
 							} else {
 								log.error("Warning: Unable to find ${product.getId()} in order ${order.getId()} ($cartItem)");
 							}
@@ -212,10 +222,14 @@ public void doImport() {
 				invoicesearcher.saveData(invoice, null);
 				itemsearcher.saveAllData(items, null);
 				
+				//append to to order history
+				appendInvoiceReceivedToOrderHistory(inReq,order,invoice);
+				
 				if (order!=null && !emaillist.isEmpty())
 				{
 					prepareEmailAndSend(context,emaillist,invoice,order);
 				}
+				
 				
 			}
 			
@@ -260,6 +274,53 @@ protected TemplateWebEmail getMail(MediaArchive archive)
 {
 	PostMail mail = (PostMail)archive.getModuleManager().getBean( "postMail");
 	return mail.getTemplateWebEmail();
+}
+
+protected appendInvoiceReceivedToOrderHistory(WebPageRequest inReq,Order order, Data invoice)
+{
+	//record this in order history
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	WebEvent event = new WebEvent();
+	event.setSearchType("detailedorderhistory");
+	event.setCatalogId(archive.getCatalogId());
+	event.setProperty("applicationid", inReq.findValue("applicationid"));
+	event.setOperation("orderhistory/appendorderhistory");
+	event.setProperty("orderid", order.getId());
+	event.setProperty("type","automatic");
+	event.setProperty("state","invoicereceived");
+	event.setProperty("invoiceid", invoice.getId());
+	archive.getMediaEventHandler().eventFired(event);
+}
+
+protected appendShippingNoticeToOrderHistory(WebPageRequest inReq, Order order, String waybill)
+{
+	//record this in order history
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	WebEvent event = new WebEvent();
+	event.setSearchType("detailedorderhistory");
+	event.setCatalogId(archive.getCatalogId());
+	event.setProperty("applicationid", inReq.findValue("applicationid"));
+	event.setOperation("orderhistory/appendorderhistory");
+	event.setProperty("orderid", order.getId());
+	event.setProperty("type","automatic");
+	event.setProperty("state","shippingnoticereceived");
+	event.setProperty("shipmentid", waybill);
+	archive.getMediaEventHandler().eventFired(event);
+}
+
+protected appendFullyShippedNoticeToOrderHistory(WebPageRequest inReq, Order order)
+{
+	//record this in order history
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	WebEvent event = new WebEvent();
+	event.setSearchType("detailedorderhistory");
+	event.setCatalogId(archive.getCatalogId());
+	event.setProperty("applicationid", inReq.findValue("applicationid"));
+	event.setOperation("orderhistory/appendorderhistory");
+	event.setProperty("orderid", order.getId());
+	event.setProperty("type","automatic");
+	event.setProperty("state","fullyshipped");
+	archive.getMediaEventHandler().eventFired(event);
 }
 
 doImport();

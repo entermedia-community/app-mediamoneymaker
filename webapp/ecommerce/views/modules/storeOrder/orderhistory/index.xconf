@@ -1,5 +1,6 @@
 <page>
 	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+	<property name="deleteorderhistory">false</property>
 	<path-action name="StoreOrderModule.loadOrderById"/>
 	<path-action name="StoreOrderModule.addOrderState"/>
 	<path-action name="StoreOrderModule.deleteOrderState"/>

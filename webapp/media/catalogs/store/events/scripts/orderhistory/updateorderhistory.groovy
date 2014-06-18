@@ -1,4 +1,4 @@
-package orders;
+package orderhistory;
 
 import java.text.SimpleDateFormat
 import java.util.Date;

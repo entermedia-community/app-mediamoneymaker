@@ -48,6 +48,10 @@
 		#set( $types = $searcherManager.getList($catalogid ,"itemstatus") )
 		#set($itemCounter = 0)
 		#foreach ( $item in $order.items )
+			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
+			#if($product.isCoupon())
+				#break
+			#end
 			#set($path ="$apphome/products/${store.getProductPathFinder().idToPath($item.getProduct().getId())}.html")
 			#set($itemCounter = $itemCounter + 1)
 			#set($bkgrnd = $itemCounter % 2)
@@ -56,20 +60,19 @@
 			#else
 			<tr class="results-list-b">
 			#end
-			#set( $product = $store.getProductSearcher().searchById($item.product.id) )
-				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
-				
 				#set($availablenum = $order.getQuantityAvailableForShipment($item))
-					<input type="checkbox" class="checkbox-entry" name="${item.sku}-shipment"  #if($order.isFullyShipped($item)) disabled #end>
+				#set($sku = $item.getSku())
+				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
+					<input type="checkbox" class="checkbox-entry" name="${sku}-shipment"  #if($order.isFullyShipped($item)) disabled #end>
 				</td>
 				<td  style="margin: 3px 0 5px; padding: 5px 10px;">
 					<p class="results-list">
 						<a class="results-list" href="$home$path" target="_blank">$product.getName()</a>	
 					</p>
-					<input type="hidden" name="sku" value="$item.sku"/>
+					<input type="hidden" name="sku" value="${sku}"/>
 				</td>
 				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
-					<p class="results-list">$item.sku</p>
+					<p class="results-list">$sku</p>
 				</td>
 				<td align="center" nowrap  style="margin: 3px 0 5px; padding: 5px 10px;">
 					<p class="results-list">
@@ -82,12 +85,13 @@
 				</td>
 				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
 					<p class="results-list">$availablenum</p>
-					<input type="hidden" id="${item.sku}-shipment-available" value="${availablenum}"/>
+					<input type="hidden" id="${sku}-shipment-available" value="${availablenum}"/>
 				</td>
 				<td align="center">
-					<input type="text" id="${item.sku}-shipment-quantity" name="${item.sku}-shipment-quantity" value="${availablenum}" onchange="validateInput('${item.sku}-shipment',$availablenum);" disabled>
+					<input type="text" id="${sku}-shipment-quantity" name="${sku}-shipment-quantity" value="${availablenum}" onchange="validateInput('${sku}-shipment',$availablenum);" disabled>
 				</td>
 			</tr>
+				#set($availablenum = 0)
 		    #end
 		</table>
 	</form>

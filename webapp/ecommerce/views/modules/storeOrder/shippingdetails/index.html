@@ -43,14 +43,21 @@
 			#set($itemCounter = 0)
 			#foreach ( $item in $order.getItems() )
 				#set( $productid = $item.getProduct().getId()) 
+				#set( $product = $store.getProductSearcher().searchById($productid) )
+				#if($product.isCoupon())
+					#break
+				#end
 				#set( $itemCounter = $itemCounter + 1 )
 				#if ( ($itemCounter % 2) == 0 )
 					<tr class="results-list-a">
 				#else
 					<tr class="results-list-b">
 				#end
-				#set( $product = $store.getProductSearcher().searchById($productid) )
-				<td class="results-list-center">$product.get("manufacturersku")</td>
+				
+				
+				#set($sku = $product.getInventoryItems().get(0).getSku())
+				
+				<td class="results-list-center">$sku</td>
 				#set( $path="$apphome/products/${store.getProductPathFinder().idToPath($productid)}.html" )
 				<td><a href="$home$path?oemaxlevel=2" class="thickbox" 
 						data-fancybox-type="ajax"><img 
@@ -59,8 +66,8 @@
 				<td class="results-list-left">&nbsp;</td>
 				<td class="results-list">&nbsp;</td>
 				#foreach ( $shipment in $shipments )
-					#if ( $shipment.containsEntryForSku($product.get("manufacturersku")) )
-						#set($entry = $shipment.getEntryForSku($product.get("manufacturersku")))
+					#if ( $shipment.containsEntryForSku($sku) )
+						#set($entry = $shipment.getEntryForSku($sku))
 						</tr>
 						#if ( ($itemCounter % 2) == 0 )
 							<tr class="results-list-a">
@@ -132,7 +139,10 @@
 				#foreach ( $item in $order.getItems() ) 
 					#set( $productid = $item.getProduct().getId()) 
 					#set( $product = $item.getProduct())
-					#set( $productsku = $product.get("manufacturersku"))
+					#if($product.isCoupon())
+						#break
+					#end
+					#set( $productsku = $product.getInventoryItems().get(0).getSku())
 					#if ( $shipment.containsEntryForSku($productsku) )
 						#set( $entry = $shipment.getEntryForSku($productsku) )
 						#set( $product = $store.getProductSearcher().searchById($productid) )

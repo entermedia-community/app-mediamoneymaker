@@ -658,6 +658,9 @@ public class Product extends BaseData implements Data
 			{
 				return element;
 			}
+//			if (element.getProduct().getId().equals(inSku)){
+//				return element;
+//			}
 		}
 		return null;
 	}

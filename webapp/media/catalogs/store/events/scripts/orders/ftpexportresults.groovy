@@ -8,6 +8,9 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
+import org.openedit.event.WebEvent
+import org.openedit.event.WebEventHandler
+import org.openedit.event.WebEventListener
 import org.openedit.entermedia.publishing.PublishResult
 import org.openedit.store.CartItem
 import org.openedit.store.Store
@@ -160,6 +163,9 @@ public class FtpExportResults extends EnterMediaObject {
 									
 									inMsg = "Order (" + order.getId() + ") has been updated.";
 									log.info(inMsg);
+									
+									//append to order history
+									appendToOrderHistory(order);
 									
 								} else {
 									log.info(result.getErrorMessage());
@@ -385,6 +391,19 @@ public class FtpExportResults extends EnterMediaObject {
 		now = null;
 		return outDate;
 
+	}
+	
+	protected void appendToOrderHistory(Order order)
+	{
+		WebEvent event = new WebEvent();
+		event.setSearchType("detailedorderhistory");
+		event.setCatalogId(getMediaArchive().getCatalogId());
+		event.setProperty("applicationid", getContext().findValue("applicationid"));
+		event.setOperation("orderhistory/appendorderhistory");
+		event.setProperty("orderid", order.getId());
+		event.setProperty("type","automatic");
+		event.setProperty("state","senttoedi");
+		getMediaArchive().getMediaEventHandler().eventFired(event);
 	}
 
 }

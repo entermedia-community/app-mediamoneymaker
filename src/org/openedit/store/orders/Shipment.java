@@ -28,7 +28,7 @@ public class Shipment extends BaseData{
 	public ShipmentEntry getEntryForSku(String inSku){
 		for (Iterator<ShipmentEntry> iterator = getShipmentEntries().iterator(); iterator.hasNext();) {
 			ShipmentEntry entry = (ShipmentEntry) iterator.next();
-			if(inSku.equals(entry.getSku())){
+			if(inSku!=null && inSku.equals(entry.getSku())){
 				return entry;
 			}
 		}

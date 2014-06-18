@@ -19,6 +19,7 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
@@ -447,11 +448,10 @@ public class OrderModule extends BaseModule
 		String ordernumber = inReq.getRequestParameter("ordernumber");
 		Store store = getStore(inReq);
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
-		
 		Shipment shipment = null;
 		String [] skus = inReq.getRequestParameters("sku");
 		for (String sku:skus)
-		{
+		{	
 			if (inReq.getRequestParameter(sku+"-shipment")==null ||
 					!inReq.getRequestParameter(sku+"-shipment").equals("on") ||
 					inReq.getRequestParameter(sku+"-shipment-quantity") == null ||
@@ -459,8 +459,11 @@ public class OrderModule extends BaseModule
 			{
 				continue;
 			}
+			if (order.getCartItemByProductSku(sku) == null)
+			{
+				continue;
+			}
 			int quantity = Integer.parseInt(inReq.getRequestParameter(sku+"-shipment-quantity"));
-			
 			ShipmentEntry entry = new ShipmentEntry();
 			entry.setSku(sku);
 			entry.setQuantity(quantity);
@@ -490,6 +493,7 @@ public class OrderModule extends BaseModule
 			}
 			distributors.put(data.getId(),data.getName());
 		}
+		//update page values
 		inReq.putPageValue("distributors",distributors);
 		inReq.putPageValue("data",order);
 		inReq.putPageValue("order",order);
@@ -501,13 +505,16 @@ public class OrderModule extends BaseModule
 		Store store = getStore(inReq);
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
 		
-		
 		Shipment shipment = null;
 		String [] skus = inReq.getRequestParameters("sku");
 		for (String sku:skus)
 		{
 			if (inReq.getRequestParameter(sku+"-shipment-quantity") == null ||
 					inReq.getRequestParameter(sku+"-shipment-quantity").isEmpty())
+			{
+				continue;
+			}
+			if (order.getCartItemByProductSku(sku) == null)
 			{
 				continue;
 			}
@@ -521,7 +528,6 @@ public class OrderModule extends BaseModule
 			}
 			shipment.addEntry(entry);
 		}
-		
 		if (shipment!=null && !shipment.getShipmentEntries().isEmpty())
 		{
 			String waybill = inReq.getRequestParameter("waybill");
@@ -533,7 +539,7 @@ public class OrderModule extends BaseModule
 				distributor != null && !distributor.isEmpty() &&
 				shippingdate != null && !shippingdate.isEmpty() &&
 				courier != null && !courier.isEmpty() ){
-			
+				
 				shipment.setProperty("courier", courier);
 				shipment.setProperty("waybill", waybill);
 				shipment.setProperty("distributor", distributor);
@@ -552,25 +558,29 @@ public class OrderModule extends BaseModule
 				
 				//record this in order history
 				MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
-				Searcher historysearcher = archive.getSearcher("detailedorderhistory");
-				
-				Data data = historysearcher.createNewData();
-				data.setProperty("orderid",order.getId());
-				data.setProperty("state","shippingupdatedmanually");
-				data.setProperty("userid",inReq.getUser()==null ? "" : inReq.getUser().getId());
-				data.setProperty("entrytype", "userinput");
-				data.setProperty("shipmentid", waybill);
-				data.setProperty("note","Shipping entry added by user");
-				data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-				historysearcher.saveData(data, null);
-				
-				if (order.isFullyShipped()){
-					data = historysearcher.createNewData();
-					data.setProperty("orderid",order.getId());
-					data.setProperty("state","fullyshipped");
-					data.setProperty("entrytype", "automatic");
-					data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-					historysearcher.saveData(data, null);
+				WebEvent event = new WebEvent();
+				event.setSearchType("detailedorderhistory");
+				event.setCatalogId(archive.getCatalogId());
+				event.setProperty("applicationid", inReq.findValue("applicationid"));
+				event.setOperation("orderhistory/appendorderhistory");
+				event.setProperty("orderid", order.getId());
+				event.setProperty("type","userinput");
+				event.setProperty("state","shippingupdatedmanually");
+				event.setProperty("userid",inReq.getUser().getId());
+				event.setProperty("shipmentid", waybill);
+				archive.getMediaEventHandler().eventFired(event);
+				//fire another event if fully shipped
+				if (order.isFullyShipped())
+				{
+					WebEvent evt = new WebEvent();
+					evt.setSearchType("detailedorderhistory");
+					evt.setCatalogId(archive.getCatalogId());
+					evt.setProperty("applicationid", inReq.findValue("applicationid"));
+					evt.setOperation("orderhistory/appendorderhistory");
+					evt.setProperty("orderid", order.getId());
+					evt.setProperty("type","automatic");
+					evt.setProperty("state","fullyshipped");
+					archive.getMediaEventHandler().eventFired(evt);
 				}
 			}
 		}
@@ -763,7 +773,8 @@ public class OrderModule extends BaseModule
 		refund.setSubTotal(subtotal);
 		refund.setTaxAmount(tax);
 		refund.setTotalAmount(total);
-		Iterator<CartItem> itr = order.getItems().iterator();
+		@SuppressWarnings("unchecked")
+		Iterator<CartItem> itr = ((List<CartItem>)order.getItems()).iterator();
 		while(itr.hasNext())
 		{
 			CartItem cartItem = itr.next();
@@ -809,6 +820,19 @@ public class OrderModule extends BaseModule
 		
 		order.getRefunds().add(refund);
 		store.saveOrder(order);
+		
+		//record this in order history
+		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+		WebEvent event = new WebEvent();
+		event.setSearchType("detailedorderhistory");
+		event.setCatalogId(archive.getCatalogId());
+		event.setProperty("applicationid", inContext.findValue("applicationid"));
+		event.setOperation("orderhistory/appendorderhistory");
+		event.setProperty("orderid", order.getId());
+		event.setProperty("type","automatic");
+		event.setProperty("state","itemsrefunded");
+		event.setProperty("refundid",refund.isSuccess() ? refund.getTransactionId() : "");
+		archive.getMediaEventHandler().eventFired(event);
 		
 		inContext.putPageValue("data",order);
 		inContext.putPageValue("order",order);
