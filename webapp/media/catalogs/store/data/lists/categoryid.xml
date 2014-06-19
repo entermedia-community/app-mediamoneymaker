@@ -12,4 +12,5 @@
   <categoryid id="bluetoothheadset" active="true">Bluetooth Headsets</categoryid>
   <categoryid id="cases" active="true">Cases</categoryid>
   <categoryid id="smartaccessories" active="true">Smart Accessories</categoryid>
+  <categoryid id="datacables" active="true">Data Cables</categoryid>
 </categoryids>

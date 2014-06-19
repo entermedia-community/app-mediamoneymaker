@@ -148,9 +148,12 @@ public class GenerateCsv extends EnterMediaObject {
 							fieldcount++;
 						}
 						InventoryItem item = tracker.getInventoryItem(0);
-						Integer qtyInStock = item.getQuantityInStock();
-						nextrow[details.size()] = qtyInStock.toString();
-						writer.writeNext(nextrow);
+						if (item!=null){
+							Integer qtyInStock = item.getQuantityInStock();
+							nextrow[details.size()] = qtyInStock.toString();
+							writer.writeNext(nextrow);
+						}
+						
 					}
 				}
 			}
