@@ -291,7 +291,7 @@ public class Order extends BaseData implements Comparable {
 	public boolean canCancelOrder()
 	{
 		boolean canCancel = false;
-		if (!isCancelled() && !isFullyShipped())
+		if (!isCancelled())
 		{
 			OrderState status = getOrderStatus();//authorized
 			if ("authorized".equals(status.getId()))
@@ -558,19 +558,17 @@ public class Order extends BaseData implements Comparable {
 	}
 
 	public boolean isFullyShipped() {
-		boolean completed = false;
-
-		List<CartItem> cartItems = getItems();
-		if (cartItems.size() > 0) {
-			for (int ctr = 0; ctr < cartItems.size(); ctr++) {
-				CartItem item = cartItems.get(ctr);
-				completed = isFullyShipped(item);
-				if (!completed) {
-					break;
-				}
+		@SuppressWarnings("unchecked")
+		Iterator<CartItem> itr = ((List<CartItem>)getItems()).iterator();
+		while(itr.hasNext())
+		{
+			CartItem cartItem = itr.next();
+			if (!isFullyShipped(cartItem))
+			{
+				return false;
 			}
 		}
-		return completed;
+		return true;
 	}
 	
 	public boolean hasPartialShipments()

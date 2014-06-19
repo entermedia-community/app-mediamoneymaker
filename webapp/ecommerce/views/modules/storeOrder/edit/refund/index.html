@@ -4,10 +4,5 @@
 
 
 <div class="ui-widget-content">
-	#if($status == "Authorized")
-		$pages.include("$home$apphome/views/modules/storeOrder/edit/refund/refundtable.html", $context)
-	#else
-		<h3>Refund Status for $orderNumber</h3>
-		<p>This order has not been authorized and cannot be refunded.</p>
-	#end
+	$pages.include("$home$apphome/views/modules/storeOrder/edit/refund/refundtable.html", $context)
 </div>

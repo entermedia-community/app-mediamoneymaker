@@ -39,6 +39,7 @@
 		</thead>
 		<tfoot>
 			<tr height="30"></tr>
+			#if($data.getOrderStatus() == "Authorized")
 			<tr>
 				<th>
 					<form method="post" action="$home$apphome/views/modules/storeOrder/edit/refund/newrefund.html">
@@ -50,6 +51,7 @@
 				</th>
 				<th colspan="5"></th>
 			</tr>
+			#end
 		</tfoot>
 	
 	#set($itemCounter = 0)
