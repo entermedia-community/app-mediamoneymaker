@@ -282,6 +282,11 @@ public class Order extends BaseData implements Comparable {
 	public void setOrderState(OrderState inOrderState) {
 		fieldOrderState = inOrderState;
 	}
+	
+	public boolean isCancelled()
+	{
+		return (getOrderStatus()!=null && "cancelled".equals(getOrderStatus().getId()));
+	}
 
 	public Customer getCustomer() {
 		return fieldCustomer;
@@ -492,7 +497,7 @@ public class Order extends BaseData implements Comparable {
 		int quantityShipped = getQuantityShipped(cartItem);
 		int quantityRefunded = getQuantityRefunded(cartItem);
 		int quantityToBeShipped = quantity - quantityRefunded;
-		log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
+//		log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
 		//This assumes that refunds can only occur before a shipment is sent
 		return ( quantityToBeShipped == quantityShipped);
 	}

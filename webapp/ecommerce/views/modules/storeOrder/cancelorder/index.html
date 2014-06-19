@@ -1,0 +1,48 @@
+#set( $moduleid = $context.findValue("module") )
+#set( $viewid = $context.findValue("viewid") )
+#set( $viewpath = $context.findValue("viewpath") )
+
+#set($statesearcher = $mediaarchive.getSearcher("detailedorderhistorystate"))
+#set($typesearcher = $mediaarchive.getSearcher("detailedorderhistorytype"))
+
+#set($status = $order.getOrderStatus())
+
+<div class="ui-widget-content">
+	<h2>Cancel ${order.orderNumber}</h2>
+	
+	<h3>Summary of Order</h3>
+	
+	<ul>
+		<li>Current status of this order is $status</li>
+			#if($status == "Authorized")
+				#set($link = "/$applicationid/views/modules/storeOrder/edit/refund/index.html?id=${order.orderNumber}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds&hitssessionid=hitsstoreOrdermedia/catalogs/store&searchtype=storeOrder")
+			<ul>
+			    <li>
+			    	If you need to first refund the order, 
+					<a style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;" href="$link">
+						click here
+					</a> before cancelling.
+			    </li>
+		    </ul>
+		    #end
+		<li>Shipping status is #if($order.isFullyShipped()) Fully Shipped #elseif ($order.getShipments().isEmpty()) No Shipments #else Partially Shipped #end</li>
+	</ul>
+	
+	#if($status != "Cancelled")
+	<form id="cancelorder-form" method="post" action="$home$apphome/views/modules/storeOrder/cancelorder/cancel.html">
+		<input type="hidden" name="ordernumber" value="${order.orderNumber}"/>
+		<input type="hidden" name="id" value="${order.orderNumber}"/>
+		<input type="hidden" name="viewid" value="$viewid"/>
+		<input type="hidden" name="viewpath" value="${moduleid}/${viewpath}"/>
+		<input type="hidden" name="type" value="userinput"/>
+		<span>
+			<input type="checkbox" name="authorize"  class="checkbox-entry"  required/>
+			<label for="authorize">I authorize this cancellation.</label>
+			<br/>
+			<br/>
+		</span>
+		<input class="btn small" type="submit" value="Cancel Order" />
+	</form>
+	#end
+
+</div>

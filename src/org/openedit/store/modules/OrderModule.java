@@ -589,6 +589,41 @@ public class OrderModule extends BaseModule
 		inReq.putPageValue("order",order);
 	}
 	
+	public void cancelOrder(WebPageRequest inReq)
+	{
+		String ordernumber = inReq.getRequestParameter("ordernumber");
+		Store store = getStore(inReq);
+		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
+		
+		if (order!=null)
+		{
+			String authorize = inReq.getRequestParameter("authorize");
+			if ("on".equals(authorize) && !order.isCancelled())
+			{
+				//update order status
+				OrderState status = new OrderState();
+				status.setId("cancelled");
+				status.setDescription("Cancelled");
+				status.setOk(true);
+				order.setOrderState(status);
+				store.saveOrder(order);
+				//record in order history
+				MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+				Searcher historysearcher = archive.getSearcher("detailedorderhistory");
+				Data data = historysearcher.createNewData();
+				data.setProperty("orderid",order.getId());
+				data.setProperty("state","cancelled");
+				data.setProperty("userid",inReq.getUser()==null ? "" : inReq.getUser().getId());
+				data.setProperty("entrytype","userinput");
+				data.setProperty("note","Authorized by user");
+				data.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				historysearcher.saveData(data, null);
+			}
+		}
+		
+		inReq.putPageValue("data",order);
+		inReq.putPageValue("order",order);
+	}
 	
 	public void prepareNewRefund(WebPageRequest inContext)
 	{

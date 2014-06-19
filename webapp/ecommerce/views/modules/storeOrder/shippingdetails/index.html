@@ -166,7 +166,7 @@
 	#end
 	
 	
-	#if($order.isFullyShipped() == false)
+	#if($order.isFullyShipped() == false && $order.isCancelled() == false)
 	<table cellspacing="5" cellpadding="3" border="0">
 		<tfoot>
 			<tr height="30"></tr>

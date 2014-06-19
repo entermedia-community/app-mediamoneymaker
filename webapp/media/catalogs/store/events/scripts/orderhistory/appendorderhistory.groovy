@@ -97,6 +97,10 @@ public init(){
 		String refundid = webevent.get("refundid");//transactionid
 		appendOrderHistory(archive,now,order.getId(),state,"automatic","","",refundid,"");
 	}
+	else if ("cancelled".equals(state))//cancelled
+	{
+		appendOrderHistory(archive,now,order.getId(),state,"automatic","","","","");
+	}
 	else
 	{
 		//generatededi, sendtoedi,

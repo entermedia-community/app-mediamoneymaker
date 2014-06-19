@@ -6,5 +6,6 @@
 <property id="completed">Completed</property>
 <property id="captured">Captured</property>
 <property id="rejected">Rejected</property>
+<property id="cancelled">Cancelled</property>
 <property id="closed">Archived</property>
 </properties>

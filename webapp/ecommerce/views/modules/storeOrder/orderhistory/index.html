@@ -29,13 +29,14 @@
 				<tr>
 					<td colspan="2">&nbsp;</td>
 					<td style="margin: 3px 0 5px; padding: 5px 10px;">
-						#set($allstates = $statesearcher.getAllHits())
+						#set($query = $statesearcher.createSearchQuery().append("systemrestricted","false"))
+						#set($states = $statesearcher.search($query))
 						<select class="choose-select detail-select form-control" name="state">
 							<option value=""></option>
-							#foreach($state in $allstates)
+							#foreach($state in $states)
 							<option value="$state.id">$state</option>
 							#end
-      						</select>
+      					</select>
 					</td>
 					<td style="margin: 3px 0 5px; padding: 5px 10px;">
 						<input type="text" name="note" value=""/>

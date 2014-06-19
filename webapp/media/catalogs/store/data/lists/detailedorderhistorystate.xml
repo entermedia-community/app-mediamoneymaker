@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <detailedorderhistorystates>
-  <detailedorderhistorystate id="opened" name="Opened">Opened</detailedorderhistorystate>
-  <detailedorderhistorystate id="closed" name="Closed">Closed</detailedorderhistorystate>
-  <detailedorderhistorystate id="orderplaced" name="Order Placed">Order Placed</detailedorderhistorystate>
-  <detailedorderhistorystate id="generatededi" name="Generated EDI">Generated EDI</detailedorderhistorystate>
-  <detailedorderhistorystate id="senttoedi" name="Sent to EDI">Sent to EDI</detailedorderhistorystate>
-  <detailedorderhistorystate id="distributorcontacted" name="Distributor Contacted">Distributor Contacted</detailedorderhistorystate>
-  <detailedorderhistorystate id="shippingnoticereceived" name="Shipping Notice Received">Shipping Notice Received</detailedorderhistorystate>
-  <detailedorderhistorystate id="invoicereceived" name="Invoice Received">Invoice Received</detailedorderhistorystate>
-  <detailedorderhistorystate id="invoicepaid" name="Invoice Paid">Invoice Paid</detailedorderhistorystate>
-  <detailedorderhistorystate id="shippingupdatedmanually" name="Shipping Updated Manually">Shipping Updated Manually</detailedorderhistorystate>
-  <detailedorderhistorystate id="itemsrefunded" name="Items Refunded">Items Refunded</detailedorderhistorystate>
-  <detailedorderhistorystate id="fullyshipped" name="Fully Shipped">Fully Shipped</detailedorderhistorystate>
+  <detailedorderhistorystate id="opened" systemrestricted="true" name="Opened">Opened</detailedorderhistorystate>
+  <detailedorderhistorystate id="orderplaced" systemrestricted="true" name="Order Placed">Order Placed</detailedorderhistorystate>
+  <detailedorderhistorystate id="generatededi" systemrestricted="true" name="Generated EDI">Generated EDI</detailedorderhistorystate>
+  <detailedorderhistorystate id="senttoedi" systemrestricted="true" name="Sent to EDI">Sent to EDI</detailedorderhistorystate>
+  <detailedorderhistorystate id="distributorcontacted" systemrestricted="false" name="Distributor Contacted">Distributor Contacted</detailedorderhistorystate>
+  <detailedorderhistorystate id="shippingnoticereceived" systemrestricted="true" name="Shipping Notice Received">Shipping Notice Received</detailedorderhistorystate>
+  <detailedorderhistorystate id="invoicereceived" systemrestricted="true" name="Invoice Received">Invoice Received</detailedorderhistorystate>
+  <detailedorderhistorystate id="invoicepaid" systemrestricted="false" name="Invoice Paid">Invoice Paid</detailedorderhistorystate>
+  <detailedorderhistorystate id="shippingupdatedmanually" systemrestricted="false" name="Shipping Updated Manually">Shipping Updated Manually</detailedorderhistorystate>
+  <detailedorderhistorystate id="itemsrefunded" systemrestricted="true" name="Items Refunded">Items Refunded</detailedorderhistorystate>
+  <detailedorderhistorystate id="fullyshipped" systemrestricted="false" name="Fully Shipped">Fully Shipped</detailedorderhistorystate>
+  <detailedorderhistorystate id="cancelled" systemrestricted="true" name="Cancelled">Cancelled</detailedorderhistorystate>
+  <detailedorderhistorystate id="closed" systemrestricted="false" name="Closed">Closed</detailedorderhistorystate>
 </detailedorderhistorystates>
