@@ -598,7 +598,7 @@ public class OrderModule extends BaseModule
 		if (order!=null)
 		{
 			String authorize = inReq.getRequestParameter("authorize");
-			if ("on".equals(authorize) && !order.isCancelled())
+			if ("on".equals(authorize) && order.canCancelOrder())
 			{
 				//update order status
 				OrderState status = new OrderState();

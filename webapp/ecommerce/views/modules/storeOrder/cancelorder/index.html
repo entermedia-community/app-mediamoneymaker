@@ -15,20 +15,22 @@
 	<ul>
 		<li>Current status of this order is $status</li>
 			#if($status == "Authorized")
+				#if($order.isFullyRefunded() == false)
 				#set($link = "/$applicationid/views/modules/storeOrder/edit/refund/index.html?id=${order.orderNumber}&viewid=orderrefunds&viewpath=storeOrder/orderrefunds&hitssessionid=hitsstoreOrdermedia/catalogs/store&searchtype=storeOrder")
-			<ul>
-			    <li>
-			    	If you need to first refund the order, 
-					<a style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;" href="$link">
-						click here
-					</a> before cancelling.
-			    </li>
-		    </ul>
+				<ul>
+				    <li>
+				    	You need to first 
+						<a style="color:blue;text-decoration:none;font-weight:normal;font-size:14px;" href="$link">
+							refund the order
+						</a> before cancelling.
+				    </li>
+			    </ul>
+			    #end
 		    #end
 		<li>Shipping status is #if($order.isFullyShipped()) Fully Shipped #elseif ($order.getShipments().isEmpty()) No Shipments #else Partially Shipped #end</li>
 	</ul>
 	
-	#if($status != "Cancelled")
+	#if($order.canCancelOrder())
 	<form id="cancelorder-form" method="post" action="$home$apphome/views/modules/storeOrder/cancelorder/cancel.html">
 		<input type="hidden" name="ordernumber" value="${order.orderNumber}"/>
 		<input type="hidden" name="id" value="${order.orderNumber}"/>
@@ -37,7 +39,7 @@
 		<input type="hidden" name="type" value="userinput"/>
 		<span>
 			<input type="checkbox" name="authorize"  class="checkbox-entry"  required/>
-			<label for="authorize">I authorize this cancellation.</label>
+			<label for="authorize">&nbsp;&nbsp; I authorize this cancellation.</label>
 			<br/>
 			<br/>
 		</span>

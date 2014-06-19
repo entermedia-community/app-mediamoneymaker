@@ -287,6 +287,27 @@ public class Order extends BaseData implements Comparable {
 	{
 		return (getOrderStatus()!=null && "cancelled".equals(getOrderStatus().getId()));
 	}
+	
+	public boolean canCancelOrder()
+	{
+		boolean canCancel = false;
+		if (!isCancelled() && !isFullyShipped())
+		{
+			OrderState status = getOrderStatus();//authorized
+			if ("authorized".equals(status.getId()))
+			{
+				if (isFullyRefunded() && !hasPartialShipments())
+				{
+					canCancel = true;
+				}
+			}
+			else
+			{
+				canCancel = !hasPartialShipments();
+			}
+		}
+		return canCancel;
+	}
 
 	public Customer getCustomer() {
 		return fieldCustomer;
@@ -552,6 +573,23 @@ public class Order extends BaseData implements Comparable {
 		return completed;
 	}
 	
+	public boolean hasPartialShipments()
+	{
+		boolean hasPartialShipments = false;
+		@SuppressWarnings("unchecked")
+		Iterator<CartItem> itr = ((List<CartItem>) getItems()).iterator();
+		while(itr.hasNext())
+		{
+			CartItem cartItem = itr.next();
+			int quantityShipped = getQuantityShipped(cartItem);
+			if (quantityShipped > 0){
+				hasPartialShipments = true;
+				break;
+			}
+		}
+		return hasPartialShipments;
+	}
+	
 	public Shipment getShipmentByWaybill( String inWaybill ) {
 		Shipment shipment = null;
 		for (Iterator iterator = getShipments().iterator(); iterator.hasNext();) {
@@ -711,6 +749,12 @@ public class Order extends BaseData implements Comparable {
 			return total;
 		}
 		return total.subtract(refunds);
+	}
+	
+	public boolean isFullyRefunded()
+	{
+		Money money = calculateTotalAfterRefunds();
+		return money.isZero();
 	}
 	
 	public static RefundItem calculateRefundInfoForCartItem(Order inOrder, CartItem inItem){
