@@ -160,6 +160,7 @@ public class FtpExportResults extends EnterMediaObject {
 									
 									order.setProperty("edistatus", "senttoedi");
 									store.getOrderArchive().saveOrder(store, order);
+									ordersearcher.saveData(order, inReq.getUser());
 									
 									inMsg = "Order (" + order.getId() + ") has been updated.";
 									log.info(inMsg);

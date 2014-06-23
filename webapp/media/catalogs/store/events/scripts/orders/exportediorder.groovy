@@ -110,7 +110,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 				throw new OpenEditException("Invalid Order");
 			}
 			String orderStatus = order.get("orderstatus");
-			if (orderStatus == "authorized") {
+			if (orderStatus == "authorized"  || ( orderStatus == "accepted" && Boolean.parseBoolean(order.get("oktosendtoedi"))) ) {
 				String ediStatus = order.get("edistatus");
 				if (ediStatus == null || ediStatus.isEmpty() || ediStatus.equals("open")) {
 
@@ -379,7 +379,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 			String saleprice = p.get("clearanceprice");
 			
 			if (isAccepted){
-				UnitPrice(p.getYourPrice())
+				UnitPrice(p.getYourPrice().toShortString().replace('$', ''));
 			} else {
 				if (saleprice != null && saleprice.toDouble() > 0) {
 					UnitPrice(saleprice)
