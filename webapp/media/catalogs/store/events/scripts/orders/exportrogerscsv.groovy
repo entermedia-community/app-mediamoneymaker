@@ -9,6 +9,7 @@ import org.openedit.entermedia.util.CSVWriter
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
 import org.openedit.store.Product
+import org.openedit.store.Store
 import org.openedit.store.customer.Address
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
@@ -148,6 +149,36 @@ public class ExportRogersCsv extends EnterMediaObject {
 				shipToAddress.getZipCode();
 			orderDetailRow.add(address);
 			
+			//Bill to
+			if (order.getOrderStatus().getId().equals("accepted"))
+			{
+				Address billing = order.getBillingAddress();
+				if (billing == null) {
+					throw new OpenEditException("Invalid Billing Address (populateHeader) (" + order.getId() + ")");
+				}
+				if (order.getCustomer().company != null) {
+					orderDetailRow.add(order.getCustomer().company);
+				} else {
+					orderDetailRow.add(order.getCustomer().firstName + " " + order.getCustomer().lastName);
+				}
+				address = billing.getAddress1();
+				if (billing.getAddress2() != null) {
+					address += ", " + billing.getAddress2();
+				}
+				orderDetailRow.add(address);
+				address = billing.getCity() + ", " +
+					billing.getState() + ", " +
+					billing.getZipCode();
+				orderDetailRow.add(address);
+			}
+			else 
+			{
+				orderDetailRow.add("Area Communications");
+				orderDetailRow.add("Area Marketing, 1 Hurontario Street, Suite 220");
+				orderDetailRow.add("Mississauga, ON, L5G 0A3, CA");
+			}
+			
+			
 			//Get Distributor
 			Searcher distribsearcher = manager.getSearcher(catalogid, "distributor");
 			Data distributor = distribsearcher.searchById(item.getProduct().get("distributor"));
@@ -206,6 +237,11 @@ public class ExportRogersCsv extends EnterMediaObject {
 		headerRow.add("Customer Name");
 		headerRow.add("Address1");
 		headerRow.add("Address2");
+		
+		headerRow.add("Bill To");
+		headerRow.add("Address1");
+		headerRow.add("Address2");
+		
 		headerRow.add("Distributor");
 		headerRow.add("Order Date");
 		headerRow.add("Brand");
