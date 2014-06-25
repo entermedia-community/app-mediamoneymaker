@@ -9,8 +9,10 @@ import org.openedit.entermedia.util.CSVWriter
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
 import org.openedit.store.Product
+import org.openedit.store.Store
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
+import org.openedit.store.customer.Address
 
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
@@ -54,37 +56,42 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		WebPageRequest inReq = context;
 		
 		orderList = new HashMap<String, String>();
-				
-		MediaUtilities media = new MediaUtilities();
-		media.setContext(context);
+		List<Order> orders = new ArrayList<Order>();
+		
+//		MediaUtilities media = new MediaUtilities();
+//		media.setContext(context);
 
 		//Get Media Info
 		Log log = LogFactory.getLog(GroovyScriptRunner.class);
 		MediaArchive archive = context.getPageValue("mediaarchive");
+		Store store = context.getPageValue("store");
+		
 		String catalogid = getMediaArchive().getCatalogId();
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 		// Create the Searcher Objects to read values!
-		SearcherManager searcherManager = archive.getSearcherManager();
-		Searcher ordersearcher = media.getOrderSearcher();
+//		SearcherManager searcherManager = archive.getSearcherManager();
+		
+		boolean generateall = Boolean.parseBoolean(inReq.getRequestParameter("generateall"));
+		Searcher ordersearcher = store.getOrderSearcher();
 		
 		SearchQuery orderQuery = ordersearcher.createSearchQuery();
-		orderQuery.addExact("csvgenerated", "false");
-		orderQuery.addMatches("distributor", "102");
+		if (generateall == false){
+			orderQuery.addExact("csvgenerated", "false");
+		}
+		orderQuery.addContains("distributor", "102");
 		HitTracker orderList = ordersearcher.search(orderQuery);
 		log.info("Found # of Orders:" + orderList.size());
 		for (Iterator orderIterator = orderList.iterator(); orderIterator.hasNext();) {
 
 			Data currentOrder = orderIterator.next();
-
 			Order order = ordersearcher.searchById(currentOrder.getId());
 			if (order == null) {
 				throw new OpenEditException("Invalid Order");
 			}
-
 			log.info("DATA: Order found: " + order.getId());
 			String orderStatus = order.get("orderstatus");
-			if (orderStatus == "authorized") {
+			if (orderStatus == "authorized" || orderStatus == "accepted") {
 
 				//Check if order has Affinity Products
 				List orderitems = order.getCartItemsByProductProperty("distributor", "102");
@@ -103,15 +110,20 @@ public class ExportAffinityOrder extends EnterMediaObject {
 					page.setContentItem(new StringItem(page.getPath(), output.toString(), "UTF-8"));
 					//Write out the CSV file.
 					pageManager.putPage(page);
-					//Set the order properties
-					//order.setProperty("csvgenerated", "true");
-					archive.getSearcher("storeOrder").saveData(order, context.getUser());
-					writeOrderToList(order.getId(), fileName);
 					
+					writeOrderToList(order.getId(), fileName);
+					//Set the order properties
+					if (generateall == false){
+						order.setProperty("csvgenerated", "true");
+						orders.add(order);
+					}
 				}
 			} else {
-				log.info("SKIPPING ORDER: Order not authorized.");
+				log.info("SKIPPING ORDER: ${order}, not authorized or accepted.");
 			}
+		}
+		if (orders.isEmpty() == false){
+			store.getOrderSearcher().saveAllData(orders, null);
 		}
 		if (getOrderList().isEmpty()) {
 			inReq.putPageValue("errorout", "There are no Affinity orders to export at this time.");
@@ -135,6 +147,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		headerRow.add("ORDER_NUMBER");
 		getDetailsFromView("userprofile", "userprofile/userprofileusername", order, headerRow, true);
 		getDetailsFromView("address", "address/addresslist", order, headerRow, true);
+		getAddressBillToDetails(order,headerRow,true);
 		getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, headerRow, true);
 		getDetailsFromView("product", "product/productproduct_info", order, headerRow, true);
 		headerRow.add("QUANTITY");
@@ -151,6 +164,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			orderDetailRow.add(order.getId());
 			getDetailsFromView("userprofile", "userprofile/userprofileusername", order.getCustomer(), orderDetailRow, false);
 			getDetailsFromView("address", "address/addresslist", order.getShippingAddress(), orderDetailRow, false);
+			getAddressBillToDetails(order,orderDetailRow,false);
 			getDetailsFromView("storeOrder", "storeOrder/storeOrdercsvheaders", order, orderDetailRow, false);
 			getDetailsFromView("product", "product/productproduct_info", item.getProduct(), orderDetailRow, false);
 			
@@ -159,7 +173,7 @@ public class ExportAffinityOrder extends EnterMediaObject {
 			orderDetailRow.add(p.getProperty("rogersprice"));
 			writeRowToWriter(orderDetailRow, writer);
 			log.info(orderDetailRow.toString());
-			orderDetailRow = null;
+//			orderDetailRow = null;
 		}
 	}
 	
@@ -186,14 +200,54 @@ public class ExportAffinityOrder extends EnterMediaObject {
 		}
 	}
 		
-	private void getAddressDetails( Order inOrder, List inListRows, boolean isHeaderRow ) {
-		MediaArchive archive = context.getPageValue("mediaarchive");
-		SearcherManager manager = archive.getSearcherManager();
-		Searcher addressSearcher = manager.getSearcher(archive.getCatalogId(), "address");
-		if (isHeaderRow) {
-			
-		} else {
-			
+	private void getAddressBillToDetails( Order inOrder, List inListRows, boolean isHeaderRow ) {
+		if (isHeaderRow){
+			//BILLTO
+			//BILLTO_ADDRESS_1
+			//BILLTO_ADDRESS_2
+			//BILLTO_CITY
+			//BILLTO_STATE/PROVINCE
+			//BILLTO_COUNTRY
+			//BILLTO_ZIP/POSTAL_CODE
+			inListRows.add("BILLTO");
+			inListRows.add("BILLTO_ADDRESS_1");
+			inListRows.add("BILLTO_ADDRESS_2");
+			inListRows.add("BILLTO_CITY");
+			inListRows.add("BILLTO_STATE/PROVINCE");
+			inListRows.add("BILLTO_COUNTRY");
+			inListRows.add("BILLTO_ZIP/POSTAL_CODE");
+			return;
+		}
+		String orderstatus = inOrder.get("orderstatus");
+		if (orderstatus == "accepted")
+		{
+			Address billing = inOrder.getBillingAddress();
+			if (billing == null) 
+			{
+				throw new OpenEditException("Invalid Billing Address (populateHeader) (" + inOrder.getId() + ")");
+			}
+			if (inOrder.getCustomer().company != null) {
+				inListRows.add(inOrder.getCustomer().company);
+			} else {
+				inListRows.add(inOrder.getCustomer().firstName + " " + inOrder.getCustomer().lastName);
+			}
+			inListRows.add(billing.getAddress1());
+			inListRows.add(billing.getAddress2()==null?"":billing.getAddress2());
+			inListRows.add(billing.getCity());
+			inListRows.add(billing.getState());
+			inListRows.add(billing.getCountry());
+			inListRows.add(billing.getZipCode());
+		}
+		else
+		{
+			inListRows.add("Area Communications");
+			inListRows.add("Area Marketing, 1 Hurontario Street");
+			inListRows.add("Suite 220");
+			inListRows.add("Mississauga");
+			inListRows.add("ON");
+			inListRows.add("CA");
+			inListRows.add("L5G 0A3");
+		
 		}
 	}
 

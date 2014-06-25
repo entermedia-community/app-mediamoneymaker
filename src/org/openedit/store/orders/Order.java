@@ -612,6 +612,9 @@ public class Order extends BaseData implements Comparable {
 		for (Iterator iterator = getItems().iterator(); iterator.hasNext();) {
 			CartItem item = (CartItem) iterator.next();
 			Product p = item.getProduct();
+			if (p.isCoupon()){
+				continue;
+			}
 			
 			if(p.getValues(inKey).size() >0){
 				Collection values = p.getValues(inKey);

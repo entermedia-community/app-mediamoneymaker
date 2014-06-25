@@ -38,6 +38,9 @@ public class ExportAffinity extends EnterMediaObject {
 
 		// Create the Searcher Objects to read values!
 		def orderid = context.getRequestParameter("id");
+		if (orderid == null){
+			orderid = context.getRequestParameter("orderid");
+		}
 		setOrderID(orderid);
 		def String distributorName = "Affinity";
 
@@ -50,7 +53,7 @@ public class ExportAffinity extends EnterMediaObject {
 		Page page = pageManager.getPage(pageName);
 		if (page != null) {
 			output.append(page.getContent());
-			context.putPageValue("exportcsv", output.toString());
+			context.putPageValue("export", output.toString());
 		} else {
 			throw new OpenEditException(fileName + " does not exist.");
 		}

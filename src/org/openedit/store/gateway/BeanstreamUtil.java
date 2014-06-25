@@ -3,19 +3,16 @@ package org.openedit.store.gateway;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
-import org.openedit.money.Money;
-import org.openedit.store.CartItem;
-import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.orders.Order;
-import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
 import com.openedit.page.Page;
@@ -26,6 +23,7 @@ import com.openedit.util.XmlUtil;
 
 public class BeanstreamUtil {
 
+	private static final Log log = LogFactory.getLog(BeanstreamUtil.class);
 	
 	protected PageManager fieldPageManager;
 	
@@ -207,6 +205,15 @@ public class BeanstreamUtil {
 			boolean postal = "1".equals(inMap.get("avsPostalMatch"));
 			String message = inMap.get("avsMessage");
 			passed = proc && result;
+			StringBuilder buf = new StringBuilder();
+			buf.append(passed ? "PASSED" : "FAILED")
+				.append(", ID:").append(id)
+				.append(", Address: ").append(addr ? "PASSED" : "FAILED")
+				.append(", Postal/Zip Code:").append(postal ? "PASSED" : "FAILED")
+				.append(", Message:").append(message);
+			log.info("AVS Results: "+buf.toString());
+		} else {
+			log.info("AVS Results: FAILED, AVS Parameters not found");
 		}
 		return passed;
 	}
