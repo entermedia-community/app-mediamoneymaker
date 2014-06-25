@@ -25,12 +25,14 @@ import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 
+import org.openedit.entermedia.Category;
+
 
 public void handleSubmission(){
 	
 	WebPageRequest inReq = context;
-	Store store = context.getPageValue("store");
-	MediaArchive archive = context.getPageValue("mediaarchive");
+	Store store = inReq.getPageValue("store");
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	 
 	Searcher productsearcher = store.getProductSearcher();
 	Searcher assetsearcher = archive.getAssetSearcher();
@@ -44,38 +46,110 @@ public void handleSubmission(){
 	
 	FileUpload command = new FileUpload();
 	command.setPageManager(archive.getPageManager());
-	UploadRequest properties = command.parseArguments(context);
+	UploadRequest properties = command.parseArguments(inReq);
 	
-	String productid = context.getRequestParameter("productid");
-	String ticketid = context.getRequestParameter("ticketid");
+	String productid = inReq.getRequestParameter("productid");
+	String ticketid = inReq.getRequestParameter("ticketid");
 	
 	if (productid != null) {
 		product = store.getProduct(productid);
 	}
-	
 	FileUploadItem item = properties.getFirstItem();
-	
 	if (product == null && item == null) {
 		return;
 	}
 	if (product == null) {
+		Data d = productsearcher.createNewData();
+		d.setId(productsearcher.nextId());
+		productid = d.getId();
+		d.setSourcePath(inReq.getUserProfile().get("distributor") + "/" + productid);
+		productsearcher.saveData(d, null);
 		
-		product = productsearcher.createNewData();
-		product.setId(productsearcher.nextId());
-		product.setSourcePath(context.getUserProfile().get("distributor") + "/" + product.getId());
+		product = store.getProduct(productid);
 		newProduct = true;
 	}
+	
+//	List<FileUploadItem> items = properties.getUploadItems();
+//	Iterator<FileUploadItem> itr = items.iterator();
+//	while(itr.hasNext()){
+//		FileUploadItem fileupload = itr.next();
+//		if (fileupload.getName()==null){
+//			continue;
+//		}
+//		String fieldname = fileupload.getFieldName();
+//		if (fieldname.contains("file.")){
+//			fieldname = fieldname.substring(fieldname.indexOf("file.") + "file.".length()).trim();
+//		}
+//		if (fieldname == "image")//primary asset
+//		{
+//			String filename = fileupload.getName();
+//			if (filename == null || filename.isEmpty()){
+////				product.setProperty(fieldname,null);
+////				productsearcher.saveData(product, inReq.getUser());
+//			}
+//			else
+//			{
+//				String sourcepath = "productimages/" + product.getSourcePath();
+//				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+//				
+//				path = path + filename;
+//				properties.saveFileAs(fileupload,path, inReq.getUser());
+//				Asset asset = archive.getAssetBySourcePath(sourcepath);
+//				if (asset == null) {
+//					asset = archive.createAsset(sourcepath);
+//					Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
+//					asset.addCategory(root);
+//				}
+//				asset.setPrimaryFile(filename);
+//				asset.setProperty("product", product.getId());
+//				archive.removeGeneratedImages(asset);
+//				archive.saveAsset(asset, null);
+//				product.setProperty(fieldname, asset.getId());
+//				productsearcher.saveData(product, inReq.getUser());
+//				log.info("########## saved [$filename], $path")
+//			}
+//		}
+//		else 
+//		{
+//			String filename = fileupload.getName();
+//			if (filename == null || filename.isEmpty()){
+//				product.setProperty(fieldname,null);
+//				productsearcher.saveData(product, inReq.getUser());
+//			}
+//			else
+//			{
+//				String sourcepath = "productimages/" + product.getSourcePath();
+//				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/$fieldname/";
+//				
+//				path = path + filename;
+//				properties.saveFileAs(fileupload,path, inReq.getUser());
+//				Asset asset = archive.getAssetBySourcePath(sourcepath);
+//				if (asset == null) {
+//					asset = archive.createAsset(sourcepath);
+//					Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
+//					asset.addCategory(root);
+//				}
+//				asset.setPrimaryFile(filename);
+////				asset.setProperty("product", product.getId());
+////				archive.removeGeneratedImages(asset);
+//				archive.saveAsset(asset, null);
+//				product.setProperty(fieldname, asset.getId());
+//				productsearcher.saveData(product, inReq.getUser());
+//				log.info("########## saved [$filename], $path")
+//			}
+//		}
+//	}
 	if (item != null && item.getName() != null && item.getName().length() > 0) {
 		
 		String sourcepath = "productimages/" + product.getSourcePath();
 		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 		String filename =item.getName();
 		path = path + filename;
-		properties.saveFirstFileAs(path, context.getUser());
+		properties.saveFirstFileAs(path, inReq.getUser());
 		Asset asset = archive.getAssetBySourcePath(sourcepath);
 		if (asset == null) {
 			asset = archive.createAsset(sourcepath);
-			 root = archive.getCategoryArchive().createCategoryTree(sourcepath);
+			Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
 			asset.addCategory(root);
 		}
 		asset.setPrimaryFile(filename);
@@ -85,19 +159,18 @@ public void handleSubmission(){
 		archive.saveAsset(asset, null);
 		
 		product.setProperty("image", asset.getId());
-		productsearcher.saveData(product, context.getUser());
+		productsearcher.saveData(product, inReq.getUser());
 	}
-	String [] fields = context.getRequestParameters("field");
-	productsearcher.updateData(context, fields, product);
-	product.setProperty("submittedby", context.getUserName());
+	String [] fields = inReq.getRequestParameters("field");
+	productsearcher.updateData(inReq, fields, product);
+	product.setProperty("submittedby", inReq.getUserName());
 
 	if (product.get("distributor") == null) {	
-		product.setProperty("distributor", context.getUserProfile().get("distributor"));
+		product.setProperty("distributor", inReq.getUserProfile().get("distributor"));
 	}
 	if (product.get("profileid") == null) {
-		product.setProperty("profileid", context.getUserProfile().getId());
+		product.setProperty("profileid", inReq.getUserProfile().getId());
 	}
-	
 	if (product.get("rogersprice") == null) {
 		throw new OpenEditException("Cannot create product without pricing information.");
 	}
@@ -195,11 +268,11 @@ public void handleSubmission(){
 		if (email != null) {
 			userEmail.add(email);
 			templatePage = "/ecommerce/views/modules/ticket/workflow/user-notification-template.html";
-			sendEmail(context, userEmail, templatePage, "Support Ticket Update");
+			sendEmail(inReq, userEmail, templatePage, "Support Ticket Update");
 			
 			if (ticket.get("tickettype") == "updateproduct") {
 				String subject = "";
-				context.putPageValue("data", product);
+				inReq.putPageValue("data", product);
 				if (product.get("approved") == "true") {
 					ticketStatus = "closed";
 					ticketNotes = "Product has been approved";
@@ -224,7 +297,7 @@ public void handleSubmission(){
 			emailList.add(userInfo.get("email"));
 		}
 		templatePage = "/ecommerce/views/modules/ticket/workflow/admin-notification-template.html";
-		sendEmail(context, emailList, templatePage, "Support Ticket Update");
+		sendEmail(inReq, emailList, templatePage, "Support Ticket Update");
 	}
 }
 
@@ -273,7 +346,6 @@ protected createTicketHistory(Searcher tickethistorysearcher, Data ticket, WebPa
 	Data ticketHistory = tickethistorysearcher.createNewData();
 	ticketHistory.setId(tickethistorysearcher.nextId());
 	ticketHistory.setSourcePath(ticket.getId());
-
 	ticketHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 	ticketHistory.setProperty("ticket", ticket.getId());
 	ticketHistory.setProperty("owner", ticket.get("owner"));
@@ -292,7 +364,7 @@ protected void sendEmail(WebPageRequest context, List email, String templatePage
 	mailer.setMailTemplatePath(templatePage);
 	mailer.setRecipientsFromStrings(email);
 	mailer.setSubject(subject);
-	mailer.send();
+//	mailer.send();
 }
 
 protected TemplateWebEmail getMail() {

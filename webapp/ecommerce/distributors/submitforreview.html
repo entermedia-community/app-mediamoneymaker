@@ -3,7 +3,6 @@
 	<div class="ui-widget-content ">
 	#if($data && $data.approved == "true")
 		<strong>[[This product has already been approved.]]</strong><br>
-		
 	#end
 		$context.putPageValue("searcher", $searcher)	 
 		$context.putPageValue("view", "product/productsubmit_for_review")	
@@ -20,23 +19,53 @@
 		   		<input name="id" type="hidden" value="$!data.id" />
 		   		<input name="productid" type="hidden" value="$!data.id" />
 		   	#end
-		  	<br/>
+		  	
+		  	
+		  	
+		  	<h3>Primary Image</h3>
 		  	#if($data.image)
 				#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$data.sourcepath/thumb.jpg")
 				#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
-		
-		        <div class="thumbnail">
-		          
-		          <a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
-		                <img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
-		                <link rel="image_src" type="image/jpeg" href="$home$tsize" />
+	        	<div class="thumbnail">
+		        	<a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
+	                	<img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
+	                	<link rel="image_src" type="image/jpeg" href="$home$tsize" />
 		            </a>
-		          
-		        </div>
+	        	</div>
 		  	#end
-	 	 	    [[Product Image:]] <input type="file" name="file.0" #if(!$data.image) class="required" #end/>
-		    <br/>
-		
+	 	 	[[Upload New Image:]] <input type="file" name="file.image" #if(!$data.image) class="required" #end/>
+		    
+		    <hr>
+		    
+		    <h3>Support Images <span style="font-size:smaller;">&ndash; Up to 5 Additional Images</span></h3>
+		    
+		    #set($range = [1..5])
+			#set($count = 1)
+			#foreach($i in $range)
+				#set($img = "supportimage${i}")
+				#if($data.get($img).isEmpty() == false)
+					#set($assetid = $data.get($img))
+					#set($asset = $mediaarchive.getAssetSearcher().searchById($assetid))
+					#if($asset)
+						#set($dimension = "200")
+						#set($args = "crop=true&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
+						#set($dimension = "750")
+						#set($largeargs = "crop=true&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
+						#set($tsize = "/$applicationid/views/modules/asset/downloads/converted/cache/${asset.sourcepath}/thumbnail.jpg?${args}")
+						#set($extralarge = "/$applicationid/views/modules/asset/downloads/converted/cache/${asset.sourcepath}/extralarge.jpg?${largeargs}")
+			        	<div class="thumbnail">
+				        	<a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
+			                	<img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
+			                	<link rel="image_src" type="image/jpeg" href="$home$tsize" />
+				            </a>
+			        	</div>
+			        #end
+			  	#end
+		 	 	[[Upload Image #${i}:]] <input type="file" name="file.${img}"/>
+		 	 	<hr>
+		    #end
+		    
+		    
 			#set( $origURL = $context.getRequestParameter("origURL" ) )
 			#set ( $moduleid = $context.findValue("module") )
 			
@@ -47,24 +76,14 @@
 	</div>
 </div>
 <script type="text/javascript">
-
-jQuery("#submitproduct").bind("submit", function(){
-	
-	var clearance  = jQuery("input[name='clearancecentre.value']").is(":checked");
-	
-	
-	
-	if(clearance){
-		var price = jQuery("input[name='clearanceprice.value']").val();
-		if(!price){
-			alert ("[[You must specify the clearance price for products in the clearance center]]");
-			return false;
+	$("#submitproduct").bind("submit", function(){
+		var clearance  = $("input[name='clearancecentre.value']").is(":checked");
+		if(clearance){
+			var price = $("input[name='clearanceprice.value']").val();
+			if(!price){
+				alert ("[[You must specify the clearance price for products in the clearance center]]");
+				return false;
+			}
 		}
-	
-	}
-	
-}
-);
-
-
+	});
 </script>

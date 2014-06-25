@@ -19,7 +19,7 @@
 </div>
 
 ###need to have at least one support image to show the thumbnails at the bottom
-#if($product.get("supportimage1"))
+#if($product.get("supportimage1") && $product.get("supportimage1").isEmpty() == false )
 	<div class="product-thumbs">
 		#set($img = $product.image)
 		#set($asset = $mediaarchive.getAssetSearcher().searchById($img))
