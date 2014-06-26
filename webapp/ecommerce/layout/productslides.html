@@ -24,7 +24,7 @@
 		#set($img = $product.image)
 		#set($asset = $mediaarchive.getAssetSearcher().searchById($img))
 		#set($dimension = "67")
-		#set($args = "crop=true&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
+		#set($args = "crop=false&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
 		#set($link = "/$applicationid/views/modules/asset/downloads/converted/cache/${asset.sourcepath}/productimage.jpg?${args}")
 		<img src="$link" class="emdropshadow selected swap" data-fullsize="$mediumend" alt="$asset.name">
 		#set($range = [1..5])
