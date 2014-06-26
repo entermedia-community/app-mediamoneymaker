@@ -292,7 +292,7 @@ protected void sendEmail(WebPageRequest context, List email, String templatePage
 	mailer.setMailTemplatePath(templatePage);
 	mailer.setRecipientsFromStrings(email);
 	mailer.setSubject(subject);
-//	mailer.send();
+	mailer.send();
 }
 
 protected TemplateWebEmail getMail() {
