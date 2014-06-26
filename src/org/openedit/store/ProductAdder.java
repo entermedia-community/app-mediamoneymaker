@@ -173,8 +173,11 @@ public class ProductAdder
 			}
 			cartItem.setInventoryItem(inventory);
 			int oldquantity = cartItem.getQuantity();
-			if (quantityspecified)
+			if (quantityspecified && inReload)
 			{
+				cartItem.setQuantity(quantity);
+			}
+			else if(quantityspecified && existing == null){
 				cartItem.setQuantity(quantity);
 			}
 			else
