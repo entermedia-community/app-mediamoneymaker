@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
+  <property id="image" required="true"/>
+  <property id="supportimage1" required="false"/>
+  <property id="supportimage2" required="false"/>
+  <property id="supportimage3" required="false"/>
+  <property id="supportimage4" required="false"/>
+  <property id="supportimage5" required="false"/>
   <property id="name" required="true"/>
   <property id="upc" required="true"/>
   <property id="descrip" required="true"/>
@@ -18,5 +24,4 @@
   <property id="active"/>
   <property id="clearancecentre"/>
   <property id="clearanceprice" editable="true" />
-  
 </root>

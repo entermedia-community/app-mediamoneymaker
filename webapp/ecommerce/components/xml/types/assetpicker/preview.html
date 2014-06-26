@@ -11,18 +11,19 @@
 #end
 
 #if( $foundrow )
-	#set( $rootid = $hits.sessionId )
-	#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
-	
-	<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-preview">
-		#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
-		$context.putPageValue("cell", $foundrow)
-		$context.putPageValue("hit", $foundrow)
-		$context.putPageValue("showdetails", "false")
-		$context.putPageValue("thumbsize", "thumbsmall")
-	  	#set( $sourcepath = $foundrow.sourcePath )
-		$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-	</a>
+	#set($dimension = "200")
+	#set($smallargs = "crop=false&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
+	#set($dimension = "770")
+	#set($largeargs = "crop=false&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
+	#set($tsize = "/$applicationid/views/modules/asset/downloads/converted/cache/${foundrow.sourcepath}/smallimage.jpg?${smallargs}")
+	#set($extralarge = "/$applicationid/views/modules/asset/downloads/converted/cache/${foundrow.sourcepath}/largeimage.jpg?${largeargs}")
+   	<div class="thumbnail">
+    	<a class="thickbox" href="$extralarge" target="_parent" title="[[$!data]]" id="${detail.id}-preview">
+           	<img id="main-media" class="emdropshadow" src="$tsize" alt="$!data.name"/>
+           	<link rel="image_src" type="image/jpeg" href="$tsize" />
+        </a>
+   	</div>
+   	
 	#if($foundrow && !$context.getRequestParameter("readonly") == "true")
 	<div style="padding-left: 40px;">
 		<label for="${detail.id}-checkbox" style="font-style:italic;">Remove: </label>

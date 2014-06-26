@@ -19,56 +19,9 @@
 		   		<input name="id" type="hidden" value="$!data.id" />
 		   		<input name="productid" type="hidden" value="$!data.id" />
 		   	#end
-		  	
-		  	
-		  	
-		  	<h3>Primary Image</h3>
-		  	#if($data.image)
-				#set( $tsize = "$home$cataloghome/downloads/preview/thumb/productimages/$data.sourcepath/thumb.jpg")
-				#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
-	        	<div class="thumbnail">
-		        	<a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
-	                	<img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
-	                	<link rel="image_src" type="image/jpeg" href="$home$tsize" />
-		            </a>
-	        	</div>
-		  	#end
-	 	 	[[Upload New Image:]] <input type="file" name="file.image" #if(!$data.image) class="required" #end/>
-		    
-		    <hr>
-		    
-		    <h3>Support Images <span style="font-size:smaller;">&ndash; Up to 5 Additional Images</span></h3>
-		    
-		    #set($range = [1..5])
-			#set($count = 1)
-			#foreach($i in $range)
-				#set($img = "supportimage${i}")
-				#if($data.get($img).isEmpty() == false)
-					#set($assetid = $data.get($img))
-					#set($asset = $mediaarchive.getAssetSearcher().searchById($assetid))
-					#if($asset)
-						#set($dimension = "200")
-						#set($args = "crop=true&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
-						#set($dimension = "750")
-						#set($largeargs = "crop=true&prefwidth=$dimension&prefheight=$dimension&x1=0&y1=0&gravity=center")
-						#set($tsize = "/$applicationid/views/modules/asset/downloads/converted/cache/${asset.sourcepath}/thumbnail.jpg?${args}")
-						#set($extralarge = "/$applicationid/views/modules/asset/downloads/converted/cache/${asset.sourcepath}/extralarge.jpg?${largeargs}")
-			        	<div class="thumbnail">
-				        	<a class="thickbox" href="$home$extralarge" target="_parent" title="[[$data]]">
-			                	<img id="main-media" class="emdropshadow" src="$home$tsize" alt="$!data.name"/>
-			                	<link rel="image_src" type="image/jpeg" href="$home$tsize" />
-				            </a>
-			        	</div>
-			        #end
-			  	#end
-		 	 	[[Upload Image #${i}:]] <input type="file" name="file.${img}"/>
-		 	 	<hr>
-		    #end
-		    
 		    
 			#set( $origURL = $context.getRequestParameter("origURL" ) )
 			#set ( $moduleid = $context.findValue("module") )
-			
 			$pages.include("$apphome/components/xml/detaileditor.html", $context)
 			<input type="submit" name="submit" value="submit"/>
 		</form>
@@ -77,11 +30,18 @@
 </div>
 <script type="text/javascript">
 	$("#submitproduct").bind("submit", function(){
-		var clearance  = $("input[name='clearancecentre.value']").is(":checked");
-		if(clearance){
+		if($("input[name='clearancecentre.value']").is(":checked")){
 			var price = $("input[name='clearanceprice.value']").val();
 			if(!price){
 				alert ("[[You must specify the clearance price for products in the clearance center]]");
+				return false;
+			}
+		}
+		var image = $("input[name='image.value']").val();
+		var fileimage = $("input[name='file.image']").val();
+		if (image.length == 0){
+			if (fileimage.length == 0){
+				alert("[[You must specify a primary image before submitting.]]");
 				return false;
 			}
 		}

@@ -54,10 +54,10 @@ public void handleSubmission(){
 	if (productid != null) {
 		product = store.getProduct(productid);
 	}
-	FileUploadItem item = properties.getFirstItem();
-	if (product == null && item == null) {
-		return;
-	}
+//	FileUploadItem item = properties.getFirstItem();
+//	if (product == null && item == null) {
+//		return;
+//	}
 	if (product == null) {
 		Data d = productsearcher.createNewData();
 		d.setId(productsearcher.nextId());
@@ -68,99 +68,27 @@ public void handleSubmission(){
 		product = store.getProduct(productid);
 		newProduct = true;
 	}
-	
-//	List<FileUploadItem> items = properties.getUploadItems();
-//	Iterator<FileUploadItem> itr = items.iterator();
-//	while(itr.hasNext()){
-//		FileUploadItem fileupload = itr.next();
-//		if (fileupload.getName()==null){
-//			continue;
+//	if (item != null && item.getName() != null && item.getName().length() > 0) {
+//		String sourcepath = "productimages/" + product.getSourcePath();
+//		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+//		String filename =item.getName();
+//		path = path + filename;
+//		properties.saveFirstFileAs(path, inReq.getUser());
+//		Asset asset = archive.getAssetBySourcePath(sourcepath);
+//		if (asset == null) {
+//			asset = archive.createAsset(sourcepath);
+//			Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
+//			asset.addCategory(root);
 //		}
-//		String fieldname = fileupload.getFieldName();
-//		if (fieldname.contains("file.")){
-//			fieldname = fieldname.substring(fieldname.indexOf("file.") + "file.".length()).trim();
-//		}
-//		if (fieldname == "image")//primary asset
-//		{
-//			String filename = fileupload.getName();
-//			if (filename == null || filename.isEmpty()){
-////				product.setProperty(fieldname,null);
-////				productsearcher.saveData(product, inReq.getUser());
-//			}
-//			else
-//			{
-//				String sourcepath = "productimages/" + product.getSourcePath();
-//				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
-//				
-//				path = path + filename;
-//				properties.saveFileAs(fileupload,path, inReq.getUser());
-//				Asset asset = archive.getAssetBySourcePath(sourcepath);
-//				if (asset == null) {
-//					asset = archive.createAsset(sourcepath);
-//					Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
-//					asset.addCategory(root);
-//				}
-//				asset.setPrimaryFile(filename);
-//				asset.setProperty("product", product.getId());
-//				archive.removeGeneratedImages(asset);
-//				archive.saveAsset(asset, null);
-//				product.setProperty(fieldname, asset.getId());
-//				productsearcher.saveData(product, inReq.getUser());
-//				log.info("########## saved [$filename], $path")
-//			}
-//		}
-//		else 
-//		{
-//			String filename = fileupload.getName();
-//			if (filename == null || filename.isEmpty()){
-//				product.setProperty(fieldname,null);
-//				productsearcher.saveData(product, inReq.getUser());
-//			}
-//			else
-//			{
-//				String sourcepath = "productimages/" + product.getSourcePath();
-//				String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/$fieldname/";
-//				
-//				path = path + filename;
-//				properties.saveFileAs(fileupload,path, inReq.getUser());
-//				Asset asset = archive.getAssetBySourcePath(sourcepath);
-//				if (asset == null) {
-//					asset = archive.createAsset(sourcepath);
-//					Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
-//					asset.addCategory(root);
-//				}
-//				asset.setPrimaryFile(filename);
-////				asset.setProperty("product", product.getId());
-////				archive.removeGeneratedImages(asset);
-//				archive.saveAsset(asset, null);
-//				product.setProperty(fieldname, asset.getId());
-//				productsearcher.saveData(product, inReq.getUser());
-//				log.info("########## saved [$filename], $path")
-//			}
-//		}
+//		asset.setPrimaryFile(filename);
+//		asset.setProperty("product", product.getId());
+//	
+//		archive.removeGeneratedImages(asset);
+//		archive.saveAsset(asset, null);
+//		
+//		product.setProperty("image", asset.getId());
+//		productsearcher.saveData(product, inReq.getUser());
 //	}
-	if (item != null && item.getName() != null && item.getName().length() > 0) {
-		
-		String sourcepath = "productimages/" + product.getSourcePath();
-		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
-		String filename =item.getName();
-		path = path + filename;
-		properties.saveFirstFileAs(path, inReq.getUser());
-		Asset asset = archive.getAssetBySourcePath(sourcepath);
-		if (asset == null) {
-			asset = archive.createAsset(sourcepath);
-			Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
-			asset.addCategory(root);
-		}
-		asset.setPrimaryFile(filename);
-		asset.setProperty("product", product.getId());
-	
-		archive.removeGeneratedImages(asset);
-		archive.saveAsset(asset, null);
-		
-		product.setProperty("image", asset.getId());
-		productsearcher.saveData(product, inReq.getUser());
-	}
 	String [] fields = inReq.getRequestParameters("field");
 	productsearcher.updateData(inReq, fields, product);
 	product.setProperty("submittedby", inReq.getUserName());
