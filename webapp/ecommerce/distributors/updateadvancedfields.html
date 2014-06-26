@@ -1,0 +1,37 @@
+<div class="ui-widget-header">[[Advanced Fields]]</div>
+<div class="ui-widget-content ">
+	$context.putPageValue("searcher", $searcher)	 
+	$context.putPageValue("view", "product/product_advanced_fields")
+	<form id="advancedfieldsform" name="advancedfieldsform" action="$apphome/distributors/updatecomplete.html" method="post" enctype="multipart/form-data">
+ 		<input name="searchtype" type="hidden" value="product" />
+ 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
+	   	#if($data)
+	   		<input name="id" type="hidden" value="$!data.id" />
+	   		<input name="productid" type="hidden" value="$!data.id" />
+	   	#end
+	    
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		$pages.include("$apphome/components/xml/detaileditor.html", $context)
+		<input type="submit" name="submit" value="submit"/>
+	</form>
+</div>
+<script type="text/javascript">
+	$("#advancedfieldsform").bind("submit", function(){
+		/* if($("input[name='clearancecentre.value']").is(":checked")){
+			var price = $("input[name='clearanceprice.value']").val();
+			if(!price){
+				alert ("[[You must specify the clearance price for products in the clearance center]]");
+				return false;
+			}
+		}
+		var image = $("input[name='image.value']").val();
+		var fileimage = $("input[name='file.image']").val();
+		if (image.length == 0){
+			if (fileimage.length == 0){
+				alert("[[You must specify a primary image before submitting.]]");
+				return false;
+			}
+		} */
+	});
+</script>

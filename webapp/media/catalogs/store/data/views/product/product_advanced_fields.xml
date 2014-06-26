@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<property id="productcategory"/>
+	<property id="productsubcategory"/>
+	
+	<property id="productdescription"/>
+	<property id="keysellingfeatures"/>
+	<property id="keysellingfeatures_fr"/>
+	<property id="demovideo"/>
+	<property id="manufacturermanual"/>
+	<property id="msrp_rogers"/>
+	<property id="msrp_fido"/>
+	<property id="productsellsheet"/>
+</root>

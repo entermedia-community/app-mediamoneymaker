@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<property id="supportimage1"/>
+	<property id="supportimage2"/>
+	<property id="supportimage3"/>
+	<property id="supportimage4"/>
+	<property id="supportimage5"/>
+</root>

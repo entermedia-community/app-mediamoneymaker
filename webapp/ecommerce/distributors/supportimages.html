@@ -1,0 +1,18 @@
+<div class="ui-widget-header">[[Optional Support Images]]</div>
+<div class="ui-widget-content ">
+	$context.putPageValue("searcher", $searcher)	 
+	$context.putPageValue("view", "product/product_support_images")
+	<form id="supportimagesform" name="supportimagesform" action="$apphome/distributors/updatecomplete.html" method="post" enctype="multipart/form-data">
+ 		<input name="searchtype" type="hidden" value="product" />
+ 		<input name="path" type="hidden" value="/WEB-INF/temp/" />
+	   	#if($data)
+	   		<input name="id" type="hidden" value="$!data.id" />
+	   		<input name="productid" type="hidden" value="$!data.id" />
+	   	#end
+	    
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		$pages.include("$apphome/components/xml/detaileditor.html", $context)
+		<input type="submit" name="submit" value="submit"/>
+	</form>
+</div>

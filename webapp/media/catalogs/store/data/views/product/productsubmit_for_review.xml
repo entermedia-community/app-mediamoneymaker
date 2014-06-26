@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="image" required="true"/>
+  <property id="image"/>
   <property id="supportimage1" required="false"/>
   <property id="supportimage2" required="false"/>
   <property id="supportimage3" required="false"/>

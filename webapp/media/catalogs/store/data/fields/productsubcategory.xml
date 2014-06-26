@@ -1,6 +1,6 @@
 
 
-<properties prefix="productsubcategories" beanname="dataSearcher">
+<properties prefix="productsubcategory" beanname="xmlFolderSearcher">
   <property id="id" index="true" stored="true" editable="false" searchtype="productsubcategory" internalfield="true">Id</property>
   <property id="name" index="true" stored="true" editable="true" searchtype="productsubcategory">Name</property>
   <property id="sourcepath" searchtype="productsubcategory">SourcePath</property>
