@@ -23,9 +23,15 @@ import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.util.DateStorageUtil;
 
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPFile
+import org.apache.commons.net.ftp.FTPReply
+
+import com.openedit.users.UserManager
+
 
 public void init(){
-	log.info("---- Starting Import Atlantia Inventory -----");
+//	log.info("---- Starting Import Atlantia Inventory -----");
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Store store = context.getPageValue("store");
@@ -38,9 +44,12 @@ public void init(){
 	processor.setProcessedDirectory("/WEB-INF/data/${archive.catalogId}/processed/inventory/imports/atlantia/");
 	processor.setUrl("http://matrixgroup.ca/downloads/Atlantia_Rogers/");//should make this configurable
 	processor.addContains("a","href",".csv");//tag attribute contains some value (case insensitive)
-	processor.process();
-	
-	log.info("---- Finished Import Atlantia Inventory -----");
+	try{
+		processor.process();
+	}catch (Exception e){
+		log.error(e);
+	}
+//	log.info("---- Finished Import Atlantia Inventory -----");
 	
 }
 
@@ -140,17 +149,120 @@ class RemotePathProcessor {
 		return downloader;
 	}
 	
-	public void process(){
-		String html = getDownloader().downloadToString(getUrl())
+	public void process() throws Exception{
+		//OLD way
+//		String html = getDownloader().downloadToString(getUrl())
+//		try{
+//			ArrayList<String> links = getParsedContent(html,"body");
+//			for(String link:links){
+//				downloadContent(link);
+//			}
+//		}catch (Exception e){
+//			log.error("Exception caught processing ${getUrl()}, ${e.getMessage()}");
+//		}
+//		setLastInventoryUpdate();
+		
+		//NEW way
+		FTPClient ftp = new FTPClient();
 		try{
-			ArrayList<String> links = getParsedContent(html,"body");
-			for(String link:links){
-				downloadContent(link);
+			String serverName = "ftp.atlantia.ca";
+			ftp.connect(serverName);
+			int reply = ftp.getReplyCode();
+			if(FTPReply.isPositiveCompletion(reply)) {
+				log.info("FTP: Connected to ${serverName}");
 			}
-		}catch (Exception e){
-			log.error("Exception caught processing ${getUrl()}, ${e.getMessage()}");
+			else {
+				log.info("Unable to connect to ${serverName}, error code: ${reply}")
+				return;
+			}
+			String username = "atlantia";
+			UserManager userManager = getArchive().getModuleManager().getBean("userManager");
+			User user = userManager.getUser(username);
+			if(user == null) {
+				log.info("Unknown user, ${username}");
+				return;
+			}
+			log.info("FTP: Attempting to connect as user: ${username}");
+			String ftpPassword = userManager.decryptPassword(user);
+			ftp.login(username, ftpPassword);
+			reply = ftp.getReplyCode();
+			if(FTPReply.isPositiveCompletion(reply)) {
+				log.info("FTP: User(${username}) successfully logged in.");
+			}
+			else {
+				log.info("Unable to login to ${serverName}, error code: ${reply}");
+				return;
+			}
+		
+			ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+			reply = ftp.getReplyCode();
+			if(FTPReply.isPositiveCompletion(reply)) {
+				log.info("FTP: Filetype set to BINARY.");
+			}
+			else {
+				log.info("FTP: Unable to set Filetype set to BINARY, error code: ${reply}");
+				return;
+			}
+	
+			ftp.enterLocalPassiveMode();
+			reply = ftp.getReplyCode();
+			if(FTPReply.isPositiveCompletion(reply)) {
+				log.info("FTP: Local Passive Mode is now PASSIVE.");
+			}
+			else {
+				log.info("FTP: Unable to set Local Passive Mode to PASSIVE, error code: ${reply}");
+				return;
+			}
+			//build incoming directory
+			String incomingPath = getIncomingDirectory();// where file is downloaded to
+			String processedPath = getProcessedDirectory();// where file is moved to after processing
+			
+			String replyString;
+			StringBuilder buf = new StringBuilder();
+			buf.append("<p>The following files have been downloaded from the Atlantia server.</p>\n");
+			buf.append("<ul>");
+			FTPFile[] files = ftp.listFiles();
+			for (FTPFile file: files){
+				if (file.getName().toLowerCase().endsWith(".csv")){
+//					log.info("found file: " + file.getName());
+					buf.append("<li>").append(file.getName()).append(" - ");
+	//				Page downloadFile = pageManager.getPage(downloadFolder + file.getName());
+					String fileName = file.getName();
+					String path = "${incomingPath}${fileName}";
+					Page downloadFile = getArchive().getPageManager().getPage(path);
+					if (!downloadFile.exists()){
+						buf.append("New - ");
+						ftp.retrieveFile(file.getName(), downloadFile.getContentItem().getOutputStream());
+						reply = ftp.getReplyCode();
+						if(FTPReply.isPositiveCompletion(reply)) {
+							replyString = ftp.getReplyString();
+//							log.info("Reply: " + replyString);
+							buf.append("<span style='color:green'>Success</span>");
+							String processedpath = "${processedPath}${fileName}";
+							processPage(downloadFile,processedpath);
+						} else {
+							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
+							buf.append("<span color='color:red'>Fail (").append(reply).append(")</span>");
+						}
+					} else {
+						//should we skip this?
+//						log.info("FTP: Download skipped: " + downloadFile.getName());
+						buf.append("Duplicate - <span style='color:blue'>Skipped</span>");
+					}
+					buf.append("</li>\n");
+				}
+			}
+			buf.append("</ul>\n");
+			log.info(buf.toString());
 		}
-		setLastInventoryUpdate();
+		finally{
+			try{
+				ftp.disconnect();
+				setLastInventoryUpdate();
+			}catch (Exception e){
+				log.error("Exception caught in finally clause, ${e.getMessage()}");
+			}
+		}
 	}
 	
 	protected void downloadContent(String link) throws Exception {
@@ -280,7 +392,8 @@ class RemotePathProcessor {
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
-		getArchive().getPageManager().movePage(inPage, toPage);
+//		getArchive().getPageManager().movePage(inPage, toPage);//we don't want to move, we want to copy
+		getArchive().getPageManager().copyPage(inPage, toPage);
 	}
 	
 	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity){
