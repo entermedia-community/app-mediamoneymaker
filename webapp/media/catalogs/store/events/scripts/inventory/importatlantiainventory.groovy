@@ -10,6 +10,7 @@ import com.openedit.users.User
 import com.openedit.util.PathProcessor
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -22,10 +23,11 @@ import org.openedit.store.InventoryItem
 import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.util.DateStorageUtil;
-
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import org.apache.commons.net.ftp.FTPReply
+import org.entermedia.email.TemplateWebEmail;
+import org.entermedia.email.PostMail
 
 import com.openedit.users.UserManager
 
@@ -37,6 +39,7 @@ public void init(){
 	Store store = context.getPageValue("store");
 	
 	RemotePathProcessor processor = new RemotePathProcessor();
+	processor.setContext(context);
 	processor.setLogger(log);
 	processor.setArchive(archive);
 	processor.setStore(store);
@@ -44,6 +47,10 @@ public void init(){
 	processor.setProcessedDirectory("/WEB-INF/data/${archive.catalogId}/processed/inventory/imports/atlantia/");
 	processor.setUrl("http://matrixgroup.ca/downloads/Atlantia_Rogers/");//should make this configurable
 	processor.addContains("a","href",".csv");//tag attribute contains some value (case insensitive)
+	processor.addEmailNotification("erin@atlantia.ca");
+	processor.addEmailNotification("megan@atlantia.ca");
+	processor.addEmailNotification("dfs@area.ca");
+//	processor.addEmailNotification("shawn@ijsolutions.ca");
 	try{
 		processor.process();
 	}catch (Exception e){
@@ -63,6 +70,36 @@ class RemotePathProcessor {
 	HashMap<String,HashMap<String,String>> map;
 	Downloader downloader;
 	boolean productsUpdated = false;
+	List<String> emails;
+	WebPageRequest req;
+	int rowsProcessed = 0;
+	
+	public void resetRowsProcessed(){
+		rowsProcessed = 0;
+	}
+	
+	public void incrementRowsProcessed(){
+		rowsProcessed ++;
+	}
+	
+	public int getRowsProcessed(){
+		return rowsProcessed;
+	}
+	
+	public void setContext(WebPageRequest context){
+		req = context;
+	}
+	
+	public List<String> getEmails(){
+		if (emails == null){
+			emails = new ArrayList<String>();
+		}
+		return emails;
+	}
+	
+	public void addEmailNotification(String email){
+		getEmails().add(email);
+	}
 	
 	public void setIncomingDirectory(String inIncomingDir){
 		incomingDirectory = inIncomingDir;
@@ -373,6 +410,7 @@ class RemotePathProcessor {
 			CSVReader csvreader = new CSVReader(reader, (char)',', (char)'\"');
 			List<?> lines = csvreader.readAll();
 			Iterator<?> itr = lines.iterator();
+			resetRowsProcessed();
 			while(itr.hasNext()){
 				String[] entries = itr.next();
 				if (entries.length != 6){
@@ -383,6 +421,7 @@ class RemotePathProcessor {
 				String rogersSku = entries[1];
 				String upc = entries[2];
 				String quantity = entries[3];
+				incrementRowsProcessed();
 				Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity);
 				if (product!=null){
 					productsToUpdate.add(product);
@@ -393,6 +432,7 @@ class RemotePathProcessor {
 		}
 		if (!productsToUpdate.isEmpty()){
 			getStore().saveProducts(productsToUpdate);
+			dispatchEmailNotifications(productsToUpdate);
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
@@ -463,6 +503,38 @@ class RemotePathProcessor {
 			log.info("Warning: Unable to find Atlantia in distributor table");
 		}
 		
+	}
+	
+	public void dispatchEmailNotifications(List updatedProducts){
+		if (getEmails().isEmpty() || updatedProducts.isEmpty()){
+			return;
+		}
+		//add info to request
+		req.putPageValue("distributor", "Atlantia");
+		req.putPageValue("totalrows", getRowsProcessed()+"");
+		req.putPageValue("goodproductlist", updatedProducts);
+		//Distributor: $distributor
+		//Total Rows Processed: $totalrows
+		//Total Products Properly Processed: $goodproductlist.size()
+		String templatePage = "/ecommerce/views/modules/product/workflow/inventory-notification.html";
+		sendEmail(getEmails(), templatePage);
+	}
+	
+	protected void sendEmail(List email, String templatePage){
+		Page template = getArchive().getPageManager().getPage(templatePage);
+		WebPageRequest newcontext = req.copy(template);
+		TemplateWebEmail mailer = getMail();
+		mailer.setFrom("info@wirelessarea.ca");
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setRecipientsFromCommas(email);
+		mailer.setSubject("Support Ticket Update");
+		mailer.send();
+	}
+	
+	protected TemplateWebEmail getMail() {
+		PostMail mail = (PostMail)getArchive().getModuleManager().getBean( "postMail");
+		return mail.getTemplateWebEmail();
 	}
 }
 
