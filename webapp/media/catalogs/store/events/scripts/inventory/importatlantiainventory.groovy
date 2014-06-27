@@ -51,6 +51,7 @@ public void init(){
 	processor.addEmailNotification("megan@atlantia.ca");
 	processor.addEmailNotification("dfs@area.ca");
 //	processor.addEmailNotification("shawn@ijsolutions.ca");
+//	processor.addEmailNotification("shawn@silverstead.com");
 	try{
 		processor.process();
 	}catch (Exception e){
@@ -520,14 +521,20 @@ class RemotePathProcessor {
 		sendEmail(getEmails(), templatePage);
 	}
 	
-	protected void sendEmail(List email, String templatePage){
+	protected void sendEmail(List emaillist, String templatePage){
+		StringBuilder buf = new StringBuilder();
+		Iterator itr = emaillist.iterator();
+		while(itr.hasNext()){
+			buf.append(itr.next());
+			if (itr.hasNext()) buf.append(",");
+		}
 		Page template = getArchive().getPageManager().getPage(templatePage);
 		WebPageRequest newcontext = req.copy(template);
 		TemplateWebEmail mailer = getMail();
 		mailer.setFrom("info@wirelessarea.ca");
 		mailer.loadSettings(newcontext);
 		mailer.setMailTemplatePath(templatePage);
-		mailer.setRecipientsFromCommas(email);
+		mailer.setRecipientsFromCommas(buf.toString());
 		mailer.setSubject("Support Ticket Update");
 		mailer.send();
 	}
