@@ -228,18 +228,22 @@ class RemotePathProcessor {
 					buf.append("<li>").append(file.getName()).append(" - ");
 	//				Page downloadFile = pageManager.getPage(downloadFolder + file.getName());
 					String fileName = file.getName();
-					String path = "${incomingPath}${fileName}";
-					Page downloadFile = getArchive().getPageManager().getPage(path);
-					if (!downloadFile.exists()){
+					//incoming path
+					String incomingpath = "${incomingPath}${fileName}";
+					Page incomingPage = getArchive().getPageManager().getPage(incomingpath);
+					//processed path
+					String processedpath = "${processedPath}${fileName}";
+					Page processedPage = getArchive().getPageManager().getPage(processedpath);
+					//check if processed page exists
+					if (!processedPage.exists()){
 						buf.append("New - ");
-						ftp.retrieveFile(file.getName(), downloadFile.getContentItem().getOutputStream());
+						ftp.retrieveFile(file.getName(), incomingPage.getContentItem().getOutputStream());
 						reply = ftp.getReplyCode();
 						if(FTPReply.isPositiveCompletion(reply)) {
 							replyString = ftp.getReplyString();
 //							log.info("Reply: " + replyString);
 							buf.append("<span style='color:green'>Success</span>");
-							String processedpath = "${processedPath}${fileName}";
-							processPage(downloadFile,processedpath);
+							processPage(incomingPage,processedpath);
 						} else {
 							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
 							buf.append("<span color='color:red'>Fail (").append(reply).append(")</span>");
@@ -392,8 +396,8 @@ class RemotePathProcessor {
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
-//		getArchive().getPageManager().movePage(inPage, toPage);//we don't want to move, we want to copy
-		getArchive().getPageManager().copyPage(inPage, toPage);
+		getArchive().getPageManager().movePage(inPage, toPage);//we don't want to move, we want to copy
+//		getArchive().getPageManager().copyPage(inPage, toPage);
 	}
 	
 	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity){
