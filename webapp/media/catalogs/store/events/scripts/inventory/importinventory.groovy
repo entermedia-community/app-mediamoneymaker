@@ -180,16 +180,28 @@ public class ImportInventory  extends EnterMediaObject {
 				}
 				String upcNumber = cols[upcCol].trim();
 				String newQuantity = cols[quantityCol].trim();
+				
+								
 				newQuantity = trimNumber(newQuantity, rogersSKU);
 				int qtyInStock = 0;
-				if (newQuantity.equals("0") || newQuantity == null) {
+				if (newQuantity.equals("0") || newQuantity == null || newQuantity.isEmpty()) {
 					qtyInStock = 0 
 				} else {
 					qtyInStock = Integer.parseInt(newQuantity);
 				}
 				Data productHit = null;
-				if (rogersSKU.trim() != "" ) {
+				if (!rogersSKU.isEmpty()) {
 					//Search for the product by the MANUFACTURER_SEARCH_FIELD
+					//include character escapes if necessary to prevent lucene EOF exception
+					if (manufacturerSKU.contains("/")){
+						manufacturerSKU = manufacturerSKU.replace("/", "\\/");
+					}
+					if (rogersSKU.contains("/")){
+						rogersSKU = rogersSKU.replace("/", "\\/");
+					}
+					if (upcNumber.contains("/")){
+						upcNumber = upcNumber.replace("/", "\\/");
+					}
 					productHit = productsearcher.searchByField(MANUFACTURER_SEARCH_FIELD, manufacturerSKU);
 			        if (productHit == null) {
 						//Search for the product by the ROGERS_SEARCH_FIELD

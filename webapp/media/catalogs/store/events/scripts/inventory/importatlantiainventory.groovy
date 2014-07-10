@@ -1,5 +1,8 @@
 package inventory
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 
 import com.openedit.WebPageRequest
@@ -50,8 +53,6 @@ public void init(){
 	processor.addEmailNotification("erin@atlantia.ca");
 	processor.addEmailNotification("megan@atlantia.ca");
 	processor.addEmailNotification("dfs@area.ca");
-//	processor.addEmailNotification("shawn@ijsolutions.ca");
-//	processor.addEmailNotification("shawn@silverstead.com");
 	try{
 		processor.process();
 	}catch (Exception e){
@@ -405,48 +406,99 @@ class RemotePathProcessor {
 	
 	public void processPage(Page inPage, String inProcessedPath){
 		ArrayList<Product> productsToUpdate = new ArrayList<Product>();
+		ArrayList<String> badRows = new ArrayList<String>();
+		ArrayList<String> badProducts = new ArrayList<String>();
 		File input = new File(inPage.getContentItem().getAbsolutePath());
-		Reader reader = new FileReader(input);
+		//CSVReader does not work for these files
+//		Reader reader = new FileReader(input);
+//		CSVReader csvreader = new CSVReader(new java.io.InputStreamReader(inPage.getContentItem().getInputStream()));
+//		try{
+//			List<?> lines = csvreader.readAll();
+//			Iterator<?> itr = lines.iterator();
+//			resetRowsProcessed();
+//			while(itr.hasNext()){
+//				String[] entries = itr.next();
+//				incrementRowsProcessed();
+//				if (entries.length != 6){
+//					badRows.add("Number of entries is not 6 (actual=${entries.length}), values=${entries}");
+//					log.error("Error processing ${inPage.getName()}: CSV entries does not equal 6 (${entries.length}), abandoning parse");
+//					continue;
+//				}
+//				String manufactSku = entries[0];
+//				String rogersSku = entries[1];
+//				String upc = entries[2];
+//				String quantity = entries[3];
+//				Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity);
+//				if (product!=null){
+//					productsToUpdate.add(product);
+//				} else {
+//					badRows.add("Cannot find product, manufacturer sku: $manufactSku, rogers sku: $rogersSku, UPC: $upc");
+//				}
+//			}
+		//parse file directly instead
+		BufferedReader bufferedreader = null;
 		try{
-			CSVReader csvreader = new CSVReader(reader, (char)',', (char)'\"');
-			List<?> lines = csvreader.readAll();
-			Iterator<?> itr = lines.iterator();
+			bufferedreader = new BufferedReader(new InputStreamReader(new FileInputStream(input)));
 			resetRowsProcessed();
-			while(itr.hasNext()){
-				String[] entries = itr.next();
-				if (entries.length != 6){
-					log.error("Error processing ${inPage.getName()}: CSV entries does not equal 6 (${entries.length}), abandoning parse");
-					break;
-				}
-				String manufactSku = entries[0];
-				String rogersSku = entries[1];
-				String upc = entries[2];
-				String quantity = entries[3];
-				incrementRowsProcessed();
-				Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity);
-				if (product!=null){
-					productsToUpdate.add(product);
+			while (bufferedreader.ready()){
+				String line= bufferedreader.readLine();
+				if (line.contains(",")){
+					incrementRowsProcessed();
+					String [] entries = line.split(",");
+					if (entries.length != 6){
+						badRows.add("Number of entries is not 6 (actual=${entries.length}), values=${entries}");
+						log.error("Error processing ${inPage.getName()}: CSV entries does not equal 6 (${entries.length}), skipping");
+						continue;
+					}
+					String manufactSku = entries[0].trim();
+					String rogersSku = entries[1].trim();
+					String upc = entries[2].trim();
+					String quantity = entries[3].trim();
+					
+					if (manufactSku.contains("/")){
+						manufactSku = manufactSku.replace("/", "\\/");
+					}
+					if (rogersSku.contains("/")){
+						rogersSku = rogersSku.replace("/", "\\/");
+					}
+					if (upc.contains("/")){
+						upc = upc.replace("/", "\\/");
+					}
+					if (quantity.isEmpty()){
+						quantity = "0";
+					}
+					Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity);
+					if (product!=null){
+						productsToUpdate.add(product);
+					} else {
+						badProducts.add("manufacturer sku: $manufactSku, rogers sku: $rogersSku, UPC: $upc");
+					}
 				}
 			}
 		}catch (Exception e){
-			log.error("Exception caught processing page ${inPage}, ${e.getMessage()}");
+			log.error("Exception caught processing page ${inPage}, ${e.getMessage()}",e);
+		}
+		finally{
+//			csvreader.close();
+			try{
+				bufferedreader.close();
+			}catch(Exception e){}
 		}
 		if (!productsToUpdate.isEmpty()){
 			getStore().saveProducts(productsToUpdate);
-			dispatchEmailNotifications(productsToUpdate);
+			dispatchEmailNotifications(productsToUpdate,badRows,badProducts);
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
-		getArchive().getPageManager().movePage(inPage, toPage);//we don't want to move, we want to copy
-//		getArchive().getPageManager().copyPage(inPage, toPage);
+		getArchive().getPageManager().movePage(inPage, toPage);
 	}
 	
 	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity){
 		MediaArchive archive = getArchive();
 		Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "product");
-		Data data = (Data) searcher.searchByField("manufacturersku", inManufacturerSku);
-		if (data == null) data = (Data) searcher.searchByField("rogerssku",inRogersSku);
-		if (data == null) data = (Data) searcher.searchByField("upc",inUpc);
+		Data data = inManufacturerSku.isEmpty() ? null : (Data) searcher.searchByField("manufacturersku", inManufacturerSku);
+		if (data == null) data = inRogersSku.isEmpty() ? null : (Data) searcher.searchByField("rogerssku",inRogersSku);
+		if (data == null) data = inUpc.isEmpty() ? null : (Data) searcher.searchByField("upc",inUpc);
 		if (data != null){
 			Product product = getStore().getProduct(data.id);
 			InventoryItem item = product.getInventoryItemBySku(inManufacturerSku);
@@ -506,14 +558,16 @@ class RemotePathProcessor {
 		
 	}
 	
-	public void dispatchEmailNotifications(List updatedProducts){
+	public void dispatchEmailNotifications(List updatedProducts, List badRows, List badProducts){
 		if (getEmails().isEmpty() || updatedProducts.isEmpty()){
 			return;
 		}
 		//add info to request
 		req.putPageValue("distributor", "Atlantia");
 		req.putPageValue("totalrows", getRowsProcessed()+"");
+		req.putPageValue("badrows", badRows);
 		req.putPageValue("goodproductlist", updatedProducts);
+		req.putPageValue("badproductlist", badProducts);
 		//Distributor: $distributor
 		//Total Rows Processed: $totalrows
 		//Total Products Properly Processed: $goodproductlist.size()
