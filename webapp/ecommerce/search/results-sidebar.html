@@ -6,7 +6,6 @@
 	#set($distrib = "")
 #end
 #if($canbrowseproducts)
-
 	#set($searchroot = "$apphome/search")
 	#set($showsidebar = "true")
 	#if($canviewdistributorsection)
@@ -14,7 +13,6 @@
 			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
 		#end
 	#end
-
 #elseif($canviewdistributorsection)
 	#if(!$distrib.equals(""))
 		#set($searchroot = "$apphome/distributors")
@@ -25,158 +23,64 @@
 			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor")
 		#end
 	#end
-#end                                    
+#end
 
-
-##$pages.stream("$apphome/search/search.html")
-#if($showsidebar =="true")<br/>
-<!--
-	<a href="$home$apphome/search/clearance.html?field=clearancecentre&clearancecentre.value=true&operation=exact"><img src="$home$apphome/theme/images/clearance.jpg"></a>
--->
+#if($showsidebar =="true")
+	<br/>
 	#if($canviewdistributorsection)
 		#if(!$distrib.equals(""))
 	       <div class="ui-widget-header">[[Distributor Menu]]</div>
-			<div class="ui-widget-content categories-widget no-padding-for-real">
-	        	<ul  class="sidebar-list">
-				<li>
-				<a href="$home$apphome/distributors/submitforreview.html">[[Submit a product]]</a>
-				<a href="$home$apphome/distributors/myproducts.html">[[My Products]]</a>
-				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Approved Products]]</a>
-				<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Pending Products]]</a>
-				<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
-				<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>
-				#if($hits)
-					<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">[[CSV Export]]</a>
-				#end
-				<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">[[Upload Inventory File]]</a>
-				</li>
+	       <div class="ui-widget-content categories-widget no-padding-for-real">
+	       		<ul class="sidebar-list">
+					<li>
+						<a href="$home$apphome/distributors/submitforreview.html">[[Submit a product]]</a>
+						<a href="$home$apphome/distributors/myproducts.html">[[My Products]]</a>
+						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Approved Products]]</a>
+						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Pending Products]]</a>
+						<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
+						<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>
+						#if($hits)
+							<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">[[CSV Export]]</a>
+						#end
+						<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">[[Upload Inventory File]]</a>
+					</li>
 				</ul>
 	       	</div>
 	    #end
-	#end        
-		<div class="ui-widget uipanel" id="left-col-search" >
-			<div  class="ui-widget-header">[[Search]]
-			</div>
-			<div  class="ui-widget-content">
-					$pages.include("$apphome/search/searchform.html")
-			</div>
+	#end
+	<div class="ui-widget uipanel" id="left-col-search" >
+		<div class="ui-widget-header">[[Search]]</div>
+		<div class="ui-widget-content">
+			$pages.include("$apphome/search/searchform.html")
 		</div>
+	</div>
+	
+	#if($searchroot)
+		$context.putPageValue("searchroot",$searchroot)
+	#end
+	#if($extra)
+		$context.putPageValue("extra",$extra)
+	#end
+	#if($distrib && $distrib.isEmpty() == false)
+		$context.putPageValue("distributorid",$distrib)
+	#end
+	$pages.include("$apphome/search/results-sidebar-categories.html",$context)
+	$pages.include("$apphome/search/results-sidebar-phones.html",$context)
+	$pages.include("$apphome/search/results-sidebar-manufacturers.html",$context)
 
-
-  <div class="ui-widget-header">[[Categories]]</div>
-	           <div class="ui-widget-content categories-widget no-padding-for-real">
-	               <ul id="settings-menu" class="sidebar-list">
-  
-          
-                ##set($mans = $searcherManager.getList("media/catalogs/store", "categoryid"))
-               	#set($mans = $searcherManager.getSearcher("media/catalogs/store", "categoryid").fieldSearch("id", "*", "name"))
-               	
-          	#foreach($man in $mans)
-				#if($man.active == "true")
-                	<li #if($velocityCount > 5) class="hidden-item categories"   #end><a href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">#translate($man.name)</a></li>
-                #end
-            #end
-            #if($mans.size() > 5)
-                	<li > <a  class="showall" data-id="categories" href="#">[[Show all...]]</a></li>
-			#end
-                </ul>
-                </div>
-
-
- <div class="ui-widget-header">[[Phone Compatibility]]</div>
-	           <div class="ui-widget-content categories-widget no-padding-for-real">
-	               <ul id="settings-menu" class="sidebar-list">
-  
-          
-                ##set($mans = $searcherManager.getList("media/catalogs/store", "phone"))
-              
-              
-              
-            #set($phonesearcher = $searcherManager.getSearcher("media/catalogs/store", "phone"))
-            #set($mansearcher = $searcherManager.getSearcher("media/catalogs/store", "manufacturer"))
-            #set($mans = $mansearcher.fieldSearch("id", "*", "name"))
-            #set($mancount = 0)   
-          	#foreach($man in $mans)
-           		<!-- 
-           		##set($query = $phonesearcher.createSearchQuery().append("manufacturer", "${man.id}").append("active", "true").addSortBy(${man.name}))
-           		#set($query = $phonesearcher.createSearchQuery())
-           		$!query.append("manufacturer", "${man.id}"))
-           		$!query.append("active", "true"))
-           		$!query.addSortBy("name"))
-           		 -->
-           		#set($phones = $phonesearcher.search($query))
-               	#if($phones.size() >0)
-               		#set($mancount = $mancount+1)
-               		
-               		<li class="search-sidebar-header"> <span style="padding-top:4px;">  $man </span> </li>
-          			#set($phonecount = 0)
-          			
-          			#foreach($phone in $phones)						
-						#set($phonecount = $phonecount+1)
-						<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end><a href="$searchroot/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact$!extra">$phone.name</a></li>                	
-                	#end 
-				#end
-				#if($phones.size()  > 3)
-				<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;[[More]] $man</a></li>
-				#end
-				#set($phones = "")
-				
-			#end
-			    
-			
-                </ul>
-                </div>
-
-
-
-
-
- <div class="ui-widget-header">[[Manufacturers]]</div>
-	           <div class="ui-widget-content categories-widget no-padding-for-real">
-	               <ul id="settings-menu" class="sidebar-list">
-  
-          
-            #set($mans = $mansearcher.fieldSearch("id", "*", "name"))
-               
-          	#foreach($man in $mans)
-                	<li #if($velocityCount > 5)  class="hidden-item manu"  #end ><a href="$searchroot/fieldsearch.html?field=manufacturerid&manufacturerid.value=$man.id&operation=exact$!extra">$man.name</a></li>
-               
-                	
-			
-                	
-                	#end
-                	#if($mans.size() > 5)
-                	<li > <a  class="showall" data-id="manu" href="#">[[Show all...]]</a></li>
-                	
-                	
-			#end
-                </ul>
-                </div>
-                
-            <script type="text/javascript">
-            
-            jQuery(document).ready(function (){
-            	jQuery(".hidden-item").hide();
-                
-            	jQuery(".showall").bind('click', function() 
-            	{
-		            	var id = jQuery(this).data("id");
-		            	
-		            	jQuery("." + id).toggle(500);
-		            	if(jQuery(this).text() == "[[Show all...]]" || jQuery(this).text().indexOf("[[More]]") != -1)
-		            	
-		            	jQuery(this).text("[[Show less...]]");
-		            	else{		            		
-		            		jQuery(this).text("[[Show all...]]");
-		            	}
-		            	
-		            	return false;
-		            	
-		        });
-            	
-            	
-            });
-            
-            </script>
-
+<script type="text/javascript">
+	jQuery(document).ready(function (){
+	  	jQuery(".hidden-item").hide();  
+	  	jQuery(".showall").bind('click', function(){
+	    	var id = jQuery(this).data("id");
+	    	jQuery("." + id).toggle(500);
+	    	if(jQuery(this).text() == "[[Show all...]]" || jQuery(this).text().indexOf("[[More]]") != -1)
+	    		jQuery(this).text("[[Show less...]]");
+	    	else{		            		
+	    		jQuery(this).text("[[Show all...]]");
+	    	}
+	    	return false;
+		});
+  	});
+</script>
 #end

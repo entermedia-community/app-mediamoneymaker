@@ -1,0 +1,89 @@
+<div class="ui-widget-header">[[Phone Compatibility]]</div>
+<div class="ui-widget-content categories-widget no-padding-for-real">
+	<ul id="settings-menu" class="sidebar-list">
+	
+	<!-- 
+	#set($phonesearcher = $mediaarchive.getSearcher("phone") )
+	#set($mansearcher = $mediaarchive.getSearcher("manufacturer") )
+	#set($mans = $mansearcher.fieldSearch("id", "*", "name") )
+	#set($mancount = 0)   
+	#foreach($man in $mans)
+		#set($query = $phonesearcher.createSearchQuery())
+		#set($null = $query.append("manufacturer", "${man.id}") )
+		#set($null = $query.append("active", "true") )
+		#set($null = $query.addSortBy("name") )
+		#set($phones = $phonesearcher.search($query))
+	   	#if($phones.size() >0)
+	   		#set($mancount = $mancount+1)
+            <li class="search-sidebar-header"> <span style="padding-top:4px;">  $man </span> </li>
+          	#set($phonecount = 0)
+          	#foreach($phone in $phones)						
+				#set($phonecount = $phonecount+1)
+				<li #if($phonecount > 3)  class="hidden-item show-${man.id}"    #end>
+					<a href="$searchroot/fieldsearch.html?field=phone&phone.value=$phone.id&operation=exact$!extra">$phone.name</a>
+				</li>                	
+            #end 
+		#end
+		#if($phones.size()  > 3)
+			<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;[[More]] $man</a></li>
+		#end
+		#set($phones = "")
+	#end
+	 -->
+	
+	#set($phonesearcher = $mediaarchive.getSearcher("phone"))
+	#set($mansearcher = $mediaarchive.getSearcher("manufacturer"))
+	#set($productsearcher = $mediaarchive.getSearcher("product"))
+	#set($mans = $mansearcher.fieldSearch("id", "*", "name"))
+	#set($mancount = 0)
+	#set($count = 0)
+	#foreach($man in $mans)
+		#set($query = $phonesearcher.createSearchQuery())
+		#set($null = $!query.append("manufacturer", "${man.id}"))
+		#set($null = $!query.append("active", "true"))
+		#set($null = $!query.addSortBy("name"))
+		#set($phones = $phonesearcher.search($query))
+		#if($phones.size() > 0)
+			#set($activephones = [])
+			#set($hitcount = [])
+			#foreach($phone in $phones)
+				#set($query = $productsearcher.createSearchQuery())
+				#set($null = $query.addMatches("phone",$phone.id))
+				#set($null = $query.addMatches("active","true"))
+				#set($null = $query.addMatches("approved","true"))
+				#if($distributorid)
+					#set($null = $query.addMatches("distributor",$distributorid))
+				#end
+				#set($products = $productsearcher.search($query))
+				#if($products.size() > 0)
+					#set($null = $activephones.add($phone))
+					#set($null = $hitcount.add("${products.size()}"))
+				#end
+			#end
+			#if($activephones.size() > 0)
+		   		#set($mancount = $mancount+1)
+		   		#set($phonecount = 0)
+		   		<li class="search-sidebar-header"> 
+		   			<span style="padding-top:4px;">
+		   				$man
+		   			</span>
+		   		</li>
+				#foreach($phone in $activephones)
+					<li #if($phonecount > 2)  class="hidden-item show-${man.id}" #end>
+						#set($args = "field=phone&phone.value=$phone.id&operation=exact&field=active&active.value=true&operation=exact&field=approved&approved.value=true&operation=exact")
+						<a href="$searchroot/fieldsearch.html?$args$!extra">
+							$phone.name
+							<span style="float:right;color:gray;font-weight:normal;">$hitcount.get($phonecount)</span>
+						</a>
+					</li> 
+					#set($phonecount = $phonecount+1)
+				#end
+				#if($activephones.size() > 2)
+					<li > <a  style="font-size: .7em; font-style: italic;" class="showall" data-id="show-${man.id}" href="#">&nbsp;[[Show all...]]</a></li>
+				#end
+			#end
+	   	#end
+	   	#set($phones = false)
+   	#end
+	</ul>
+</div>
