@@ -52,7 +52,8 @@ public void init(){
 	processor.addContains("a","href",".csv");//tag attribute contains some value (case insensitive)
 	processor.addEmailNotification("erin@atlantia.ca");
 	processor.addEmailNotification("megan@atlantia.ca");
-	processor.addEmailNotification("dfs@area.ca");
+	processor.addEmailNotification("dsf@area.ca");
+	processor.addEmailNotification("kk@area.ca");
 	try{
 		processor.process();
 	}catch (Exception e){
