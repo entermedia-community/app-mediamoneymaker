@@ -3,15 +3,15 @@
 
 <div class="formholder">
 
-<h3>Order Details</h3>
-
-$pages.include("$apphome/orders/listingtable.html",$context)
-
-<table border=0 cellspacing=0 cellpadding=0>
-<tr>
-<td class=body2>
-
-<form method="post" name="orderForm" action="thanks.html">
+	###<h3>Order Details</h3>
+	
+	###$pages.include("$apphome/orders/listing.html",$context)
+	
+	<table border=0 cellspacing=0 cellpadding=0>
+		<tr>
+		<td class=body2>
+		
+		<form method="post" name="orderForm" action="thanks.html">
 
 
 
@@ -60,7 +60,7 @@ $pages.include("$apphome/orders/listingtable.html",$context)
 		$pages.include("$apphome/paypal/checkoutform.html")
 	
 	#end
-	#if ( $store.usesBillMeLater() ) #####&& $content.isPropertyTrue("billmelater-enabled") )
+	#if ( $store.usesBillMeLater() )####&& $content.isPropertyTrue("billmelater-enabled") )
 	<tr>
 		<td style="padding: 0;">
 			<table>
