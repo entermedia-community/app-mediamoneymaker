@@ -1,17 +1,13 @@
 #if( !$order )
-#set ( $order = $cart.getCurrentOrder() )
+	#set ( $order = $cart.getCurrentOrder() )
 #end
-
 #if( !$customer )
 	#set ( $customer = $order.getCustomer() )
 #end
-
 #if( !$store)
 	#set ( $store = $session.getAttribute( "store" ) )
 #end
-
 #set ( $id = $context.getRequestParameter("id"))
-
 #if(!$order && $store && $id)
 	#set($order = $store.getOrderSearcher().searchById("$id"))
 	#set($cart = $order.getCart())
@@ -24,13 +20,13 @@
 
 Order Number: $order.getId()
 
-$pages.stream("$apphome/orders/listing.html")
+$pages.stream("/$applicationid/orders/listing.html")
  
 #if( $cart.hasZeroSubTotal() )
 
 #else																	
-	$pages.stream("$apphome/orders/subtotal.html")
-	$pages.stream("$apphome/customers/contactinfo.html")
+	$pages.stream("/$applicationid/orders/subtotal.html")
+	$pages.stream("/$applicationid/customers/contactinfo.html")
 #end
 #set( $paymentMethod = $order.paymentMethod )
 #if( $paymentMethod.getNote() )

@@ -3,9 +3,7 @@
 #set ( $store = $session.getAttribute( "store" ) )
 #set ( $customer = $cart.getCustomer() )
 #set ( $paymentMethod = $customer.getPaymentMethod() )
-
 #set ( $id = $context.getRequestParameter("id"))
-
 #if(!$order && $store && $id)
 	#set($order = $store.getOrderSearcher().searchById("$id"))
 	#set($cart = $order.getCart())
@@ -14,26 +12,20 @@
 
 <p>Order Number: $order.getId()</p>
 
-$pages.stream("$apphome/orders/listing.html")
+$pages.stream("/$applicationid/orders/listing.html")
  
-#if( $cart.hasZeroSubTotal() )
-	
-#else																	
-	$pages.stream("$apphome/orders/subtotal.html")
+#if( $cart.hasZeroSubTotal() == false)																	
+	$pages.stream("/$applicationid/orders/subtotal.html")
 #end
-
-	$pages.stream("$apphome/customers/contactinfo.html")
-
+$pages.stream("/$applicationid/customers/contactinfo.html")
 
 #if( $paymentMethod.getNote() )
- <br/>
- <p>Notes: $paymentMethod.getNote()</p>
+	<br/><p>Notes: $paymentMethod.getNote()</p>
 #end
-
 #if ($paymentMethod.getBillMeLater())
 	<p>The customer needs to be billed later.</p>
 #end
 
-<p>View Credit <a href="${url_util.siteRoot()}${home}$apphome/admin/orders/data/$customer.userName/${order.getId()}.html">card info online</a>.</p>
+<p>View Credit <a href="${url_util.siteRoot()}${home}/$applicationid/admin/orders/data/$customer.userName/${order.getId()}.html">card info online</a>.</p>
 
 
