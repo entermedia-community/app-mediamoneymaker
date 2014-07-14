@@ -12,12 +12,12 @@
 
 <p>Order Number: $order.getId()</p>
 
-$pages.stream("/$applicationid/orders/listing.html")
+$pages.stream("/ecommerce/orders/listing.html")
  
 #if( $cart.hasZeroSubTotal() == false)																	
-	$pages.stream("/$applicationid/orders/subtotal.html")
+	$pages.stream("/ecommerce/orders/subtotal.html")
 #end
-$pages.stream("/$applicationid/customers/contactinfo.html")
+$pages.stream("/ecommerce/customers/contactinfo.html")
 
 #if( $paymentMethod.getNote() )
 	<br/><p>Notes: $paymentMethod.getNote()</p>
@@ -26,6 +26,6 @@ $pages.stream("/$applicationid/customers/contactinfo.html")
 	<p>The customer needs to be billed later.</p>
 #end
 
-<p>View Credit <a href="${url_util.siteRoot()}${home}/$applicationid/admin/orders/data/$customer.userName/${order.getId()}.html">card info online</a>.</p>
+<p>View Credit <a href="${url_util.siteRoot()}${home}/ecommerce/admin/orders/data/$customer.userName/${order.getId()}.html">card info online</a>.</p>
 
 
