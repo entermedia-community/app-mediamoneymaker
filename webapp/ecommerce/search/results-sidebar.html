@@ -37,12 +37,17 @@
 						<a href="$home$apphome/distributors/myproducts.html">[[My Products]]</a>
 						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Approved Products]]</a>
 						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=false&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Pending Products]]</a>
-						<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
-						<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>
+						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=featuredonmainpage&featuredonmainpage.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Featured on Main Page]]</a>
+						<a href="$home$apphome/distributors/fieldsearch.html?field=approved&approved.value=true&operation=matches&field=featuredondistributorportal&featuredondistributorportal.value=true&operation=matches&field=distributor&distributor.value=$userprofile.distributor&operation=exact">[[Featured on Distributor Portal]]</a>
+						<hr>
 						#if($hits)
 							<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">[[CSV Export]]</a>
 						#end
 						<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">[[Upload Inventory File]]</a>
+						<hr>
+						<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
+						<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>
+						
 					</li>
 				</ul>
 	       	</div>

@@ -7,6 +7,14 @@
 #set($searchfor = $context.getPageValue("searchfor"))
 #set($query = $context.getPageValue("query"))
 #set($action = $context.getPageValue("action"))
+
+### clean up searchfor
+#set($searchfor = $searchfor.trim())
+#if($searchfor.startsWith(",") && $searchfor.length() > 2)
+	#set($searchfor = $searchfor.substring(1))
+#end
+#set($searchfor= $searchfor.replace(", Active", ""))
+
 <div class="breadcrumb">
 	<ul>
 		<li><a href="$apphome/index.html">[[Home]]</a></li>
