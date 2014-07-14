@@ -53,21 +53,26 @@ public void processProducts() {
 	Searcher productsearcher = archive.getSearcher("product");
 	HitTracker hits = productsearcher.getAllHits();
 	log.info("staring processing ${hits.size()} products");
-	List productstosave = new ArrayList();
+	List<Product> productstosave = new ArrayList<Product>();
 	hits.each{
 		Product product = store.getProduct(it.id);
-		if (product.get("createdon") == null || product.get("createdon").isEmpty()){
+		if (product.get("createdon") == null || product.get("createdon").trim().isEmpty()){
 			updateCreatedOnField(archive,product);
 			productstosave.add(product);
-			if (productstosave.size() == 100){
-				store.saveProducts(productstosave);
-				productstosave.clear();
-				log.info("Saved 100 products");
-			}
 		}
 	}
-	store.saveProducts(productstosave);
-	log.info("Saved ${productstosave.size()} products");
+	List<Product> cache = new ArrayList<Product>();
+	Iterator<Product> itr = productstosave.iterator();
+	while(itr.hasNext()){
+		cache.add(itr.next());
+		if (cache.size() == 100){
+			store.saveProducts(cache);
+			cache.clear();
+		}
+	}
+	store.saveProducts(cache);
+	cache.clear();
+	productstosave.clear();
 	store.clearProducts();//forces products to be loaded from disc
 	log.info("---- END Updating Product Created On ----");
 }
