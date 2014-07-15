@@ -26,7 +26,6 @@
 #end
 
 #if($showsidebar =="true")
-	<br/>
 	#if($canviewdistributorsection)
 		#if(!$distrib.equals(""))
 	       <div class="ui-widget-header">[[Distributor Menu]]</div>
@@ -44,6 +43,7 @@
 							<a href="$home$apphome/distributors/export.csv?hitssessionid=$hits.sessionId&searchtype=product&view=product/productdistributor_export&friendly=true">[[CSV Export]]</a>
 						#end
 						<a href="$home$apphome/distributors/inventory/index.html?hitssessionid=$hits.sessionId&$extra">[[Upload Inventory File]]</a>
+						<a href="$home$apphome/distributors/import/index.html?hitssessionid=$hits.sessionId&$extra">[[Import New Products]]</a>
 						<hr>
 						<a href="$home$apphome/distributors/help/index.html">[[Help]]</a>
 						<a href="$home$apphome/distributors/help/terms.html">[[Terms and Conditions]]</a>

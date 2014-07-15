@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="name"/>
+  <property id="rogerssku"/>
+  <property id="manufacturersku"/>
+  <property id="approved"/>
+  <property id="upc"/>
+  <property id="categoryid"/>
+  <property id="phone"/>
+  <property id="manufacturerid" />
+  <property id="displaydesignationid"/>
+  <property id="msrp"/>
+  <property id="fidomsrp"/>
+  <property id="rogersprice"/>
+  <property id="clearancecentre"/>
+  <property id="clearanceprice"/>
+  <property id="image"/>
+  <property id="descrip"/>
+</root>
