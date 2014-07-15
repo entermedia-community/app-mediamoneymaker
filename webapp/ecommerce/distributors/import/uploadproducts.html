@@ -1,12 +1,11 @@
-#set($errorout = $context.getRequestParameter("errorout"))
+
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">Rogers Inventory Section</div>
+	<div class="ui-widget-header">[[Upload Products Results]]</div>
 	<div class="ui-widget-content">
-	#if ($errorout == "[NONE]")
-		###$pages.include("/ecommerce/views/modules/product/workflow/inventory-notification.html", $context)
-	#else
-		<h3>$errorout</h3>
-		<a href="index.html" style="font-size: 14px;">Click here to go back.</a>
-	#end
+		#if($hits)
+			$pages.include("/$applicationid/distributors/results.html",$context)
+		#else
+			An error has occurred. Click <a href="javascript:goback()">here</a> to go back.
+		#end
 	</div> 
 </div>

@@ -1,20 +1,17 @@
 import org.openedit.Data;
-import org.openedit.entermedia.CompositeAsset;
-
-import com.openedit.WebPageRequest;
-
-
 import org.entermedia.upload.UploadRequest
 import org.openedit.Data
 import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
+import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
-import org.openedit.money.Money
 import org.openedit.store.Store
 
 import com.openedit.WebPageRequest
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 
@@ -24,16 +21,18 @@ public void init() {
 	WebPageRequest req = context;
 	Store store = req.getPageValue("store");
 	MediaArchive archive = req.getPageValue("mediaarchive");
-	String catalogID = archive.getCatalogId();
+	Searcher productsearcher = store.getProductSearcher();
 	
 	//Create the searcher objects.	 
 	SearcherManager manager = archive.getSearcherManager();
-	Searcher inventorysearcher = manager.getSearcher(archive.getCatalogId(), "inventoryimport");
 	Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
-	Searcher userprofilesearcher = archive.getSearcher("userprofile");
 	
 	String distributorid = req.getRequestParameter("distributorid");
 	Data distributor = distributorsearcher.searchById(distributorid);
+	if (distributor == null){
+		log.error("Error: distributor cannot be found, exiting");
+		return;
+	}
 	
 	UploadRequest upload = req.getPageValue("uploadrequest");
 	List<Page> files =  req.getPageValue("unzippedfiles");
@@ -46,66 +45,88 @@ public void init() {
 		String name = page.get("name");
 		String path = page.getPath();
 		if (name.toLowerCase().endsWith(".csv")){
-			map.put("csvFile",page);
+			map.put("__csvFile",page);
 		} else {
 			map.put("${name.trim()}",page);
 		}
 	}
-	Page csvfile = map.get("csvFile");
-	Searcher productsearcher = archive.getSearcher("product");
-	List details = productsearcher.getDetailsForView("product/productdistributor_import", req.getUser());
-	readCSVFile(archive,csvfile,details,map);
-	//cleanup
+	if (map.containsKey("__csvFile"))
+	{
+		readCSVFile(req,distributor.getId(),map);
+	}
+	cleanup(pageManager,map);
 	log.info("Finished uploading products");
 }
 
-public void readCSVFile(MediaArchive inArchive, Page inPage, List inDetails, Map<String,Page> inMap){
-	Searcher productsearcher = inArchive.getSearcher("product");
-	List<Data> products = new ArrayList<Data>();
-	Reader reader = inPage.getReader();
+public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,Page> inMap){
+	Store store = inReq.getPageValue("store");
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	Searcher productsearcher = store.getProductSearcher();
+	List details = productsearcher.getDetailsForView("product/productdistributor_import", inReq.getUser());
+	Reader reader = inMap.get("__csvFile").getReader();
 	CSVReader csvreader = null;
 	try{
 		csvreader = new CSVReader(reader,"\t","\"");
+		List<Data> products = new ArrayList<Data>();
+		List<String> ids = new ArrayList<String>();
 		List<?> lines = csvreader.readAll();
 		Iterator<?> itr = lines.iterator();
-		while( itr.hasNext()){
+		for(int j=1; itr.hasNext(); j++){
 			String [] entries = itr.next();
-			if (entries.length != inDetails.size()){
-				System.out.println("### $entries");
+			if (entries.length != details.size()){
+				log.error("Format error: row = $j found = ${entries.length} requires = ${details.size()}, skipping");
 				continue;
 			}
-//			Data product = productsearcher.createNewData();
-			for (int i=0; i < inDetails.size(); i++) {
+			Data product = productsearcher.createNewData();
+			//set defaults
+			product.setId(productsearcher.nextId());
+			String productid = product.getId();
+			product.setSourcePath("${inDistributor}/${productid}");
+			product.setProperty("distributor",inDistributor);
+			for (int i=0; i < details.size(); i++) {
 				String entry = entries[i].trim();
-				PropertyDetail detail = inDetails.get(i);
+				PropertyDetail detail = details.get(i);
 				if (detail.isList()){
 					//categoryid,  phone,  manufacturerid, displaydesignationid,
 					if (detail.getListId() == "asset"){
 						if (inMap.containsKey(entry)==false && inMap.containsKey("${entry}.jpg") == false){
-							System.out.println("### ERROR: cannot find $entry ${inMap.keySet()}");
+							log.error("Error: unable find $entry in list of uploaded files, ${inMap.keySet()}, skipping");
 							continue;
 						}
-						//move page to originals folder, ingest asset, etc
-						
+						Page from = inMap.containsKey(entry) ? inMap.get(entry) : inMap.get("${entry}.jpg");
+						if (from.exists() == false)
+						{
+							log.error("Internal Error: unable find [${from.getName()}] in list of uploaded files, skipping");
+							continue;
+						}
+						createPrimaryAsset(store,product,from);
 					} else {
-						Searcher searcher = inArchive.getSearcher(detail.getListId());
+						Searcher searcher = archive.getSearcher(detail.getListId());
 						Data remote = searcher.searchByField("name",entry);
 						if (remote==null){
-							System.out.println("### ERROR: cannot find $entry (${detail.getListId()})");
+							log.error("Error: unable to find $entry (${detail.getListId()}), skipping");
 							continue;
 						}
-//						product.setProperty(detail.getId(),remote.getId());
+						product.setProperty(detail.getId(),remote.getId());
 					}
 				} else if (detail.isBoolean()){
-					boolean bool = Boolean.parseBoolean(entry);
 					//approved clearancecentre
-//					product.setProperty(detail.getId(),bool+"");
+					boolean bool = Boolean.parseBoolean(entry);
+					product.setProperty(detail.getId(),"$bool");
 				} else {
 					//name rogerssku manufacturersku , upc msrp, fidomsrp,  rogersprice, clearanceprice, descrip
-//					product.setProperty(detail.getId(),entry);
+					if (detail.getId() ==  "msrp" || detail.getId() ==  "fidomsrp" || detail.getId() ==  "rogersprice" || detail.getId() ==  "clearanceprice"){
+						double money = toDouble(entry.replace("\$", "").replace(",", "").trim(),-1.0d);
+						if (money >= 0.0d){
+							product.setProperty(detail.getId(),"$money");
+						}//otherwise skip
+					} else {
+						product.setProperty(detail.getId(),entry);
+					}
 				}
 			}
-//			products.add(product);
+			ids.add(productid);
+			products.add(product);
 		}
 		List cache = new ArrayList();
 		for(Data product:products){
@@ -119,8 +140,12 @@ public void readCSVFile(MediaArchive inArchive, Page inPage, List inDetails, Map
 			productsearcher.saveAllData(cache, null);
 			cache.clear();
 		}
+		SearchQuery query  = productsearcher.createSearchQuery();
+		query.addOrsGroup("id", ids);
+		HitTracker hits = productsearcher.search(query);
+		inReq.putPageValue("hits",hits);
 	}catch (Exception e){
-		e.printStackTrace();
+		log.error(e.getMessage(),e);
 	}
 	finally{
 		try{
@@ -129,28 +154,33 @@ public void readCSVFile(MediaArchive inArchive, Page inPage, List inDetails, Map
 	}
 }
 
-public void convertPageToAsset(){
+public void cleanup(PageManager inPageManager,Map<String,Page> inMap){
+	Iterator<String> itr = inMap.keySet().iterator();
+	while(itr.hasNext()){
+		Page page = inMap.get(itr.next());
+		if (page.exists()){
+			inPageManager.removePage(page);
+		}
+	}
+}
 
-	//load AssetEditModule
-//	public void createAssetsFromFile(WebPageRequest inReq)
-//	{
-//		String sourcepath = inReq.findValue("sourcepath");
-//		String catalogid = inReq.findValue("catalogid");
-//		String unzip = inReq.findValue("unzip");
-//		
-//		Data asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), Boolean.valueOf(unzip), sourcepath);
-//		if(asset == null)
-//		{
-//			return;
-//		}
-//		if( asset instanceof CompositeAsset)
-//		{
-//			asset.setId("multiedit:new");
-//			inReq.putSessionValue(asset.getId(), asset);
-//		}
-//		inReq.setRequestParameter("id", asset.getId());
-//		inReq.putPageValue("asset", asset);
-//	}
+public void createPrimaryAsset(Store inStore, Data inProduct, Page fromPage)
+{
+	try 
+	{
+		String filename = "original.jpg";
+		String sourcepath = "productimages/${inProduct.getSourcePath()}";
+		String path = "/WEB-INF/data/${inStore.getCatalogId()}/originals/${sourcepath}/${filename}";
+		MediaArchive archive = inStore.getStoreMediaManager().getMediaArchive();
+		Page toPage = archive.getPageManager().getPage(path);
+		archive.getPageManager().copyPage(fromPage, toPage);
+		Asset asset = archive.createAsset(sourcepath);
+		asset.setPrimaryFile(filename);
+		archive.saveAsset(asset, null);
+		inProduct.setProperty("image", asset.getId());
+	} catch (Exception e) {
+		log.error(e.getMessage(),e);
+	}
 }
 
 public double toDouble(String str, double inDefault)
