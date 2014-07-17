@@ -27,16 +27,16 @@
 #end
 #if( $badproductlist.size() > 0)
 	<h3>Bad Product List: $badproductlist.size() Product(s)</h3>
+	<p>Note: These items are product SKUs that could not be found in our system.</p>
 	<ul>
 	#foreach($product in $badproductlist)
-		<li>$product - Not found</li>
+		<li>$product</li>
 	#end
 	</ul>
 #end
 #if( $badupclist.size() > 0)
 	<h3>Bad UPC List: $badupclist.size() Product(s)</h3>
-	<p>Note: For these products, the UPC was found in our system BUT the 
-	Rogers/Manufacturer's SKU do not match</p>
+	<p>Note: These items are product UPCs that could not be found in our system.</p>
 	<ul>
 	#foreach($product in $badupclist)
 		#set($p = $productsearcher.searchByField("upc", $product))

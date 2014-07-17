@@ -161,7 +161,7 @@ public class ImportInventory  extends EnterMediaObject {
 			//loop over rows
 			def boolean done = false;
 			String[] cols;
-			while ((cols = read.readNext()) != null)
+			for (int i=1; (cols = read.readNext()) != null; i++)
 			{
 				if (csvType.equals("104")) {
 					if (!cols[0].contains("-")) {
@@ -178,6 +178,9 @@ public class ImportInventory  extends EnterMediaObject {
 					manufacturerSKU = cols[manufacturerSKUcol].trim();
 					rogersSKU = cols[rogersSKUcol].trim();
 				}
+				
+				
+				
 				String upcNumber = cols[upcCol].trim();
 				String newQuantity = cols[quantityCol].trim();
 				
@@ -190,7 +193,7 @@ public class ImportInventory  extends EnterMediaObject {
 					qtyInStock = Integer.parseInt(newQuantity);
 				}
 				Data productHit = null;
-				if (!rogersSKU.isEmpty()) {
+				if (rogersSKU.isEmpty() == false) {
 					//Search for the product by the MANUFACTURER_SEARCH_FIELD
 					//include character escapes if necessary to prevent lucene EOF exception
 					if (manufacturerSKU.contains("/")){
@@ -202,19 +205,28 @@ public class ImportInventory  extends EnterMediaObject {
 					if (upcNumber.contains("/")){
 						upcNumber = upcNumber.replace("/", "\\/");
 					}
+					
 					productHit = productsearcher.searchByField(MANUFACTURER_SEARCH_FIELD, manufacturerSKU);
 			        if (productHit == null) {
 						//Search for the product by the ROGERS_SEARCH_FIELD
 						productHit = productsearcher.searchByField(ROGERS_SEARCH_FIELD, rogersSKU);
 						if (productHit == null) {
+							//revert back to original strings to avoid confusion
+							if (rogersSKU.contains("\\/")){
+								rogersSKU = rogersSKU.replace("\\/", "/");
+							}
 							//Search for the product by UPC
 							productHit = productsearcher.searchByField(UPC_SEARCH_FIELD, upcNumber);
 							if (productHit == null) {
-								addToBadProductList(rogersSKU);
+								//revert back to original strings to avoid confusion
+								if (upcNumber.contains("\\/")){
+									upcNumber = upcNumber.replace("\\/", "/");
+								}
+								addToBadUPCList("#$i - ${upcNumber}");
+								addToBadProductList("#$i - ${rogersSKU}");
 							} else {
-								addToBadUPCList(upcNumber);
+								addToBadProductList("#$i - ${rogersSKU} (found product via UPC code)");
 							}
-							productHit = null;
 						}
 			        }
 				}
@@ -255,6 +267,7 @@ public class ImportInventory  extends EnterMediaObject {
 			//update last inventory update
 			distributor.setProperty("lastinventoryupdate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			distributorsearcher.saveData(distributor, null);
+			
 			
 			context.putPageValue("totalrows", getTotalRows());
 			context.putPageValue("goodproductlist", getGoodProductList());
@@ -314,7 +327,7 @@ public class ImportInventory  extends EnterMediaObject {
 		mailer.setFrom("info@wirelessarea.ca");
 		mailer.setRecipientsFromStrings(inEmailList);
 		mailer.setSubject(inSubject);
-		mailer.send();
+//		mailer.send();
 	}
 	
 	protected TemplateWebEmail getMail(MediaArchive archive) {
