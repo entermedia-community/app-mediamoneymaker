@@ -184,6 +184,13 @@ function validateCreditCardAndSubmit( form )
 		return;
 	}
 	
+	//disable submit button if possible (although shouldn't be necessary)
+	var submit = $("#submitorder");
+	if (submit.length!=0){
+		submit.prop("disabled",true);
+		submit.addClass("disabled");
+	}
+	//submit form
 	form.submit();
 }
 

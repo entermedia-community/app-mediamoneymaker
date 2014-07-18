@@ -11,7 +11,7 @@
 		<tr>
 		<td class=body2>
 		
-		<form method="post" name="orderForm" action="thanks.html">
+		<form method="post" id="orderForm" name="orderForm" action="thanks.html">
 
 
 
@@ -209,7 +209,11 @@
 			</tr>
 			<tr style="border-top: 1px solid #ddd;">
 
-			     <td colspan="2" valign=top><input class="btn right" style="margin-top: 20px;" type="button" name="done" value="[[Order]]" onclick="javascript: validateCreditCardAndSubmit( document.orderForm ); " /></td>
+			     <td colspan="2" valign=top>
+			     	<input class="btn right" id="submitorder" style="margin-top: 20px;" type="button" name="done" value="[[Order]]" 
+			     	onclick="javascript: validateCreditCardAndSubmit( document.orderForm );"
+			     	 />
+			     </td>
 				
 			</tr>
 			</table>
@@ -224,7 +228,25 @@
 </table>
 </div>
 
+<style>
+.disabled{
+	color:grey;
+	background:#dddddd;
+	
+}
+.disabled:hover{
+	color:grey;
+	background:#dddddd;
+}
+</style>
+
 <script Language="Javascript">
+$(document).ready(function(){
+	$("#submitorder").prop("disabled",false);
+	$("#submitorder").removeClass("disabled");
+});
+
+
 function populate()
 {
 	if(document.orderForm.sameasshipping.checked )
