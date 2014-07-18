@@ -37,26 +37,42 @@ public class CompositeOrderProcessor implements OrderProcessor
 	public void processNewOrder(WebPageRequest inContext, Store inStore, Order inOrder)
 		throws StoreException
 	{
-		
-		for (Iterator iter = getOrderProcessorObjects().iterator(); iter.hasNext();)
+		if ("processing".equals(inOrder.get("processingstate")) )
 		{
-			OrderProcessor op = (OrderProcessor) iter.next();
-			op.processNewOrder(inContext, inStore, inOrder);
-			if ( inOrder.getOrderStatus() != null &&  !inOrder.getOrderStatus().isOk() )
+			throw new StoreException("Order is already being processed");
+		}
+		try{
+			updateOrderProcessingState(inStore, inOrder, "processing");
+			for (Iterator iter = getOrderProcessorObjects().iterator(); iter.hasNext();)
 			{
+				OrderProcessor op = (OrderProcessor) iter.next();
+				op.processNewOrder(inContext, inStore, inOrder);
+				if ( inOrder.getOrderStatus() != null &&  !inOrder.getOrderStatus().isOk() )
+				{
+					return;
+				}
+			}
+			if(inOrder.getTotalPrice().isZero()){
+				OrderState status = new OrderState();
+				status.setOk(true);
+				inOrder.setOrderState(status);
+				//status.setId("accepted");
 				return;
 			}
+			if( inOrder.getOrderState() == null)
+			{
+				throw new StoreException("Order state was not set with " + getOrderProcessorObjects().size() + " order archives." );			
+			}
 		}
-		if(inOrder.getTotalPrice().isZero()){
-			OrderState status = new OrderState();
-			status.setOk(true);
-			inOrder.setOrderState(status);
-			//status.setId("accepted");
-			return;
+		finally{
+			updateOrderProcessingState(inStore, inOrder, "complete");
 		}
-		if( inOrder.getOrderState() == null)
-		{
-			throw new StoreException("Order state was not set with " + getOrderProcessorObjects().size() + " order archives." );			
+	}
+	
+	protected void updateOrderProcessingState(Store inStore, Order inOrder, String inState){
+		if (inOrder != null && inStore != null){
+			inOrder.setProperty("processingstate",inState);
+			inStore.saveOrder(inOrder);
 		}
 	}
 
