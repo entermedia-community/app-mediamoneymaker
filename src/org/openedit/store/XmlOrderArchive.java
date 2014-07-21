@@ -592,7 +592,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 	public SubmittedOrder loadSubmittedOrder(Store inStore, String inUserName,
 			String inOrderId) throws StoreException {
-		SubmittedOrder order = (SubmittedOrder) getCacheManager().get(getCatalogId() + "storeOrder" ,inOrderId);
+		SubmittedOrder order = (SubmittedOrder) getCacheManager().get(inStore.getCatalogId() + "storeOrder" ,inOrderId);
 		if(order != null){
 			return order;
 		}
@@ -610,7 +610,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		}
 		 order = new SubmittedOrder();
 		loadSubmittedOrder(inStore, orderElement, order);
-		getCacheManager().put(getCatalogId() + "storeOrder", inOrderId, order);
+		getCacheManager().put(inStore.getCatalogId() + "storeOrder", inOrderId, order);
 		return order;
 	}
 
