@@ -77,6 +77,8 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 				log.error("Format error: row = $j found = ${entries.length} requires = ${details.size()}, skipping");
 				continue;
 			}
+			//todo: change logic to first check for existing of product by sku
+			//todo: include an error list
 			Data product = productsearcher.createNewData();
 			//set defaults
 			product.setId(productsearcher.nextId());
@@ -140,10 +142,25 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 			productsearcher.saveAllData(cache, null);
 			cache.clear();
 		}
-		SearchQuery query  = productsearcher.createSearchQuery();
-		query.addOrsGroup("id", ids);
-		HitTracker hits = productsearcher.search(query);
-		inReq.putPageValue("hits",hits);
+		//add hits to page
+//		SearchQuery query  = productsearcher.createSearchQuery();
+//		query.addOrsGroup("id", ids);
+//		HitTracker hits = productsearcher.search(query);
+//		hits.setHitsPerPage(32);
+//		inReq.putPageValue("hits",hits);
+		
+		//add query to page
+		if (ids.isEmpty() == false){
+			StringBuilder buf = new StringBuilder();
+			buf.append("id:");
+			for(String id:ids){
+				buf.append("$id").append(":");
+			}
+			String searchids = buf.toString().substring(0,buf.toString().length()-1);
+			inReq.putPageValue("searchquery", searchids);
+		}
+		
+		
 	}catch (Exception e){
 		log.error(e.getMessage(),e);
 	}

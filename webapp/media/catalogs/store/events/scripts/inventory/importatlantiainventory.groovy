@@ -36,7 +36,7 @@ import com.openedit.users.UserManager
 
 
 public void init(){
-//	log.info("---- Starting Import Atlantia Inventory -----");
+	log.info("---- Starting Import Atlantia Inventory -----");
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Store store = context.getPageValue("store");
@@ -54,12 +54,13 @@ public void init(){
 	processor.addEmailNotification("megan@atlantia.ca");
 	processor.addEmailNotification("dsf@area.ca");
 	processor.addEmailNotification("kk@area.ca");
+//	processor.addEmailNotification("shawn@ijsolutions.ca");
 	try{
 		processor.process();
 	}catch (Exception e){
 		log.error(e);
 	}
-//	log.info("---- Finished Import Atlantia Inventory -----");
+	log.info("---- Finished Import Atlantia Inventory -----");
 	
 }
 
@@ -592,6 +593,7 @@ class RemotePathProcessor {
 		mailer.setRecipientsFromCommas(buf.toString());
 		mailer.setSubject("Support Ticket Update");
 		mailer.send();
+		log.info("Emails sent to ${buf.toString()}");
 	}
 	
 	protected TemplateWebEmail getMail() {

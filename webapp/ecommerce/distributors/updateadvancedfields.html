@@ -8,6 +8,8 @@
 	   	#if($data)
 	   		<input name="id" type="hidden" value="$!data.id" />
 	   		<input name="productid" type="hidden" value="$!data.id" />
+	   		<input name="field" type="hidden" value="sourcepath" />
+		   	<input name="sourcepath.value" type="hidden" value="$!data.sourcepath" />
 	   	#end
 	    
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
