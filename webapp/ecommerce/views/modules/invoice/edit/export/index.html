@@ -8,17 +8,21 @@
 			<th></th>
 		</tr>
 	</thead>
+	#set($id = $context.getRequestParameter("id"))
 	<tbody>
 		<tr>
-			<td>View Invoice</td><td><a href="invoice.html?id=$context.getRequestParameter('id')&oemaxlayout=3" class="btn" target="_blank">View</a></td>
+			<td>View Invoice</td><td><a href="invoice.html?id=$!{id}&oemaxlayout=3" class="btn" target="_blank">View</a></td>
+		</tr>
+		<!-- 
+		<tr>
+			<td>Download Invoice</td><td><a href="download.pdf?id=$!{id}" class="btn">Download</a></td>
 		</tr>
 		<tr>
-			<td>Download Invoice</td><td><a href="download.pdf?id=$context.getRequestParameter('id')" class="btn">Download</a></td>
+			<td>Export CSV File</td><td><a href="export.csv?id=$!{id}" class="btn">Export</a></td>
 		</tr>
-		<tr>
-			<td>Export CSV File</td><td><a href="exportcsv.csv?id=$context.getRequestParameter('id')" class="btn">Export</a></td>
-		</tr>
+		-->
 	</tbody>
 </table>
 
 
+ 
