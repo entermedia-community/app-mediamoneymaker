@@ -1,37 +1,26 @@
 package inventory
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPFile
+import org.apache.commons.net.ftp.FTPReply
+import org.entermedia.email.PostMail
+import org.entermedia.email.TemplateWebEmail
+import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.entermedia.MediaArchive
+import org.openedit.store.InventoryItem
+import org.openedit.store.Product
+import org.openedit.store.Store
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.modules.update.Downloader
 import com.openedit.page.Page
 import com.openedit.users.User
-import com.openedit.util.PathProcessor
-
-import java.io.File;
-import java.util.List;
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.util.CSVReader
-import org.openedit.repository.ContentItem
-import org.openedit.store.InventoryItem
-import org.openedit.store.Product
-import org.openedit.store.Store
-import org.openedit.util.DateStorageUtil;
-import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.ftp.FTPFile
-import org.apache.commons.net.ftp.FTPReply
-import org.entermedia.email.TemplateWebEmail;
-import org.entermedia.email.PostMail
-
 import com.openedit.users.UserManager
 
 
@@ -54,7 +43,7 @@ public void init(){
 	processor.addEmailNotification("megan@atlantia.ca");
 	processor.addEmailNotification("dsf@area.ca");
 	processor.addEmailNotification("kk@area.ca");
-//	processor.addEmailNotification("shawn@ijsolutions.ca");
+	processor.addEmailNotification("shawn@ijsolutions.ca");
 	try{
 		processor.process();
 	}catch (Exception e){
@@ -457,23 +446,13 @@ class RemotePathProcessor {
 					String upc = entries[2].trim();
 					String quantity = entries[3].trim();
 					
-					if (manufactSku.contains("/")){
-						manufactSku = manufactSku.replace("/", "\\/");
-					}
-					if (rogersSku.contains("/")){
-						rogersSku = rogersSku.replace("/", "\\/");
-					}
-					if (upc.contains("/")){
-						upc = upc.replace("/", "\\/");
-					}
-					if (quantity.isEmpty()){
-						quantity = "0";
-					}
-					Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity);
+					StringBuilder output = new StringBuilder();
+					Product product = getUpdatedProduct(manufactSku,rogersSku,upc,quantity,output);
 					if (product!=null){
 						productsToUpdate.add(product);
 					} else {
-						badProducts.add("manufacturer sku: $manufactSku, rogers sku: $rogersSku, UPC: $upc");
+						//badProducts.add("manufacturer sku: $manufactSku, rogers sku: $rogersSku, UPC: $upc, Quantity: $quantity");
+						badProducts.add(output.toString());
 					}
 				}
 			}
@@ -481,7 +460,6 @@ class RemotePathProcessor {
 			log.error("Exception caught processing page ${inPage}, ${e.getMessage()}",e);
 		}
 		finally{
-//			csvreader.close();
 			try{
 				bufferedreader.close();
 			}catch(Exception e){}
@@ -492,49 +470,98 @@ class RemotePathProcessor {
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
-		getArchive().getPageManager().movePage(inPage, toPage);
+		if (toPage.getName() != "Rogers_2014-07-23_1600.csv"){
+			getArchive().getPageManager().movePage(inPage, toPage);
+		}
+		
 	}
 	
-	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity){
+	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity, StringBuilder inBuf){
 		MediaArchive archive = getArchive();
 		Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "product");
-		Data data = inManufacturerSku.isEmpty() ? null : (Data) searcher.searchByField("manufacturersku", inManufacturerSku);
-		if (data == null) data = inRogersSku.isEmpty() ? null : (Data) searcher.searchByField("rogerssku",inRogersSku);
-		if (data == null) data = inUpc.isEmpty() ? null : (Data) searcher.searchByField("upc",inUpc);
+		
+		//copy search terms
+		String manufactSku = inManufacturerSku;
+		String rogersSku = inRogersSku;
+		String upc = inUpc;
+		//clean if required
+		if (manufactSku.contains("/")) manufactSku = manufactSku.replace("/", "\\/");
+		if (rogersSku.contains("/")) rogersSku = rogersSku.replace("/", "\\/");
+		if (upc.contains("/")) upc = upc.replace("/", "\\/");
+		
+		Data data = null;
+		//search each term
+		if (manufactSku!="") data = searcher.searchByField("manufacturersku", manufactSku);
+		if (data == null && rogersSku!="") data = searcher.searchByField("rogerssku",rogersSku);
+		if (data == null && upc!="") data = searcher.searchByField("upc",upc);
 		if (data != null){
 			Product product = getStore().getProduct(data.id);
 			InventoryItem item = product.getInventoryItemBySku(inManufacturerSku);
-			if (item == null) item = product.getInventoryItemBySku(inRogersSku);// seems to be a problem with some of the data, check this
-			if (item != null){
-				int currentQuantity = item.getQuantityInStock();
-				try{
-					String decimal = "0.0";
-					if (inQuantity.contains(".")){
-						decimal = inQuantity.substring(inQuantity.indexOf("."));
-						inQuantity = inQuantity.substring(0,inQuantity.indexOf("."));
-					}
-					int quantity = Integer.parseInt(inQuantity);
-					double decimalValue = Double.parseDouble(decimal);
-					if (decimalValue != 0){//LOG this condition
-						log.info("Warning: inventory item ${inRogersSku} of product ${product.getId()} has a DECIMAL quantity, ${inQuantity}; updating Quantity In Stock to ${quantity}");
-					}
-					if (quantity < 0){
-						item.setQuantityInStock(0);
-					} else {
-						item.setQuantityInStock(quantity);
-					}
-					product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));//also update inventory updated field of product
-					return product;
-				}catch (Exception e){
-					log.error("Exception caught parsing inventory quantity update, ${inQuantity}, ${e.getMessage()}");
+			if (item == null){	
+				item = product.getInventoryItemBySku(inRogersSku);// seems to be a problem with some of the data, check this
+			}
+			if (item == null){
+				//can't find by sku but should only ever be one item in the list inventory items
+				if (product.getInventoryItem(0) != null){
+					item = product.getInventoryItem(0);
 				}
-			} else {
-				log.info("Warning, unable to find inventory item, Rogers Sku = ${inRogersSku}, Manufact Sku = ${inManufacturerSku}");
+			}
+			//at this point, call it a day
+			if (item == null){
+				inBuf.append("<span style='color:red'>Unable to find any inventory items:</span> looking for Manufacturer Sku = ${inManufacturerSku} or Rogers Sku = ${inRogersSku}");
+			}
+			else 
+			{
+//				int currentQuantity = item.getQuantityInStock();
+//				try{
+//					String decimal = "0.0";
+//					if (inQuantity.contains(".")){
+//						decimal = inQuantity.substring(inQuantity.indexOf("."));
+//						inQuantity = inQuantity.substring(0,inQuantity.indexOf("."));
+//					}
+//					int quantity = Integer.parseInt(inQuantity);
+//					double decimalValue = Double.parseDouble(decimal);
+//					if (decimalValue != 0){//LOG this condition
+//						log.info("Warning: inventory item ${inRogersSku} of product ${product.getId()} has a DECIMAL quantity, ${inQuantity}; updating Quantity In Stock to ${quantity}");
+//					}
+//					if (quantity < 0){
+//						item.setQuantityInStock(0);
+//					} else {
+//						item.setQuantityInStock(quantity);
+//					}
+//					product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));//also update inventory updated field of product
+//					return product;
+//				}catch (Exception e){
+//					log.error("Exception caught parsing inventory quantity update [${inQuantity}] ${e.getMessage()}");
+//					return null;
+//				}
+				int newquantity = toInt(inQuantity,0,0);
+				item.setQuantityInStock(newquantity);
+				product.setProperty("inventoryupdated", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				return product;
 			}
 		} else {
-			log.info("Warning, unable to find product, UPC = ${inUpc}, Rogers Sku = ${inRogersSku}, Manufact Sku = ${inManufacturerSku}");
+			inBuf.append("<span style='color:red'>Unable to find product:</span> looking for Manufacturer Sku = ${inManufacturerSku}, Rogers Sku = ${inRogersSku}, UPC = ${inUpc}");
 		}
 		return null;
+	}
+	
+	public int toInt(String inValue, int inDefault, int inMinimum){
+		int value = inDefault;
+		if (inValue.contains(".")){
+			try{
+				double d = java.lang.Double.parseDouble(inValue);
+				value = new Double(d).toInteger().intValue();
+			}catch (Exception e){};
+		} else {
+			try{
+				value = java.lang.Integer.parseInt(inValue);
+			}catch(Exception e){}
+		}
+		if (value < inMinimum){
+			value = inMinimum;
+		}
+		return value;
 	}
 	
 	public void setLastInventoryUpdate(){
