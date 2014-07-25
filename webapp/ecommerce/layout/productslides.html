@@ -1,8 +1,8 @@
 #set( $image = "/$store.productPathFinder.idToPath($product.id)" )
 
-#set ($mediumend = "$home$cataloghome/downloads/preview/mediumplus/productimages/$product.sourcepath/thumb.jpg")
-#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$product.sourcepath/thumb.jpg")
-
+#set($asset = $mediaarchive.getAsset($data.image))
+#set ($mediumend = "$home$cataloghome/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg")
+#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/$asset.sourcepath/thumb.jpg")
 
 <div class="product-image">
 	<table>

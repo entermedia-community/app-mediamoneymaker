@@ -43,7 +43,7 @@ public void init(){
 	processor.addEmailNotification("megan@atlantia.ca");
 	processor.addEmailNotification("dsf@area.ca");
 	processor.addEmailNotification("kk@area.ca");
-	processor.addEmailNotification("shawn@ijsolutions.ca");
+//	processor.addEmailNotification("shawn@ijsolutions.ca");
 	try{
 		processor.process();
 	}catch (Exception e){

@@ -5,8 +5,9 @@
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
 #end
-	#set( $tsize = "$home$cataloghome/downloads/preview/135crop/productimages/$data.sourcepath/thumb.jpg")
-#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/productimages/$data.sourcepath/thumb.jpg")
+#set($asset = $mediaarchive.getAsset($data.image))
+#set( $tsize = "$home$cataloghome/downloads/preview/135crop/$asset.sourcepath/thumb.jpg")
+#set ($extralarge = "$home$cataloghome/downloads/preview/extralarge/$asset.sourcepath/thumb.jpg")
 
 <div id="default-top" class="clearfix" style="margin: -20px 0 20px 0;">
      
