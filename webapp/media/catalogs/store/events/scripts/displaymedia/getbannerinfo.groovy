@@ -42,7 +42,7 @@ public class GetBannerInfo extends EnterMediaObject {
 		Searcher bannerSearcher = manager.getSearcher(catalogid, "banner");
 		SearchQuery query = bannerSearcher.createSearchQuery();
 		query.addMatches("active", "true");
-		query.addSortBy("accessoriesorder");
+		query.addSortBy("accessoriesorderUp");
 		HitTracker bannerlist = bannerSearcher.search(query);//fieldSearch("active", "true", "random");
 		if (bannerlist != null && bannerlist.size() > 0) {
 			for (Iterator bannerIterator = bannerlist.iterator(); bannerIterator.hasNext();) {
