@@ -702,7 +702,7 @@ public class CartModule extends BaseStoreModule {
 		}
 	}
 
-	public Order processOrder(WebPageRequest inPageRequest) throws Exception {
+	public synchronized Order processOrder(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
 		Cart cart = getCart(inPageRequest);
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
