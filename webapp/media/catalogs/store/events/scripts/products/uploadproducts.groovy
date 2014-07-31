@@ -66,7 +66,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 	Reader reader = inMap.get("__csvFile").getReader();
 	CSVReader csvreader = null;
 	try{
-		csvreader = new CSVReader(reader,"\t","\"");
+		csvreader = new CSVReader(reader,",","\"");
 		List<Data> products = new ArrayList<Data>();
 		List<String> ids = new ArrayList<String>();
 		List<?> lines = csvreader.readAll();
