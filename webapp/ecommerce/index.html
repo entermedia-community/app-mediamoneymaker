@@ -6,8 +6,13 @@
 		$pages.include("$apphome/banner.html")
 		</div> 
 		#if($canbrowseproducts)
-
-		#set($featured =$store.getProductSearcher().fieldSearch("featuredonmainpage", "true", "random"))
+		
+		#set($productsearcher = $store.getProductSearcher())
+		#set($query = $productsearcher.createSearchQuery())
+		#set($null = $query.addMatches("featuredonmainpage","true"))
+		#set($null = $query.addMatches("active","true"))
+		#set($null = $query.addSortBy("random"))
+		#set($featured = $productsearcher.search($query))
 		$featured.setHitsPerPage(3) 
 		$context.putPageValue("hits", $featured)
 		
