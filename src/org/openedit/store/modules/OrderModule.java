@@ -1012,18 +1012,18 @@ public class OrderModule extends BaseModule
 					as400Record.setProperty("date", newDate);
 					as400Searcher.saveData(as400Record, inContext.getUser());
 				}
-				String authorized = "authorized";
-				UserProfile user = inContext.getUserProfile();
-				String userRole = user.get("settingsgroup");
-				Data role = (Data) roleSearcher.searchById(userRole);
-				String roleName = role.getName();
-				if (roleName.equalsIgnoreCase("Rogers Special Order")) {
-					authorized = "open";
-				}
+				String orderstatus = "accepted";//"authorized";
+//				UserProfile user = inContext.getUserProfile();
+//				String userRole = user.get("settingsgroup");
+//				Data role = (Data) roleSearcher.searchById(userRole);
+//				String roleName = role.getName();
+//				if (roleName.equalsIgnoreCase("Rogers Special Order")) {
+//					orderstatus = "open";
+//				}
 				
 				OrderState orderState = new OrderState();
-				orderState.setId(authorized);
-				orderState.setDescription(authorized);
+				orderState.setId(orderstatus);
+				orderState.setDescription(orderstatus);
 				orderState.setOk(true);
 				order.setOrderState(orderState);
 				
@@ -1031,8 +1031,8 @@ public class OrderModule extends BaseModule
 				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
 				order.setProperty("orderdate", newDate);
 				
-				order.setProperty("orderstatus", authorized);
-				order.setProperty("order_status", authorized);
+				order.setProperty("orderstatus", orderstatus);
+				order.setProperty("order_status", orderstatus);
 				
 				orderSearcher.saveData(order, inContext.getUser());
 				orderList.add(order.getId());
