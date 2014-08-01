@@ -50,7 +50,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.modules.BaseModule;
-import com.openedit.users.User;
 
 /**
  * @author dbrown
@@ -997,12 +996,11 @@ public class OrderModule extends BaseModule
 			Store store = getStore(inContext);
 			OrderSearcher orderSearcher = store.getOrderSearcher();
 			OrderSet orderSet = (OrderSet) inContext.getSessionValue("orderset");
+			Data as400Record = null;
 			for (Iterator<Order> orderIterator = orderSet.getOrders().iterator(); orderIterator.hasNext();) {
 				Order order = (Order) orderIterator.next();
-				
 				//Save data to AS400 Table
-				String batchID = (String) order.get("batchid");
-				Data as400Record = (Data) as400Searcher.searchByField("batchid", batchID);
+				String batchID = (String) order.get("batchid");//all orders will have same batchid so create as400 entry once
 				if (as400Record == null) {
 					as400Record = as400Searcher.createNewData();
 					as400Record.setId(as400Searcher.nextId());
@@ -1014,7 +1012,6 @@ public class OrderModule extends BaseModule
 					as400Record.setProperty("date", newDate);
 					as400Searcher.saveData(as400Record, inContext.getUser());
 				}
-				
 				String authorized = "authorized";
 				UserProfile user = inContext.getUserProfile();
 				String userRole = user.get("settingsgroup");
@@ -1041,6 +1038,7 @@ public class OrderModule extends BaseModule
 				orderList.add(order.getId());
 				
 			}
+			inContext.putPageValue("as400record", as400Record);//save as400record
 			inContext.putPageValue("orderlist", orderList);
 			inContext.putSessionValue("orderset", null);
 		}
