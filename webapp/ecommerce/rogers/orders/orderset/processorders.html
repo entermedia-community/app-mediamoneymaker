@@ -34,6 +34,11 @@
 			</tr>
 		#end
 		</table>
+		
+		#set($batchid = "${as400record.batchid}")
+		<p>Actions</p>
+		<p><a href="$home$apphome/views/modules/as400/BUDDTL.csv?batchid=${batchid}" class="btn">Export orders to BUDDTL</a></p>
+		<p><a href="$home$apphome/views/modules/as400/BUDHDR.csv?batchid=${batchid}" class="btn">Export orders to BUDHDR</a></p>
 		<p><a href="$home$apphome/rogers/orders/rogersorder.html">Upload a New Order</a></p>
 		<p><a href="$home$apphome/views/myaccount/storeorders/index.html">View all of my Orders</a></p>
 	</p>
