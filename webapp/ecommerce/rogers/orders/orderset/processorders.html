@@ -36,23 +36,25 @@
 		</table>
 		
 		#set($batchid = "${as400record.batchid}")
-		<p>Actions</p>
+		<h3>Actions</h3>
 		<p><a href="$home$apphome/views/modules/as400/BUDDTL.csv?batchid=${batchid}" class="btn">Export orders to BUDDTL</a></p>
 		<p><a href="$home$apphome/views/modules/as400/BUDHDR.csv?batchid=${batchid}" class="btn">Export orders to BUDHDR</a></p>
 		
-		
-		<form class="ajaxform"  targetdiv="poresponse" action="/$applictionid/rogers/order/orderset/updatepo.html" method="post">
-			<input type="hidden" name="id" value="${as400record.id}" />
-			
+		<h3>Update AS400 PO</h3>
+		<form class="ajaxform"  targetdiv="poresponse" action="$home$apphome/rogers/orders/orderset/updatepo.html" method="post">
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="${as400record.id}" />
+			<input name="searchtype" type="hidden" value="as400" />
 			<input type="hidden" name="field" value="as400po" />
 			<input type="hidden" name="oemaxlevel" value="1" />
-			<input type="text" name="as400.value" value="" required/>
+			<input type="text" name="as400po.value" value="" required/>
+			<input name="origURL"  type="hidden" value="$!origURL" />
 			<input type="submit" value="Update">
 		</form>
 		<span id="poresponse"></span>
 		
-		<p><a href="$home$apphome/rogers/orders/rogersorder.html">Upload a New Order</a></p>
-		<p><a href="$home$apphome/views/myaccount/storeorders/index.html">View all of my Orders</a></p>
-	</p>
+		<h3>Other Actions</h3>
+		<p><a href="$home$apphome/rogers/orders/rogersorder.html" class="btn">Upload a New Order</a></p>
+		<p><a href="$home$apphome/views/myaccount/storeorders/index.html" class="btn">View all of my Orders</a></p>
 	</div>
 </div>
