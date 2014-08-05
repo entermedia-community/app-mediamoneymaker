@@ -108,6 +108,11 @@ public class ExportRogersCsv extends EnterMediaObject {
 		
 		Address shipToAddress = order.getShippingAddress();
 		
+		String as400po = order.get("rogersponumber");
+		if (as400po == null){
+			as400po = "";
+		}
+		
 		for(Iterator i = order.getItems().iterator(); i.hasNext();) {
 			//Get the cart Item
 			CartItem item = i.next();
@@ -205,20 +210,40 @@ public class ExportRogersCsv extends EnterMediaObject {
 				orderDetailRow.add("Not Shipped");
 			}			
 			orderDetailRow.add(item.getQuantity().toString());
-			orderDetailRow.add('$' + item.getProduct().get("rogersprice").toString());
+			//price fields
+			String rogersprice = item.getProduct().get("rogersprice");
+			if (rogersprice == null){
+				rogersprice = "0.00";
+			}
+			String wholesale = item.getProduct().get("wholesaleprice");
+			if (wholesale == null){
+				wholesale = "0.00";
+			}
+			String price = "0.00";
+//			orderDetailRow.add('$'+ item.getProduct().get("rogersprice").toString());
+			orderDetailRow.add("\$${rogersprice}");
 			orderDetailRow.add(item.getYourPrice().toString());
-			orderDetailRow.add('$' + item.getProduct().get("wholesaleprice")).toString();
+//			orderDetailRow.add('$' + item.getProduct().get("wholesaleprice")).toString();
+			orderDetailRow.add("\$${wholesale}");
+			
 			if (displayDesignation != null) {
 				if (displayDesignation.get("name").equalsIgnoreCase("fido")) {
-					orderDetailRow.add('$' + item.getProduct().get("fidomsrp"));
+//					orderDetailRow.add('$' + item.getProduct().get("fidomsrp"));
+					price = item.getProduct().get("fidomsrp");
 				} else {
-					orderDetailRow.add('$' + item.getProduct().get("msrp"));
+//					orderDetailRow.add('$' + item.getProduct().get("msrp"));
+					price = item.getProduct().get("msrp");
 				}
 			} else {
-				orderDetailRow.add('$' + item.getProduct().get("msrp"));
+//				orderDetailRow.add('$' + item.getProduct().get("msrp"));
+				price = item.getProduct().get("msrp");
 			}
-			orderDetailRow.add(item.getProduct().get("approved"));
-
+			orderDetailRow.add("\$${price}");
+			boolean isApproved = Boolean.parseBoolean(item.getProduct().get("approved"));
+			orderDetailRow.add(isApproved ? "Yes" : "No");
+			//add as400 po
+			orderDetailRow.add(as400po);
+			
 			//Write Row to Writer			
 			writeRowToWriter(orderDetailRow, writer);
 			log.info(orderDetailRow.toString());
@@ -247,12 +272,13 @@ public class ExportRogersCsv extends EnterMediaObject {
 		headerRow.add("Brand");
 		headerRow.add("Shipped");
 		headerRow.add("Ordered Quantity");
-		headerRow.add("Area Cost");
-		headerRow.add("Dealer Cost");
 		headerRow.add("Rogers Cost");
+		headerRow.add("Dealer Cost");
+		headerRow.add("Area Cost");
 		
 		headerRow.add("MSRP");
 		headerRow.add("ROGERS APPROVED?");
+		headerRow.add("AS400 PO");
 		log.info(headerRow.toString());
 		writeRowToWriter(headerRow, writer)
 	}
