@@ -531,6 +531,7 @@ public class OrderModule extends BaseModule
 			}
 			shipment.addEntry(entry);
 		}
+		
 		if (shipment!=null && !shipment.getShipmentEntries().isEmpty())
 		{
 			String waybill = inReq.getRequestParameter("waybill");
