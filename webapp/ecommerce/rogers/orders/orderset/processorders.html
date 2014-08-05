@@ -36,11 +36,10 @@
 		</table>
 		
 		#set($batchid = "${as400record.batchid}")
-		<h3>Actions</h3>
-		<p><a href="$home$apphome/views/modules/as400/BUDDTL.csv?batchid=${batchid}" class="btn">Export orders to BUDDTL</a></p>
-		<p><a href="$home$apphome/views/modules/as400/BUDHDR.csv?batchid=${batchid}" class="btn">Export orders to BUDHDR</a></p>
+		<h3>Step 1: Export BUD Files</h3>
+		<p><a href="$home$apphome/views/modules/as400/BUDDTL.csv?batchid=${batchid}" class="btn">Export orders to BUDDTL</a> <a href="$home$apphome/views/modules/as400/BUDHDR.csv?batchid=${batchid}" class="btn">Export orders to BUDHDR</a></p>
 		
-		<h3>Update AS400 PO</h3>
+		<h3>Step 2: Update PO</h3>
 		<form class="ajaxform"  targetdiv="poresponse" action="$home$apphome/rogers/orders/orderset/updatepo.html" method="post">
 			<input name="save" type="hidden" value="true" />
 			<input name="id" type="hidden" value="${as400record.id}" />
@@ -53,8 +52,7 @@
 		</form>
 		<span id="poresponse"></span>
 		
-		<h3>Other Actions</h3>
-		<p><a href="$home$apphome/rogers/orders/rogersorder.html" class="btn">Upload a New Order</a></p>
-		<p><a href="$home$apphome/views/myaccount/storeorders/index.html" class="btn">View all of my Orders</a></p>
+		<h3>Step 3: Process Other Orders</h3>
+		<p><a href="$home$apphome/rogers/orders/rogersorder.html" class="btn">Upload a New Order</a> <a href="$home$apphome/views/myaccount/storeorders/index.html" class="btn">View all of my Orders</a></p>
 	</div>
 </div>
