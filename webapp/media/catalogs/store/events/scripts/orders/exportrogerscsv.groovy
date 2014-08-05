@@ -109,11 +109,11 @@ public class ExportRogersCsv extends EnterMediaObject {
 		
 		boolean saveAS400Po = false;
 		String as400po = order.get("rogersponumber");
+		String batchId = order.get("batchid");
 		if (as400po == null || as400po.trim().isEmpty()){
 			as400po = null;
 			Searcher as400searcher = archive.getSearcher("as400");
-			String batchId = order.get("batchid");// find batch id and cross reference that to as400 entry to get the PO number
-			if (batchId != null){
+			if (batchId != null && batchId.trim().isEmpty() == false){
 				SearchQuery query = as400searcher.createSearchQuery();
 				query.addMatches("batchid",batchId);
 				HitTracker hits = as400searcher.search(query);
