@@ -8,7 +8,6 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVWriter
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
-import org.openedit.store.Product
 import org.openedit.store.Store
 import org.openedit.store.customer.Address
 import org.openedit.store.orders.Order
@@ -19,6 +18,7 @@ import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 
@@ -105,13 +105,29 @@ public class ExportRogersCsv extends EnterMediaObject {
 		MediaArchive archive = context.getPageValue("mediaarchive");
 		SearcherManager manager = archive.getSearcherManager();
 		String catalogid = archive.getCatalogId();
-		
 		Address shipToAddress = order.getShippingAddress();
 		
+		boolean saveAS400Po = false;
 		String as400po = order.get("rogersponumber");
-		if (as400po == null){
-			as400po = "";
+		if (as400po == null || as400po.trim().isEmpty()){
+			as400po = null;
+			Searcher as400searcher = archive.getSearcher("as400");
+			String batchId = order.get("batchid");// find batch id and cross reference that to as400 entry to get the PO number
+			if (batchId != null){
+				SearchQuery query = as400searcher.createSearchQuery();
+				query.addMatches("batchid",batchId);
+				HitTracker hits = as400searcher.search(query);
+				for(int i = 0; i < hits.size(); i ++){
+					Data d = hits.get(i);
+					if (d.get("as400po")!=null && d.get("as400po").trim().isEmpty() == false){
+						as400po = d.get("as400po");
+						saveAS400Po = true;
+						break;
+					}
+				}
+			}
 		}
+		
 		
 		for(Iterator i = order.getItems().iterator(); i.hasNext();) {
 			//Get the cart Item
@@ -242,12 +258,18 @@ public class ExportRogersCsv extends EnterMediaObject {
 			boolean isApproved = Boolean.parseBoolean(item.getProduct().get("approved"));
 			orderDetailRow.add(isApproved ? "Yes" : "No");
 			//add as400 po
-			orderDetailRow.add(as400po);
+			orderDetailRow.add(as400po == null ? "" : as400po);
 			
 			//Write Row to Writer			
 			writeRowToWriter(orderDetailRow, writer);
 			log.info(orderDetailRow.toString());
 			orderDetailRow = null;
+		}
+		
+		//update as400 po if required
+		if (saveAS400Po){
+//			order.setProperty("rogersponumber",as400po);
+//			store.saveOrder(order);
 		}
 	}
 
