@@ -460,7 +460,9 @@ public class OrderModule extends BaseModule
 			}
 			if (order.getCartItemByProductSku(sku) == null)
 			{
-				continue;
+				if (order.getCartItemByProductID(sku) == null){
+					continue;
+				}
 			}
 			int quantity = Integer.parseInt(inReq.getRequestParameter(sku+"-shipment-quantity"));
 			ShipmentEntry entry = new ShipmentEntry();

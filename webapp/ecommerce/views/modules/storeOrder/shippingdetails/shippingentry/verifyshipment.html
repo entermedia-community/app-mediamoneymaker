@@ -57,6 +57,9 @@
 		#set($quantity = $entry.getQuantity())
 		#set($sku = $entry.getSku())
 		#set($item = $order.getCartItemByProductSku($sku))
+		#if(!$item)
+			#set($item = $order.getCartItemByProductID($sku))
+		#end
 		#set($product = $item.getProduct())
 		#if($product && $product.isCoupon() == false)
 			<td style="margin: 3px 0 5px; padding: 5px 10px;">
