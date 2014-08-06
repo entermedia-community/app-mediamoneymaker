@@ -26,12 +26,12 @@
 			#set( $origURL = $context.getRequestParameter("origURL" ) )
 			#set ( $moduleid = $context.findValue("module") )
 			$pages.include("$apphome/components/xml/detaileditor.html", $context)
-			<input type="submit" name="submit" value="submit"/>
+			<input id="submitcomplete" type="submit" name="submit" value="submit"/>
 		</form>
 	</div>
 	
-	$pages.include("/$applicationid/distributors/supportimages.html",$context)
-	$pages.include("/$applicationid/distributors/updateadvancedfields.html",$context)
+	###$pages.include("/$applicationid/distributors/supportimages.html",$context)
+	####$pages.include("/$applicationid/distributors/updateadvancedfields.html",$context)
 	
 </div>
 <script type="text/javascript">

@@ -24,8 +24,8 @@ import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
-
-import org.openedit.entermedia.Category;
+import com.openedit.page.manage.PageManager
+import com.openedit.util.Replacer
 
 
 public void handleSubmission(){
@@ -33,6 +33,7 @@ public void handleSubmission(){
 	WebPageRequest inReq = context;
 	Store store = inReq.getPageValue("store");
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	PageManager pagemanager = archive.getPageManager();
 	 
 	Searcher productsearcher = store.getProductSearcher();
 	Searcher assetsearcher = archive.getAssetSearcher();
@@ -44,21 +45,30 @@ public void handleSubmission(){
 	String templatePage = "";
 	boolean newProduct = false;
 	
+	//first establish the multipart file upload
 	FileUpload command = new FileUpload();
-	command.setPageManager(archive.getPageManager());
+	command.setPageManager(pagemanager);
 	UploadRequest properties = command.parseArguments(inReq);
-	
+	if(properties == null)
+	{
+		properties = (UploadRequest) inReq.getPageValue("properties");
+	}
+	if (properties != null && properties.getFirstItem() == null) 
+	{
+		properties = (UploadRequest) inReq.getPageValue("properties");
+	}
+	//now get request parameters
 	String productid = inReq.getRequestParameter("productid");
+	if (productid == null || productid.trim().isEmpty())
+	{
+		productid = inReq.getRequestParameter("id");
+	}
 	String ticketid = inReq.getRequestParameter("ticketid");
-	
 	if (productid != null) {
 		product = store.getProduct(productid);
 	}
-//	FileUploadItem item = properties.getFirstItem();
-//	if (product == null && item == null) {
-//		return;
-//	}
 	if (product == null) {
+		//if no product can be loaded then this is a new product
 		Data d = productsearcher.createNewData();
 		d.setId(productsearcher.nextId());
 		productid = d.getId();
@@ -68,31 +78,15 @@ public void handleSubmission(){
 		product = store.getProduct(productid);
 		newProduct = true;
 	}
-//	if (item != null && item.getName() != null && item.getName().length() > 0) {
-//		String sourcepath = "productimages/" + product.getSourcePath();
-//		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
-//		String filename =item.getName();
-//		path = path + filename;
-//		properties.saveFirstFileAs(path, inReq.getUser());
-//		Asset asset = archive.getAssetBySourcePath(sourcepath);
-//		if (asset == null) {
-//			asset = archive.createAsset(sourcepath);
-//			Category root = archive.getCategoryArchive().createCategoryTree(sourcepath);
-//			asset.addCategory(root);
-//		}
-//		asset.setPrimaryFile(filename);
-//		asset.setProperty("product", product.getId());
-//	
-//		archive.removeGeneratedImages(asset);
-//		archive.saveAsset(asset, null);
-//		
-//		product.setProperty("image", asset.getId());
-//		productsearcher.saveData(product, inReq.getUser());
-//	}
+	if(properties != null && properties.getFirstItem() != null){
+		//handle the upload only if we actually have items to upload
+		//need to have the product sourcepath to complete uploads
+		handleUpload(inReq,properties,product);
+	}
+	//update all fields: if there are no uploads but just selecting another assetid, fields will populate
 	String [] fields = inReq.getRequestParameters("field");
 	productsearcher.updateData(inReq, fields, product);
 	product.setProperty("submittedby", inReq.getUserName());
-
 	if (product.get("distributor") == null) {	
 		product.setProperty("distributor", inReq.getUserProfile().get("distributor"));
 	}
@@ -298,6 +292,90 @@ protected void sendEmail(WebPageRequest context, List email, String templatePage
 protected TemplateWebEmail getMail() {
 	PostMail mail = (PostMail)mediaarchive.getModuleManager().getBean( "postMail");
 	return mail.getTemplateWebEmail();
+}
+
+public void handleUpload(WebPageRequest inReq, UploadRequest properties, Product product) {
+	//moved out from AssetEditModule.handleUploads
+	//need to have an existing product to figure out the sourcepath
+	
+//	FileUpload command = new FileUpload();
+	MediaArchive archive = inReq.getPageValue("mediaarchive");
+//	PageManager pagemanager = archive.getPageManager();
+//	command.setPageManager(pagemanager);
+//	UploadRequest properties = command.parseArguments(inReq);
+//	if(properties == null){
+//		properties = (UploadRequest) inReq.getPageValue("properties");
+//	}
+//	if (properties == null) {
+//		return;
+//	}
+//	
+//	if (properties.getFirstItem() == null) {
+//		properties = (UploadRequest) inReq.getPageValue("properties");
+//		if(properties == null || properties.getFirstItem() == null){
+//			return;
+//		}
+//		
+//	}
+	for (Iterator iterator = properties.getUploadItems().iterator(); iterator
+			.hasNext();) {
+		FileUploadItem item = (FileUploadItem) iterator.next();
+		
+		String name = item.getFieldName();
+		if(item.getName().length() == 0){
+			continue;
+		}
+		String[] splits = name.split("\\.");
+		String detailid = splits[1];
+		String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+		if(sourcepath == null){
+			 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		}
+		String[] fields = inReq.getRequestParameters("field");
+		Map vals = new HashMap();
+		vals.putAll(inReq.getPageMap());
+		String prefix ="";
+
+		if( fields != null)
+		{
+			for (int i = 0; i < fields.length; i++)
+			{
+				String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				if( val != null)
+				{
+					vals.put(fields[i],val);
+				}
+			}
+		}
+		String id = inReq.getRequestParameter("id");
+		if(id != null){
+			vals.put("id",id);
+		}
+		vals.put("filename", item.getName());
+		vals.put("sourcepath",product.getSourcePath());
+		
+		Replacer replacer = new Replacer();
+		replacer.setSearcherManager(archive.getSearcherManager());
+		replacer.setCatalogId(archive.getCatalogId());
+		replacer.setAlwaysReplace(true);
+		sourcepath = replacer.replace(sourcepath, vals);
+		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+		String path = "/WEB-INF/data/${archive.getCatalogId()}/originals/${sourcepath}/${item.getName()}";
+		path = path.replace("//","/");
+		Asset current = archive.getAssetBySourcePath(sourcepath);
+		if(current ==  null)
+		{	
+			current = archive.createAsset(sourcepath);
+		}
+		current.setProperty("owner", inReq.getUser().getId());
+		properties.saveFileAs(item, path, inReq.getUser());
+		current.setPrimaryFile(item.getName());
+		archive.removeGeneratedImages(current);
+		archive.saveAsset(current, null);
+		inReq.setRequestParameter(detailid + ".value", current.getId());
+		archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
+	}
+
 }
 
 handleSubmission();
