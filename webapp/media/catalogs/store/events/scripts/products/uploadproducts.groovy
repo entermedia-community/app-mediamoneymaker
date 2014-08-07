@@ -65,6 +65,10 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 	List details = productsearcher.getDetailsForView("product/productdistributor_import", inReq.getUser());
 	Reader reader = inMap.get("__csvFile").getReader();
 	CSVReader csvreader = null;
+	//need indexes of SKUs and UPC code
+	int rogersskuIndex = 1;
+	int manufacturerskuIndex = 2;
+	int upcIndex = 4;
 	try{
 		csvreader = new CSVReader(reader,",","\"");
 		List<Data> products = new ArrayList<Data>();
@@ -77,39 +81,48 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 				log.error("Format error: row = $j found = ${entries.length} requires = ${details.size()}, skipping");
 				continue;
 			}
-			//todo: change logic to first check for existing of product by sku
 			//todo: include an error list
-			Data product = productsearcher.createNewData();
-			//set defaults
-			product.setId(productsearcher.nextId());
+			Data product = null;
+			SearchQuery query = productsearcher.createSearchQuery();
+			query.addMatches("rogerssku", entries[rogersskuIndex]);
+			query.addMatches("manufacturersku", entries[manufacturerskuIndex]);
+			query.addMatches("upc", entries[upcIndex]);
+			query.setAndTogether(false);
+			HitTracker producthits = productsearcher.search(query);
+			for( int k = 0; k < producthits.size(); k++){
+				Data data = producthits.get(k);
+				if (data.get("distributor") == inDistributor){
+					product = productsearcher.searchById(data.getId());
+					break;
+				}
+			}
+			if (product == null){
+				product = productsearcher.createNewData();
+				product.setId(productsearcher.nextId());
+				product.setSourcePath("${inDistributor}/${product.getId()}");
+				product.setProperty("distributor",inDistributor);
+				log.info("created new product, ${product.getId()}")
+			} else {
+				log.info("loaded existing product, ${product.getId()}")
+			}
 			String productid = product.getId();
-			product.setSourcePath("${inDistributor}/${productid}");
-			product.setProperty("distributor",inDistributor);
 			for (int i=0; i < details.size(); i++) {
 				String entry = entries[i].trim();
 				PropertyDetail detail = details.get(i);
 				if (detail.isList()){
 					//categoryid,  phone,  manufacturerid, displaydesignationid,
 					if (detail.getListId() == "asset"){
-						if (inMap.containsKey(entry)==false && inMap.containsKey("${entry}.jpg") == false){
-							log.error("Error: unable find $entry in list of uploaded files, ${inMap.keySet()}, skipping");
-							continue;
-						}
 						Page from = inMap.containsKey(entry) ? inMap.get(entry) : inMap.get("${entry}.jpg");
-						if (from.exists() == false)
+						if (from !=null && from.exists())
 						{
-							log.error("Internal Error: unable find [${from.getName()}] in list of uploaded files, skipping");
-							continue;
+							createPrimaryAsset(store,product,from);
 						}
-						createPrimaryAsset(store,product,from);
 					} else {
 						Searcher searcher = archive.getSearcher(detail.getListId());
 						Data remote = searcher.searchByField("name",entry);
-						if (remote==null){
-							log.error("Error: unable to find $entry (${detail.getListId()}), skipping");
-							continue;
+						if (remote!=null){
+							product.setProperty(detail.getId(),remote.getId());
 						}
-						product.setProperty(detail.getId(),remote.getId());
 					}
 				} else if (detail.isBoolean()){
 					//approved clearancecentre
@@ -123,7 +136,10 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 							product.setProperty(detail.getId(),"$money");
 						}//otherwise skip
 					} else {
-						product.setProperty(detail.getId(),entry);
+						//if empty then don't overwrite
+						if (entry.isEmpty() == false){
+							product.setProperty(detail.getId(),entry);
+						}
 					}
 				}
 			}
@@ -163,6 +179,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 		
 	}catch (Exception e){
 		log.error(e.getMessage(),e);
+		e.printStackTrace();
 	}
 	finally{
 		try{
@@ -191,10 +208,16 @@ public void createPrimaryAsset(Store inStore, Data inProduct, Page fromPage)
 		MediaArchive archive = inStore.getStoreMediaManager().getMediaArchive();
 		Page toPage = archive.getPageManager().getPage(path);
 		archive.getPageManager().copyPage(fromPage, toPage);
-		Asset asset = archive.createAsset(sourcepath);
+		Asset asset = archive.getAssetBySourcePath(sourcepath);
+		if(asset ==  null)
+		{
+			asset = archive.createAsset(sourcepath);
+		}
 		asset.setPrimaryFile(filename);
+		archive.removeGeneratedImages(asset);
 		archive.saveAsset(asset, null);
 		inProduct.setProperty("image", asset.getId());
+		archive.fireMediaEvent("importing/assetuploaded",null,asset);
 	} catch (Exception e) {
 		log.error(e.getMessage(),e);
 	}
