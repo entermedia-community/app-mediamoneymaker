@@ -27,6 +27,7 @@ import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -178,7 +179,27 @@ public class CartModule extends BaseStoreModule {
 		String id = inPageRequest.getRequestParameter("itemid");
 		if (id != null) {
 			Cart cart = getCart(inPageRequest);
+			CartItem cartitem  = null;
+			//find cartitem first
+			for (Iterator<?> iterator = cart.getItemIterator(); iterator.hasNext();)
+			{
+				CartItem item = (CartItem) iterator.next();
+				if (id.equals(item.getId()))
+				{
+					cartitem = item;
+					break;
+				}
+			}
 			cart.removeById(id);
+			if (cartitem != null && cartitem.getProduct().isCoupon()){
+				List<Adjustment> adjustments = cart.getAdjustments();
+				for (Adjustment adjustment:adjustments){
+					if (adjustment.getProductId()!=null && adjustment.getProductId().equals(cartitem.getProduct().getId())){
+						adjustments.remove(adjustment);
+						break;
+					}
+				}
+			}
 		}
 	}
 	

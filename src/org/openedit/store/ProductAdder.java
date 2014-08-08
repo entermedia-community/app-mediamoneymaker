@@ -16,9 +16,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
+import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -526,6 +527,7 @@ public class ProductAdder
 					}
 					
 					//percentage, discount, product, minquantity, minsubtotal, expirydate, acceptmultiple, restricttouser
+					String facevalue = inventoryItem.getPriceSupport() == null ? "0" : inventoryItem.getPriceSupport().getYourPriceByQuantity(1).toShortString();
 					double percentage = coupon.getPercentage();
 					double discount = coupon.getDiscount();
 					String productid = coupon.getProductId();
@@ -537,7 +539,7 @@ public class ProductAdder
 					String restrict = coupon.getUserRestriction();
 					List<String> sites = coupon.getSiteRestrictions();
 					
-					log.info("Coupon Details - Precentage: "+percentage+", Product: "+productid+", Min quantity: "+minquantity+", Min Subtotal: "+minsubtotal+", Expiry: "+expiry+" ("+inventoryItem.getProperty("expirydate")+"), Multiple: "+multiple+", On per user? "+oneperuser+", User: "+restrict+", Restricted to Sites: "+sites);
+					log.info("Coupon Details - Face Value: "+facevalue+", Discount: "+discount+", Precentage: "+percentage+", Product: "+productid+", Min quantity: "+minquantity+", Min Subtotal: "+minsubtotal+", Expiry: "+expiry+" ("+inventoryItem.getProperty("expirydate")+"), Multiple: "+multiple+", On per user? "+oneperuser+", User: "+restrict+", Restricted to Sites: "+sites);
 					
 					if (!coupon.isSiteAllowed(inReq))
 					{
@@ -629,6 +631,31 @@ public class ProductAdder
 					}
 					else
 					{
+						Money subtotal = inCart.getSubTotal();
+						Money couponValue = inventoryItem.getYourPrice();
+						
+						//need to add couponadjustment here
+						if ( (couponValue.doubleValue() * -1) > subtotal.doubleValue()){
+							List<Adjustment> adjustments = inCart.getAdjustments();
+							boolean addAdjustment = true;
+							for (Adjustment adjust: adjustments){
+								if (adjust instanceof CouponAdjustment){
+									CouponAdjustment discadj = (CouponAdjustment) adjust;
+									if (couponcode.equals(discadj.getInventoryItemId())){
+										addAdjustment = false;
+									}
+								}
+							}
+							if (addAdjustment){
+								Money adjustedprice = subtotal.add(couponValue);
+								CouponAdjustment adjustment = new CouponAdjustment();
+								adjustment.setProductId(productId);
+								adjustment.setInventoryItemId(couponcode);
+								adjustment.setDiscount(adjustedprice.doubleValue());
+								inCart.addAdjustment(adjustment);
+							}
+						}
+						
 						CartItem cartItem = new CartItem();
 						cartItem.setInventoryItem(inventoryItem);
 						inCart.addItem(cartItem);

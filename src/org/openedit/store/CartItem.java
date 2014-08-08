@@ -261,6 +261,16 @@ public class CartItem extends BaseData
 		Option option = (Option)getOptionsMap().get(inId);
 		if (option == null)
 		{
+			if (inId.equalsIgnoreCase("size"))
+			{
+				Option size = getSize();
+				return size!=null && size.getValue()!=null;
+			}
+			if (inId.equalsIgnoreCase("color"))
+			{
+				Option coption = getColor();
+				return  (coption != null && coption.getValue() != null);
+			}
 			return false;
 		}
 		else
