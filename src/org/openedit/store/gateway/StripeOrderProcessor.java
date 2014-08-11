@@ -255,7 +255,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			double rate = Double.parseDouble(fee_structure);
 			totalFee = new Money(rate);
 			if (rate < 1.0d){
-				totalFee = inOrder.getTotalPrice().multiply(new Fraction(rate));
+				totalFee = inOrder.getSubTotal().multiply(new Fraction(rate));
 			}
 		}
 		return totalFee;
