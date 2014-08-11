@@ -107,7 +107,7 @@ public class ProductAdder
 			if (quantity <= 0 && !product.isCoupon())
 			{
 				//remove the product if quantity is less than or equal to zero
-				inCart.removeProduct(product);
+//				inCart.removeProduct(product); //DON'T DO THIS!
 				continue;
 			}
 			// Look for any options being passed to us. Option can be a size,
