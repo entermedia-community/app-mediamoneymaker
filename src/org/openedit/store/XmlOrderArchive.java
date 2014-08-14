@@ -69,15 +69,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 	protected PropertyDetailsArchive fieldFieldArchive;
 	protected StringEncryption fieldStringEncryption;
 	protected UserManager fieldUserManager;
-	protected CacheManager fieldCacheManager;
-
-	public CacheManager getCacheManager() {
-		return fieldCacheManager;
-	}
-
-	public void setCacheManager(CacheManager inCacheManager) {
-		fieldCacheManager = inCacheManager;
-	}
+	
 
 	public PostMail getPostMail() {
 		return postMail;
@@ -592,10 +584,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 	public SubmittedOrder loadSubmittedOrder(Store inStore, String inUserName,
 			String inOrderId) throws StoreException {
-		SubmittedOrder order = (SubmittedOrder) getCacheManager().get(inStore.getCatalogId() + "storeOrder" ,inOrderId);
-		if(order != null){
-			return order;
-		}
+
+	
 		
 		File input = new File(getOrdersDirectory(inStore), inUserName + "/"
 				+ inOrderId + ".xml");
@@ -608,9 +598,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		} catch (FileNotFoundException e) {
 			throw new StoreException(e);
 		}
-		 order = new SubmittedOrder();
+		SubmittedOrder order = new SubmittedOrder();
 		loadSubmittedOrder(inStore, orderElement, order);
-		getCacheManager().put(inStore.getCatalogId() + "storeOrder", inOrderId, order);
+
 		return order;
 	}
 
