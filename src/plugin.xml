@@ -154,7 +154,6 @@
   <bean id="orderArchive" class="org.openedit.store.XmlOrderArchive" >
 	  <property name="postMail"><ref bean="postMail" /></property>
 	  <property name="stringEncryption"><ref bean="stringEncryption" /></property>
-	  <property name="cacheManager"><ref bean="cacheManager" /></property>
 	  
   </bean>
   
