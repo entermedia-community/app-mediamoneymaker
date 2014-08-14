@@ -814,10 +814,11 @@ public class CartModule extends BaseStoreModule {
 			// Order succeeded - remove cart
 			cart.removeAllItems();
 			cart.getAdjustments().clear();
+			store.saveOrder(order);
+
 		}
 		//export order again after state change
 //		log.info("#### ADJUSTMENTS 2: "+order.getAdjustments());
-		store.saveOrder(order);
 		//append this to order history, opened
 		inPageRequest.putPageValue("orderhistorystate", "orderplaced");
 		appendToOrderHistory(inPageRequest);

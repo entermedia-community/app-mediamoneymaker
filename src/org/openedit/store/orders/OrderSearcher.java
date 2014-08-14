@@ -191,10 +191,12 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	@Override
 	public void saveData(Data inData, User inUser) {
 		if (inData instanceof Order) {
-			Order order = (Order) inData;
-			getOrderArchive().saveOrder(getStore(), order);
+			getStore().saveOrder((Order)inData);
+			//Order order = (Order) inData;
+			//getOrderArchive().saveOrder(getStore(), order);
 		}
-		updateIndex(inData);
+//		updateIndex(inData);
+		
 	}
 
 	@Override
