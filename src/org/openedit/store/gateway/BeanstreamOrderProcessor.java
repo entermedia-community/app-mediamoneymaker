@@ -243,8 +243,11 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			inOrder.setOrderState(orderState);
 		} catch (Exception e) {
 			OrderState orderState = new OrderState();
+			orderState = inStore.getOrderState(Order.REJECTED);
+
 			orderState.setDescription("An error occurred while processing your transaction.");
 			orderState.setOk(false);
+
 			inOrder.setOrderState(orderState);
 			e.printStackTrace();
 			throw new StoreException(e);
