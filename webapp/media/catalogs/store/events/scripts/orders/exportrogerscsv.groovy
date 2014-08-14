@@ -202,8 +202,18 @@ public class ExportRogersCsv extends EnterMediaObject {
 			
 			//Get Distributor
 			Searcher distribsearcher = manager.getSearcher(catalogid, "distributor");
-			Data distributor = distribsearcher.searchById(item.getProduct().get("distributor"));
-			orderDetailRow.add(distributor.get("name"));
+			if (item.getProduct().get("distributor") != null){
+				Data distributor = distribsearcher.searchById(item.getProduct().get("distributor"));
+				if (distributor!=null){
+					orderDetailRow.add(distributor.get("name"));
+				} else {
+					orderDetailRow.add("[unknown]");
+				}
+			} else {
+				orderDetailRow.add("[unknown]");
+			}
+			
+			
 
 			//Get Order Info
 			orderDetailRow.add(order.getDate().toString());
