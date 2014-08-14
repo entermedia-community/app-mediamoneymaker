@@ -238,22 +238,26 @@
 	#if ( $order.paymentMethod.cardNumber && $order.paymentMethod.cardNumber != "" )
 		#if( $order.getOrderState().getId() == "authorized" )
 			Authorized $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+			#set($cardNumber = $order.getPaymentMethod().getMaskedCardNumber())
+			#if($cardNumber)
+				Card number: $cardNumber<br>
+			#else
+				Card number: Not possible to display.<br>
+			#end
+			Expiration date: $order.paymentMethod.expirationDateString<br>
 		#elseif( $order.getOrderState().getId() == "captured" )
+			<!-- 
 			Captured $order.totalPrice to <b>$order.paymentMethod.creditCardType</b><br>
+			 -->
 		#else
+			<!-- 
 			Accepted $order.totalPrice on <b>$order.paymentMethod.creditCardType</b><br>
+			 -->
 		#end
-
-		#set($cardNumber = $order.getPaymentMethod().getMaskedCardNumber())
-		#if($cardNumber)
-			Card number: $cardNumber<br>
-		#else
-			Card number: Not possible to display.<br>
-		#end
-		Expiration date: $order.paymentMethod.expirationDateString<br>
+		
 		#if( $canmanageorders )
 
-		#if( $order.getOrderState().getId() == "authorized" )
+		#if( $order.getOrderState().getId() == "authorized" && $content.isPropertyTrue("captureauthorizedorders"))
 		<br>
 			<form action="$home$apphome/admin/orders/captureorder.html" name="capture">
 				Once the product is shipped then charges can be applied
