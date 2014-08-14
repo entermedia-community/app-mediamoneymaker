@@ -579,8 +579,8 @@ public class ImportCesiumInvoice extends EnterMediaObject {
 													log.info(strMsg);
 													completeList.add(strMsg);
 												}
-												store.getOrderArchive().saveOrder(store, order);
-												store.getOrderSearcher().reIndexAll();
+												store.saveOrder(store, order);
+												//store.getOrderSearcher().reIndexAll();
 												strMsg = "Order (" + purchaseOrder + ") saved.";
 												log.info(strMsg);
 												completeList.add(strMsg);

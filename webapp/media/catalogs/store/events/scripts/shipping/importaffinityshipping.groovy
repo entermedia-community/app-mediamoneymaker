@@ -291,7 +291,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 								strMsg = "Order status(" + orderNumber + ") set to partially shipped.";
 								log.info(strMsg);
 							}
-							store.getOrderArchive().saveOrder(store, order);
+							store.saveOrder(store);
 							strMsg = "Order (" + orderNumber + ") saved.";
 							log.info(strMsg);
 						}
@@ -333,7 +333,7 @@ public class ImportAffinityShipping  extends EnterMediaObject {
 							strMsg = "Order status(" + orderNumber + ") set to partially shipped.";
 							log.info(strMsg);
 						}
-						store.getOrderArchive().saveOrder(store, order);
+						store.saveOrder(order);
 						strMsg = "Order (" + orderNumber + ") saved.";
 						log.info(strMsg);
 					}

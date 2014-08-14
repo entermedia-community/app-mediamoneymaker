@@ -16,7 +16,6 @@ import com.openedit.users.UserManager
 public void handleSubmission(){
 	
 	WebPageRequest inReq = context;
-	Store store = context.getPageValue("store");
 	MediaArchive archive = context.getPageValue("mediaarchive");
  	UserManager manager = archive.getModuleManager().getBean("userManager");
 	User user = inReq.getUser();

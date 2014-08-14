@@ -185,8 +185,8 @@ public class ExportEdiOrder extends EnterMediaObject {
 								generatedfiles.add(inMsg);
 
 								order.setProperty("edistatus", "generated");
-								store.getOrderArchive().saveOrder(store, order);
-								ordersearcher.saveData(order, inReq.getUser());
+								store.saveOrder(order);
+								
 								inMsg = "Order (" + order.getId() + ") has been updated.";
 								log.info(inMsg);
 								//append to order history

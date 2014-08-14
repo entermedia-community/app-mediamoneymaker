@@ -159,7 +159,7 @@ public class FtpExportResults extends EnterMediaObject {
 									ftpTransferedFiles.add(inMsg);
 									
 									order.setProperty("edistatus", "senttoedi");
-									store.getOrderArchive().saveOrder(store, order);
+									store.saveOrder(order);
 									ordersearcher.saveData(order, inReq.getUser());
 									
 									inMsg = "Order (" + order.getId() + ") has been updated.";
