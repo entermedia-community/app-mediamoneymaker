@@ -98,6 +98,14 @@ public void doImport() {
 			invoiceNode.InvoiceGroup.InvoiceHeader.each{
 				ArrayList items = new ArrayList();
 				String ponumber = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
+				
+				if(ponumber.startsWith("Rogers")){
+					
+					String [] split = ponumber.split("|");
+					ponumber = split[0];
+					
+				}
+				
 				String invoicenumber = it.InvoiceNumber.text()
 				Data invoice = invoicesearcher.searchByField("invoicenumber", invoicenumber);
 				

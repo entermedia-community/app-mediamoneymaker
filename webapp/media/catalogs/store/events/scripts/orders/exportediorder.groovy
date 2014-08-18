@@ -106,9 +106,16 @@ public class ExportEdiOrder extends EnterMediaObject {
 			Data currentOrder = orderIterator.next();
 
 			Order order = ordersearcher.searchById(currentOrder.getId());
+			
 			if (order == null) {
 				throw new OpenEditException("Invalid Order");
+			}			
+			
+			if(order.startsWith("Rogers") && order.rogersponumber == null){
+				log.info("Skipping Rogers order that does not have PO");
+				continue;
 			}
+
 			String orderStatus = order.get("orderstatus");
 			if (orderStatus == "authorized"  || ( orderStatus == "accepted" && Boolean.parseBoolean(order.get("oktosendtoedi"))) ) {
 				String ediStatus = order.get("edistatus");
@@ -348,7 +355,12 @@ public class ExportEdiOrder extends EnterMediaObject {
 				TblReferenceNbr()
 				{
 					Qualifier("PO")
-					ReferenceNbr(order.getId())
+					if(order.getId().startsWith("Rogers")){
+						ReferenceNbr(order.getId() + "|" + order.get("rogersponumber"))
+					}else{
+						ReferenceNbr(order.getId())
+					
+					}
 				}
 
 			} // end Attributes

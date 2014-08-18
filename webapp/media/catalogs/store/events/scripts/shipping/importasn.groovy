@@ -152,6 +152,7 @@ class XMLPathProcessor extends PathProcessor
 						break;
 					case 2:
 						purchaseOrder = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
+						
 						shippingDate = DATE_FORMAT.parse(it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text());
 						break;
 					case 4:
@@ -167,6 +168,13 @@ class XMLPathProcessor extends PathProcessor
 				if (distributorData == null){
 					updateASN(page,gssnd,carrier,waybill,purchaseOrder,shippingDate,quantity,vendorCode,"Unable to find distributor ${gssnd}.");
 					return;
+				}
+				
+				if(purchaseOrder.startsWith("Rogers")){
+					
+					String [] split = purchaseOrder.split("|");
+					purchaseOrder = split[0];
+					
 				}
 				Order order = (Order) archive.getData("storeOrder", purchaseOrder);
 				if (order == null){
