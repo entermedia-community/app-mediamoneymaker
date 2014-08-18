@@ -28,7 +28,7 @@
             <div class="product-price">
 				#if($cancheckout) 
 			        #if( $cell.regularprice ) 
-			        	Regular:  <span style="text-decoration:line-through;">$cell.regularprice</span>
+			        	<span style="color:red">Regular:  <span style="text-decoration:line-through;">$cell.regularprice</span></span>
 			        	<br/>
 			        	<span style="font-size:larger;">Sale: $cell.yourprice</span>
 			        #else
