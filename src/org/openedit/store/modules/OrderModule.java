@@ -1015,6 +1015,7 @@ public class OrderModule extends BaseModule
 					Date now = new Date();
 					String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
 					as400Record.setProperty("date", newDate);
+					as400Record.setProperty("exportstatus", "open");
 					as400Searcher.saveData(as400Record, inContext.getUser());
 				}
 				String orderstatus = "accepted";//"authorized";
