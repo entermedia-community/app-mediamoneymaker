@@ -125,10 +125,10 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		
 		if(inOrder.get("stripetoken") == null){
 			log.error("cannot find stripetoken, aborting");
-			OrderState orderState = inStore.getOrderState(Order.REJECTED);
-			orderState.setDescription("Configuration error: stripe token not found");
-			orderState.setOk(false);
-			inOrder.setOrderState(orderState);
+//			OrderState orderState = inStore.getOrderState(Order.REJECTED);
+//			orderState.setDescription("Configuration error: stripe token not found");
+//			orderState.setOk(false);
+//			inOrder.setOrderState(orderState);
 			return;	
 		}
 		
