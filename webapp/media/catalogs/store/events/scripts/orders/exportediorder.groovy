@@ -53,6 +53,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
+		Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
 
 		//Get proper FTP info from Parameter
 		String ftpID = "";
@@ -111,9 +112,18 @@ public class ExportEdiOrder extends EnterMediaObject {
 				throw new OpenEditException("Invalid Order");
 			}			
 			
-			if(order.startsWith("Rogers") && order.rogersponumber == null){
-				log.info("Skipping Rogers order that does not have PO");
-				continue;
+			String rogersPO = null;
+			if(order.getId().startsWith("Rogers") && order.get("batchid")!=null){
+				String batchid = order.get("batchid");
+				Data batchentry = as400searcher.searchByField("batchid", batchid);
+				if (batchentry!=null){
+					String po = batchentry.get("as400po");
+					if (po == null || po.trim().isEmpty()){
+						log.info("Skipping Rogers order that does not have PO");
+						continue;
+					}
+					rogersPO = po;
+				}
 			}
 
 			String orderStatus = order.get("orderstatus");
@@ -161,7 +171,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 							xml.'PurchaseOrder'()
 							{
 								Attributes()
-								populateGroup(xml, storesearcher,  distributor, log, order)
+								populateGroup(xml, storesearcher,  distributor, log, order, rogersPO)
 							}
 
 							if (validateXML(writer, catalogid))
@@ -220,19 +230,19 @@ public class ExportEdiOrder extends EnterMediaObject {
 		}
 	}
 
-	private void populateGroup(xml, Searcher storesearcher,  Data distributor, log, Order order) {
+	private void populateGroup(xml, Searcher storesearcher,  Data distributor, log, Order order, String rogersPO) {
 
 		if (order == null) {
-			throw new OpenEditException("Invalid Order (populateGroup) (" + orderid + ")");
+			throw new OpenEditException("Invalid Order (populateGroup)");
 		}
 		log.info("orderid: " + order.getId());
 		xml.POGroup()
 		{
-			populateHeader(xml, distributor, order)
+			populateHeader(xml, distributor, order, rogersPO)
 		}
 	}
 
-	private void populateHeader(xml, Data distributor,Order order) {
+	private void populateHeader(xml, Data distributor,Order order, String rogersPO) {
 		boolean production = Boolean.parseBoolean(context.findValue('productionmode'));
 
 		BaseWebPageRequest inReq = context;
@@ -355,8 +365,8 @@ public class ExportEdiOrder extends EnterMediaObject {
 				TblReferenceNbr()
 				{
 					Qualifier("PO")
-					if(order.getId().startsWith("Rogers")){
-						ReferenceNbr(order.getId() + "|" + order.get("rogersponumber"))
+					if(order.getId().startsWith("Rogers") && rogersPO!=null){
+						ReferenceNbr(order.getId() + "|" + rogersPO)
 					}else{
 						ReferenceNbr(order.getId())
 					
@@ -391,9 +401,15 @@ public class ExportEdiOrder extends EnterMediaObject {
 			String saleprice = p.get("clearanceprice");
 			
 			if (isAccepted){
+				//In the case that this is a purchase order, the distributor invoices the customer directly
+				//so this is the retail price that they should invoice the customer, instead of the wholesale price they'd 
+				//invoice Area.
 				UnitPrice(p.getYourPrice().toShortString().replace('$', ''));
 			} else {
-				if (saleprice != null && saleprice.toDouble() > 0) {
+				
+				
+				if (saleprice && saleprice.toDouble() > 0) {
+					
 					UnitPrice(saleprice)
 				} else {
 					UnitPrice(p.get("rogersprice"))
