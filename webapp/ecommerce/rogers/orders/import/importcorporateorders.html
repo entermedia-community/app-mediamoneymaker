@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    function hasChanged() {
+    	var input = $('#mainfile').val();
+        if (input != "") {
+            $('#submitform').css('display', 'block');
+        } else {
+        	$('#submitform').css('display', 'none');
+        }
+    }
+</script>
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">[[Rogers Orders]]</div>
+	<div class="ui-widget-content">
+	 <form action="$home$apphome/rogers/orders/import/corporateordersresults.html" method="post" id="inputfile" enctype="multipart/form-data">
+		 <p>[[Click the "Choose File" button to upload the BUDDTL CSV File]]</p>
+		 <input type="file" name="file.0" id="mainfile" onchange="hasChanged();" /><br />
+		 <input id="submitform" type="submit" name="Upload" value="[[Upload File]]"/ style="display: none;">
+		 <input type="hidden" name="path" value="$cataloghome/temp/upload/rogers_buddtl.csv"/>
+	</form>
+	</div> 
+</div>

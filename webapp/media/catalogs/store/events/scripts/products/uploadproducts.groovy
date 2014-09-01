@@ -7,6 +7,11 @@ import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
+import org.openedit.money.Money
+import org.openedit.store.InventoryItem
+import org.openedit.store.Price
+import org.openedit.store.PriceSupport
+import org.openedit.store.Product
 import org.openedit.store.Store
 
 import com.openedit.WebPageRequest
@@ -73,12 +78,18 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 		csvreader = new CSVReader(reader,",","\"");
 		List<Data> products = new ArrayList<Data>();
 		List<String> ids = new ArrayList<String>();
+		List<String> invalidrows = new ArrayList<String>();
+		List<String> invalidproducts = new ArrayList<String>();
 		List<?> lines = csvreader.readAll();
 		Iterator<?> itr = lines.iterator();
-		for(int j=1; itr.hasNext(); j++){
+		for(int j=0; itr.hasNext(); j++){
 			String [] entries = itr.next();
+			if (j == 0) {
+				continue; //assume header is included, skip
+			}
 			if (entries.length != details.size()){
 				log.error("Format error: row = $j found = ${entries.length} requires = ${details.size()}, skipping");
+				invalidrows.add("<span style='color:blue'>Format error: row = $j found = ${entries.length} requires = ${details.size()}</span>");
 				continue;
 			}
 			//todo: include an error list
@@ -96,12 +107,14 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 					break;
 				}
 			}
+			boolean updateInventory = false;
 			if (product == null){
 				product = productsearcher.createNewData();
 				product.setId(productsearcher.nextId());
 				product.setSourcePath("${inDistributor}/${product.getId()}");
 				product.setProperty("distributor",inDistributor);
 				log.info("created new product, ${product.getId()}")
+				updateInventory = true;
 			} else {
 				log.info("loaded existing product, ${product.getId()}")
 			}
@@ -134,6 +147,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 						double money = toDouble(entry.replace("\$", "").replace(",", "").trim(),-1.0d);
 						if (money >= 0.0d){
 							product.setProperty(detail.getId(),"$money");
+							updateInventory = true;
 						}//otherwise skip
 					} else {
 						//if empty then don't overwrite
@@ -141,6 +155,14 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 							product.setProperty(detail.getId(),entry);
 						}
 					}
+				}
+			}
+			if (updateInventory){
+				boolean updated = updateInventoryItem(archive,product);
+				if (updated == false){
+					log.info("Error updating inventory items for $product, not saving");
+					invalidproducts.add("<span style='color:red'>Not valid: unable to update inventory</span><br/> row = $j <br/>values = ${entries}");
+					continue;
 				}
 			}
 			ids.add(productid);
@@ -158,14 +180,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 			productsearcher.saveAllData(cache, null);
 			cache.clear();
 		}
-		//add hits to page
-//		SearchQuery query  = productsearcher.createSearchQuery();
-//		query.addOrsGroup("id", ids);
-//		HitTracker hits = productsearcher.search(query);
-//		hits.setHitsPerPage(32);
-//		inReq.putPageValue("hits",hits);
-		
-		//add query to page
+		//add query to request
 		if (ids.isEmpty() == false){
 			StringBuilder buf = new StringBuilder();
 			buf.append("id:");
@@ -175,17 +190,82 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 			String searchids = buf.toString().substring(0,buf.toString().length()-1);
 			inReq.putPageValue("searchquery", searchids);
 		}
-		
-		
+		//add invalids to request
+		if (invalidrows.isEmpty() == false){
+			inReq.putPageValue("invalidrows", invalidrows);
+		}
+		if (invalidproducts.isEmpty() == false){
+			inReq.putPageValue("invalidproducts", invalidproducts);
+		}
 	}catch (Exception e){
 		log.error(e.getMessage(),e);
-		e.printStackTrace();
 	}
 	finally{
 		try{
 			csvreader.close();
 		}catch(Exception e){}
 	}
+}
+
+public boolean updateInventoryItem(MediaArchive archive, Product product){
+	boolean success = false;
+	if (product.get("distributor") == null) {
+		return success;
+	}
+	if (product.get("rogersprice") == null) {
+		return success;
+	}
+	if( Boolean.parseBoolean(product.clearancecentre) && product.clearanceprice == null){
+		return success;
+	}
+	product.clearItems();
+	double pricefactor = getPriceFactor(archive,product);
+	log.info("price factor for $product: $pricefactor");
+	//Create the new item
+	InventoryItem inventoryItem = new InventoryItem(product.get("manufacturersku"));
+	Money wholesaleprice = new Money(product.get("rogersprice"));
+	Money retailprice = new Money(product.get("rogersprice"));
+	retailprice = retailprice.multiply(pricefactor);
+	//retail price
+	Price price = new Price(retailprice);
+	//wholesale price
+	price.setWholesalePrice(wholesaleprice);
+	PriceSupport pricing = new PriceSupport();
+	if(Boolean.parseBoolean(product.clearancecentre)){
+		Money clearanceprice = new Money(product.get("clearanceprice"));
+		clearanceprice = clearanceprice.multiply(pricefactor);
+		price.setSalePrice(clearanceprice);
+	}
+	pricing.addTierPrice(1, price);
+	inventoryItem.setPriceSupport(pricing);
+	product.addInventoryItem(inventoryItem);
+	return true;
+}
+
+public double getPriceFactor(MediaArchive archive, Product product)
+{
+	//get price factor for authorized/non-authorized products
+	String distributorid = product.get("distributor");
+	if (distributorid)
+	{
+		Searcher distributorsearcher = archive.getSearcher("distributor");
+		Data distributordata = distributorsearcher.searchById(distributorid);
+		String auth = distributordata.get("rogersauthorizedpricefactor");
+		String nonauth = distributordata.get("rogersnonauthorizedpricefactor");
+		double authfact = toDouble(auth,1.1);//default 10%
+		double nonauthfact = toDouble(nonauth,1.02);// default 2%
+		if (authfact < 1.0) authfact +=1.0;
+		if (nonauthfact < 1.0) nonauthfact +=1.0;
+		log.info("retail price factor for $distributordata (${distributorid}): authorized $authfact, non-authorized $nonauthfact");
+		
+		String isauth = product.get("rogersauthorized");
+		if ("true".equalsIgnoreCase(isauth))
+		{
+			return authfact;
+		}
+		return nonauthfact;
+	}
+	return 1.1;//original default if all else fails
 }
 
 public void cleanup(PageManager inPageManager,Map<String,Page> inMap){

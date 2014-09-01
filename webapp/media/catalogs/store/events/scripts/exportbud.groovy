@@ -75,17 +75,10 @@ public class ExportBud extends EnterMediaObject {
 		Searcher ordersearcher = media.getOrderSearcher();
 		
 		String batchid = context.getRequestParameter("batchid");
-		
-//		String sessionid = media.getContext().getRequestParameter("hitssessionid");
-//		if (sessionid == null) {
-//			return;
-//		}
 		HitTracker orderList = ordersearcher.fieldSearch("batchid", batchid)
 		if (orderList == null) {
 			return;
 		}
-		//log.info("Found # of Orders:" + orderList.getSelectedHits().size());
-		
 		//Create the CSV Writer Objects
 		StringWriter output  = new StringWriter();
 		CSVWriter writer  = new CSVWriter(output, (char)',');
@@ -93,20 +86,19 @@ public class ExportBud extends EnterMediaObject {
 		List headerRow = new ArrayList();
 		headerRow.add("");
 		
-		getHeaderRows(orderList, ordersearcher, log, headerRow)
+		getHeaderRows(orderList, ordersearcher, log, headerRow);
 		writeRowToWriter(headerRow, writer);
 		
 		Searcher storesearcher = searcherManager.getSearcher(archive.getCatalogId(), "rogersstore");
-		
 		for (Iterator iterator = storesearcher.getAllHits().iterator(); iterator.hasNext();)
 		{
 			List detailRow = new ArrayList();
 			Data store = iterator.next();
 			String storeNum = store.getId();
 			if (storeNum.length() > 0) {
-				detailRow.add(storeNum);
 				if (existsInGoodOrderList("rogers-"+storeNum)) {
 					log.info(" - Processing Store: " + storeNum);
+					detailRow.add(storeNum);
 					for (String as400id in headerRow) {
 						if (as400id.length() > 0 ) {
 							int quantity = 0;
@@ -128,21 +120,21 @@ public class ExportBud extends EnterMediaObject {
 							detailRow.add(quantity.toString());
 						}
 					}
-				} else {
-					for (String as400id in headerRow) {
-						if (as400id.length() > 0 ) {
-							detailRow.add("0");
-						}
-					}
+					writeRowToWriter(detailRow, writer);
 				}
 			}
-			writeRowToWriter(detailRow, writer);
 		}
-		
 		writer.close();
 		
-		String finalout = output.toString();
+		String finalout = output.toString().replace("\"","").replace(",","\t").replace("\n","\r\n");
 		context.putPageValue("export", finalout);
+		context.putPageValue("exportbud", finalout);
+		
+		String folder ="/media/catalogs/store/as400zip";
+		String filename ="/buddtl.txt";
+		Page page = getPageManager().getPage("${folder}${filename}");
+		page.setContentItem(new StringItem(page.getPath(), finalout, "UTF-8"));
+		getPageManager().putPage(page);
 		
 		Searcher as400searcher = searcherManager.getSearcher(archive.getCatalogId(), "as400");
 		Data exportStatus = as400searcher.searchByField("batchid", batchid);
@@ -156,28 +148,18 @@ public class ExportBud extends EnterMediaObject {
 	}
 
 	private getHeaderRows(HitTracker orderList, Searcher ordersearcher, Log log, List headerRow) {
-		
-		for (Iterator orderIterator = orderList.iterator(); orderIterator.hasNext();) {
-
-			Data currentOrder = orderIterator.next();
-
-			Order order = ordersearcher.searchById(currentOrder.getId());
-			if (order == null) {
-				throw new OpenEditException("Invalid Order");
-			}
-
-			log.info("DATA: Order found: " + order.getId());
-
-			//Write the body of all of the orders
-			List orderitems = order.getItems();
-			for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();) {
-				CartItem item = itemIterator.next();
-				String id = item.getProduct().get("as400id");
-				if (!headerRow.contains(id)) {
-					log.info("OrderItem: New item found: " + id);
-					headerRow.add(id);
-					if (!existsInGoodOrderList(order.getCustomer().getId())){
-						addToGoodOrderList(order.getCustomer().getId());
+		orderList.each{
+			Order order = ordersearcher.searchById(it.id);
+			if (order){
+				List orderitems = order.getItems();
+				for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();) {
+					CartItem item = itemIterator.next();
+					String id = item.getProduct().get("as400id");
+					if (id) {
+						if (headerRow.contains(id) == false) 
+							headerRow.add(id);
+						if (getGoodOrderList().contains(order.getCustomer().getId()) == false)
+							getGoodOrderList().add(order.getCustomer().getId());
 					}
 				}
 			}

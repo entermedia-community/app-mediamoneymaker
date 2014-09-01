@@ -52,7 +52,7 @@
 							<td class="rogers-summary-product-price">Price</td>
 							<td class="rogers-summary-line-total">Line Total</td>
 						</tr>
-						#set($cartitems = $order.getItems())
+						#set($cartitems = $order.getCart().getItems())
 						#foreach($cartitem in $cartitems)
 						<tr>
 							#set($product = $cartitem.getProduct())
@@ -95,7 +95,7 @@
 						</tr>
 						<tr>
 							<td style="padding: 3px; text-align: right; font-size: 12px;" colspan="6">
-								<form action="processorders.html" method="post">
+								<form action="/$applicationid/rogers/orders/orderset/processorders.html" method="post">
 									<input type="hidden" name="action" value="processorder">
 									<input type="hidden" name="orderset" value="${orderset}">
 									#set($size = $orderset.getNumberOfOrders())

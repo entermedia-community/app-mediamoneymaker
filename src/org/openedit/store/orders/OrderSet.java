@@ -68,6 +68,17 @@ public class OrderSet {
 		return order;
 	}
 	
+	public Order getOrderByCustomerId(String customerId){
+		Iterator<Order> itr = getOrders().iterator();
+		while(itr.hasNext()){
+			Order order = itr.next();
+			if (order.getCustomer().getId().equals(customerId)){
+				return order;
+			}
+		}
+		return null;
+	}
+	
 	public Order getRemovedOrder(String inId) {
 		Order order = null;
 		for (Iterator<Order> iterator = getRemovedOrders().iterator(); iterator.hasNext();) {
@@ -219,9 +230,18 @@ public class OrderSet {
 		return getOrders().size();
 	}
 	
+	public void recalculateOrder(Store store){
+		Iterator<Order> itr = getOrders().iterator();
+		while(itr.hasNext()){
+			Order order = itr.next();
+			recalculateOrder(order,store);
+		}
+	}
+	
 	public void recalculateOrder( Order inOrder, Store store ) {
 		Cart cart = inOrder.getCart();
 		if (cart.getItems().size() > 0) {
+			
 			inOrder.setSubTotal(cart.getSubTotal());
 	
 			Customer customer = inOrder.getCustomer();

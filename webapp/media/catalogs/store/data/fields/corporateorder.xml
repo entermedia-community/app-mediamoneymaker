@@ -1,0 +1,15 @@
+
+<properties prefix="corporateorder" beanname="dataSearcher">
+  <property id="id" index="true" stored="true" editable="false" searchtype="corporateorder" internalfield="true">Id</property>
+  <property id="name" index="true" keyword="true" stored="true" editable="true" searchtype="corporateorder">Name</property>
+  <property id="sourcepath">SourcePath</property>
+  <property id="orderno" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">Order Number</property>
+  <property id="date" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder" type="date" viewtype="datetime">Date</property>
+  <property id="store" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder" type="list" viewtype="list" listid="rogersstore">Store</property>
+  <property id="product" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">Product</property>
+  <property id="inventory" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">Inventory</property>
+  <property id="quantity" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">Quantity</property>
+  <property id="delta" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">Delta</property>
+  <property id="status" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder" type="list" viewtype="list" listid="corporateorderstatus">Status</property>
+  <property id="uuid" index="true" keyword="true"  stored="true"  editable="true" searchtype="corporateorder">UUID</property>
+</properties>

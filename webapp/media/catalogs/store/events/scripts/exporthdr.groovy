@@ -10,13 +10,11 @@ import org.openedit.store.Product
 import org.openedit.store.orders.Order
 import org.openedit.store.util.MediaUtilities
 
-import com.openedit.BaseWebPageRequest
 import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.GroovyScriptRunner
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 
@@ -62,7 +60,7 @@ public class ExportBudHdr extends EnterMediaObject {
 		
 		//Create the CSV Writer Objects
 		StringWriter output  = new StringWriter();
-		CSVWriter writer  = new CSVWriter(output, (char)',');
+		CSVWriter writer  = new CSVWriter(output, ",".getChars()[0], " ".getChars()[0]);
 		
 		List headerRow = new ArrayList();
 		headerRow.add("");
@@ -91,13 +89,13 @@ public class ExportBudHdr extends EnterMediaObject {
 						}
 					}
 				}
-				nextrow = as400id + productCount.toString().padLeft(padSpacesLeft) + "-";
-				nextrow += " ".padLeft(padSpaces) + "-";
-				nextrow += "WIRELES".padLeft(9) + "-";
-				nextrow += " ".padLeft(padSpaces) + "-";
-				nextrow += " ".padLeft(7);
+				nextrow = as400id + productCount.toString().padLeft(9) + "-";
+				nextrow += " ".padLeft(5) + "-";
+				nextrow += "WIRELE".padLeft(9) + "-";
+				nextrow += " ".padLeft(4) + "-";
+				nextrow += " ".padLeft(8);
 				nextrow += productCount.toString();
-				nextrow += " ".padLeft(7) + "0";
+				nextrow += " ".padLeft(6) + "0";
 				log.info("nextrow: " + nextrow);
 				writer.writeNext(nextrow);
 			}
@@ -105,8 +103,19 @@ public class ExportBudHdr extends EnterMediaObject {
 		
 		writer.close();
 		
-		String finalout = output.toString();
+		String finalout = output.toString().replace("\"","").replace("\n","\r\n");
 		context.putPageValue("export", finalout);
+		context.putPageValue("exporthdr", finalout);
+		
+		String folder ="/media/catalogs/store/as400zip";
+		String filename ="/budhdr.txt";
+		Page page = getPageManager().getPage("${folder}${filename}");
+		page.setContentItem(new StringItem(page.getPath(), finalout, "UTF-8"));
+		getPageManager().putPage(page);
+		
+		//add path to context
+		context.setRequestParameter("path", folder);
+		context.setRequestParameter("stripfolders", folder);
 		
 		Searcher as400searcher = searcherManager.getSearcher(archive.getCatalogId(), "as400");
 		Data exportStatus = as400searcher.searchByField("batchid", batchid);

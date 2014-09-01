@@ -1,0 +1,6 @@
+
+<properties prefix="corporateorderstatus" beanname="dataSearcher">
+  <property id="id" index="true" stored="true" editable="true" searchtype="corporateorderstatus" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="corporateorderstatus">Name</property>
+  <property id="sourcepath">SourcePath</property>
+</properties>

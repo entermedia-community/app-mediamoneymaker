@@ -9,9 +9,10 @@
   <path-action name="Date.now" />
   <property name="continueShoppingUrl">/${applicationid}/browse.html</property>
   <style id="ecommerce-app-css" href="${themeprefix}/styles/ecommerce.css"/>
-    <property name="productshowonly">+approved:true</property>
-  	  	<property name="oetextfilter">xmltranslation</property>
+  <property name="productshowonly">-approved:false;-distributor:105;+rogersauthorized:true;+active:true</property>
+  <property name="oetextfilter">xmltranslation</property>
   <property name="catalogid">media/catalogs/store</property>
+  <property name="captureauthorizedorders">false</property>
   <permission name="viewspecialorder">
     <userprofile value="true" name="viewspecialorder"/>
   </permission>

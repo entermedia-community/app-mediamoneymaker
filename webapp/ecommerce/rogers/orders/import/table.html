@@ -1,0 +1,214 @@
+
+<div id="orderresults">
+	#if($uuid)
+	#else
+		#set($uuid = $context.getRequestParameter("uuid"))
+	#end
+	
+	<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=quickfix">Fix All</a>
+	
+	<form method="post" action="/$applicationid/rogers/orders/import/confirm.html">
+		<input type="hidden" name="uuid" value="$uuid" />
+		<input class="btn" id="confirm-order" type="submit" value="Confirm" style="display:none;"/>
+	</form>
+	
+	#set($storesearcher = $mediaarchive.getSearcher("rogersstore"))
+	#set($productsearcher = $mediaarchive.getSearcher("product"))
+	#set($searcher = $mediaarchive.getSearcher("corporateorder"))
+	#set($statussearcher = $mediaarchive.getSearcher("corporateorderstatus"))
+	
+	#set($query = $searcher.createSearchQuery())
+	#set($null = $query.addMatches("uuid", $uuid))
+	#set($null = $query.addSortBy("idUp"))
+	#set($null = $query.addSortBy("ordernoUp"))
+	#set($hits = $searcher.search($query))
+	
+	#set($stores = [])
+	
+	#set($isok = true)
+	#if($hits.size() == 0)
+		#set($isok = false)
+	#end
+	
+	#foreach($hit in $hits)
+		#set($data = $productsearcher.searchByField("as400id",$hit.product))
+		#if($data)
+			#set($product = $productsearcher.searchById($data.id))
+		#else
+			#set($product = false)
+		#end
+		#if($stores.isEmpty())
+			#set($null = $stores.add($hit.store))
+			#set($store = $storesearcher.searchById($hit.store))
+			#set($itemCounter = 0)
+			<h4>
+				#if($store)
+					$store ($hit.store)
+				#else
+					Unknown Store ($hit.store)
+				#end
+				&nbsp;&nbsp;
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+			</h4>
+			<table>
+				<thead>
+					<tr class="results-list-head">
+						<th align="center" width="100" nowrap class="results-list-head">AS400 ID</th>
+						<th align="center" width="500" nowrap class="results-list-head">Product</th>
+						<th align="center" width="100" nowrap class="results-list-head">Inventory</th>
+						<th align="center" width="100" nowrap class="results-list-head">Quantity</th>
+						<th align="center" width="100" nowrap class="results-list-head">Remaining</th>
+						<th align="center" width="200" nowrap class="results-list-head">Status</th>
+						<th align="center" width="200" nowrap class="results-list-head">Action</th>
+					</tr>
+				</thead>
+		#end
+		#if($stores.contains($hit.store))
+			#if($hit.quantity != 0)
+				#set($itemCounter = $itemCounter + 1)
+				#set($bkgrnd = $itemCounter % 2)
+				#set($color = "a")
+				#if ( $bkgrnd != 0 ) #set($color = "b") #end
+				<tr class="results-list-${color}">
+					<td>$hit.product</td>
+					<td>#if($product) $product #end</td>
+					<td>$hit.inventory</td>
+					<td>
+						<input type="text" id="quantity-${hit.id}" value="${hit.quantity}" />
+					</td>
+					<td>$hit.delta</td>
+					<td>
+						#if($hit.status == "ok") #set($color = "green") #else #set($color = "red") #end
+						<span style="color:${color}">
+							$statussearcher.searchById($hit.status)
+						</span>
+					</td>
+					<td>
+						#if($hit.status != "ok")
+							#set($isok = false)
+						#end
+						#set($options = [])
+						#if($hit.status == "ok" || $hit.status == "insufficientstock")
+							#set($null = $options.add(["update","Update"]))
+						#elseif($hit.status == "insufficientstocktransient")
+							#set($null = $options.add(["refresh","Refresh"]))
+						#end
+						#set($null = $options.add(["delete","Delete"]))
+						<select data-hitid="${hit.id}" class="selectaction">
+							<option value="no_op"></option>
+							#foreach($option in $options)
+								<option value="${option.get(0)}">$option.get(1)</option>
+							#end
+						</select>
+					</td>
+				</tr>
+			#end
+		#else
+			</table>
+			#set($store = $storesearcher.searchById($hit.store))
+			#set($itemCounter = 0)
+			<h4>
+				#if($store)
+					$store ($hit.store)
+				#else
+					Unknown Store ($hit.store)
+				#end
+				&nbsp;&nbsp;
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
+				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+			</h4>
+			<table>
+				<thead>
+					<tr class="results-list-head">
+						<th align="center" width="100" nowrap class="results-list-head">AS400 ID</th>
+						<th align="center" width="500" nowrap class="results-list-head">Product</th>
+						<th align="center" width="100" nowrap class="results-list-head">Inventory</th>
+						<th align="center" width="100" nowrap class="results-list-head">Quantity</th>
+						<th align="center" width="100" nowrap class="results-list-head">Remaining</th>
+						<th align="center" width="200" nowrap class="results-list-head">Status</th>
+						<th align="center" width="200" nowrap class="results-list-head">Action</th>
+					</tr>
+				</thead>
+			#set($null = $stores.add($hit.store))
+			#if($hit.quantity != 0)
+				#set($itemCounter = $itemCounter + 1)
+				#set($bkgrnd = $itemCounter % 2)
+				#set($color = "a")
+				#if ( $bkgrnd != 0 ) #set($color = "b") #end
+				<tr class="results-list-${color}">
+					<td>$hit.product</td>
+					<td>#if($product) $product #end</td>
+					<td>$hit.inventory</td>
+					<td>
+						<input type="text" id="quantity-${hit.id}" value="${hit.quantity}" />
+					</td>
+					<td>$hit.delta</td>
+					<td>
+						#if($hit.status == "ok") #set($color = "green") #else #set($color = "red") #end
+						<span style="color:${color}">
+							$statussearcher.searchById($hit.status)
+						</span>
+					</td>
+					<td>
+						#if($hit.status != "ok")
+							#set($isok = false)
+						#end
+						#set($options = [])
+						#if($hit.status == "ok" || $hit.status == "insufficientstock")
+							#set($null = $options.add(["update","Update"]))
+						#elseif($hit.status == "insufficientstocktransient")
+							#set($null = $options.add(["refresh","Refresh"]))
+						#end
+						#set($null = $options.add(["delete","Delete"]))
+						<select data-hitid="${hit.id}" class="selectaction">
+							<option value="no_op"></option>
+							#foreach($option in $options)
+								<option value="${option.get(0)}">$option.get(1)</option>
+							#end
+						</select>
+					</td>
+				</tr>
+			#end
+		#end
+		#set($store = false)
+	#end
+	#if($hits.size() > 0)
+		</table>
+	#end
+</div>
+
+#set($D = "$")
+<script>
+#if($isok)
+$(document).ready(function(){
+	$("#confirm-order").show();
+});
+#end
+$(".selectaction").change(function(){
+	var id = $(this).data("hitid");
+	var val = $(this).val();
+	if (val == "no_op"){
+		return false;
+	}
+	var url = "/$applicationid/rogers/orders/import/update.html"
+	var data = "oemaxlevel=1&operation="+val+"&uuid=${uuid}&entry="+id;
+	if (val == "update"){
+		var quantity = $("#quantity-"+id).val();//check if it's a number
+		data += "&quantity="+quantity;
+	}
+	${D}.ajax({
+		url: url,
+		type: "POST",
+		data: data,
+		success: function(a,b,c){
+			$("#orderresults").html(a);
+		},
+		error: function(a,b,c){
+			
+		}
+	});
+});
+</script>
