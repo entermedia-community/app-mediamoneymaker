@@ -23,7 +23,6 @@ import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
-import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Product;
@@ -989,6 +988,7 @@ public class OrderModule extends BaseModule
 	}
 	
 	public void processOrders( WebPageRequest inContext ) {
+		//fix this first check -- why is this needed???
 		if (inContext.getRequestParameter("action").equalsIgnoreCase("processorder")) {
 			List<String> orderList = new ArrayList<String>();
 			
@@ -1017,28 +1017,25 @@ public class OrderModule extends BaseModule
 					as400Record.setProperty("date", newDate);
 					as400Record.setProperty("exportstatus", "open");
 					as400Searcher.saveData(as400Record, inContext.getUser());
+					
+					//here:
+					//nuke all temporary orders in corporate order table
 				}
-				String orderstatus = "accepted";//"authorized";
-//				UserProfile user = inContext.getUserProfile();
-//				String userRole = user.get("settingsgroup");
-//				Data role = (Data) roleSearcher.searchById(userRole);
-//				String roleName = role.getName();
-//				if (roleName.equalsIgnoreCase("Rogers Special Order")) {
-//					orderstatus = "open";
-//				}
-				
 				OrderState orderState = new OrderState();
-				orderState.setId(orderstatus);
-				orderState.setDescription(orderstatus);
+				orderState.setId("accepted");
+				orderState.setDescription("accepted");
 				orderState.setOk(true);
 				order.setOrderState(orderState);
 				
-				Date now = new Date();
+				Date now = new Date();//why?????
 				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
 				order.setProperty("orderdate", newDate);
 				
-				order.setProperty("orderstatus", orderstatus);
-				order.setProperty("order_status", orderstatus);
+				order.setProperty("orderstatus", "accepted");
+				order.setProperty("order_status", "accepted");
+				
+				//trigger order history events
+				//change inventory!!!!
 				
 				orderSearcher.saveData(order, inContext.getUser());
 				orderList.add(order.getId());

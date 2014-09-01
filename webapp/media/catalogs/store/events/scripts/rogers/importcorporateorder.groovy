@@ -23,9 +23,7 @@ public void init(){
 		return;
 	}
 	
-	StringBuilder buf = new StringBuilder();
 	String delimiter = guessCellDelimiter(upload);
-	
 	Reader reader = upload.getReader();
 	CSVReader csvreader = new CSVReader(reader, delimiter.charAt(0), "\"".charAt(0));
 	List<?> rows = csvreader.readAll();
