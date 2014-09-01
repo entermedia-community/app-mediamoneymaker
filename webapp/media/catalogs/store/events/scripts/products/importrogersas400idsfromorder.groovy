@@ -103,9 +103,9 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 		Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
 		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 
-		def int columnAS400id = 9;
+		def int columnAS400id = 0;//9;
 		def String colHeadAS400ID = "INUMBR";
-		def int columnRogersID = 33;
+		def int columnRogersID = 5;//33;
 		def String colHeadROGERSID = "IVNDP#";
 
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
@@ -154,26 +154,27 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 					//Get Product Info
 					//Read the oraclesku from the as400 table
 					String rogerssku = orderLine[columnRogersID].trim();
-					
-					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku); 
-					if (targetProduct != null) {
-						//Search the product for the oracle sku(rogerssku)
-						Product product = productsearcher.searchById(targetProduct.getId());
-						if (product != null) {
-							//Product found now check the as400id
-							if (product.get("as400id") == null) {
-								//as400id not found - update product
-								product.setProperty("as400id", orderLine[columnAS400id]);
-								productsearcher.saveData(product, context.getUser());
-								addToGoodProductList(product.getId() + " - updated");
+					if(rogerssku){
+						Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku.replace("/", "\\/"));
+						if (targetProduct != null) {
+							//Search the product for the oracle sku(rogerssku)
+							Product product = productsearcher.searchById(targetProduct.getId());
+							if (product != null) {
+								//Product found now check the as400id
+								if (product.get("as400id") == null) {
+									//as400id not found - update product
+									product.setProperty("as400id", orderLine[columnAS400id]);
+									productsearcher.saveData(product, context.getUser());
+									addToGoodProductList(product.getId() + " - updated");
+								}
+							} else {
+								throw new OpenEditException("Product could not be loaded:" + targetProduct.getId());
 							}
 						} else {
-							throw new OpenEditException("Product could not be loaded:" + targetProduct.getId());
+							//ID Does not exist!!! Add to badProductIDList
+							addToBadProductList(rogerssku);
+							log.info("Product could not be found: " + rogerssku);
 						}
-					} else {
-						//ID Does not exist!!! Add to badProductIDList
-						addToBadProductList(rogerssku);
-						log.info("Product could not be found: " + rogerssku);
 					}
 					increaseTotalRows();
 				}
