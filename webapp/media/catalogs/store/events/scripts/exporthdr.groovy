@@ -59,8 +59,8 @@ public class ExportBudHdr extends EnterMediaObject {
 		}
 		
 		//Create the CSV Writer Objects
-		StringWriter output  = new StringWriter();
-		CSVWriter writer  = new CSVWriter(output, ",".getChars()[0], " ".getChars()[0]);
+		StringBuffer output  = new StringBuffer();
+		//CSVWriter writer  = new CSVWriter(output, ",".getChars()[0], " ".getChars()[0]);
 		
 		List headerRow = new ArrayList();
 		headerRow.add("");
@@ -96,14 +96,16 @@ public class ExportBudHdr extends EnterMediaObject {
 				nextrow += " ".padLeft(8);
 				nextrow += productCount.toString();
 				nextrow += " ".padLeft(6) + "0";
+				nextrow += "\r\n";
 				log.info("nextrow: " + nextrow);
-				writer.writeNext(nextrow);
+				output.append(nextrow);
 			}
 		}
 		
-		writer.close();
+		//writer.close();
 		
-		String finalout = output.toString().replace("\"","").replace("\n","\r\n");
+		String finalout = output.toString();
+		//finalout = finalout.replace("\"","").replace("\n","\r\n");
 		context.putPageValue("export", finalout);
 		context.putPageValue("exporthdr", finalout);
 		
