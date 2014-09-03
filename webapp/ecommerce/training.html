@@ -8,85 +8,155 @@
 			<div class="training-header-container">
 				<h1>Rogers Portal Training</h1>
 			</div>
-			<div class="training-sub-container" style="clear: left;">
-				<div class="display-center">
-					<a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+			
+			#set($format = $context.findValue("displayformat"))
+			#if($format == "table")
+				<table class="rogers-list">
+	        		<tr>
+	        			<td class="rogers-list-header">
+	        				<div class="ui-widget-header">Training Documentation</div>
+	        			</td>
+	        		</tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        		<a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank">Quick Start Guide (PDF File)</a>
+			        	</td>
+			        </tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        		<a href="$apphome/RogersPortalTutorial.pdf" target="_blank">Portal Tutorial (PDF File)</a>
+			        	</td>
+			        </tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        			<a href="$apphome/Fitbit_Training.pdf" target="_blank">Fitbit Training (PDF File)</a>
+			        	</td>
+			        </tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        		<a href="$apphome/Gear_Comparison_Chart.pdf" target="_blank">Gear Comparison Chart (PDF File)</a>
+			        	</td>
+			        </tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        		<a href="$apphome/Gear_2_Neo_Fit_F2F.pdf" target="_blank">Samsung Gear 2 (PDF File)</a>
+			        	</td>
+			        </tr>
+			        <tr>
+			        	<td class="rogers-list" style="margin-left: 10px;">
+			        		<a href="$apphome/Quick%20Reference%20Chart_Final_Dealers.pdf" target="_blank">Quick Reference Chart (PDF File)</a>
+			        	</td>
+			        </tr>
+	    		</table>
+			#else
+				<div class="training-sub-container" style="clear: left;">
+					<div class="display-center">
+						<a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank">Quick Start Guide (PDF File)</a>
+					</div>
 				</div>
-				<div class="display-center">
-					<a href="$apphome/RogersAccessoryPortalQuickStartUpGuide.pdf" target="_blank">Quick Start Guide (PDF File)</a>
+				<div class="training-sub-container">
+					<div class="display-center">
+						<a href="$apphome/RogersPortalTutorial.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/RogersPortalTutorial.pdf" target="_blank">Portal Tutorial (PDF File)</a>
+					</div>
 				</div>
-			</div>
-			<div class="training-sub-container">
-				<div class="display-center">
-					<a href="$apphome/RogersPortalTutorial.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+				<div class="training-sub-container" style="clear: left;">
+					<div class="display-center">
+						<a href="$apphome/Fitbit_Training.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/Fitbit_Training.pdf" target="_blank">Fitbit Training (PDF File)</a>
+					</div>
 				</div>
-				<div class="display-center">
-					<a href="$apphome/RogersPortalTutorial.pdf" target="_blank">Portal Tutorial (PDF File)</a>
+				<div class="training-sub-container">
+					<div class="display-center">
+						<a href="$apphome/Gear_Comparison_Chart.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/Gear_Comparison_Chart.pdf" target="_blank">Gear Comparison Chart (PDF File)</a>
+					</div>
 				</div>
-			</div>
+				<div class="training-sub-container" style="clear: left;">
+					<div class="display-center">
+						<a href="$apphome/Gear_2_Neo_Fit_F2F.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/Gear_2_Neo_Fit_F2F.pdf" target="_blank">Samsung Gear 2 (PDF File)</a>
+					</div>
+				</div>
+				<div class="training-sub-container">
+					<div class="display-center">
+						<a href="$apphome/Quick%20Reference%20Chart_Final_Dealers.pdf" target="_blank"><img src="$apphome/theme/images/Adobe-PDF-Logo.jpg" border="0" width="100px"/></a>
+					</div>
+					<div class="display-center">
+						<a href="$apphome/Quick%20Reference%20Chart_Final_Dealers.pdf" target="_blank">Quick Reference Chart (PDF File)</a>
+					</div>
+				</div>
+			#end
 		</div>
 	</div>
 	<div id="home-right">
-	<div class="home-image">
-	<a href="$searchroot/fieldsearch.html?field=clearancecentre&clearancecentre.value=true&operation=matches$!extra">	<img src="$apphome/theme/images/clearance.jpg"/></a>
-
-
-	</div>
-	<div class="home-image">
-	<img src="$apphome/theme/images/shopdeals.png"/>
-	</div>
-	<div class="home-image">
-	<a href="$apphome/promo/launch/index.html">
-	<img src="$apphome/theme/images/promos.png"/>
-	</a>
-	</div>
-	<div class="logo-section">
-	<div class="logos"><img src="$apphome/theme/images/news.png"/></div>
-	<div class="logos"><a href="$apphome/training.html"><img src="$apphome/theme/images/training.png"/></a></div>
-	</div>
+		<div class="home-image">
+		<a href="$searchroot/fieldsearch.html?field=clearancecentre&clearancecentre.value=true&operation=matches$!extra">
+			<img src="$apphome/theme/images/clearance.jpg"/>
+		</a>
+		</div>
+		<div class="home-image">
+			<img src="$apphome/theme/images/shopdeals.png"/>
+		</div>
+		<div class="home-image">
+			<a href="$apphome/promo/launch/index.html">
+				<img src="$apphome/theme/images/promos.png"/>
+			</a>
+		</div>
+		<div class="logo-section">
+			<div class="logos"><a href="$apphome/newsletters.html"><img src="$apphome/theme/images/news.png"/></a></div>
+			<div class="logos"><a href="$apphome/training.html"><img src="$apphome/theme/images/training.png"/></a></div>
+		</div>
 	</div>
 	#if($canbrowseproducts)
-
-	#set($searchroot = "$apphome/search")
-	#set($showsidebar = "true")
-
-
-#elseif($canviewdistributorsection)
-	#set($searchroot = "$apphome/distributors")
-	#set($showsidebar = "true")
-	#if(!$canbrowseproducts)
-		#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
-	#end
-#end                  
-<div id="home-categories">
-	<!-- 
-	#set($categoryidsearcher = $searcherManager.getSearcher("media/catalogs/store", "categoryid"))
-	#set($query = $categoryidsearcher.createSearchQuery())
-	$!query.append("id", "*"))
-	$!query.append("active", "true"))
-	$!query.addSortBy("name"))
-	-->
-	#set($mans = $categoryidsearcher.search($query))
-	#foreach($man in $mans)
-		#if($man.id != "12")
-			#if($man.active == "true")
-				<div class="home-logos">
-					<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra"><img width="65" height="65" src="$apphome/theme/images/categories/${man.id}.png"/></a>
-				       	<div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">$man.name</a></div>
-		        </div>
-		    #end
+		#set($searchroot = "$apphome/search")
+		#set($showsidebar = "true")
+	#elseif($canviewdistributorsection)
+		#set($searchroot = "$apphome/distributors")
+		#set($showsidebar = "true")
+		#if(!$canbrowseproducts)
+			#set($extra = "&field=distributor&distributor.value=$userprofile.distributor&operation=matches")
 		#end
-	#end
-</div>
+	#end            
+	<div id="home-categories">
+		#set($categoryidsearcher = $searcherManager.getSearcher("media/catalogs/store", "categoryid"))
+		#set($query = $categoryidsearcher.createSearchQuery())
+		#set($null = $query.append("id", "*") )
+		#set($null = $query.append("active", "true"))
+		#set($null = $query.addSortBy("name") )
+		#set($mans = $categoryidsearcher.search($query))
+		#foreach($man in $mans)
+			#if($man.id != "12")
+				#if($man.active == "true")
+					<div class="home-logos">
+						<a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">
+							<img  src="$apphome/theme/images/categories/${man.id}.jpg"/></a>
+					    <div><a style="clear: both;" href="$searchroot/fieldsearch.html?field=categoryid&categoryid.value=$man.id&operation=exact$!extra">#translate($man.name)</a></div>
+			        </div>
+			    #end
+			#end
+		#end
+	</div>
 
 </div>
 #else
-
-#if($canviewdistributorsection)
-Please wait..
-<meta http-equiv="refresh" content="0;url=/ecommerce/distributors/index.html">
+	#if($canviewdistributorsection)
+	Please wait..
+	<meta http-equiv="refresh" content="0;url=/ecommerce/distributors/index.html">
+	#end
 #end
-#end
+<!-- 
 <div class="ui-widget uipanel">
     <table class="rogers-list">
         <tr><td class="rogers-list-header"><div class="ui-widget-header">Rogers Portal Training</div></td></tr>
@@ -101,3 +171,4 @@ Please wait..
         </tr>
     </table>
 </div>
+ -->
