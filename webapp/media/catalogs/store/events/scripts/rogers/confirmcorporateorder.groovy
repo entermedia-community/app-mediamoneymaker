@@ -120,27 +120,33 @@ public void init(){
 			orderSet.addOrder(order);
 		}
 		String as400id = data.get("product");
-		Data targetProduct = productsearcher.searchByField("as400id", as400id);
-		Product product = productsearcher.searchById(targetProduct.getId());
-		
-		CartItem orderitem = new CartItem();
-		orderitem.setProduct(product);
-		orderitem.setQuantity(quantity);
-		
-		order.getCart().addItem(orderitem);
-		order.addItem(orderitem);
+		//search for rogersas400id or fidoas400id
+		Data targetProduct = productsearcher.searchByField("rogersas400id", as400id);
+		if (targetProduct == null){
+			targetProduct = productsearcher.searchByField("fidoas400id", as400id);
+		}
+		if (targetProduct){
+			Product product = productsearcher.searchById(targetProduct.getId());
+			CartItem orderitem = new CartItem();
+			
+			orderitem.setProduct(product);
+			orderitem.setQuantity(quantity);
+			
+			order.getCart().addItem(orderitem);
+			order.addItem(orderitem);
+		}
 	}
 	orderSet.recalculateAll(store);
 	req.putSessionValue("orderset", orderSet);
 	
 	//delete all: should move this to processcorporateorder.groovy
-	query = searcher.createSearchQuery();
-	query.addMatches("uuid",uuid);
-	hits = searcher.search(query);
-	hits.each{
-		Data data = searcher.searchById(it.id);
-		searcher.delete(data, null);
-	}
+//	query = searcher.createSearchQuery();
+//	query.addMatches("uuid",uuid);
+//	hits = searcher.search(query);
+//	hits.each{
+//		Data data = searcher.searchById(it.id);
+//		searcher.delete(data, null);
+//	}
 }
 
 public int toInt(String inVal, int inDefault){

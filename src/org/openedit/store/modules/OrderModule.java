@@ -25,6 +25,7 @@ import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
+import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.TaxRate;
@@ -996,6 +997,7 @@ public class OrderModule extends BaseModule
 			String catalogid = archive.getCatalogId();
 			SearcherManager searcherManager = archive.getSearcherManager();
 			Searcher as400Searcher = searcherManager.getSearcher(catalogid, "as400");
+			Searcher corporateorderSearcher = archive.getSearcher("corporateorder");
 			Searcher roleSearcher = searcherManager.getSearcher(catalogid, "settingsgroup");
 			
 			Store store = getStore(inContext);
@@ -1017,9 +1019,6 @@ public class OrderModule extends BaseModule
 					as400Record.setProperty("date", newDate);
 					as400Record.setProperty("exportstatus", "open");
 					as400Searcher.saveData(as400Record, inContext.getUser());
-					
-					//here:
-					//nuke all temporary orders in corporate order table
 				}
 				OrderState orderState = new OrderState();
 				orderState.setId("accepted");
@@ -1027,20 +1026,49 @@ public class OrderModule extends BaseModule
 				orderState.setOk(true);
 				order.setOrderState(orderState);
 				
-				Date now = new Date();//why?????
-				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(now);
+				String newDate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 				order.setProperty("orderdate", newDate);
 				
 				order.setProperty("orderstatus", "accepted");
 				order.setProperty("order_status", "accepted");
 				
 				//trigger order history events
-				//change inventory!!!!
-				
-				orderSearcher.saveData(order, inContext.getUser());
+				//change inventory
+				for (Iterator iter = order.getCart().getItemIterator(); iter.hasNext();) {
+					CartItem cartItem = (CartItem) iter.next();
+					InventoryItem inventoryItem = cartItem.getInventoryItem();
+					if (inventoryItem != null) {
+						inventoryItem.decreaseQuantityInStock(cartItem
+								.getQuantity());
+					}
+				}
+				// Save updated product inventory values to disk
+				for (Iterator iter = order.getCart().getItemIterator(); iter.hasNext();) {
+					CartItem cartItem = (CartItem) iter.next();
+					Product product = cartItem.getProduct();
+					store.getProductArchive().saveProduct(product);
+				}
+				//save order
+				store.saveOrder(order);
+				//add to list
 				orderList.add(order.getId());
-				
 			}
+			
+			//remove all temporary orders from corporate order table
+			if (as400Record!=null && as400Record.get("batchid")!=null){
+				SearchQuery query = corporateorderSearcher.createSearchQuery();
+				query.addMatches("uuid",as400Record.get("batchid"));
+				HitTracker hits = corporateorderSearcher.search(query);
+				if (hits.isEmpty()==false){
+					Iterator<?> itr = hits.iterator();
+					List<Data> entries = new ArrayList<Data>();
+					while(itr.hasNext()){
+						Data data = (Data) itr.next();
+						corporateorderSearcher.delete(data,null);
+					}
+				}
+			}
+			
 			inContext.putPageValue("as400record", as400Record);//save as400record
 			inContext.putPageValue("orderlist", orderList);
 			inContext.putSessionValue("orderset", null);

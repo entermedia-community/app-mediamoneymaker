@@ -138,13 +138,19 @@ public Map<String,?> getProducts(MediaArchive archive,String [] ids){
 	ids.each{
 		if (it){
 			index++;
-			Data data = productsearcher.searchByField("as400id", it);
+			String as400id = it;
+			Data data = productsearcher.searchByField("rogersas400id", as400id);
+			if (data == null){
+				data = productsearcher.searchByField("fidoas400id", as400id);
+			}
 			if (data){
 				Product product = productsearcher.searchById(data.id);
-				if (product) map.put("$index", product);
-				else map.put("$index",it);
-			} else {
-				map.put("$index",it);
+				if (product) {
+					map.put("$index", product);
+				}
+			}
+			if (map.containsKey("$index") == false){
+				map.put("$index",as400id);
 			}
 		}
 	}

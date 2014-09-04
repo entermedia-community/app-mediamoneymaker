@@ -6,27 +6,14 @@ package products
  */
 
 //Import List
-import java.lang.ProcessEnvironment.Value;
-
-import groovy.mock.interceptor.MockProxyMetaClass.FallThroughMarker;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVReader
-import org.openedit.store.Cart
-import org.openedit.store.CartItem
-import org.openedit.store.PaymentMethod
 import org.openedit.store.Product
-import org.openedit.store.PurchaseOrderMethod
-import org.openedit.store.Store
-import org.openedit.store.customer.Address
-import org.openedit.store.customer.Customer
 import org.openedit.store.orders.Order
-import org.openedit.store.orders.OrderState
 
-import com.openedit.OpenEditException
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
 import com.openedit.page.Page
@@ -107,6 +94,8 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 		def String colHeadAS400ID = "INUMBR";
 		def int columnRogersID = 5;//33;
 		def String colHeadROGERSID = "IVNDP#";
+		def int department = 1;
+		def String colHeadISDEPT = "ISDEPT";
 
 		//PropertyDetail detail = itemsearcher.getDetail("quantity");
 		//detail.get("column");
@@ -132,6 +121,7 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 			def List columnNames = new ArrayList();
 			columnNames.add(colHeadAS400ID);
 			columnNames.add(colHeadROGERSID);
+			columnNames.add(colHeadISDEPT);
 
 			for ( int index=0; index < columnNumbers.size(); index++ ) {
 				if ( headers[columnNumbers.get(index)].toString().toUpperCase() != columnNames.get(index).toString().toUpperCase()) {
@@ -140,44 +130,63 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 				}
 			}
 			if (errorFields == true) {
-
 				errorOut = "<p>The following fields in the input file are invalid:<ul>" + errorOut + "</ul></p>";
 				context.putPageValue("errorout", errorOut);
-
 			} else {
-
-				def String SEARCH_FIELD = "rogerssku";
-				
+				Map<String,Product> productmap = new HashMap<String,Product>();
 				String[] orderLine;
 				while ((orderLine = read.readNext()) != null)
 				{
 					//Get Product Info
 					//Read the oraclesku from the as400 table
 					String rogerssku = orderLine[columnRogersID].trim();
+					String as400id = orderLine[columnAS400id].trim();
+					String isdept = orderLine[department].trim();
+					boolean isRogers = (isdept == "74");//rogers: 74, fido: 174
 					if(rogerssku){
-						Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku.replace("/", "\\/"));
-						if (targetProduct != null) {
-							//Search the product for the oracle sku(rogerssku)
-							Product product = productsearcher.searchById(targetProduct.getId());
-							if (product != null) {
-								//Product found now check the as400id
-								if (product.get("as400id") == null) {
-									//as400id not found - update product
-									product.setProperty("as400id", orderLine[columnAS400id]);
-									productsearcher.saveData(product, context.getUser());
-									addToGoodProductList(product.getId() + " - updated");
-								}
-							} else {
-								throw new OpenEditException("Product could not be loaded:" + targetProduct.getId());
+						Data targetProduct = productsearcher.searchByField("rogerssku", rogerssku.replace("/", "\\/"));
+						if (targetProduct) {
+							//product may have already been updated
+							//load from hashmap
+							if (productmap.containsKey(targetProduct.getId()) == false){
+								Product p = productsearcher.searchById(targetProduct.getId());
+								p.setProperty("rogersas400id", null);
+								p.setProperty("fidoas400id", null);
+								p.setProperty("fidosas400id", null);
+								p.setProperty("as400id", null);
+								productmap.put(targetProduct.getId(), p);
+							}
+							Product product = productmap.get(targetProduct.getId());
+							//support both fido and rogers as400 ids
+							if (isRogers) {
+								product.setProperty("rogersas400id", as400id);
+							}
+							else {
+								product.setProperty("fidoas400id", as400id);
+								System.out.println("##### FIDO AS400 ID $as400id -- ${product.getId()}");
 							}
 						} else {
 							//ID Does not exist!!! Add to badProductIDList
 							addToBadProductList(rogerssku);
-							log.info("Product could not be found: " + rogerssku);
+//							log.info("Product could not be found: " + rogerssku);
 						}
 					}
 					increaseTotalRows();
 				}
+				
+				//go through hasmap, adding to goodproductlist and updating backend
+				List edited = new ArrayList();
+				Iterator itr = productmap.keySet().iterator();
+				while(itr.hasNext()){
+					Product product = productmap.get(itr.next());
+					addToGoodProductList(product.getId() + " - updated");
+					edited.add(product);
+					if (edited.size() == 2000){
+						productsearcher.saveAllData(edited, null);
+						edited.clear();
+					}
+				}
+				productsearcher.saveAllData(edited, null);
 			}
 		}
 		finally

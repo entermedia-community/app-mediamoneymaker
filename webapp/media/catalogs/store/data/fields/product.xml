@@ -3,24 +3,24 @@
   <property id="id" index="true" stored="true" editable="true" searchtype="product">Product ID</property>
   <property id="name" stored="true" editable="true" searchtype="product">Name</property>
   <property id="code" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Model Code</property>
-  <property id="description" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false" defaultoperation="contains">Keyword Search</property>
+  <property id="description" index="true" stored="true" editable="true" searchtype="product" internalfield="false" defaultoperation="contains">Keyword Search</property>
   <property id="producttype" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Product Type</property>
-  <property id="users" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Users</property>
-  <property id="groups" index="true" stored="true" editable="true" type="list" searchtype="product" datatype="list">Groups</property>
+  <property id="users" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="userprofile" datatype="list">Users</property>
+  <property id="group" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" listcatalogid="system" datatype="list">Restrict to Group(s)</property>
   <property id="accessoryid" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory ID</property>
   <property id="accessorynamefr" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name FR</property>
   <property id="upc" index="true" stored="true" editable="true" searchtype="product" internalfield="false">UPC</property>
-  <property id="manufacturerid" index="true" stored="true" editable="true" type="list" viewtype="list" sort="name" searchtype="product" internalfield="false" listid="manufacturer" datatype="list" defaultoperation="exact">Manufacturer</property>
-  <property id="image" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" internalfield="false" listid="asset" datatype="list">Image</property>
+  <property id="manufacturerid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" listid="manufacturer" datatype="list" defaultoperation="exact">Manufacturer</property>
+  <property id="image" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}" internalfield="false" listid="asset" datatype="list" required="true">Primary Image</property>
   <property id="descrip" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Description</property>
   <property id="descripfr" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false">Description - FR</property>
-  <property id="rogerssku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers - SKU</property>
+  <property id="rogerssku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false" defaultoperation="contains">Rogers - SKU</property>
   <property id="manufacturersku" index="true" keyword="true" stored="true" editable="true" searchtype="product" internalfield="false">Manufacturer - SKU</property>
-  <property id="categoryid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" datatype="list" defaultoperation="exact">Product Category</property>
-  <property id="displaydesignationid" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
+  <property id="categoryid" index="true" stored="true" editable="true" type="list" sort="name" searchtype="product" internalfield="false" searchcomponent="list" datatype="list" defaultoperation="exact">Product Category</property>
+  <property id="displaydesignationid" index="true" stored="true" editable="true" type="list" viewtype="multiselect" searchtype="product" internalfield="false" datatype="list">Display Designation</property>
   <property id="msrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers MSRP</property>
   <property id="fidomsrp" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido MSRP</property>
-  <property id="rogersprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Rogers Price</property>
+  <property id="rogersprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Wholesale Cost</property>
   <property id="standardprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Standard Price</property>
   <property id="wholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Wholesale Price</property>
   <property id="fidowholesaleprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Fido Wholesale Price</property>
@@ -33,16 +33,16 @@
   <property id="sourcepath" searchtype="product">SourcePath</property>
   <property id="expectedendoflife" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="product" internalfield="false" datatype="date">Expected End Of Life</property>
   <property id="participantid" index="true" stored="true" searchtype="product">ParticipantID</property>
-  <property id="phone" index="true" stored="true" editable="true" type="list" viewtype="multiselect" sort="name" searchtype="product" regex="name" internalfield="false" datatype="list">Phone Compatibility</property>
+  <property id="phone" index="true" stored="true" editable="true" type="list" viewtype="multiselect" sort="name" searchtype="product" regex="name" internalfield="false" searchcomponent="list" datatype="list">Phone Compatability</property>
   <property id="thumbnailimage" index="true" stored="true" searchtype="product">ThumbnailImage</property>
   <property id="x507" index="true" stored="true" editable="true" searchtype="product">X507</property>
   <property id="topseller" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Top Selling Product</property>
   <property id="rogersstatus" index="true" stored="true" searchtype="product">Rogers Status</property>
   <property id="distributorstatus" index="true" stored="true" searchtype="product">Distributor Status</property>
-  <property id="distributor" index="true" stored="true" type="list" sortable="true" searchtype="product" internalfield="false" datatype="list">Distributor</property>
+  <property id="distributor" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" datatype="list">Distributor</property>
   <property id="clearanceprice" index="true" stored="true" editable="true" searchtype="product" internalfield="false">ClearancePrice</property>
   <property id="clearancecentre" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Clearance Centre</property>
-  <property id="clearancecentredescrip" index="true" stored="true" searchtype="product">ClearanceCentreDescrip</property>
+  <property id="clearancecentredescrip" index="true" stored="true" editable="true" searchtype="product" internalfield="false">ClearanceCentreDescrip</property>
   <property id="clearancecentredescripfr" index="true" stored="true" searchtype="product">ClearanceCentreDescripFR</property>
   <property id="snapshotonmainpage" index="true" stored="true" searchtype="product">SnapshotOnMainPage</property>
   <property id="snapshotstatic" index="true" stored="true" searchtype="product">SnapshotStatic</property>
@@ -55,13 +55,35 @@
   <property id="banneren" index="true" stored="true" searchtype="product">BannerEN</property>
   <property id="bannerfr" index="true" stored="true" searchtype="product">BannerFR</property>
   <property id="bannerid" index="true" stored="true" searchtype="product">BannerID</property>
-  <property id="updatedon" index="true" stored="true" searchtype="product">UpdatedOn</property>
+  <property id="updatedon" index="true" stored="true" sortable="true" type="date" searchtype="product" internalfield="false" datatype="date">UpdatedOn</property>
   <property id="profileid" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="userprofile" datatype="list">Profile ID</property>
-  <property id="accessoryname" index="true" stored="true" searchtype="product">AccessoryName</property>
-  <property id="active" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Active</property>
-  <property id="validitem" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Valid Item</property>
-  <property id="validerrormessage" index="true" stored="true" editable="true" searchtype="product">Valid Error Message</property>
-  <property id="as400id" index="true" stored="true" editable="true" searchtype="product">AS400 ID</property>
+  <property id="accessoryname" index="true" stored="true" editable="true" searchtype="product" internalfield="false">Accessory Name</property>
+  <property id="active" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="list" searchtype="product" internalfield="false" datatype="list">Active Status</property>
+  <property id="comingsoon" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Coming Soon</property>
+  <property id="product_id" index="true" stored="true" editable="true" searchtype="product">Product ID</property>
+  <property id="profile_id" index="true" stored="true" editable="true" searchtype="product">Profile ID</property>
   <property id="inventoryupdated" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="product" internalfield="false" datatype="date">Inventory Updated</property>
-
+  <property id="rogersauthorized" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="product" internalfield="false" datatype="boolean">Rogers Authorized</property>
+  <property id="recurring" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Recurring</property>
+  <property id="frequency" index="true" stored="true" editable="true" sortable="true" type="list" searchtype="product" datatype="list">Frequency</property>
+  <property id="allowspartialpayments" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Allows Partial Payments</property>
+  <property id="maxpayperiod" index="true" stored="true" editable="true" sortable="true" type="list" searchtype="product" datatype="list">Maximum Pay Period</property>
+  <property id="electronicshipping" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="product" internalfield="false" datatype="boolean">Electronic Shipping</property>
+  <property id="minimumquantity" index="true" stored="true" editable="true" sortable="true" searchtype="product" internalfield="false">Minimum Quantity</property>
+  <property id="featuredondistributorportal" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="product" internalfield="false" datatype="boolean">Featured on Distributor Portal</property>
+  <property id="supportimage1" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}/supportimage1" internalfield="false" listid="asset" datatype="list">Support Image #1</property>
+  <property id="supportimage2" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}/supportimage2" internalfield="false" listid="asset" datatype="list">Support Image #2</property>
+  <property id="supportimage3" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}/supportimage3" internalfield="false" listid="asset" datatype="list">Support Image #3</property>
+  <property id="supportimage4" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}/supportimage4" internalfield="false" listid="asset" datatype="list">Support Image #4</property>
+  <property id="supportimage5" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productimages/${sourcepath}/supportimage5" internalfield="false" listid="asset" datatype="list">Support Image #5</property>
+  <property id="productcategory" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="productcategory" datatype="list">Product Category</property>
+  <property id="productsubcategory" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" listid="productsubcategory" datatype="list" foreignkeyid="productcategory">Product SubCategory</property>
+  <property id="productdescription" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false" note="Minimum 50 words, Maximum 500 words requirement - Needs to be in complete sentences and cannot be in bullet points">Product Description</property>
+  <property id="keysellingfeatures" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false" note="4 Bullet points of key selling features, Minimum of 50 words, Maximum of 500 words">Key Selling Features</property>
+  <property id="keysellingfeatures_fr" index="true" stored="true" editable="true" viewtype="html" searchtype="product" internalfield="false" note="In French: 4 Bullet points of key selling features, Minimum of 50 words, Maximum of 500 words">Key Selling Features (FR)</property>
+  <property id="demovideo" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productmedia/demovideo/${sourcepath}" internalfield="false" listid="asset" datatype="list" note="Required for Smart Accessories and Premium categories, but optional for Essentials">Demo Video</property>
+  <property id="manufacturermanual" index="true" stored="true" editable="true" searchtype="product" internalfield="false" note="Link to a copy of the manual for the accessory (Required for Smart Accessories and Premium category)">Manufacturer Manual Link</property>
+  <property id="msrp_rogers" index="true" stored="true" editable="true" searchtype="product" internalfield="false" note="Round down to the nearest dollar; the system will automatically populate the decimal fields with 99">Rogers MSRP</property>
+  <property id="msrp_fido" index="true" stored="true" editable="true" searchtype="product" internalfield="false" note="Round off to the nearest dollar; the system will automatically populate the decimal fields with 00">Fido MSRP</property>
+  <property id="productsellsheet" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="product" sourcepath="/productmedia/sellsheet/${id}" internalfield="false" listid="asset" datatype="list" note="Upload a PDF of sell sheet (Required for Smart and Premium accessories)">Product Sell Sheet</property>
 </properties>

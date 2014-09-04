@@ -3,8 +3,6 @@
  * Created on Aug 24, 2005
  */
 
-import javax.swing.text.DefaultEditorKit.PreviousWordAction;
-
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
@@ -12,6 +10,7 @@ import org.openedit.entermedia.util.CSVReader
 import org.openedit.store.Product
 import org.openedit.store.Store
 
+import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
@@ -46,6 +45,7 @@ public void handleSubmission(){
 		
 		int as400idcol = 0;
 		int rogersSKUcol = 5;
+		int department = 1;
 		
 		def List<String> badProductList = new ArrayList<String>();
 		def List<Product> productsToSave = new ArrayList<Product>();
@@ -56,28 +56,25 @@ public void handleSubmission(){
 		{
 			String as400id = cols[as400idcol];
 			String rogersSKU = cols[rogersSKUcol];
-			
-			if (rogersSKU.trim() != "" ) {
+			boolean isRogers = (cols[department] && cols[department].trim().equals("74"));//rogers: 74, fido: 174
+			if (rogersSKU) {
 				//Search for the product by the RogersSKU
-				
-				Data product = productsearcher.searchByField(SEARCH_FIELD, rogersSKU);
+				Data product = productsearcher.searchByField("rogerssku", rogersSKU.replace("/", "\\/"));
 		        if(product){
 					//lookup product with product searcher
 					Product real= productsearcher.searchById(product.id);
 					if (real)
 					{
-						if (!real.getProperty("as400id").equals(as400id)) {
-							//Set the new value of 
-							real.setProperty("as400id", as400id);
-							//Add to the ProductsToSave List
-							productsToSave.add(real);
+						real.setProperty((isRogers ? "rogersas400id" : "fidoas400id"), as400id);
+						if (real.get("as400id")){
+							real.setProperty("as400id", null);
 						}
+						productsToSave.add(real);
 						goodRows++;
 					} else {
 						badProductList.add(rogersSKU);
 						badRows++;
 					}
-			
 		        } else {
 					badProductList.add(rogersSKU);
 					badRows++;

@@ -38,11 +38,9 @@
 		#set($batchid = "${as400record.batchid}")
 		<h3>Step 1: Export BUD Files</h3>
 		<p>
-		<!-- 
-		<a href="$home$apphome/views/modules/as400/BUDDTL.txt?batchid=${batchid}" class="btn">Export orders to BUDDTL</a><br/> 
-		<a href="$home$apphome/views/modules/as400/BUDHDR.txt?batchid=${batchid}" class="btn">Export orders to BUDHDR</a><br/>
-		-->
-		<a href="$home$apphome/views/modules/as400/export.zip?batchid=${batchid}" class="btn">Download BUDDTL and BUDHDR files</a>
+			<a href="$home$apphome/views/modules/as400/BUDDTL.txt?batchid=${batchid}" class="btn">Export orders to BUDDTL</a><br/> 
+			<a href="$home$apphome/views/modules/as400/BUDHDR.txt?batchid=${batchid}" class="btn">Export orders to BUDHDR</a><br/>
+			<a href="$home$apphome/views/modules/as400/BUDFILES.zip?batchid=${batchid}" class="btn">Download BUDDTL and BUDHDR files</a>
 		</p>
 		
 		<h3>Step 2: Update PO</h3>

@@ -31,9 +31,18 @@
 	#end
 	
 	#foreach($hit in $hits)
-		#set($data = $productsearcher.searchByField("as400id",$hit.product))
-		#if($data)
-			#set($product = $productsearcher.searchById($data.id))
+		#if($hit.product)
+			#set($data = $productsearcher.searchByField("rogersas400id",$hit.product))
+			#if($data)
+				#set($product =  $productsearcher.searchById($data.id))
+			#else
+				#set($data = $productsearcher.searchByField("fidoas400id",$hit.product))
+				#if($data)
+					#set($product =  $productsearcher.searchById($data.id))
+				#else
+					#set($product = false)
+				#end
+			#end
 		#else
 			#set($product = false)
 		#end
@@ -72,7 +81,7 @@
 				#set($color = "a")
 				#if ( $bkgrnd != 0 ) #set($color = "b") #end
 				<tr class="results-list-${color}">
-					<td>$hit.product</td>
+					<td>$!hit.product</td>
 					<td>#if($product) $product #end</td>
 					<td>$hit.inventory</td>
 					<td>
@@ -139,7 +148,7 @@
 				#set($color = "a")
 				#if ( $bkgrnd != 0 ) #set($color = "b") #end
 				<tr class="results-list-${color}">
-					<td>$hit.product</td>
+					<td>$!hit.product</td>
 					<td>#if($product) $product #end</td>
 					<td>$hit.inventory</td>
 					<td>

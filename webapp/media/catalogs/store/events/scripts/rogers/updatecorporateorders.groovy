@@ -129,7 +129,10 @@ public void init(){
 				storemap.put(storeid,new Integer(tally));
 			}
 			if (productid){
-				Data productdata = productsearcher.searchByField("as400id", productid);
+				Data productdata = productsearcher.searchByField("rogersas400id", productid);
+				if (productdata == null){
+					productdata = productsearcher.searchByField("fidoas400id", productid);
+				}
 				if (productdata){
 					Product product = productsearcher.searchById(productdata.getId());
 					if (product){
