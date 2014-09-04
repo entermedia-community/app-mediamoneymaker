@@ -241,15 +241,15 @@ public class ImportRogersOrder extends EnterMediaObject {
 		try
 		{
 			Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
-			Data as400Record = as400searcher.createNewData();
-			as400Record.setId(as400searcher.nextId());
-			as400Record.setName("Batch " + as400Record.getId());
+//			Data as400Record = as400searcher.createNewData();
+//			as400Record.setId(as400searcher.nextId());
+//			as400Record.setName("Batch " + as400Record.getId());
 			String batchID = UUID.randomUUID().toString();
-			as400Record.setProperty("batchid", batchID);
-			as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			as400Record.setProperty("exportstatus", "open");
-			as400Record.setProperty("user", inReq.getUser().getName());
-			as400searcher.saveData(as400Record, inReq.getUser());
+//			as400Record.setProperty("batchid", batchID);
+//			as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+//			as400Record.setProperty("exportstatus", "open");
+//			as400Record.setProperty("user", inReq.getUser().getName());
+//			as400searcher.saveData(as400Record, inReq.getUser());
 
 			def SEARCH_FIELD = "rogerssku";
 			boolean done = false;
@@ -327,100 +327,95 @@ public class ImportRogersOrder extends EnterMediaObject {
 							log.info("ProductID Found: " + product.getId());
 
 							int qty = Integer.parseInt(orderLine[columnQuantity]);
-
-							//Everything is good... Create the cart item!
-							CartItem orderitem = new CartItem();
-
-							orderitem.setProduct(product);
-							orderitem.setQuantity(Integer.parseInt(orderLine[columnQuantity]));
-
-							String as400id = product.get("as400id");
-							if (as400id == null) {
-								product.setProperty("as400id", orderLine[columnAS400id]);
-								productsearcher.saveData(product, inReq.getUser());
-							}
-							Cart cart = order.getCart();
-							cart.addItem(orderitem);
-
-							Address shipping = order.getShippingAddress();
-							if (shipping == null) {
-								Data shippingAddress = addresssearcher.searchById(storeNum);
-								shipping = new Address();
-								shipping.setId(shippingAddress.get("id"));
-								shipping.setName(shippingAddress.get("name"));
-								shipping.setAddress1(shippingAddress.get("address1"));
-								shipping.setAddress2("");
-								shipping.setCity(shippingAddress.get("city"));
-								shipping.setState(shippingAddress.get("province"));
-								shipping.setZipCode(shippingAddress.get("zip"));
-								shipping.setCountry(shippingAddress.get("country"));
-								shipping.setDescription(shippingAddress.get("description"));
-								shipping.setProperty("phone", shippingAddress.get("phone1"));
-								order.setShippingAddress(shipping);
-							}
-							//store.saveOrder(order);
-
-							Address billing = order.getBillingAddress();
-							if (billing == null) {
-								Data billingAddress = addresssearcher.searchById(storeNum);
-								billing = new Address();
-								billing.setId(billingAddress.get("id"));
-								billing.setName(billingAddress.get("name"));
-								billing.setAddress1(billingAddress.get("address1"));
-								billing.setAddress2("");
-								billing.setCity(billingAddress.get("city"));
-								billing.setState(billingAddress.get("province"));
-								billing.setZipCode(billingAddress.get("zip"));
-								billing.setCountry(billingAddress.get("country"));
-								billing.setDescription(billingAddress.get("description"));
-								billing.setProperty("phone", billingAddress.get("phone1"));
-								order.setBillingAddress(billing);
-							}
-
-							Customer customer = order.getCustomer();
-							if (customer == null) {
-								//ADD STORE AS USER
-
-								User user = usersearcher.searchById("rogers-"+storeNum);
-								if (user == null) {
-									user = new BaseUser();
-									user.setId("rogers-"+storeNum);
-									user.setPassword("rogers");
-									user.setFirstName(orderLine[columnStoreName]);
-									usersearcher.saveData(user, inReq.getUser());
+							if (qty > 0){
+							
+								//Everything is good... Create the cart item!
+								CartItem orderitem = new CartItem();
+								orderitem.setProduct(product);
+								orderitem.setQuantity(qty);
+								String as400id = product.get("as400id");
+								if (as400id == null) {
+									product.setProperty("as400id", orderLine[columnAS400id]);
+									productsearcher.saveData(product, inReq.getUser());
 								}
-
-								Data customerInfo = storeList.searchById(storeNum);
-								if (customerInfo == null) {
-									log.info("Cannot find Store Information: " + storeNum);
-									throw new OpenEditException("Cannot find Store Information: " + storeNum);
+								Cart cart = order.getCart();
+								cart.addItem(orderitem);
+	
+								Address shipping = order.getShippingAddress();
+								if (shipping == null) {
+									Data shippingAddress = addresssearcher.searchById(storeNum);
+									shipping = new Address();
+									shipping.setId(shippingAddress.get("id"));
+									shipping.setName(shippingAddress.get("name"));
+									shipping.setAddress1(shippingAddress.get("address1"));
+									shipping.setAddress2("");
+									shipping.setCity(shippingAddress.get("city"));
+									shipping.setState(shippingAddress.get("province"));
+									shipping.setZipCode(shippingAddress.get("zip"));
+									shipping.setCountry(shippingAddress.get("country"));
+									shipping.setDescription(shippingAddress.get("description"));
+									shipping.setProperty("phone", shippingAddress.get("phone1"));
+									order.setShippingAddress(shipping);
 								}
-								customer = new Customer()
-								customer.setId(customerInfo.get("id"));
-								customer.setName(customerInfo.get("name"));
-								customer.setPhone1(customerInfo.get("phone"));
-								customer.setCompany("Rogers");
-								customer.setShippingAddress(shipping);
-								customer.setBillingAddress(billing);
-								customer.setUser(user);
-								order.setCustomer(customer);
+								Address billing = order.getBillingAddress();
+								if (billing == null) {
+									Data billingAddress = addresssearcher.searchById(storeNum);
+									billing = new Address();
+									billing.setId(billingAddress.get("id"));
+									billing.setName(billingAddress.get("name"));
+									billing.setAddress1(billingAddress.get("address1"));
+									billing.setAddress2("");
+									billing.setCity(billingAddress.get("city"));
+									billing.setState(billingAddress.get("province"));
+									billing.setZipCode(billingAddress.get("zip"));
+									billing.setCountry(billingAddress.get("country"));
+									billing.setDescription(billingAddress.get("description"));
+									billing.setProperty("phone", billingAddress.get("phone1"));
+									order.setBillingAddress(billing);
+								}
+	
+								Customer customer = order.getCustomer();
+								if (customer == null) {
+									User user = usersearcher.searchById("rogers-"+storeNum);
+									if (user == null) {
+										user = new BaseUser();
+										user.setId("rogers-"+storeNum);
+										user.setPassword("rogers");
+										user.setFirstName(orderLine[columnStoreName]);
+										usersearcher.saveData(user, inReq.getUser());
+									}
+									Data customerInfo = storeList.searchById(storeNum);
+									if (customerInfo == null) {
+										log.info("Cannot find Store Information: " + storeNum);
+										throw new OpenEditException("Cannot find Store Information: " + storeNum);
+									}
+									customer = new Customer()
+									customer.setId(customerInfo.get("id"));
+									customer.setName(customerInfo.get("name"));
+									customer.setPhone1(customerInfo.get("phone"));
+									customer.setCompany("Rogers");
+									customer.setShippingAddress(shipping);
+									customer.setBillingAddress(billing);
+									customer.setUser(user);
+									order.setCustomer(customer);
+								}
+	
+								String purchaseorder = order.getId();
+								PurchaseOrderMethod poMethod = new PurchaseOrderMethod();
+								poMethod.setPoNumber(purchaseorder);
+								poMethod.setBillMeLater(true);
+								PaymentMethod payment = poMethod;
+								order.setPaymentMethod((PurchaseOrderMethod) payment);
+								if (order.getPaymentMethod() == null) {
+									throw new OpenEditException("Cannot set PaymentMethod()");
+								}
+	
+								//Update the cart in the order.
+								order.setCart(cart);
+								order.setItems(cart.getItems());
+								//Lets Save the ORDER!
+								log.info("Order (" + order.getId() + ") saved to OrderMap");
 							}
-
-							String purchaseorder = order.getId();
-							PurchaseOrderMethod poMethod = new PurchaseOrderMethod();
-							poMethod.setPoNumber(purchaseorder);
-							poMethod.setBillMeLater(true);
-							PaymentMethod payment = poMethod;
-							order.setPaymentMethod((PurchaseOrderMethod) payment);
-							if (order.getPaymentMethod() == null) {
-								throw new OpenEditException("Cannot set PaymentMethod()");
-							}
-
-							//Update the cart in the order.
-							order.setCart(cart);
-							order.setItems(cart.getItems());
-							//Lets Save the ORDER!
-							log.info("Order (" + order.getId() + ") saved to OrderMap");
 						} else {
 							order.addMissingItem(rogerssku);
 						}
