@@ -138,15 +138,6 @@ public void init(){
 	}
 	orderSet.recalculateAll(store);
 	req.putSessionValue("orderset", orderSet);
-	
-	//delete all: should move this to processcorporateorder.groovy
-//	query = searcher.createSearchQuery();
-//	query.addMatches("uuid",uuid);
-//	hits = searcher.search(query);
-//	hits.each{
-//		Data data = searcher.searchById(it.id);
-//		searcher.delete(data, null);
-//	}
 }
 
 public int toInt(String inVal, int inDefault){

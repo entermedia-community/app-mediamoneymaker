@@ -1032,7 +1032,7 @@ public class OrderModule extends BaseModule
 				order.setProperty("orderstatus", "accepted");
 				order.setProperty("order_status", "accepted");
 				
-				//trigger order history events
+				//todo: trigger order history events
 				//change inventory
 				for (Iterator iter = order.getCart().getItemIterator(); iter.hasNext();) {
 					CartItem cartItem = (CartItem) iter.next();

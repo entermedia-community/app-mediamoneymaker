@@ -163,7 +163,6 @@ public class ImportRogersAS400IdsFromOrder extends EnterMediaObject {
 							}
 							else {
 								product.setProperty("fidoas400id", as400id);
-								System.out.println("##### FIDO AS400 ID $as400id -- ${product.getId()}");
 							}
 						} else {
 							//ID Does not exist!!! Add to badProductIDList
