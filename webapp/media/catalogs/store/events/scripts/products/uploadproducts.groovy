@@ -132,9 +132,24 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 						}
 					} else {
 						Searcher searcher = archive.getSearcher(detail.getListId());
-						Data remote = searcher.searchByField("name",entry);
-						if (remote!=null){
-							product.setProperty(detail.getId(),remote.getId());
+						List remoteValues = new ArrayList();
+						StringTokenizer tok = new StringTokenizer(entry,"|");
+						while(tok.hasMoreTokens()){
+							String e = tok.nextToken();
+							Data remote = searcher.searchByField("name",e.trim());
+							if (remote){
+								remoteValues.add(remote.getId());
+							}
+						}
+						if (!remoteValues.isEmpty()){
+							StringBuilder buf = new StringBuilder();
+							Iterator itr2 = remoteValues.iterator();
+							while(itr2.hasNext()){
+								String remoteValue = itr2.next();
+								buf.append(remoteValue);
+								if (itr2.hasNext()) buf.append(" | ");
+							}
+							product.setProperty(detail.getId(),buf.toString());
 						}
 					}
 				} else if (detail.isBoolean()){
