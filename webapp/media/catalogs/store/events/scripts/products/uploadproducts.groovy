@@ -71,9 +71,9 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 	Reader reader = inMap.get("__csvFile").getReader();
 	CSVReader csvreader = null;
 	//need indexes of SKUs and UPC code
-	int rogersskuIndex = 1;
-	int manufacturerskuIndex = 2;
-	int upcIndex = 4;
+	int rogersskuIndex = 5;//5
+	int manufacturerskuIndex = 4;//4
+	int upcIndex = 10;//10
 	try{
 		csvreader = new CSVReader(reader,",","\"");
 		List<Data> products = new ArrayList<Data>();
@@ -95,9 +95,9 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 			//todo: include an error list
 			Data product = null;
 			SearchQuery query = productsearcher.createSearchQuery();
-			query.addMatches("rogerssku", entries[rogersskuIndex]);
-			query.addMatches("manufacturersku", entries[manufacturerskuIndex]);
-			query.addMatches("upc", entries[upcIndex]);
+			query.addMatches("rogerssku", entries[rogersskuIndex].trim());
+			query.addMatches("manufacturersku", entries[manufacturerskuIndex].trim());
+			query.addMatches("upc", entries[upcIndex].trim());
 			query.setAndTogether(false);
 			HitTracker producthits = productsearcher.search(query);
 			for(int k = 0; k < producthits.size(); k++){
