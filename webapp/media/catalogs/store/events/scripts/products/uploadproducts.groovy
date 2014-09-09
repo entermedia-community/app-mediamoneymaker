@@ -100,7 +100,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 			query.addMatches("upc", entries[upcIndex]);
 			query.setAndTogether(false);
 			HitTracker producthits = productsearcher.search(query);
-			for( int k = 0; k < producthits.size(); k++){
+			for(int k = 0; k < producthits.size(); k++){
 				Data data = producthits.get(k);
 				if (data.get("distributor") == inDistributor){
 					product = productsearcher.searchById(data.getId());
@@ -153,7 +153,7 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 						}
 					}
 				} else if (detail.isBoolean()){
-					//approved clearancecentre
+					//approved clearancecentre active comingsoon featuredondistributorportal rogersauthorized
 					boolean bool = Boolean.parseBoolean(entry);
 					product.setProperty(detail.getId(),"$bool");
 				} else {
@@ -161,12 +161,12 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 					if (detail.getId() ==  "msrp" || detail.getId() ==  "fidomsrp" || detail.getId() ==  "rogersprice" || detail.getId() ==  "clearanceprice"){
 						double money = toDouble(entry.replace("\$", "").replace(",", "").trim(),-1.0d);
 						if (money >= 0.0d){
-							product.setProperty(detail.getId(),"$money");
+							product.setProperty(detail.getId(),String.format("%.2f",money));
 							updateInventory = true;
 						}//otherwise skip
 					} else {
 						//if empty then don't overwrite
-						if (entry.isEmpty() == false){
+						if (entry.trim().isEmpty() == false){
 							product.setProperty(detail.getId(),entry);
 						}
 					}
