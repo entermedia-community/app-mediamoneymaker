@@ -80,9 +80,9 @@ public void readCSVFile(WebPageRequest req, Page csvfile, Searcher productsearch
 			String rogerssku = line[columnRogersID].trim();
 			String as400id = line[columnAS400id].trim();
 			String dept = line[department].trim();
-			//only process 01 types
+			//process only 01, 02, 03
 			String istype = line[type].trim();
-			if ("01".equals(istype) == false){
+			if ("01".equals(istype) == false && "02".equals(istype) == false && "03".equals(istype) == false){
 				//add to ignored list
 				ignored.add(["${i}","${as400id}","${rogerssku}","${dept}","$istype"]);
 				continue;
