@@ -167,7 +167,7 @@ public class ExportBudHdr extends EnterMediaObject {
 			for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();) {
 				CartItem item = itemIterator.next();
 				String id = item.getProduct().get(as400field);
-				if (!headerRow.contains(id)) {
+				if (id && headerRow.contains(id) == false) {
 					log.info("OrderItem: New item found: " + id);
 					headerRow.add(id);
 				}

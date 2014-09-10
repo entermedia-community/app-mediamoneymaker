@@ -27,10 +27,18 @@ public void init(){
 		hits.each{
 			Product product = productsearcher.searchById(it.productid);
 			if (product){
-				if (it.rogersas400id) product.setRogersAS400Id(it.rogersas400id);
-				else product.setRogersAS400Id("");
-				if (it.fidoas400id) product.setFidoAS400Id(it.fidoas400id);
-				else product.setFidoAS400Id("");
+				if (it.rogersas400id) {
+					product.setRogersAS400Id(it.rogersas400id);
+				}
+				else {
+					product.removeProperty("rogersas400id");
+				}
+				if (it.fidoas400id) {
+					product.setFidoAS400Id(it.fidoas400id);
+				}
+				else {
+					product.removeProperty("fidoas400id");
+				}
 				updates.add(product);
 				if (updates.size() == 1000){
 					productsearcher.saveAllData(updates, null);

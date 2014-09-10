@@ -329,7 +329,17 @@ public class ImportRogersOrder extends EnterMediaObject {
 							//figure out whether order is rogers or fido as400
 							String as400id = orderLine[columnAS400id].trim();
 							String as400field = order.get("as400ordertype");
-							if (as400field == null){
+							if (as400field){
+								//found it, check for it in the product
+								if (product.get(as400field)){
+									//found something so assume it's correct...
+								}
+								else {
+									log.info("Unable to find $as400id in $product (found in order), adding product to missing items list");
+									order.addMissingItem(rogerssku);
+									continue;
+								}
+							} else {
 								//NOTE: This assumes orders will only ever be of one type
 								//look for rogersas400id or fidoas400id
 								if (as400id == product.getRogersAS400Id()){
@@ -346,7 +356,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 								}
 								order.setProperty("as400ordertype", as400field);
 							}
-
+							
 							int qty = Integer.parseInt(orderLine[columnQuantity]);
 							if (qty > 0){
 							
