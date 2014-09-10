@@ -31,20 +31,17 @@
 	#end
 	
 	#foreach($hit in $hits)
+		#set($product = false)
 		#if($hit.product)
-			#set($data = $productsearcher.searchByField("rogersas400id",$hit.product))
-			#if($data)
-				#set($product =  $productsearcher.searchById($data.id))
+			#set($product = $productsearcher.searchByField("rogersas400id",$hit.product))
+			#if($product)
 			#else
-				#set($data = $productsearcher.searchByField("fidoas400id",$hit.product))
-				#if($data)
-					#set($product =  $productsearcher.searchById($data.id))
+				#set($product = $productsearcher.searchByField("fidoas400id",$hit.product))
+				#if($product)
 				#else
 					#set($product = false)
 				#end
 			#end
-		#else
-			#set($product = false)
 		#end
 		#if($stores.isEmpty())
 			#set($null = $stores.add($hit.store))
@@ -82,7 +79,7 @@
 				#if ( $bkgrnd != 0 ) #set($color = "b") #end
 				<tr class="results-list-${color}">
 					<td>$!hit.product</td>
-					<td>#if($product) $product #end</td>
+					<td>$!product</td>
 					<td>$hit.inventory</td>
 					<td>
 						<input type="text" id="quantity-${hit.id}" value="${hit.quantity}" />
@@ -149,7 +146,7 @@
 				#if ( $bkgrnd != 0 ) #set($color = "b") #end
 				<tr class="results-list-${color}">
 					<td>$!hit.product</td>
-					<td>#if($product) $product #end</td>
+					<td>$!product</td>
 					<td>$hit.inventory</td>
 					<td>
 						<input type="text" id="quantity-${hit.id}" value="${hit.quantity}" />
