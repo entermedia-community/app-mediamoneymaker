@@ -11,24 +11,24 @@
 					<a href="#bottom" class="btn">Jump to the Bottom of the page</a>
 				</div>
 				<br/>
-				<h2>Final Confirmation</h2>
+				<h2>Confirmation</h2>
 				#set($removedorders = $orderset.getRemovedOrders())
 				#if($removedorders.size() > 0)
 				<h3 style="margin-top: 15px;">The following orders have been removed because they don't have any items.</h3>
 				<div>
 					<ul>
-				#foreach($order in $removedorders)
-					#set($customerid = $order.getCustomer().getId())
-					#set($id = $customerid.split("-"))
-					#set($storeid = $id.get(1))
-					#set($rogersstore = $storesearcher.searchById($storeid))
-							<li>$order.getId() - $storeid - $rogersstore.get("name")</li>
-				#end
+					#foreach($order in $removedorders)
+						#set($customerid = $order.getCustomer().getId())
+						#set($id = $customerid.split("-"))
+						#set($storeid = $id.get(1))
+						#set($rogersstore = $storesearcher.searchById($storeid))
+						<li>$order.getId() - $storeid - $rogersstore.get("name")</li>
+					#end
 					</ul>
 				</div>
 				#end
-				<h3 style="margin-top: 15px;">Click the order number to expand and view.<br/>
-				Click the order number again to close. </h3>
+				<h3 style="margin-top: 15px;">Click the order number to expand.<br/>
+				Click it again to close. </h3>
 				#set($orders = $orderset.getOrders())
 				#set($ctr = 0)
 				#foreach($order in $orders)
@@ -36,6 +36,7 @@
 					#set($id = $customerid.split("-"))
 					#set($storeid = $id.get(1))
 					#set($rogersstore = $storesearcher.searchById($storeid))
+					#set($as400field = $order.get("as400ordertype"))
 				<div class="rogers-summary">
 					<ul>
 						<li><a href="#" class="order-row" data-orderid="$order.getId()">$order.getId()</a></li>
@@ -46,7 +47,8 @@
 				<div class="rogers-summary-details" id="order-$order.getId()" style="display: none">
 					<table style="width: 100%;">
 						<tr>
-							<td class="rogers-summary-product-id"><strong>Product ID<strong></td>
+							<td class="rogers-summary-product-as400id"><strong>AS400 ID<strong></td>
+							<td class="rogers-summary-product-id">Product ID</td>
 							<td class="rogers-summary-product-name">Product</td>
 							<td class="rogers-summary-product-quantity">Quantity</td>
 							<td class="rogers-summary-product-price">Price</td>
@@ -56,6 +58,7 @@
 						#foreach($cartitem in $cartitems)
 						<tr>
 							#set($product = $cartitem.getProduct())
+							<td class="rogers-summary-product-as400id"><strong>$product.get($as400field)</strong></td>
 							<td class="rogers-summary-product-id">$product.get("rogerssku")</td>
 							<td class="rogers-summary-product-name">$product.getName()</td>
 							<td class="rogers-summary-product-quantity">$cartitem.getQuantity()</td>
@@ -112,23 +115,21 @@
 	<div class="ui-widget uipanel">
 		<div class="ui-widget-header">Rogers Orders</div>
 		<div class="ui-widget-content">
-		<h2>Sorry but you don't have any orders.</h2>
+		<h2>No orders were found</h2>
 		<p style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 8px;">
-		I am sorry after processing your CSV file, there are no orders.<br>
 		Please click <a href="$home$apphome/rogers/orders/rogersorder.html" style="font-size: 14px; color: blue;">here</a> to 
-		re-import another order.</p>
+		import another order.</p>
 		</div>
 	</div>
 	#end
 #else
 	<div class="ui-widget uipanel">
-		<div class="ui-widget-header">Rogers Session Expired</div>
+		<div class="ui-widget-header">Rogers Orders</div>
 		<div class="ui-widget-content">
-		<h2>Sorry. Your session has expired.</h2>
+		<h2>Unable to process CSV File</h2>
 		<p style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 8px;">
-		I am sorry that we could not continue with your request. Your session has expired.<br>
 		Please click <a href="$home$apphome/rogers/orders/rogersorder.html" style="font-size: 14px; color: blue;">here</a> to 
-		re-import your order.</p>
+		import another order.</p>
 		</div>
 	</div>
 #end

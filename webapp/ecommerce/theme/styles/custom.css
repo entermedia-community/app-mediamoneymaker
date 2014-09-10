@@ -558,6 +558,9 @@ table.product-report td.product-report-item {
 	float: left;
 	width: 125px;
 }
+.rogers-summary-product-as400id {
+	width: 125px;
+}
 .rogers-summary-product-name {
 	width: 1000px;
 }

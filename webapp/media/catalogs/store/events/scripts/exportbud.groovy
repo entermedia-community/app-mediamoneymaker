@@ -106,11 +106,21 @@ public class ExportBud extends EnterMediaObject {
 								Data currentOrder = orderIterator.next();
 								Order order = ordersearcher.searchById(currentOrder.getId());
 								if (order.getCustomer().getId().equals("rogers-"+storeNum)) {
+									String as400field = order.get("as400ordertype");
+									if (as400field){
+										//not null and not empty
+									} else {
+										//problem: old order so need to default to rogers as400 type
+										as400field = "rogersas400id";
+										order.setProperty("as400ordertype", as400field);
+										ordersearcher.saveData(order, null);//save it
+									}
 									List cartItems = order.getItems();
 									for (Iterator itemIterator = cartItems.iterator(); itemIterator.hasNext();) {
 										CartItem item = itemIterator.next();
 										Product p = item.getProduct();
-										if (p.getProperty("as400id") == as400id) {
+										//need to grab the field to search for on the order
+										if (p.getProperty(as400field) == as400id) {
 											quantity += item.getQuantity();
 											break;
 										}
@@ -151,15 +161,26 @@ public class ExportBud extends EnterMediaObject {
 		orderList.each{
 			Order order = ordersearcher.searchById(it.id);
 			if (order){
+				String as400field = order.get("as400ordertype");
+				if (as400field){
+					//not null and not empty
+				} else {
+					//problem: old order so need to default to rogers as400 type
+					as400field = "rogersas400id";
+					order.setProperty("as400ordertype", as400field);
+					ordersearcher.saveData(order, null);//save it
+				}
 				List orderitems = order.getItems();
 				for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();) {
 					CartItem item = itemIterator.next();
-					String id = item.getProduct().get("as400id");
+					String id = item.getProduct().get(as400field);
 					if (id) {
-						if (headerRow.contains(id) == false) 
+						if (headerRow.contains(id) == false) {
 							headerRow.add(id);
-						if (getGoodOrderList().contains(order.getCustomer().getId()) == false)
+						}
+						if (getGoodOrderList().contains(order.getCustomer().getId()) == false){
 							getGoodOrderList().add(order.getCustomer().getId());
+						}
 					}
 				}
 			}

@@ -61,7 +61,16 @@ public void init(){
 			order.setProperty("quantity","$quantity");
 			Product product = map.get("$i") instanceof Product ? map.get("$i") : null;
 			if (product){
-				order.setProperty("product",product.get("as400id"));
+				//problem: don't know how to reference product
+				//ugly.
+				String as400id = null;
+				for(String id:ids){
+					if (id == product.getRogersAS400Id() || id == product.getFidoAS400Id()){
+						as400id = id;
+						break;
+					}
+				}
+				order.setProperty("product",as400id);
 				if (quantity > 0 && product.getInventoryItem(0) != null){
 					inStock = product.getInventoryItem(0).getQuantityInStock();
 					if (inventory.containsKey(product.getId()) == false){

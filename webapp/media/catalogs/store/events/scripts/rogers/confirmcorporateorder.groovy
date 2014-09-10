@@ -120,10 +120,22 @@ public void init(){
 			orderSet.addOrder(order);
 		}
 		String as400id = data.get("product");
-		//search for rogersas400id or fidoas400id
-		Data targetProduct = productsearcher.searchByField("rogersas400id", as400id);
-		if (targetProduct == null){
-			targetProduct = productsearcher.searchByField("fidoas400id", as400id);
+		Data targetProduct = null;
+		//as400 id is either rogers or fido
+		String as400field = order.get("as400ordertype");
+		if (as400field){
+			targetProduct = productsearcher.searchByField(as400field, as400id);
+		}
+		else {
+			//search for rogersas400id or fidoas400id
+			targetProduct = productsearcher.searchByField("rogersas400id", as400id);
+			if (targetProduct){
+				as400field = "rogersas400id";
+			} else {
+				targetProduct = productsearcher.searchByField("fidoas400id", as400id);
+				as400field = "fidoas400id";
+			}
+			order.setProperty("as400ordertype", as400field);
 		}
 		if (targetProduct){
 			Product product = productsearcher.searchById(targetProduct.getId());

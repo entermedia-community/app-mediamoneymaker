@@ -317,7 +317,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 					String rogerssku = orderLine[columnRogersID].trim();
 
 					//Search the product for the oracle sku(rogerssku)
-					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku);
+					Data targetProduct = productsearcher.searchByField(SEARCH_FIELD, rogerssku.replace("/", "\\/"));
 					if (targetProduct != null) {
 
 						Product product = productsearcher.searchById(targetProduct.getId());
@@ -325,6 +325,27 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 							//productsearcher.saveData(real, inReq.getUser());
 							log.info("ProductID Found: " + product.getId());
+							
+							//figure out whether order is rogers or fido as400
+							String as400id = orderLine[columnAS400id].trim();
+							String as400field = order.get("as400ordertype");
+							if (as400field == null){
+								//NOTE: This assumes orders will only ever be of one type
+								//look for rogersas400id or fidoas400id
+								if (as400id == product.getRogersAS400Id()){
+									as400field = "rogersas400id";
+								}
+								else if (as400id == product.getFidoAS400Id()){
+									as400field = "fidoas400id";
+								}
+								else {
+									//error
+									log.info("Unable to find $as400id in $product, adding product to missing items list");
+									order.addMissingItem(rogerssku);
+									continue;
+								}
+								order.setProperty("as400ordertype", as400field);
+							}
 
 							int qty = Integer.parseInt(orderLine[columnQuantity]);
 							if (qty > 0){
@@ -333,14 +354,16 @@ public class ImportRogersOrder extends EnterMediaObject {
 								CartItem orderitem = new CartItem();
 								orderitem.setProduct(product);
 								orderitem.setQuantity(qty);
-								String as400id = product.get("as400id");
-								if (as400id == null) {
-									product.setProperty("as400id", orderLine[columnAS400id]);
-									productsearcher.saveData(product, inReq.getUser());
-								}
+								//DON'T DO THIS!
+//								String as400id = product.get("as400id");
+//								if (as400id == null) {
+//									product.setProperty("as400id", orderLine[columnAS400id]);
+//									productsearcher.saveData(product, inReq.getUser());
+//								}
+								
 								Cart cart = order.getCart();
 								cart.addItem(orderitem);
-	
+								
 								Address shipping = order.getShippingAddress();
 								if (shipping == null) {
 									Data shippingAddress = addresssearcher.searchById(storeNum);

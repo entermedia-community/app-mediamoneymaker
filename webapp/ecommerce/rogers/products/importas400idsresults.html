@@ -1,26 +1,37 @@
-#set($goodproductlist = $context.getContentProperty("goodproductlist"))
-#set($badproductlist = $context.getContentProperty("badproductlist"))
-#set($errorout = $context.getContentProperty("errorout"))
-#set($totalrows = $context.getContentProperty("totalrows"))
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">Rogers Store Section</div>
-		<div class="ui-widget-content">
-	#if ($errorout)
+	<div class="ui-widget-header">Rogers AS400 ID Import Results</div>
+	<div class="ui-widget-content" id="tabs">
+		#if($errorout)
 			$errorout
-	#else
-		<h3>Total Rows Processed: $totalrows</h3>
-		#if( $orderlist.size() > 0)
-			<h3>Updated Products ($goodproductlist.size())</h3>
-			#foreach($product in $goodproductlist)
-				$product<BR>
-			#end
+		#else
+			<form action="/$applicationid/rogers/products/updateas400ids.html" method="post">
+				<input type="hidden" name="uuid" value="$uuid" />
+				<a class="btn" href="javascript:window.history.back();">Go Back</a>
+				<input class="btn" id="confirm" type="submit" value="Confirm Updates" />
+			</form>
+			<ul>
+				<li><a href="#found">Affected Products</a></li>
+				<li><a href="#notfound">Not Found</a></li>
+				<li><a href="#ignored">Ignored</a></li>
+			</ul>
+			<div id="found">
+				$pages.include("/$applicationid/rogers/products/table.html",$context)
+			</div>
+			<div id="notfound">
+				$context.putPageValue("table",$notfound)
+				$pages.include("/$applicationid/rogers/products/gridtable.html",$context)
+			</div>
+			<div id="ignored">
+				$context.putPageValue("table",$ignored)
+				$pages.include("/$applicationid/rogers/products/gridtable.html",$context)
+			</div>
 		#end
-		#if( $badproductlist.size() > 0)
-			<h3>Bad Product List ($badproductlist.size())</h3>
-			#foreach($product in $badproductlist)
-				$product<BR>
-			#end
-		#end
-	#end
-	</div> 
+	</div>
 </div>
+#if(!$errorout)
+	<script>
+		$(function() {
+			$("#tabs").tabs();
+		});
+	</script>
+#end

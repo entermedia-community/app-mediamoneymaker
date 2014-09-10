@@ -1,0 +1,12 @@
+
+<properties prefix="productupdates" beanname="dataSearcher">
+  <property id="id" index="true" stored="true" editable="false" searchtype="productupdates" internalfield="true">Id</property>
+  <property id="name" index="true" keyword="true" stored="true" editable="true" searchtype="productupdates">Name</property>
+  <property id="sourcepath">SourcePath</property>
+  <property id="orderno" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates">Order Number</property>
+  <property id="date" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates" type="date" viewtype="datetime">Date</property>
+  <property id="productid" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates" type="list" viewtype="list" listid="product">Product ID</property>
+  <property id="rogersas400id" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates">Rogers AS400</property>
+  <property id="fidoas400id" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates">Fido AS400</property>
+  <property id="uuid" index="true" keyword="true"  stored="true"  editable="true" searchtype="productupdates">UUID</property>
+</properties>

@@ -1061,7 +1061,6 @@ public class OrderModule extends BaseModule
 				HitTracker hits = corporateorderSearcher.search(query);
 				if (hits.isEmpty()==false){
 					Iterator<?> itr = hits.iterator();
-					List<Data> entries = new ArrayList<Data>();
 					while(itr.hasNext()){
 						Data data = (Data) itr.next();
 						corporateorderSearcher.delete(data,null);

@@ -79,11 +79,21 @@ public class ExportBudHdr extends EnterMediaObject {
 				for (Iterator orderIterator = orderList.iterator(); orderIterator.hasNext();) {
 					Data currentOrder = orderIterator.next();
 					Order order = ordersearcher.searchById(currentOrder.getId());
+					String as400field = order.get("as400ordertype");
+					if (as400field){
+						//not null and not empty
+					} else {
+						//problem: old order so need to default to rogers as400 type
+						as400field = "rogersas400id";
+						order.setProperty("as400ordertype", as400field);
+						ordersearcher.saveData(order, null);//save it
+					}
 					List cartItems = order.getItems();
 					for (Iterator itemIterator = cartItems.iterator(); itemIterator.hasNext();) {
 						CartItem item = itemIterator.next();
 						Product p = item.getProduct();
-						if (p.getProperty("as400id") == as400id) {
+						//need to grab the field to search for on the order
+						if (p.getProperty(as400field) == as400id) {
 							productCount += item.getQuantity();
 							break;
 						}
@@ -97,7 +107,7 @@ public class ExportBudHdr extends EnterMediaObject {
 				nextrow += productCount.toString();
 				nextrow += " ".padLeft(6) + "0";
 				nextrow += "\r\n";
-				log.info("nextrow: " + nextrow);
+				//log.info("nextrow: " + nextrow);
 				output.append(nextrow);
 			}
 		}
@@ -142,12 +152,21 @@ public class ExportBudHdr extends EnterMediaObject {
 			}
 
 			log.info("DATA: Order found: " + order.getId());
-
+			
+			String as400field = order.get("as400ordertype");
+			if (as400field){
+				//not null and not empty
+			} else {
+				//problem: old order so need to default to rogers as400 type
+				as400field = "rogersas400id";
+				order.setProperty("as400ordertype", as400field);
+				ordersearcher.saveData(order, null);//save it
+			}
 			//Write the body of all of the orders
 			List orderitems = order.getItems();
 			for (Iterator itemIterator = order.getItems().iterator(); itemIterator.hasNext();) {
 				CartItem item = itemIterator.next();
-				String id = item.getProduct().get("as400id");
+				String id = item.getProduct().get(as400field);
 				if (!headerRow.contains(id)) {
 					log.info("OrderItem: New item found: " + id);
 					headerRow.add(id);
