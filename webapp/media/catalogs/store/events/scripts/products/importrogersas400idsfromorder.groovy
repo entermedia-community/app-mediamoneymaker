@@ -22,29 +22,7 @@ public void init(){
 	Searcher productsearcher = store.getProductSearcher();
 	Searcher updatesearcher = archive.getSearcher("productupdates");
 	Page upload = archive.getPageManager().getPage("/${archive.getCatalogId()}/temp/upload/rogers_order.csv");
-	
-//	clearAS400ids(productsearcher);//only run once
 	readCSVFile(req,upload,productsearcher,updatesearcher);
-}
-
-public clearAS400ids(Searcher searcher){
-	List updates = new ArrayList();
-	HitTracker hits = searcher.getAllHits();
-	hits.each{
-		Product product = searcher.searchById(it.id);
-		if (product){
-			product.setProperty("rogersas400id","");
-			product.setProperty("fidoas400id","");
-			product.setProperty("as400id","");
-			updates.add(product);
-			if (updates.size() == 1000){
-				searcher.saveAllData(updates, null);
-				updates.clear();
-			}
-		}
-	}
-	searcher.saveAllData(updates, null);
-	updates.clear();
 }
 
 public void readCSVFile(WebPageRequest req, Page csvfile, Searcher productsearcher, Searcher updatesearcher){
