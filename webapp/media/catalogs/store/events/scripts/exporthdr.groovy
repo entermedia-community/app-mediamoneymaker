@@ -127,7 +127,7 @@ public class ExportBudHdr extends EnterMediaObject {
 		
 		//add path to context
 		context.setRequestParameter("path", folder);
-		context.setRequestParameter("stripfolders", folder);
+		context.setRequestParameter("stripfolders", "/media/catalogs/store/");
 		
 		Searcher as400searcher = searcherManager.getSearcher(archive.getCatalogId(), "as400");
 		Data exportStatus = as400searcher.searchByField("batchid", batchid);
