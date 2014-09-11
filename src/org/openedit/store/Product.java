@@ -532,21 +532,11 @@ public class Product extends BaseData implements Data
 	
 	public void setRogersAS400Id(String inValue)
 	{
-//		String fidoId = getFidoAS400Id();
-//		if (fidoId!=null && inValue.equals(fidoId))
-//		{
-//			throw new OpenEditRuntimeException("Rogers and Fido AS400 IDs cannot be the same");
-//		}
 		setProperty("rogersas400id",inValue);
 	}
 	
 	public void setFidoAS400Id(String inValue)
 	{
-//		String rogersId = getRogersAS400Id();
-//		if (rogersId!=null && inValue.equals(rogersId))
-//		{
-//			throw new OpenEditRuntimeException("Rogers and Fido AS400 IDs cannot be the same");
-//		}
 		setProperty("fidoas400id",inValue);
 	}
 	

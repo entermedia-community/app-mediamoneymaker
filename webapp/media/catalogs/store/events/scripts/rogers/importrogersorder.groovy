@@ -222,16 +222,11 @@ public class ImportRogersOrder extends EnterMediaObject {
 
 		//Create Searcher Object
 		Searcher productsearcher = manager.getSearcher(archive.getCatalogId(), "product");
-		///Searcher itemsearcher = manager.getSearcher(archive.getCatalogId(), "rogers_order_item");
 		Searcher storesearcher = manager.getSearcher(archive.getCatalogId(), "store");
 		Searcher distributorsearcher = manager.getSearcher(archive.getCatalogId(), "distributor");
 		Searcher addresssearcher = manager.getSearcher(archive.getCatalogId(), "rogersstore");
 		Searcher ordersearcher = manager.getSearcher(archive.getCatalogId(), "storeOrder");
 		Searcher usersearcher = manager.getSearcher("system", "user");
-
-		//Define columns from spreadsheet
-		//PropertyDetail detail = itemsearcher.getDetail("quantity");
-		//detail.get("column");
 		
 		Page upload = archive.getPageManager().getPage("/${catalogid}/temp/upload/rogers_order.csv");
 		if (!upload.exists()) {
@@ -241,16 +236,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 		try
 		{
 			Searcher as400searcher = manager.getSearcher(archive.getCatalogId(), "as400");
-//			Data as400Record = as400searcher.createNewData();
-//			as400Record.setId(as400searcher.nextId());
-//			as400Record.setName("Batch " + as400Record.getId());
 			String batchID = UUID.randomUUID().toString();
-//			as400Record.setProperty("batchid", batchID);
-//			as400Record.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-//			as400Record.setProperty("exportstatus", "open");
-//			as400Record.setProperty("user", inReq.getUser().getName());
-//			as400searcher.saveData(as400Record, inReq.getUser());
-
 			def SEARCH_FIELD = "rogerssku";
 			boolean done = false;
 
@@ -364,12 +350,6 @@ public class ImportRogersOrder extends EnterMediaObject {
 								CartItem orderitem = new CartItem();
 								orderitem.setProduct(product);
 								orderitem.setQuantity(qty);
-								//DON'T DO THIS!
-//								String as400id = product.get("as400id");
-//								if (as400id == null) {
-//									product.setProperty("as400id", orderLine[columnAS400id]);
-//									productsearcher.saveData(product, inReq.getUser());
-//								}
 								
 								Cart cart = order.getCart();
 								cart.addItem(orderitem);
@@ -513,7 +493,7 @@ public class ImportRogersOrder extends EnterMediaObject {
 		columnNumbers.add(columnRogersID);
 		columnNumbers.add(columnRogersOtherID);
 
-		def List columnNames = new ArrayList();
+		def List<String> columnNames = new ArrayList<String>();
 		columnNames.add(colHeadSTORE);
 		columnNames.add(colHeadRANK);
 		columnNames.add(colHeadSTORENAME);
@@ -527,8 +507,10 @@ public class ImportRogersOrder extends EnterMediaObject {
 		columnNames.add(colHeadROGERSOTHERID);
 
 		for ( int index=0; index < columnNumbers.size(); index++ ) {
-			if ( headers[columnNumbers.get(index)].toString().toUpperCase() != columnNames.get(index).toString().toUpperCase()) {
-				addToBadColumnList(headers[columnNumbers.get(index)].toString());
+			String found = headers[columnNumbers.get(index)].trim().replace(" ", "").toLowerCase();
+			String actual = columnNames.get(index).replace(" ", "").toLowerCase();
+			if ( found != actual) {
+				addToBadColumnList(headers[columnNumbers.get(index)]);
 			}
 		}
 		return (getBadColumnList().size() > 0);
