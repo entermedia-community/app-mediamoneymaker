@@ -40,7 +40,7 @@ public void init(){
 					product.removeProperty("fidoas400id");
 				}
 				updates.add(product);
-				if (updates.size() == 1000){
+				if (updates.size() == 100){
 					productsearcher.saveAllData(updates, null);
 					updates.clear();
 				}

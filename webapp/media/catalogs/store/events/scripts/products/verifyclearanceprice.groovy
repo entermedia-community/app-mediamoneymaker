@@ -97,7 +97,7 @@ public void init() {
 			}
 		}
 		productstosave.add(product);
-		if (productstosave.size() == 1000){
+		if (productstosave.size() == 100){
 			store.saveProducts(productstosave);
 			productstosave.clear();
 		}

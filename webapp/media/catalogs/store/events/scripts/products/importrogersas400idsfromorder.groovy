@@ -139,7 +139,7 @@ public void readCSVFile(WebPageRequest req, Page csvfile, Searcher productsearch
 				Data data = map.get(itr.next());
 				if (data){
 					list.add(data);
-					if (list.size() == 1000){
+					if (list.size() == 100){
 						updatesearcher.saveAllData(list, null);
 						list.clear();
 					}

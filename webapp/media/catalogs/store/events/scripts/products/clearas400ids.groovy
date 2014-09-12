@@ -40,7 +40,7 @@ public void init(){
 			}
 			if (add == true){
 				updates.add(product);
-				if (updates.size() == 1000){
+				if (updates.size() == 100){
 					searcher.saveAllData(updates, null);
 					updates.clear();
 				}
