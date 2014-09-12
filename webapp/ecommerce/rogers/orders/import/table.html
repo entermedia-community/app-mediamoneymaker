@@ -12,9 +12,27 @@
 	
 	<h4>Actions</h4>
 	<ul>
-		<li><strong>Refresh</strong> refreshes the page without resubmitting and reprocessing the BUDDTL file </li>
-		<li><strong>Fix All</strong> quickly fix all problems on each order</li>
-		<li><strong>Confirm</strong> submit the orders to the system</li>
+		<li><strong>Global Actions</strong>
+			<ul>
+				<li><strong>Refresh</strong> refreshes the page without resubmitting and reprocessing the BUDDTL file </li>
+				<li><strong>Fix All</strong> quickly fix all problems on each order</li>
+				<li><strong>Confirm</strong> once all problems have been resolved, submit the orders to the system</li>
+			</ul>
+		</li>
+		<li><strong>Actions per Order</strong>
+			<ul>
+				<li><strong>Delete</strong> removes the pending order </li>
+				<li><strong>Fix Out of Stock</strong> removes all out of stock items from the order </li>
+				<li><strong>Fix Order</strong> fixes all problems with the order </li>
+			</ul>
+		</li>
+		<li><strong>Actions per Product (via drop-down list)</strong>
+			<ul>
+				<li><strong>Update</strong> edits the quantity of the product</li>
+				<li><strong>Refresh</strong> refreshes the order</li>
+				<li><strong>Delete</strong> removes all out of stock items from the order </li>
+			</ul>
+		</li>
 	</ul>
 	
 	<form method="post" action="/$applicationid/rogers/orders/import/confirm.html">
@@ -56,6 +74,9 @@
 				#end
 			#end
 		#end
+		#if($product == false)
+			#set($product = "")
+		#end
 		#if($stores.isEmpty())
 			#set($null = $stores.add($hit.store))
 			#set($store = $storesearcher.searchById($hit.store))
@@ -67,9 +88,10 @@
 					Unknown Store ($hit.store)
 				#end
 				&nbsp;&nbsp;
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+				<span class="loading"></span>
 			</h4>
 			<table>
 				<thead>
@@ -135,9 +157,10 @@
 					Unknown Store ($hit.store)
 				#end
 				&nbsp;&nbsp;
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
-				<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=deletestore&entry=${hit.store}">Delete</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixoutofstock&entry=${hit.store}">Fix Out of Stock</a>
+				<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=fixstore&entry=${hit.store}">Fix Order</a>
+				<span class="loading"></span>
 			</h4>
 			<table>
 				<thead>
@@ -207,7 +230,8 @@ $(document).ready(function(){
 });
 #end
 $(".anchorclick").click(function (){
-	$("#loading").html("&nbsp; Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
+	$("#loading").html("&nbsp; <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
+	$(".loading").html("&nbsp; <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
 });
 $(".selectaction").change(function(){
 	var id = $(this).data("hitid");
@@ -221,7 +245,8 @@ $(".selectaction").change(function(){
 		var quantity = $("#quantity-"+id).val();//check if it's a number
 		data += "&quantity="+quantity;
 	}
-	$("#loading").html("&nbsp; Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">"); //Refreshing... <img src="/${applicationid}/theme/images/ajax-loader.gif">
+	$("#loading").html("&nbsp; <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
+	$(".loading").html("&nbsp; <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
 	${D}.ajax({
 		url: url,
 		type: "POST",
