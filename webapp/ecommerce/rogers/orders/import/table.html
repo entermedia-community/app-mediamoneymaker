@@ -5,11 +5,24 @@
 		#set($uuid = $context.getRequestParameter("uuid"))
 	#end
 	
-	<a class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=quickfix">Fix All</a>
+	<h3>Pending Rogers Orders</h3>
+	<p>
+		The following shows a list of pending orders, each of which is represented in a separate table. 
+	</p>
+	
+	<h4>Actions</h4>
+	<ul>
+		<li><strong>Refresh</strong> refreshes the page without resubmitting and reprocessing the BUDDTL file </li>
+		<li><strong>Fix All</strong> quickly fix all problems on each order</li>
+		<li><strong>Confirm</strong> submit the orders to the system</li>
+	</ul>
 	
 	<form method="post" action="/$applicationid/rogers/orders/import/confirm.html">
 		<input type="hidden" name="uuid" value="$uuid" />
-		<input class="btn" id="confirm-order" type="submit" value="Confirm" style="display:none;"/>
+		<a id="refresh-${uuid}" class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=refresh">Refresh</a>
+		<a class="btn ajax anchorclick" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=quickfix">Fix All</a>
+		<input class="btn anchorclick" id="confirm-order" type="submit" value="Confirm" style="display:none;"/>
+		<span id="loading"></span>
 	</form>
 	
 	#set($storesearcher = $mediaarchive.getSearcher("rogersstore"))
@@ -193,6 +206,9 @@ $(document).ready(function(){
 	$("#confirm-order").show();
 });
 #end
+$(".anchorclick").click(function (){
+	$("#loading").html("&nbsp; Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">");
+});
 $(".selectaction").change(function(){
 	var id = $(this).data("hitid");
 	var val = $(this).val();
@@ -205,6 +221,7 @@ $(".selectaction").change(function(){
 		var quantity = $("#quantity-"+id).val();//check if it's a number
 		data += "&quantity="+quantity;
 	}
+	$("#loading").html("&nbsp; Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">"); //Refreshing... <img src="/${applicationid}/theme/images/ajax-loader.gif">
 	${D}.ajax({
 		url: url,
 		type: "POST",

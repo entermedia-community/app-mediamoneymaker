@@ -8,8 +8,7 @@
 		#else
 			#set($uuid = $context.getRequestParameter("uuid"))
 		#end
-		<h3>Batch ID: $uuid</h3>
-		<a id="refresh-${uuid}" class="btn ajax" targetdiv="orderresults" href="/$applicationid/rogers/orders/import/update.html?uuid=$uuid&oemaxlevel=1&operation=refresh" >Refresh</a>
+		###<h3>Batch ID: $uuid</h3>
 		$pages.include("/$applicationid/rogers/orders/import/table.html",$context)
 	#end
 	</div>
