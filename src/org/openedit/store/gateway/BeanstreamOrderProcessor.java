@@ -175,6 +175,10 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			post.addParameter("ordPostalCode", customer.getBillingAddress(true).getZipCode());
 			String country = customer.getBillingAddress(true).getCountry();
 			if(country != null){
+				//country fix
+				if ("Canada".equalsIgnoreCase(country)){
+					country = "CA";
+				}
 				post.addParameter("ordCountry", country);
 			}
 			
