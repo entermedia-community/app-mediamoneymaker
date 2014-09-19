@@ -91,6 +91,27 @@ public class Coupon {
 		return productid;
 	}
 	
+	public boolean hasMultipleProducts(){
+		return (getProductId()!=null && getProductId().contains("|"));
+	}
+	
+	public List<String> getProductIDs(){
+		List<String> list = new ArrayList<String>();
+		String productid = getProductId();
+		if (productid!=null && !productid.isEmpty()){
+			if (hasMultipleProducts()){
+				StringTokenizer tok = new StringTokenizer(productid,"|");
+				while(tok.hasMoreTokens())
+				{
+					list.add(tok.nextToken().trim());
+				}
+			} else {
+				list.add(productid);
+			}
+		}
+		return list;
+	}
+	
 	public int getMininumProductQuantity()
 	{
 		int minquantity = -1;
@@ -269,11 +290,24 @@ public class Coupon {
 	public boolean isProductMatch(CartItem inItem)
 	{
 		String productid = getProductId();
-		if (isCoupon(inItem) || productid == null || productid.isEmpty())
+		if (isCoupon(inItem) || productid == null || productid.isEmpty() || inItem.getProduct()==null)
 		{
 			return false;
 		}
-		return inItem.getProduct()!=null && inItem.getProduct().getId().equals(productid);
+		if (hasMultipleProducts())
+		{
+			Iterator<String> itr = getProductIDs().iterator();
+			while(itr.hasNext())
+			{
+				String product = itr.next();
+				if ( inItem.getProduct().getId().equals(product) )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return inItem.getProduct().getId().equals(productid);
 	}
 	
 	public boolean isProductQuantityOk(CartItem inItem)
@@ -294,12 +328,15 @@ public class Coupon {
 			Adjustment adjust = (Adjustment) itr.next();
 			String inventoryid = null;
 			String adjproduct = null;
+			List<String> adjproducts = new ArrayList<String>();
 			if (adjust instanceof SaleAdjustment){
 				inventoryid = ((SaleAdjustment) adjust).getInventoryItemId();
 				adjproduct = ((SaleAdjustment) adjust).getProductId();
+				adjproducts = ((SaleAdjustment) adjust).getProductIDs();
 			} else if (adjust instanceof DiscountAdjustment){
 				inventoryid = ((DiscountAdjustment) adjust).getInventoryItemId();
 				adjproduct = ((DiscountAdjustment) adjust).getProductId();
+				adjproducts = ((DiscountAdjustment) adjust).getProductIDs();
 			} else {
 				continue;
 			}
@@ -309,9 +346,9 @@ public class Coupon {
 					return;
 				}
 			}
-			if (adjproduct!=null)
+			if (!adjproducts.isEmpty())
 			{
-				String productid = getProductId();
+				String productid = getProductId();//WON'T WORK!!! can only have this coupon with a single product to do this
 				if (productid!=null && productid.equals(adjproduct)){
 					inCart.getAdjustments().remove(adjust);
 					return;//check product id if inventory sku isn't found

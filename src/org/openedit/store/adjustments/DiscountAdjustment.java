@@ -1,5 +1,11 @@
 package org.openedit.store.adjustments;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -18,6 +24,29 @@ public class DiscountAdjustment implements Adjustment{
 	public String getProductId()
 	{
 		return fieldProductId;
+	}
+	
+	public boolean hasMultipleProducts()
+	{
+		return (getProductId()!=null && getProductId().contains("|"));
+	}
+	
+	public List<String> getProductIDs()
+	{
+		List<String> list = new ArrayList<String>();
+		String productid = getProductId();
+		if (productid!=null && !productid.isEmpty()){
+			if (hasMultipleProducts()){
+				StringTokenizer tok = new StringTokenizer(productid,"|");
+				while(tok.hasMoreTokens())
+				{
+					list.add(tok.nextToken().trim());
+				}
+			} else {
+				list.add(productid);
+			}
+		}
+		return list;
 	}
 	
 	public void setInventoryItemId(String fieldInventoryItemId)
@@ -56,15 +85,38 @@ public class DiscountAdjustment implements Adjustment{
 		Money discount = getDiscount();
 		Money price = inItem.getYourPrice();
 		Money adjusted = price;
-		if (getProductId()!=null && inItem.getProduct()!=null && inItem.getProduct().getId().equals(getProductId()))
+		
+		if (getProductId()!=null && inItem.getProduct()!=null)
 		{
-			if (discount.isNegative())
+			if (hasMultipleProducts())
 			{
-				adjusted = price.add(discount);
+				Iterator<String> itr = getProductIDs().iterator();
+				while(itr.hasNext()){
+					String product = itr.next();
+					if ( inItem.getProduct().getId().equals(product) )
+					{
+						if (discount.isNegative())
+						{
+							adjusted = price.add(discount);
+						}
+						else 
+						{
+							adjusted = price.subtract(discount);
+						}
+						break;
+					}
+				}
 			}
-			else 
+			if ( inItem.getProduct().getId().equals(getProductId()) )
 			{
-				adjusted = price.subtract(discount);
+				if (discount.isNegative())
+				{
+					adjusted = price.add(discount);
+				}
+				else 
+				{
+					adjusted = price.subtract(discount);
+				}
 			}
 		}
 		return adjusted;
