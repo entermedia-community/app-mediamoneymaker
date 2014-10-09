@@ -239,11 +239,8 @@ public class ProductAdder
 				}
 			}
 		}
-		//make sure adjustments are removed if cart is empty (fail-safe)
-		if (inCart.isEmpty())
-		{
-			inCart.getAdjustments().clear();
-		}
+		//remove any old adjustments
+		Coupon.removeOldAdjustmentsAndCoupons(inCart);
 		//once products are updated check coupon dependencies
 		Iterator<Coupon> itr = getCoupons(inCart).iterator();
 		while(itr.hasNext())
@@ -252,7 +249,7 @@ public class ProductAdder
 			if (coupon.hasCustomerUsedCoupon(inReq, inCart))
 			{
 				removeCoupon(inCart,coupon);
-				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (number of use restriction)");
+				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (number of uses restriction)");
 				inReq.putPageValue("couponerror", true);
 			}
 			else if (!coupon.isCartSubtotalOk(inCart))

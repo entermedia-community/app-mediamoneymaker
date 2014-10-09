@@ -193,23 +193,11 @@ public class CartModule extends BaseStoreModule {
 			}
 			cart.removeById(id);
 			if (cartitem != null && Coupon.isCoupon(cartitem)){
-				
-				
 				InventoryItem initem = cartitem.getInventoryItem();
 				Coupon removedCoupon = new Coupon(initem);
 				removedCoupon.removeCartAdjustment(cart);
-				
-//				List<Adjustment> adjustments = cart.getAdjustments();
-//				for (Adjustment adjustment:adjustments){
-//					String id1 = adjustment.getProductId();
-//					String id2 = cartitem.getProduct().getId();
-//					
-//					if (adjustment.getProductId()!=null && adjustment.getProductId().equals(cartitem.getProduct().getId())){
-//						adjustments.remove(adjustment);
-//						break;
-//					}
-//				}
 			}
+			Coupon.removeOldAdjustmentsAndCoupons(cart);
 		}
 	}
 	
