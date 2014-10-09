@@ -1,16 +1,11 @@
 package org.openedit.store.adjustments;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
+import org.openedit.store.Coupon;
 
-public class DiscountAdjustment implements Adjustment{
+public class DiscountAdjustment extends MultipleProductsAdjustment implements Adjustment{
 	
 	protected String fieldProductId;
 	protected String fieldInventoryItemId;
@@ -24,29 +19,6 @@ public class DiscountAdjustment implements Adjustment{
 	public String getProductId()
 	{
 		return fieldProductId;
-	}
-	
-	public boolean hasMultipleProducts()
-	{
-		return (getProductId()!=null && getProductId().contains("|"));
-	}
-	
-	public List<String> getProductIDs()
-	{
-		List<String> list = new ArrayList<String>();
-		String productid = getProductId();
-		if (productid!=null && !productid.isEmpty()){
-			if (hasMultipleProducts()){
-				StringTokenizer tok = new StringTokenizer(productid,"|");
-				while(tok.hasMoreTokens())
-				{
-					list.add(tok.nextToken().trim());
-				}
-			} else {
-				list.add(productid);
-			}
-		}
-		return list;
 	}
 	
 	public void setInventoryItemId(String fieldInventoryItemId)
@@ -78,35 +50,15 @@ public class DiscountAdjustment implements Adjustment{
 	
 	@Override
 	public Money adjust(CartItem inItem) {
-		if (inItem.getProduct().isCoupon())
+		if (Coupon.isCoupon(inItem))
 		{
 			return null;
 		}
 		Money discount = getDiscount();
 		Money price = inItem.getYourPrice();
 		Money adjusted = price;
-		
 		if (getProductId()!=null && inItem.getProduct()!=null)
 		{
-			if (hasMultipleProducts())
-			{
-				Iterator<String> itr = getProductIDs().iterator();
-				while(itr.hasNext()){
-					String product = itr.next();
-					if ( inItem.getProduct().getId().equals(product) )
-					{
-						if (discount.isNegative())
-						{
-							adjusted = price.add(discount);
-						}
-						else 
-						{
-							adjusted = price.subtract(discount);
-						}
-						break;
-					}
-				}
-			}
 			if ( inItem.getProduct().getId().equals(getProductId()) )
 			{
 				if (discount.isNegative())
@@ -125,10 +77,10 @@ public class DiscountAdjustment implements Adjustment{
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
 		buf.append(getDiscount()).append(" discount");
-//		if (getProductId()!=null)
-//		{
-//			buf.append(" on "+getProductId()+" products");
-//		}
+		if (getProductId()!=null)
+		{
+			buf.append(" on "+getProductId()+" products");
+		}
 		return buf.toString();
 	}
 

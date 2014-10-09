@@ -589,7 +589,8 @@ public class ProductAdder
 					if (!coupon.isCartItemsOk(inCart))
 					{
 						StringBuilder buf = new StringBuilder();
-						buf.append("That coupon is restricted to only certain products ("+productid+")");
+						buf.append("That coupon is restricted to only certain products ")
+							.append(coupon.getProducts().toString().replace("[","(").replace("]", ")"));
 						if (minquantity > 0)
 						{
 							buf.append(" with a minimum quantity of "+minquantity);
@@ -604,7 +605,13 @@ public class ProductAdder
 						SaleAdjustment adjustment = new SaleAdjustment();
 						if (productid!=null && !productid.isEmpty()) 
 						{
-							adjustment.setProductId(productid);
+							if (coupon.hasMultipleProducts()){
+								adjustment.setProducts(productid);
+								String affectedProduct = adjustment.findAdjustedProductId(inCart);
+								adjustment.setProductId(affectedProduct);
+							} else {
+								adjustment.setProductId(productid);
+							}
 						}
 						adjustment.setInventoryItemId(couponcode);
 						adjustment.setPercentDiscount(percentage);
@@ -619,7 +626,13 @@ public class ProductAdder
 						DiscountAdjustment adjustment = new DiscountAdjustment();
 						if (productid!=null && !productid.isEmpty()) 
 						{
-							adjustment.setProductId(productid);
+							if (coupon.hasMultipleProducts()){
+								adjustment.setProducts(productid);
+								String affectedProduct = adjustment.findAdjustedProductId(inCart);
+								adjustment.setProductId(affectedProduct);
+							} else {
+								adjustment.setProductId(productid);
+							}
 						}
 						adjustment.setInventoryItemId(couponcode);
 						adjustment.setDiscount(discount);
@@ -643,13 +656,20 @@ public class ProductAdder
 									CouponAdjustment discadj = (CouponAdjustment) adjust;
 									if (couponcode.equals(discadj.getInventoryItemId())){
 										addAdjustment = false;
+										break;
 									}
 								}
 							}
 							if (addAdjustment){
 								Money adjustedprice = subtotal.add(couponValue);
 								CouponAdjustment adjustment = new CouponAdjustment();
-								adjustment.setProductId(productId);
+								if (coupon.hasMultipleProducts()){
+									adjustment.setProducts(productid);
+									String affectedProduct = adjustment.findAdjustedProductId(inCart);
+									adjustment.setProductId(affectedProduct);
+								} else {
+									adjustment.setProductId(productid);
+								}
 								adjustment.setInventoryItemId(couponcode);
 								adjustment.setDiscount(adjustedprice.doubleValue());
 								inCart.addAdjustment(adjustment);
