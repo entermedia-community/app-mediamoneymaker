@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<page>  
+   
+	<property name="sectiontitle">Home</property>
+	<page-action name="DataEditModule.search" allowduplicates="true">
+	<property name="searchtype">product</property>
+	</page-action>
+	<property name="allowspecifiedpath">true</property>
+
+	 
+</page>

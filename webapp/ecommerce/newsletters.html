@@ -25,25 +25,9 @@
 			 
 		</div>
 	</div>
-	<div id="home-right">
-		<div class="home-image">
-		<a href="$searchroot/fieldsearch.html?field=clearancecentre&clearancecentre.value=true&operation=matches$!extra">
-			<img src="$apphome/theme/images/clearance.jpg"/>
-		</a>
-		</div>
-		<div class="home-image">
-			<img src="$apphome/theme/images/shopdeals.png"/>
-		</div>
-		<div class="home-image">
-			<a href="$apphome/promo/launch/index.html">
-				<img src="$apphome/theme/images/promos.png"/>
-			</a>
-		</div>
-		<div class="logo-section">
-			<div class="logos"><a href="$apphome/newsletters.html"><img src="$apphome/theme/images/news.png"/></a></div>
-			<div class="logos"><a href="$apphome/training.html"><img src="$apphome/theme/images/training.png"/></a></div>
-		</div>
-	</div>
+	
+	$pages.include("/$applicationid/home-right.html")
+	
 	#if($canbrowseproducts)
 		#set($searchroot = "$apphome/search")
 		#set($showsidebar = "true")

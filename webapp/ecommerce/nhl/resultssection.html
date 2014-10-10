@@ -1,0 +1,45 @@
+#set($maxwrap = 55)
+<ul class="products-list">
+
+#foreach ( $cell in $hits.getPageOfHits() )
+	#set( $clink = "$home$apphome/products/${cell.sourcepath}.html" )
+	#set ($sourcepath = $cell.sourcepath)
+	#set($asset = $mediaarchive.getAsset($cell.image))
+	#set( $tsize = "$home$cataloghome/downloads/preview/thumbsmall/$asset.sourcepath/thumb.jpg")
+	#set( $msize = "$home$cataloghome/downloads/preview/medium/$asset.sourcepath/thumb.jpg")
+	<li class="product-listing">
+	    
+		<a align="center" href="$clink"><img class="thumb" src="$tsize" border="0" /></a>
+		
+		<div class="product-details">
+		    <div class="product-title">
+		    	#set($cellname = $cell.name)
+		    	#set($celllength = $cellname.length())
+		    	#if($celllength > $maxwrap)
+		    		#set($celldata = $cellname.substring(0,$maxwrap) + "...")
+		    	#else
+		    		#set($celldata = $cellname)
+		    	#end
+                <a href="$clink">$celldata</a> 
+            </div>
+            <div class="product-cat">
+                <a href="$clink">$!searcherManager.getData($catalogid, "manufaturer", $cell.manufacturer) </a> 
+            </div>
+            <div class="product-price">
+				#if($cancheckout) 
+			        #if( $cell.regularprice ) 
+			        	Regular:  <span style="text-decoration:line-through;">$cell.regularprice</span>
+			        	<br/>
+			        	<span style="font-size:larger;">Sale: $cell.yourprice</span>
+			        #else
+			        	$cell.yourprice 
+			        #end
+			    #else
+					$cell.msrp
+				#end
+            </div>
+        </div>
+    </li>
+#end
+</ul>
+

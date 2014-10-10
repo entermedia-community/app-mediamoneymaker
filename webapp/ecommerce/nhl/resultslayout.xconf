@@ -1,0 +1,3 @@
+<page>
+	<inner-layout>/${applicationid}/layout/emcommercelayout.html</inner-layout>
+</page>

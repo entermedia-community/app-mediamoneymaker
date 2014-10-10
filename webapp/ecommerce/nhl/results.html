@@ -1,0 +1,49 @@
+#set($category = $context.getPageValue("category"))
+#set($categoryvalue = $context.getPageValue("categoryvalue"))
+#set($searchfield = $context.getPageValue("searchfield"))
+#set($searchfor = $context.getPageValue("searchfor"))
+#set($query = $context.getPageValue("query"))
+#set($action = $context.getPageValue("action"))
+
+### clean up searchfor
+#set($searchfor = $searchfor.trim())
+#if($searchfor.startsWith(",") && $searchfor.length() > 2)
+	#set($searchfor = $searchfor.substring(1))
+#end
+#set($searchfor= $searchfor.replace(", Active", ""))
+
+<h2>&nbsp;</h2>
+$pages.include("$apphome/nhl/results-navigation.html")
+
+#set( $resultdetail = $archive.getDataProperties("resultdetail") )
+#set( $resulthover = $archive.getDataProperties("resulthover") )
+#if( $page.isPropertyTrue('showprice') )
+	#set( $showprice = true )
+#end
+
+$pages.include("$apphome/nhl/resultssection.html", $context)
+
+$pages.include("$apphome/nhl/results-navigation.html")
+
+#if ( $hits.totalPages == 0 )
+<p>
+[[Sorry, no results found!]]
+</p>
+                                                                                                                                                                                                              
+#end
+
+<script type="text/javascript">
+	jQuery(document).ready(function (){
+	  	jQuery(".hidden-item").hide();  
+	  	jQuery(".showall").bind('click', function(){
+	    	var id = jQuery(this).data("id");
+	    	jQuery("." + id).toggle(500);
+	    	if(jQuery(this).text() == "[[Show all...]]" || jQuery(this).text().indexOf("[[More]]") != -1)
+	    		jQuery(this).text("[[Show less...]]");
+	    	else{		            		
+	    		jQuery(this).text("[[Show all...]]");
+	    	}
+	    	return false;
+		});
+  	});
+</script>
