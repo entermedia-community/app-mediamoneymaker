@@ -82,7 +82,8 @@ public void readCSVFile(WebPageRequest req, Page csvfile, Searcher productsearch
 			String dept = line[department].trim();
 			//process only 01, 02, 03
 			String istype = line[type].trim();
-			if ("01".equals(istype) == false && "02".equals(istype) == false && "03".equals(istype) == false){
+			int checkint = toInt(istype,-1);
+			if (checkint != 1 && checkint != 2 && checkint != 3){
 				//add to ignored list
 				ignored.add(["${i}","${as400id}","${rogerssku}","${dept}","$istype"]);
 				continue;
@@ -152,6 +153,13 @@ public void readCSVFile(WebPageRequest req, Page csvfile, Searcher productsearch
 			}
 		}
 	}
+}
+
+public int toInt(String inString, int defaultInt){
+	try{
+		return Integer.parseInt(inString);
+	}catch (Exception e){e.printStackTrace();}
+	return defaultInt;
 }
 
 init();
