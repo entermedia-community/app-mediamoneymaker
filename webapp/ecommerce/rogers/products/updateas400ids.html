@@ -1,39 +1,37 @@
 <div class="ui-widget uipanel">
-	<div class="ui-widget-header">[[Rogers AS400 Import Complete]]</div>
+	<div id="updates_title" class="ui-widget-header">[[Rogers AS400 Import - In Progress]]</div>
 	<div class="ui-widget-content">
-		<h3>Updates Complete</h3>
-		<p>AS400 IDs were updated on $updates products.</p>
+		<h3 id="updates_h3">Updates in Progress <img src="/${applicationid}/theme/images/ajax-loader.gif"></h3>
+		<p id="updates_paragraph">Updates are in progress. This may take several minutes. Once the updates are complete, the page will refresh.</p>
 	</div>
 </div>
 
-### need to make sure uuid is available otherwise won't work
 #if($uuid)
 	#set($D = "$")
 	<script>
 	$(document).ready(function(){
-		//set a timer, define a function that's called at the end of the timer (once it expires)
-		//e.g.
-		setTimeout(function(){timerexpired();}, 10000);//10000 = 10 sec  or 10000 ms
+		startTimer();
 	});
 	
+	function startTimer(){
+		setTimeout(function(){timerexpired();}, 15000);//check every 15 seconds
+	}
+	
 	function timerexpired(){
-		//query the status of the updates
-		//when we check results: two conditions
-		// 1. OK -- then stop timer and display some message
-		// 2. otherwise start timer again
-		
-		// action: /$applicationid/rogers/products/checkstatus.html
 		${D}.ajax({
-			url : "$home$apphome/rogers/products/checkstatus.html?oemaxlevel=1&uuid="$uuid,
+			url : "$home$apphome/rogers/products/checkstatus.html?oemaxlevel=1&uuid=$uuid",
 			type: "GET",
 			success:function(data, textStatus, jqXHR){
-				console.log(data);
-				if (data == "OK"){
-					// display message
-					//e.g. 
-					alert("OK!");
+				if (data.trim() === "Complete"){
+					$("#updates_title").html("Rogers AS400 Import - Complete");
+					$("#updates_h3").html("Updates Complete");
+					$("#updates_paragraph").html("AS400 IDs were updated on all affected products.");
+				} else if (data.trim() === "Error"){
+					$("#updates_title").html("Rogers AS400 Import - Error");
+					$("#updates_h3").html("Updates Complete");
+					$("#updates_paragraph").html("AS400 IDs were unable to complete because of an error. Try importing the AS400 IDs again.");
 				} else {
-					//restart timer
+					startTimer();
 				}
 			}
 		});

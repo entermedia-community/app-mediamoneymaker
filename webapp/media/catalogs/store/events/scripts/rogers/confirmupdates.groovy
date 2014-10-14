@@ -12,7 +12,6 @@ public void init(){
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	Store store = req.getPageValue("store");
-	
 	String uuid = req.getRequestParameter("uuid");
 	if (uuid){
 		req.putPageValue("uuid",uuid);
@@ -22,8 +21,12 @@ public void init(){
 		evt.setProperty("applicationid", req.findValue("applicationid"));
 		evt.setOperation("product/confirmas400updates");
 		evt.setProperty("uuid",uuid);
-		WebEventHandler a = archive.getMediaEventHandler();
-		archive.getMediaEventHandler().eventFired(evt);
+		Thread thread = new Thread(new Runnable(){
+			public void run(){
+				archive.getMediaEventHandler().eventFired(evt);
+			}
+		});
+		thread.start();
 	}
 }
 
