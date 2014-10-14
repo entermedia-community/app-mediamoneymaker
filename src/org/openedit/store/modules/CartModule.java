@@ -192,12 +192,14 @@ public class CartModule extends BaseStoreModule {
 				}
 			}
 			cart.removeById(id);
-			if (cartitem != null && Coupon.isCoupon(cartitem)){
-				InventoryItem initem = cartitem.getInventoryItem();
-				Coupon removedCoupon = new Coupon(initem);
-				removedCoupon.removeCartAdjustment(cart);
-			}
-			Coupon.removeOldAdjustmentsAndCoupons(cart);
+//			if (cartitem != null && Coupon.isCoupon(cartitem)){
+////				InventoryItem initem = cartitem.getInventoryItem();
+////				Coupon removedCoupon = new Coupon(initem);
+////				removedCoupon.removeCartAdjustment(cart);
+//				Coupon.recalculateAdjustments(cart);
+//			}
+			Coupon.recalculateAdjustments(cart);
+//			Coupon.removeOldAdjustmentsAndCoupons(cart);
 		}
 	}
 	
@@ -1026,10 +1028,10 @@ public class CartModule extends BaseStoreModule {
 		String state = inReq.getPageValue("orderhistorystate").toString();
 		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
 		WebEvent evt = new WebEvent();
-		evt.setSearchType("detailedorderhistory");
+		evt.setSearchType("detailedorderhistory");//productupdates
 		evt.setCatalogId(archive.getCatalogId());
 		evt.setProperty("applicationid", inReq.findValue("applicationid"));
-		evt.setOperation("orderhistory/appendorderhistory");
+		evt.setOperation("orderhistory/appendorderhistory");//products/
 		evt.setProperty("orderid", order.getId());
 		evt.setProperty("type","automatic");
 		evt.setProperty("state",state);

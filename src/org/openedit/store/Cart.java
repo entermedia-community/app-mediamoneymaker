@@ -189,6 +189,9 @@ public class Cart extends BaseData
 		for (Iterator iter = items.iterator(); iter.hasNext();)
 		{
 			CartItem cartItem = (CartItem) iter.next();
+			if (cartItem == null || cartItem.getProduct() == null || cartItem.getSku() == null){
+				continue;// should remove if these problems are there??
+			}
 			InventoryItem inventoryItem = cartItem.getProduct().getInventoryItemBySku(cartItem.getSku());
 			listOfInventoryItems.add(inventoryItem);
 		}

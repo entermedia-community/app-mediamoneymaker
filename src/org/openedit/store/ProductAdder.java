@@ -239,8 +239,8 @@ public class ProductAdder
 				}
 			}
 		}
-		//remove any old adjustments
-		Coupon.removeOldAdjustmentsAndCoupons(inCart);
+		//recalculate adjustments every time
+		Coupon.recalculateAdjustments(inCart);
 		//once products are updated check coupon dependencies
 		Iterator<Coupon> itr = getCoupons(inCart).iterator();
 		while(itr.hasNext())
@@ -261,7 +261,11 @@ public class ProductAdder
 			else if (!coupon.isCartItemsOk(inCart))
 			{
 				removeCoupon(inCart,coupon);
-				inReq.putPageValue("errorMessage", "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (product restriction)");
+				int quantity = coupon.getMininumProductQuantity();
+				String message = "Coupon ("+coupon.getInventoryItem().getProduct()+") removed (product restriction";
+				if (quantity > 0) message += "with a minimum quantity of "+quantity;
+				message += ")";
+				inReq.putPageValue("errorMessage",message);
 				inReq.putPageValue("couponerror", true);
 			}
 		}
@@ -596,87 +600,94 @@ public class ProductAdder
 						inReq.putPageValue("couponerror", true);
 						return;
 					}
+					CartItem cartItem = new CartItem();
+					cartItem.setInventoryItem(inventoryItem);
+					inCart.addItem(cartItem);
+					
+					//now add all adjustments to cart
+					Coupon.recalculateAdjustments(inCart);
+					
 					//percentage
-					if (percentage > 0)
-					{
-						SaleAdjustment adjustment = new SaleAdjustment();
-						if (productid!=null && !productid.isEmpty()) 
-						{
-							if (coupon.hasMultipleProducts()){
-								adjustment.setProducts(productid);
-								String affectedProduct = adjustment.findAdjustedProductId(inCart);
-								adjustment.setProductId(affectedProduct);
-							} else {
-								adjustment.setProductId(productid);
-							}
-						}
-						adjustment.setInventoryItemId(couponcode);
-						adjustment.setPercentDiscount(percentage);
-						inCart.addAdjustment(adjustment);
-						
-						CartItem cartItem = new CartItem();
-						cartItem.setInventoryItem(inventoryItem);
-						inCart.addItem(cartItem);
-					}
-					else if (discount > 0)
-					{
-						DiscountAdjustment adjustment = new DiscountAdjustment();
-						if (productid!=null && !productid.isEmpty()) 
-						{
-							if (coupon.hasMultipleProducts()){
-								adjustment.setProducts(productid);
-								String affectedProduct = adjustment.findAdjustedProductId(inCart);
-								adjustment.setProductId(affectedProduct);
-							} else {
-								adjustment.setProductId(productid);
-							}
-						}
-						adjustment.setInventoryItemId(couponcode);
-						adjustment.setDiscount(discount);
-						inCart.addAdjustment(adjustment);
-						
-						CartItem cartItem = new CartItem();
-						cartItem.setInventoryItem(inventoryItem);
-						inCart.addItem(cartItem);
-					}
-					else
-					{
-						Money subtotal = inCart.getSubTotal();
-						Money couponValue = inventoryItem.getYourPrice();
-						
-						//need to add couponadjustment here
-						if ( (couponValue.doubleValue() * -1) > subtotal.doubleValue()){
-							List<Adjustment> adjustments = inCart.getAdjustments();
-							boolean addAdjustment = true;
-							for (Adjustment adjust: adjustments){
-								if (adjust instanceof CouponAdjustment){
-									CouponAdjustment discadj = (CouponAdjustment) adjust;
-									if (couponcode.equals(discadj.getInventoryItemId())){
-										addAdjustment = false;
-										break;
-									}
-								}
-							}
-							if (addAdjustment){
-								Money adjustedprice = subtotal.add(couponValue);
-								CouponAdjustment adjustment = new CouponAdjustment();
-								if (coupon.hasMultipleProducts()){
-									adjustment.setProducts(productid);
-									String affectedProduct = adjustment.findAdjustedProductId(inCart);
-									adjustment.setProductId(affectedProduct);
-								} else {
-									adjustment.setProductId(productid);
-								}
-								adjustment.setInventoryItemId(couponcode);
-								adjustment.setDiscount(adjustedprice.doubleValue());
-								inCart.addAdjustment(adjustment);
-							}
-						}
-						
-						CartItem cartItem = new CartItem();
-						cartItem.setInventoryItem(inventoryItem);
-						inCart.addItem(cartItem);
-					}
+//					if (percentage > 0)
+//					{
+//						SaleAdjustment adjustment = new SaleAdjustment();
+//						if (productid!=null && !productid.isEmpty()) 
+//						{
+//							if (coupon.hasMultipleProducts()){
+//								adjustment.setProducts(productid);
+//								String affectedProduct = adjustment.findAdjustedProductId(inCart);
+//								adjustment.setProductId(affectedProduct);
+//							} else {
+//								adjustment.setProductId(productid);
+//							}
+//						}
+//						adjustment.setInventoryItemId(couponcode);
+//						adjustment.setPercentDiscount(percentage);
+//						inCart.addAdjustment(adjustment);
+//						
+//						CartItem cartItem = new CartItem();
+//						cartItem.setInventoryItem(inventoryItem);
+//						inCart.addItem(cartItem);
+//					}
+//					else if (discount > 0)
+//					{
+//						DiscountAdjustment adjustment = new DiscountAdjustment();
+//						if (productid!=null && !productid.isEmpty()) 
+//						{
+//							if (coupon.hasMultipleProducts()){
+//								adjustment.setProducts(productid);
+//								String affectedProduct = adjustment.findAdjustedProductId(inCart);
+//								adjustment.setProductId(affectedProduct);
+//							} else {
+//								adjustment.setProductId(productid);
+//							}
+//						}
+//						adjustment.setInventoryItemId(couponcode);
+//						adjustment.setDiscount(discount);
+//						inCart.addAdjustment(adjustment);
+//						
+//						CartItem cartItem = new CartItem();
+//						cartItem.setInventoryItem(inventoryItem);
+//						inCart.addItem(cartItem);
+//					}
+//					else
+//					{
+//						Money subtotal = inCart.getSubTotal();
+//						Money couponValue = inventoryItem.getYourPrice();
+//						
+//						//need to add couponadjustment here
+//						if ( (couponValue.doubleValue() * -1) > subtotal.doubleValue()){
+//							List<Adjustment> adjustments = inCart.getAdjustments();
+//							boolean addAdjustment = true;
+//							for (Adjustment adjust: adjustments){
+//								if (adjust instanceof CouponAdjustment){
+//									CouponAdjustment discadj = (CouponAdjustment) adjust;
+//									if (couponcode.equals(discadj.getInventoryItemId())){
+//										addAdjustment = false;
+//										break;
+//									}
+//								}
+//							}
+//							if (addAdjustment){
+//								Money adjustedprice = subtotal.add(couponValue);
+//								CouponAdjustment adjustment = new CouponAdjustment();
+//								if (coupon.hasMultipleProducts()){
+//									adjustment.setProducts(productid);
+//									String affectedProduct = adjustment.findAdjustedProductId(inCart);
+//									adjustment.setProductId(affectedProduct);
+//								} else {
+//									adjustment.setProductId(productid);
+//								}
+//								adjustment.setInventoryItemId(couponcode);
+//								adjustment.setDiscount(adjustedprice.doubleValue());
+//								inCart.addAdjustment(adjustment);
+//							}
+//						}
+//						
+//						CartItem cartItem = new CartItem();
+//						cartItem.setInventoryItem(inventoryItem);
+//						inCart.addItem(cartItem);
+//					}
 				}
 			}
 			else

@@ -265,6 +265,7 @@ public class Coupon {
 		{
 			List<String> products = getProducts();
 			boolean isproductpresent = false;
+			boolean isminimumok = (minquantity > 0) ? false : true;
 			for (Iterator<?> iter = inCart.getItems().iterator(); iter.hasNext();)
 			{
 				CartItem item = (CartItem) iter.next();
@@ -275,13 +276,19 @@ public class Coupon {
 				if (products.contains(productid)){
 					isproductpresent = true;
 					if (minquantity > 0 && item.getQuantity() < minquantity){
-						return false;
+						continue;
 					}
+					isminimumok = true;
 				}
 			}
+			
 			if (!isproductpresent)
 			{
 				return false;
+			} else {
+				if (!isminimumok){
+					return false;
+				}
 			}
 		}
 		return true;
@@ -305,9 +312,9 @@ public class Coupon {
 				continue;
 			}
 			if (inventoryid!=null){
-				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){ //.getProperty("sku")
+				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){
 					inCart.getAdjustments().remove(adjust);//check inventory sku first
-					return;
+//					return;
 				}
 			}
 			if (adjproduct!=null)
@@ -315,7 +322,7 @@ public class Coupon {
 				String productid = getProductId();
 				if (productid!=null && productid.equals(adjproduct)){
 					inCart.getAdjustments().remove(adjust);
-					return;//check product id if inventory sku isn't found
+//					return;//check product id if inventory sku isn't found
 				}
 			}
 		}
@@ -376,5 +383,68 @@ public class Coupon {
 		{
 			inCart.getAdjustments().clear();
 		}
+	}
+	
+	public static void recalculateAdjustments(Cart inCart){
+		//adds all Cart Adjustments associated with Coupon to the cart
+		inCart.getAdjustments().clear();
+		List<CartItem> coupons = getAllCoupons(inCart);
+		for(CartItem couponitem:coupons){
+			Coupon coupon = new Coupon(couponitem.getInventoryItem());
+			List<CartItem> affecteditems = coupon.getAllAffectedCartItems(inCart);
+			for(CartItem item:affecteditems){//need to add an adjustment for each affected cart item
+				String productid = item.getProduct().getId();//affected product id
+				double percentage = coupon.getPercentage();// percentage or discount
+				double discount = coupon.getDiscount();
+				String sku = couponitem.getInventoryItem().getSku();
+				if (percentage > 0){
+					SaleAdjustment adjustment = new SaleAdjustment();
+					adjustment.setProductId(productid);
+					adjustment.setInventoryItemId(sku);
+					adjustment.setPercentDiscount(percentage);
+					inCart.addAdjustment(adjustment);
+				} else if (discount > 0){
+					DiscountAdjustment adjustment = new DiscountAdjustment();
+					adjustment.setProductId(productid);
+					adjustment.setInventoryItemId(sku);
+					adjustment.setDiscount(discount);
+					inCart.addAdjustment(adjustment);
+				} else {
+					//coupon adjustment ???
+				}
+			}
+		}
+	}
+	
+	public List<CartItem> getAllAffectedCartItems(Cart inCart){
+		List<CartItem> list = new ArrayList<CartItem>();
+		List<String> productIds = getProducts();
+		Iterator<?> itr = inCart.getItems().iterator();
+		while (itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			if (Coupon.isCoupon(item) || item.getProduct() == null){
+				continue;
+			}
+			if (productIds.contains(item.getProduct().getId())){
+				int minquantity = getMininumProductQuantity();
+				if (minquantity > 0 && item.getQuantity() < minquantity){
+					continue;
+				}
+				list.add(item);
+			}
+		}
+		return list;
+	}
+	
+	public static List<CartItem> getAllCoupons(Cart inCart){
+		List<CartItem> list = new ArrayList<CartItem>();
+		Iterator<?> itr = inCart.getItems().iterator();
+		while (itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			if (Coupon.isCoupon(item)){
+				list.add(item);
+			}
+		}
+		return list;
 	}
 }
