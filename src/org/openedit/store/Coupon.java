@@ -329,62 +329,62 @@ public class Coupon {
 //		}
 //	}
 	
-	public static void removeOldAdjustmentsAndCoupons(Cart inCart)
-	{
-		List<Adjustment> adjustments = new ArrayList<Adjustment>();
-		List<CartItem> coupons = new ArrayList<CartItem>();
-		Iterator<?> itr = inCart.getAdjustments().iterator();
-		while (itr.hasNext())
-		{
-			Adjustment adjustment = (Adjustment) itr.next();
-			String productid = null;
-			String couponsku = null;
-			if (adjustment instanceof SaleAdjustment)
-			{
-				productid = ((SaleAdjustment) adjustment).getProductId();
-				couponsku = ((SaleAdjustment) adjustment).getInventoryItemId();
-			}
-			else if (adjustment instanceof DiscountAdjustment)
-			{
-				productid = ((DiscountAdjustment) adjustment).getProductId();
-				couponsku = ((DiscountAdjustment) adjustment).getInventoryItemId();
-			}
-			if (productid == null || productid.isEmpty())
-			{
-				continue;
-			}
-			boolean isPresent = false;
-			Iterator<?> itr2 = inCart.getItems().iterator();
-			while(itr2.hasNext())
-			{
-				CartItem item = (CartItem) itr2.next();
-				if (Coupon.isCoupon(item) && couponsku!=null && item.getProduct().getInventoryItemBySku(couponsku)!=null)
-				{
-					coupons.add(item);
-				}
-				if (item.getProduct().getId().equals(productid))
-				{
-					isPresent = true;
-				}
-			}
-			if (!isPresent)
-			{
-				adjustments.add(adjustment);
-			}
-		}
-		for (Adjustment adjustment:adjustments)
-		{
-			inCart.getAdjustments().remove(adjustment);
-		}
-		for (CartItem coupon:coupons)
-		{
-			inCart.removeItem(coupon);
-		}
-		if (inCart.isEmpty())
-		{
-			inCart.getAdjustments().clear();
-		}
-	}
+//	public static void removeOldAdjustmentsAndCoupons(Cart inCart)
+//	{
+//		List<Adjustment> adjustments = new ArrayList<Adjustment>();
+//		List<CartItem> coupons = new ArrayList<CartItem>();
+//		Iterator<?> itr = inCart.getAdjustments().iterator();
+//		while (itr.hasNext())
+//		{
+//			Adjustment adjustment = (Adjustment) itr.next();
+//			String productid = null;
+//			String couponsku = null;
+//			if (adjustment instanceof SaleAdjustment)
+//			{
+//				productid = ((SaleAdjustment) adjustment).getProductId();
+//				couponsku = ((SaleAdjustment) adjustment).getInventoryItemId();
+//			}
+//			else if (adjustment instanceof DiscountAdjustment)
+//			{
+//				productid = ((DiscountAdjustment) adjustment).getProductId();
+//				couponsku = ((DiscountAdjustment) adjustment).getInventoryItemId();
+//			}
+//			if (productid == null || productid.isEmpty())
+//			{
+//				continue;
+//			}
+//			boolean isPresent = false;
+//			Iterator<?> itr2 = inCart.getItems().iterator();
+//			while(itr2.hasNext())
+//			{
+//				CartItem item = (CartItem) itr2.next();
+//				if (Coupon.isCoupon(item) && couponsku!=null && item.getProduct().getInventoryItemBySku(couponsku)!=null)
+//				{
+//					coupons.add(item);
+//				}
+//				if (item.getProduct().getId().equals(productid))
+//				{
+//					isPresent = true;
+//				}
+//			}
+//			if (!isPresent)
+//			{
+//				adjustments.add(adjustment);
+//			}
+//		}
+//		for (Adjustment adjustment:adjustments)
+//		{
+//			inCart.getAdjustments().remove(adjustment);
+//		}
+//		for (CartItem coupon:coupons)
+//		{
+//			inCart.removeItem(coupon);
+//		}
+//		if (inCart.isEmpty())
+//		{
+//			inCart.getAdjustments().clear();
+//		}
+//	}
 	
 	public static void recalculateAdjustments(Cart inCart){
 		//adds all Cart Adjustments associated with Coupon to the cart
