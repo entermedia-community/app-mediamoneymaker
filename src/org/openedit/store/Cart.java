@@ -373,7 +373,7 @@ public class Cart extends BaseData
 			{
 				continue;
 			}
-			Money toadd = calculateAdjustedPrice(item);
+			Money toadd = item.getYourPrice();//get non-adjusted price
 			if (toadd != null)
 			{
 				toadd = toadd.multiply(item.getQuantity());

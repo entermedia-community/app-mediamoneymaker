@@ -239,8 +239,6 @@ public class ProductAdder
 				}
 			}
 		}
-		//recalculate adjustments every time
-		Coupon.recalculateAdjustments(inCart);
 		//once products are updated check coupon dependencies
 		Iterator<Coupon> itr = getCoupons(inCart).iterator();
 		while(itr.hasNext())
@@ -269,8 +267,8 @@ public class ProductAdder
 				inReq.putPageValue("couponerror", true);
 			}
 		}
-		
-		
+		//recalculate adjustments every time
+		Coupon.recalculateAdjustments(inCart);
 	}
 	
 	private void removeCoupon(Cart inCart, Coupon inCoupon)

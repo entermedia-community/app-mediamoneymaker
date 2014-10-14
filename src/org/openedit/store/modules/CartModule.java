@@ -192,14 +192,7 @@ public class CartModule extends BaseStoreModule {
 				}
 			}
 			cart.removeById(id);
-//			if (cartitem != null && Coupon.isCoupon(cartitem)){
-////				InventoryItem initem = cartitem.getInventoryItem();
-////				Coupon removedCoupon = new Coupon(initem);
-////				removedCoupon.removeCartAdjustment(cart);
-//				Coupon.recalculateAdjustments(cart);
-//			}
 			Coupon.recalculateAdjustments(cart);
-//			Coupon.removeOldAdjustmentsAndCoupons(cart);
 		}
 	}
 	
