@@ -76,7 +76,7 @@ public class ProductAdder
 					if (item!=null)//removed so update adjustment
 					{
 						Coupon removedCoupon = new Coupon(item);
-						removedCoupon.removeCartAdjustment(inCart);
+//						removedCoupon.removeCartAdjustment(inCart);
 					}
 				}
 				continue;
@@ -135,7 +135,7 @@ public class ProductAdder
 				if (inventory!=null && checked!=null)//removed so update adjustment
 				{
 					Coupon removedCoupon = new Coupon(inventory);
-					removedCoupon.removeCartAdjustment(inCart);
+//					removedCoupon.removeCartAdjustment(inCart);
 				}
 			} else {
 				inventory = product.getInventoryItemByOptions(options);
@@ -286,7 +286,7 @@ public class ProductAdder
 				{
 					inCart.removeItem(cartitem);
 				}
-				inCoupon.removeCartAdjustment(inCart);
+//				inCoupon.removeCartAdjustment(inCart);
 				return;
 			}
 		}

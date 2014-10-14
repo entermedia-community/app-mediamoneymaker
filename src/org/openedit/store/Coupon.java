@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.orders.Order;
@@ -294,39 +295,39 @@ public class Coupon {
 		return true;
 	}
 	
-	public void removeCartAdjustment(Cart inCart)
-	{
-		Iterator<?> itr = inCart.getAdjustments().iterator();
-		while (itr.hasNext())
-		{
-			Adjustment adjust = (Adjustment) itr.next();
-			String inventoryid = null;
-			String adjproduct = null;
-			if (adjust instanceof SaleAdjustment){
-				inventoryid = ((SaleAdjustment) adjust).getInventoryItemId();
-				adjproduct = ((SaleAdjustment) adjust).getProductId();
-			} else if (adjust instanceof DiscountAdjustment){
-				inventoryid = ((DiscountAdjustment) adjust).getInventoryItemId();
-				adjproduct = ((DiscountAdjustment) adjust).getProductId();
-			} else {
-				continue;
-			}
-			if (inventoryid!=null){
-				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){
-					inCart.getAdjustments().remove(adjust);//check inventory sku first
-//					return;
-				}
-			}
-			if (adjproduct!=null)
-			{
-				String productid = getProductId();
-				if (productid!=null && productid.equals(adjproduct)){
-					inCart.getAdjustments().remove(adjust);
-//					return;//check product id if inventory sku isn't found
-				}
-			}
-		}
-	}
+//	public void removeCartAdjustment(Cart inCart)
+//	{
+//		Iterator<?> itr = inCart.getAdjustments().iterator();
+//		while (itr.hasNext())
+//		{
+//			Adjustment adjust = (Adjustment) itr.next();
+//			String inventoryid = null;
+//			String adjproduct = null;
+//			if (adjust instanceof SaleAdjustment){
+//				inventoryid = ((SaleAdjustment) adjust).getInventoryItemId();
+//				adjproduct = ((SaleAdjustment) adjust).getProductId();
+//			} else if (adjust instanceof DiscountAdjustment){
+//				inventoryid = ((DiscountAdjustment) adjust).getInventoryItemId();
+//				adjproduct = ((DiscountAdjustment) adjust).getProductId();
+//			} else {
+//				continue;
+//			}
+//			if (inventoryid!=null){
+//				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){
+//					inCart.getAdjustments().remove(adjust);//check inventory sku first
+////					return;
+//				}
+//			}
+//			if (adjproduct!=null)
+//			{
+//				String productid = getProductId();
+//				if (productid!=null && productid.equals(adjproduct)){
+//					inCart.getAdjustments().remove(adjust);
+////					return;//check product id if inventory sku isn't found
+//				}
+//			}
+//		}
+//	}
 	
 	public static void removeOldAdjustmentsAndCoupons(Cart inCart)
 	{
@@ -391,12 +392,14 @@ public class Coupon {
 		List<CartItem> coupons = getAllCoupons(inCart);
 		for(CartItem couponitem:coupons){
 			Coupon coupon = new Coupon(couponitem.getInventoryItem());
+			//percentage, discount + sku (ie. coupon code)
+			String sku = couponitem.getInventoryItem().getSku();
+			double percentage = coupon.getPercentage();
+			double discount = coupon.getDiscount();
+			//go through list of affected products
 			List<CartItem> affecteditems = coupon.getAllAffectedCartItems(inCart);
 			for(CartItem item:affecteditems){//need to add an adjustment for each affected cart item
 				String productid = item.getProduct().getId();//affected product id
-				double percentage = coupon.getPercentage();// percentage or discount
-				double discount = coupon.getDiscount();
-				String sku = couponitem.getInventoryItem().getSku();
 				if (percentage > 0){
 					SaleAdjustment adjustment = new SaleAdjustment();
 					adjustment.setProductId(productid);
@@ -410,7 +413,16 @@ public class Coupon {
 					adjustment.setDiscount(discount);
 					inCart.addAdjustment(adjustment);
 				} else {
-					//coupon adjustment ???
+					Money subtotal = inCart.getSubTotal();
+					Money couponValue = coupon.getInventoryItem().getYourPrice();
+					if ( (couponValue.doubleValue() * -1) > subtotal.doubleValue()){
+						Money adjustedprice = subtotal.add(couponValue);
+						CouponAdjustment adjustment = new CouponAdjustment();
+						adjustment.setProductId(productid);
+						adjustment.setInventoryItemId(sku);
+						adjustment.setDiscount(adjustedprice.doubleValue());
+						inCart.addAdjustment(adjustment);
+					}
 				}
 			}
 		}

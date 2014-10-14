@@ -52,24 +52,22 @@ public class CouponAdjustment extends MultipleProductsAdjustment implements Adju
 	public Money adjust(CartItem inItem) {
 		if (Coupon.isCoupon(inItem))
 		{
-			Money discount = getDiscount();
-			Money price = inItem.getYourPrice();
-			Money adjusted = price;
 			if (getProductId()!=null && inItem.getProduct()!=null)
 			{
 				if (inItem.getProduct().getId().equals(getProductId()))
 				{
+					Money discount = getDiscount();
+					Money price = inItem.getYourPrice();
 					if (discount.isNegative())
 					{
-						adjusted = price.subtract(discount);
+						return price.subtract(discount);
 					}
 					else 
 					{
-						adjusted = price.add(discount);
+						return price.add(discount);
 					}
 				}
 			}
-			return adjusted;
 		}
 		return null;
 	}

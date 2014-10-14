@@ -7,6 +7,7 @@ import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
+import org.openedit.store.Coupon;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com
@@ -28,11 +29,14 @@ public class SaleAdjustment extends MultipleProductsAdjustment implements Adjust
 	
 	@Override
 	public Money adjust(CartItem inItem) {
-		if (getProductId()!=null && inItem.getProduct() != null)
+		if (!Coupon.isCoupon(inItem))
 		{
-			if ( inItem.getProduct().getId().equals(getProductId()) )
+			if (getProductId()!=null && inItem.getProduct() != null)
 			{
-				return inItem.getYourPrice().multiply(Fraction.ONE.subtract(getPercentage()));
+				if ( inItem.getProduct().getId().equals(getProductId()) )
+				{
+					return inItem.getYourPrice().multiply(Fraction.ONE.subtract(getPercentage()));
+				}
 			}
 		}
 		return null;

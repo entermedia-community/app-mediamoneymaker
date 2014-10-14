@@ -385,16 +385,21 @@ public class Cart extends BaseData
 
 	protected Money calculateAdjustedPrice(CartItem inItem)
 	{
-		for (Iterator iter = getAdjustments().iterator(); iter.hasNext();)
+		Money adjustedprice = null;
+		for (Iterator<?> iter = getAdjustments().iterator(); iter.hasNext();)
 		{
 			Adjustment adjust = (Adjustment) iter.next();
 			Money money = adjust.adjust(this, inItem);
 			if (money != null)
 			{
-				return money;
+				adjustedprice = money;
+				break;
 			}
 		}
-		return inItem.getYourPrice();
+		if (adjustedprice==null){
+			adjustedprice = inItem.getYourPrice();
+		}
+		return adjustedprice;
 	}
 
 	public void addItem(CartItem inItem, int inLineNumber)

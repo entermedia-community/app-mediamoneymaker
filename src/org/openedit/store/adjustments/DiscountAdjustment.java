@@ -50,28 +50,26 @@ public class DiscountAdjustment extends MultipleProductsAdjustment implements Ad
 	
 	@Override
 	public Money adjust(CartItem inItem) {
-		if (Coupon.isCoupon(inItem))
+		if (!Coupon.isCoupon(inItem))
 		{
-			return null;
-		}
-		Money discount = getDiscount();
-		Money price = inItem.getYourPrice();
-		Money adjusted = price;
-		if (getProductId()!=null && inItem.getProduct()!=null)
-		{
-			if ( inItem.getProduct().getId().equals(getProductId()) )
+			if (getProductId()!=null && inItem.getProduct()!=null)
 			{
-				if (discount.isNegative())
+				if ( inItem.getProduct().getId().equals(getProductId()) )
 				{
-					adjusted = price.add(discount);
-				}
-				else 
-				{
-					adjusted = price.subtract(discount);
+					Money discount = getDiscount();
+					Money price = inItem.getYourPrice();
+					if (discount.isNegative())
+					{
+						return price.add(discount);
+					}
+					else 
+					{
+						return price.subtract(discount);
+					}
 				}
 			}
 		}
-		return adjusted;
+		return null;
 	}
 	
 	public String toString() {
