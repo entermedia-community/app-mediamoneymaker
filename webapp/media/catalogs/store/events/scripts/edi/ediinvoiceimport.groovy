@@ -98,17 +98,17 @@ public void doImport() {
 			invoiceNode.InvoiceGroup.InvoiceHeader.each{
 				ArrayList items = new ArrayList();
 				String ponumber = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
-				
-				if(ponumber.startsWith("Rogers")){
-					
-					String [] split = ponumber.split("|");
-					ponumber = split[0];
-					
+				if (ponumber){
+					ponumber = ponumber.trim();//trim first 
+					if(ponumber.toLowerCase().startsWith("rogers") && ponumber.contains("|")){
+						//note: cannot use string.split() in goovy - use substring instead
+						ponumber = ponumber.substring(0, ponumber.indexOf("|")).trim();
+						//make sure to replace upper case chars with mixed case ones
+						ponumber = ponumber.replace("ROGERS", "Rogers");
+					}
 				}
-				
 				String invoicenumber = it.InvoiceNumber.text()
 				Data invoice = invoicesearcher.searchByField("invoicenumber", invoicenumber);
-				
 				if(invoice == null){
 					invoice = invoicesearcher.createNewData();
 					invoice.setId(invoicesearcher.nextId());

@@ -365,11 +365,10 @@ public class ExportEdiOrder extends EnterMediaObject {
 				TblReferenceNbr()
 				{
 					Qualifier("PO")
-					if(order.getId().startsWith("Rogers") && rogersPO!=null){
+					if(order.getId().toLowerCase().startsWith("rogers") && rogersPO!=null){
 						ReferenceNbr(order.getId() + "|" + rogersPO)
 					}else{
 						ReferenceNbr(order.getId())
-					
 					}
 				}
 

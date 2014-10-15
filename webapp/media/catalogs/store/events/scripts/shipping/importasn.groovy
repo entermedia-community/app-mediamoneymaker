@@ -28,8 +28,6 @@ import groovy.util.slurpersupport.GPathResult;
 public void init(){
 	log.info("----- Starting Import ASN -----");
 	MediaArchive archive = context.getPageValue("mediaarchive");
-//	archive.getSearcherManager().getSearcher(archive.getCatalogId(), "asn").deleteAll(null);
-	
 	XMLPathProcessor processor = new XMLPathProcessor();
 	processor.setLogger(log);
 	processor.setArchive(archive);
@@ -40,7 +38,6 @@ public void init(){
 	processor.setIncludeExtensions("xml");
 	processor.init();
 	processor.process();
-	
 	log.info("----- End Import ASN -----");
 }
 
@@ -120,7 +117,7 @@ class XMLPathProcessor extends PathProcessor
 	{
 		String path = inContent.getPath();
 		Page page = archive.getPageManager().getPage(path);
-		logger.info("### Processing ${page.getName()}, path=${page.getParentPath()}");
+		logger.info("Processing ${page.getName()}, path=${page.getParentPath()}");
 		GPathResult asnInfo = new XmlSlurper().parse(page.getReader());
 		ArrayList<String> asnOrders = new ArrayList<String>();
 		String gssnd = asnInfo.Attributes.TblReferenceNbr.find {it.Qualifier == "GSSND"}.ReferenceNbr.text();
@@ -152,7 +149,6 @@ class XMLPathProcessor extends PathProcessor
 						break;
 					case 2:
 						purchaseOrder = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
-						
 						shippingDate = DATE_FORMAT.parse(it.Attributes.TblDate.find {it.Qualifier == "004"}.DateValue.text());
 						break;
 					case 4:
@@ -169,19 +165,20 @@ class XMLPathProcessor extends PathProcessor
 					updateASN(page,gssnd,carrier,waybill,purchaseOrder,shippingDate,quantity,vendorCode,"Unable to find distributor ${gssnd}.");
 					return;
 				}
-				
-				if(purchaseOrder.startsWith("Rogers")){
-					
-					String [] split = purchaseOrder.split("|");
-					purchaseOrder = split[0];
-					
+				//check for corporate orders
+				purchaseOrder = purchaseOrder.trim();//trim first 
+				if(purchaseOrder.toLowerCase().startsWith("rogers") && purchaseOrder.contains("|")){
+					//note: cannot use string.split() in goovy - use substring instead
+					purchaseOrder = purchaseOrder.substring(0, purchaseOrder.indexOf("|")).trim();
+					//make sure to replace upper case chars with mixed case ones
+					purchaseOrder = purchaseOrder.replace("ROGERS", "Rogers");
 				}
-				Order order = (Order) archive.getData("storeOrder", purchaseOrder);
+				Order order = (Order) store.getOrderSearcher().searchById(purchaseOrder);
 				if (order == null){
 					int dash = -1;
 					if ((dash = purchaseOrder.indexOf("-"))!=-1){
 						String po = purchaseOrder.substring(0, dash).trim();
-						order = (Order) archive.getData("storeOrder", po);
+						order = (Order) store.getOrderSearcher().searchById(purchaseOrder);
 					}
 				}
 				if (order == null){
@@ -212,7 +209,6 @@ class XMLPathProcessor extends PathProcessor
 					updateOrder = true;
 				}
 				if (updateOrder){
-					
 					if(order.isFullyShipped()){
 						order.setProperty("shippingstatus", "shipped");
 					}else{
@@ -225,7 +221,6 @@ class XMLPathProcessor extends PathProcessor
 					{
 						appendFullyShippedNoticeToOrderHistory(order);
 					}
-					
 				}
 			}
 		}
