@@ -32,6 +32,7 @@ public void init(){
 	
 	RemotePathProcessor processor = new RemotePathProcessor();
 	processor.setContext(context);
+	processor.setContentPage(content);
 	processor.setLogger(log);
 	processor.setArchive(archive);
 	processor.setStore(store);
@@ -65,6 +66,7 @@ class RemotePathProcessor {
 	boolean productsUpdated = false;
 	List<String> emails;
 	WebPageRequest req;
+	Page contentpage;
 	int rowsProcessed = 0;
 	
 	public void resetRowsProcessed(){
@@ -81,6 +83,10 @@ class RemotePathProcessor {
 	
 	public void setContext(WebPageRequest context){
 		req = context;
+	}
+	
+	public void setContentPage(Page inContent){
+		contentpage = inContent;
 	}
 	
 	public List<String> getEmails(){
@@ -275,7 +281,7 @@ class RemotePathProcessor {
 							buf.append("<span style='color:green'>Success</span>");
 							processPage(incomingPage,processedpath);
 						} else {
-							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
+//							log.info("Unable to retrieve file(${file.getName()}). Error code: ${reply}");
 							buf.append("<span color='color:red'>Fail (").append(reply).append(")</span>");
 						}
 					} else {
@@ -292,10 +298,10 @@ class RemotePathProcessor {
 		finally{
 			try{
 				ftp.disconnect();
-				setLastInventoryUpdate();
 			}catch (Exception e){
 				log.error("Exception caught in finally clause, ${e.getMessage()}");
 			}
+			setLastInventoryUpdate();
 		}
 	}
 	
@@ -496,6 +502,10 @@ class RemotePathProcessor {
 		if (data == null && upc!="") data = searcher.searchByField("upc",upc);
 		if (data != null){
 			Product product = getStore().getProduct(data.id);
+			if (canUpdateInventory(product) == false){
+				inBuf.append("<span style='color:red'>Unable to update inventory:</span> NHL product updates are disabled for $product (${product.id})");
+				return null;
+			}
 			InventoryItem item = product.getInventoryItemBySku(inManufacturerSku);
 			if (item == null){	
 				item = product.getInventoryItemBySku(inRogersSku);// seems to be a problem with some of the data, check this
@@ -544,6 +554,18 @@ class RemotePathProcessor {
 			inBuf.append("<span style='color:red'>Unable to find product:</span> looking for Manufacturer Sku = ${inManufacturerSku}, Rogers Sku = ${inRogersSku}, UPC = ${inUpc}");
 		}
 		return null;
+	}
+	
+	public boolean canUpdateInventory(Product inProduct){
+		//check if NHL products should be updated
+		if(contentpage && contentpage.isPropertyTrue("disablenhlupdates")){
+			boolean isNHL = Boolean.parseBoolean(inProduct.get("nhl"));
+			if (isNHL){
+//				System.out.println("### Omitting $inProduct -- NHL omission is enabled");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public int toInt(String inValue, int inDefault, int inMinimum){

@@ -33,6 +33,7 @@ public class ImportInventory  extends EnterMediaObject {
 	List<String> badQtyList;
 	List<String> goodProductList;
 	int totalRows;
+	Page fieldContent;
 
 	public List<String> getBadProductList() {
 		if(badProductList == null) {
@@ -92,6 +93,10 @@ public class ImportInventory  extends EnterMediaObject {
 	}
 	public void increaseTotalRows() {
 		this.totalRows++;
+	}
+	
+	public void setContent(Page inContent){
+		fieldContent = inContent;
 	}
 
 	public void handleSubmission(){
@@ -231,9 +236,19 @@ public class ImportInventory  extends EnterMediaObject {
 			        }
 				}
 				if (productHit) {
-						//lookup product with product searcher
+					//lookup product with product searcher
 					Product product = productsearcher.searchById(productHit.id);
 					if (product) {
+						//check if NHL products should be updated
+						if(fieldContent.isPropertyTrue("disablenhlupdates")){
+							boolean isNHL = Boolean.parseBoolean(product.get("nhl"));
+							if (isNHL){
+//								log.info("Omitting $product -- NHL omission is enabled");
+								addToBadProductList("${rogersSKU}* Omitting NHL Products");//add to bad product list (?)
+								increaseTotalRows();
+								continue;
+							}
+						}
 						InventoryItem productInventory = null
 						productInventory = product.getInventoryItem(0);
 						if (productInventory == null) {
@@ -351,6 +366,7 @@ try {
 	ImportInventory importInventory = new ImportInventory();
 	importInventory.setLog(log);
 	importInventory.setContext(context);
+	importInventory.setContent(content);
 	importInventory.setModuleManager(moduleManager);
 	importInventory.setPageManager(pageManager);
 	importInventory.handleSubmission();
