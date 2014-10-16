@@ -1,7 +1,7 @@
 <div class="ui-widget uipanel">
 	#if($canviewtesting)
 	<p>[[Please make a choice below of the application you would like to execute.]]</p>
-    <p><table class="rogers-list">
+    <table class="rogers-list">
         <tr><td class="rogers-list-header"><div class="ui-widget-header">[[Products]]</div></td></tr>
         <tr><td class="rogers-list"><a href="$home$apphome/rogers/products/updateapproved.html">[[Update Approved Products]]</a></td></tr>
         <tr><td class="rogers-list"><a href="$home$apphome/rogers/products/approveproductsfromcsv.html">[[Import Rogers Approved Products]]</a></td></tr>
@@ -13,39 +13,41 @@
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/checkrogersproducts.html">[[Check Rogers Products]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/reversecheckrogersproducts.html">[[Reverse Check Rogers Products]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/changeprofile.html">[[Update Product User Profile]]</a></td></tr>
-    </table></p>
+    </table>
+    <br/>
     #end
 	#if($canviewspecialorder)
-	<p><table class="rogers-list">
+	<table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Orders]]</div></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/rogersorder.html">[[Import Rogers Order]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/import/importcorporateorders.html">[[Import Rogers Order (BUDDTL)]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/exportaffinityorders.html">[[Export Affinity Orders to CSV]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/orders/exportbud.html">[[Export Orders to BUD]]</a></td></tr>
-	</table></p>
+		<tr><td class="rogers-list"><a href="$home$apphome/rogers/shipments/">[[Upload Shipping Notice]]</a></td></tr>
+	</table>
+	<br/>
 	#end
-       
 	#if($canviewtesting)
-	<p><table class="rogers-list">
+	<table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Inventory]]</div></td></tr>
-<!-- 	
+		<!-- 	
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/uploadmultipleaffinity.html">Upload Multiple Affinity Inventory</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/uploadaffinity.html">Upload Single Affinity Inventory</a></td></tr>
--->
+		-->
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/uploadinventory.html">[[Upload Inventory File]]</a></td></tr>
-	</table></p>
-
-	<p><table class="rogers-list">
+	</table>
+	<br/>
+	<table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Notifications]]</div></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/sendnotifications.html">[[Send Notifications]]</a></td></tr>
-	</table></p>
-	
-	<p><table class="rogers-list">
+	</table>
+	<br/>
+	<table class="rogers-list">
 		<tr><td class="rogers-list-header"><div class="ui-widget-header">[[Miscelaneous]]</div></td></tr>	
 		<tr><td class="rogers-list"><div class="rogers-list"><a href="$home$apphome/rogers/rogersstores.html">[[Import Rogers Stores]]</a></div></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/products/importas400ids.html">[[Import Rogers AS400 IDs]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/testing/index.html">[[Testing Section]]</a></td></tr>
 		<tr><td class="rogers-list"><a href="$home$apphome/rogers/affinityshipping.html">[[Upload Affinity Shipping Notice]]</a></td></tr>
-	</table></p>
+	</table>
 	#end
 </div>	
