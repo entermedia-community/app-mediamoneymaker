@@ -21,5 +21,9 @@
   <property id="clearanceprice"/>  
   <property id="comingsoon"/>  
   <property id="featuredondistributorportal"/>  
-  <property id="rogersauthorized"/> 
+  <property id="rogersauthorized"/>
+    <property id="nhl"/> 
+  
+    <property id="nhlteam"/> 
+   
 </root>

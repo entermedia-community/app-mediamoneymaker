@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.SearcherManager;
 import org.openedit.money.Fraction;
@@ -20,11 +19,11 @@ import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
 import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.UserManager;
 import com.openedit.util.XmlUtil;
 import com.stripe.Stripe;
+import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
 
 public class StripeOrderProcessor extends BaseOrderProcessor
@@ -199,8 +198,18 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		chargeParams.put("metadata", initialMetadata);
 		try
 		{
-			Object c = Charge.create(chargeParams);
+			Charge c = Charge.create(chargeParams);
 			OrderState orderState = inStore.getOrderState(Order.AUTHORIZED);
+			String balancetransaction = c.getBalanceTransaction();
+			BalanceTransaction balance = BalanceTransaction.retrieve(balancetransaction);
+			int fee = balance.getFee();
+			float moneyval = (float)fee / 100;
+			inOrder.setProperty("fee", String.valueOf(moneyval));
+			inOrder.setProperty("balancetransaction", balancetransaction);
+			float net = (float) balance.getNet() / 100;
+			inOrder.setProperty("net", String.valueOf(net));
+			
+			
 			// inOrder.setProperty("transactionid",
 			// pairs.get("trnId").toString());
 			orderState.setDescription("Your transaction has been authorized.");

@@ -880,8 +880,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					String quantity = details.attributeValue("quantity");
 //					entry.setCartItem(inOrder.getItem(sku));
 					entry.setSku(sku);
-					
 					entry.setQuantity(Integer.parseInt(quantity));
+					for (Iterator iterator2 = details.attributeIterator(); iterator2.hasNext();) {
+						Attribute object = (Attribute) iterator2.next();
+						String key = object.getName();
+						String val = object.getText();
+						entry.setProperty(key, val);
+					}
 					shipment.addEntry(entry);
 				}
 				inOrder.addShipment(shipment);

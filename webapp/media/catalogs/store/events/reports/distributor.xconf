@@ -1,0 +1,13 @@
+<page>
+	
+	<path-action  name="Script.run">
+		<script>/${catalogid}/events/scripts/orders/exportrogerscsv.groovy</script>
+	</path-action>
+	<property name="subject">Distributors Report</property>
+	<property name="to">ian@ijsolutions.ca</property>
+	<property name="reportmode">distributor</property>
+	<property name="filename">distributor.csv</property>
+	<property name="sendemail">true</property>
+	<property name="days">-14</property>
+	
+</page>

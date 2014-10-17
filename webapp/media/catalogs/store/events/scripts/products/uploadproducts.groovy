@@ -139,6 +139,8 @@ public void readCSVFile(WebPageRequest inReq, String inDistributor, Map<String,P
 							Data remote = searcher.searchByField("name",e.trim());
 							if (remote){
 								remoteValues.add(remote.getId());
+							} else{
+								remoteValues.add(e);
 							}
 						}
 						if (!remoteValues.isEmpty()){
