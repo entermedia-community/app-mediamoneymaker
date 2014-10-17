@@ -1,0 +1,33 @@
+
+<nhlteams>
+  <nhlteam id="team1" name="Anaheim Ducks"></nhlteam>
+  <nhlteam id="team2" name="Arizona Coyotes"></nhlteam>
+  <nhlteam id="team3" name="Boston Bruins"></nhlteam>
+  <nhlteam id="team4" name="Buffalo Sabres"></nhlteam>
+  <nhlteam id="team5" name="Calgary Flames"></nhlteam>
+  <nhlteam id="team6" name="Carolina Hurricanes"></nhlteam>
+  <nhlteam id="team7" name="Chicago Blackhawks"></nhlteam>
+  <nhlteam id="team8" name="Colorado Avalanche"></nhlteam>
+  <nhlteam id="team9" name="Columbus Blue Jackets"></nhlteam>
+  <nhlteam id="team10" name="Dallas Stars"></nhlteam>
+  <nhlteam id="team11" name="Detroit Red Wings"></nhlteam>
+  <nhlteam id="team12" name="Edmonton Oilers"></nhlteam>
+  <nhlteam id="team13" name="Florida Panthers"></nhlteam>
+  <nhlteam id="team14" name="Los Angeles Kings"></nhlteam>
+  <nhlteam id="team15" name="Minnesota Wild"></nhlteam>
+  <nhlteam id="team16" name="Montreal Canadiens"></nhlteam>
+  <nhlteam id="team17" name="Nashville Predators"></nhlteam>
+  <nhlteam id="team18" name="New Jersey Devils"></nhlteam>
+  <nhlteam id="team19" name="New York Islanders"></nhlteam>
+  <nhlteam id="team20" name="New York Rangers"></nhlteam>
+  <nhlteam id="team21" name="Philadelphia Flyers"></nhlteam>
+  <nhlteam id="team22" name="Pittsburgh Penguins"></nhlteam>
+  <nhlteam id="team23" name="Ottawa Senators"></nhlteam>
+  <nhlteam id="team24" name="San Jose Sharks"></nhlteam>
+  <nhlteam id="team25" name="St Louis Blues"></nhlteam>
+  <nhlteam id="team26" name="Tampa Bay Lightning"></nhlteam>
+  <nhlteam id="team27" name="Toronto Maple Leafs"></nhlteam>
+  <nhlteam id="team28" name="Vancouver Canucks"></nhlteam>
+  <nhlteam id="team29" name="Washington Capitals"></nhlteam>
+  <nhlteam id="team30" name="Winnipeg Jets"></nhlteam>
+</nhlteams>

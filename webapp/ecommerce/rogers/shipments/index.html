@@ -1,0 +1,24 @@
+<script>
+$(document).ready(function(){
+	$("#mainfile").change(function(){
+		var val = $(this).val();
+		if (val.length > 0){
+			$('#submitform').css('display', 'block');
+		} else {
+			$('#submitform').css('display', 'none');
+		}
+	});
+});
+
+</script>
+<div class="ui-widget uipanel">
+	<div class="ui-widget-header">[[Shipping Notices]]</div>
+	<div class="ui-widget-content">
+	 <form action="$home$apphome/rogers/shipments/results.html" method="post" id="inputfile" enctype="multipart/form-data">
+		 <p>[[Click the "Choose File" button to upload the Shipment Notification CSV file]]</p>
+		 <input type="file" name="file.0" id="mainfile" /><br />
+		 <input id="submitform" type="submit" name="Upload" value="[[Upload File]]" style="display: none;">
+		 <input type="hidden" name="path" value="$cataloghome/temp/upload/shipments.csv"/>
+		</form>
+	</div> 
+</div>

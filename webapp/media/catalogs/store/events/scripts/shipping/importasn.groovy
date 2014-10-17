@@ -170,9 +170,9 @@ class XMLPathProcessor extends PathProcessor
 				if(purchaseOrder.toLowerCase().startsWith("rogers") && purchaseOrder.contains("|")){
 					//note: cannot use string.split() in goovy - use substring instead
 					purchaseOrder = purchaseOrder.substring(0, purchaseOrder.indexOf("|")).trim();
-					//make sure to replace upper case chars with mixed case ones
-					purchaseOrder = purchaseOrder.replace("ROGERS", "Rogers");
 				}
+				//make sure to replace upper case chars with mixed case ones
+				purchaseOrder = purchaseOrder.replace("ROGERS", "Rogers");
 				Order order = (Order) store.getOrderSearcher().searchById(purchaseOrder);
 				if (order == null){
 					int dash = -1;
@@ -181,11 +181,13 @@ class XMLPathProcessor extends PathProcessor
 						order = (Order) store.getOrderSearcher().searchById(purchaseOrder);
 					}
 				}
+				logger.info("searched for $purchaseOrder, found $order");
 				if (order == null){
 					updateASN(page,distributorData.getId(),carrier,waybill,purchaseOrder,shippingDate,quantity,vendorCode,"Unable to find order ${purchaseOrder}.");
 					return;
 				}
 				CartItem cartItem = order.getCartItemByProductProperty("manufacturersku", vendorCode);
+//				logger.info("<span style='color:red'>Order: $order, Item: $vendorCode, Waybill: $waybill, Carrier: $carrier, Date: $shippingDate, Quantity: $quantity</span>");
 				if (cartItem == null){
 					updateASN(page,distributorData.getId(),carrier,waybill,purchaseOrder,shippingDate,quantity,vendorCode,"Unable to find cart item ${vendorCode} in order ${order.getId()}.");
 					return;

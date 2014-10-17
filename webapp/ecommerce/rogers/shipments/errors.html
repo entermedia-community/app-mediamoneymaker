@@ -1,0 +1,31 @@
+#if($errors.isEmpty())
+	<p>No errors were found.</p>
+#else
+	<table>
+		<thead>
+			<tr class="results-list-head">
+				<th align="center"  nowrap class="results-list-head">Row</th>
+				<th align="center" width="20" nowrap class="results-list-head">&nbsp;</th>
+				<th align="center" nowrap class="results-list-head">Entry</th>
+				<th align="center" width="20" nowrap class="results-list-head">&nbsp;</th>
+				<th align="center"  nowrap class="results-list-head">Message</th>
+			</tr>
+		</thead>
+		#set($i = 0)
+		#foreach($error in $errors)
+			#set($i = $i + 1)
+			#set($bkgrnd = $i % 2)
+			#set($color = "a")
+			#if($bkgrnd != 0) 
+				#set($color = "b")
+			#end
+			<tr class="results-list-${color}">
+				<td>$error.get(0)</td>
+				<td>&nbsp;</td>
+				<td>$error.get(1)</td>
+				<td>&nbsp;</td>
+				<td>$error.get(2)</td>
+			</tr>
+		#end
+	</table>
+#end

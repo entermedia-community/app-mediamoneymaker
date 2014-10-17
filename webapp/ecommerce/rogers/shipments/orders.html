@@ -1,0 +1,52 @@
+#if($orders.isEmpty())
+	<p>No orders were affected.</p>
+#else
+	<table>
+		<thead>
+			<tr class="results-list-head">
+				<th align="center" width="200" nowrap class="results-list-head">Invoice Number</th>
+				<th align="center" width="20" nowrap class="results-list-head">&nbsp;</th>
+				<th align="center" width="200" nowrap class="results-list-head">Waybill</th>
+			</tr>
+		</thead>
+		#set($color = "a")
+		#foreach($key in $orders.keySet())
+			#if($color == "a")
+				#set($color = "b")
+			#else
+				#set($color = "a")
+			#end
+			#set($orderref = "/$applicationid/views/modules/storeOrder/orderdetails/index.html?id=$key&viewid=storeorderdetails&viewpath=storeOrder/storeorderdetails&hitssessionid=&searchtype=storeOrder")
+			<tr class="results-list-${color}">
+				<td>
+					<a href="$orderref" target="_blank" style="font-size: 13px; color: blue;">$key</a>
+				</td>
+				<td>&nbsp;</td>
+				<td>
+					#set($size = $orders.get($key).size())
+					#set($j = 0)
+					#foreach($waybill in $orders.get($key))
+						#set($href="/$applicationid/views/modules/storeOrder/shippingdetails/index.html?id=$key&viewid=ordershippingdetails&viewpath=storeOrder/ordershippingdetails&hitssessionid=&searchtype=storeOrder&waybill=$waybill")
+						<a href="$href" target="_blank" style="font-size: 13px; color: blue;">$waybill</a>
+						#set($j = $j + 1)
+							</td>
+						</tr>
+						#if($j != $size)
+							#if($color == "a")
+								#set($color = "b")
+							#else
+								#set($color = "a")
+							#end
+							<tr class="results-list-${color}">
+								<td>
+									<a href="$orderref" target="_blank" style="font-size: 13px; color: blue;">$key</a>
+								</td>
+								<td>&nbsp;</td>
+								<td>
+						#end
+					#end
+				</td>
+			</tr>
+		#end
+	</table>
+#end
