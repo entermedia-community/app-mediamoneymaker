@@ -100,12 +100,18 @@ public void doImport() {
 				String ponumber = it.Attributes.TblReferenceNbr.find {it.Qualifier == "PO"}.ReferenceNbr.text();
 				if (ponumber){
 					ponumber = ponumber.trim();//trim first 
-					if(ponumber.toLowerCase().startsWith("rogers") && ponumber.contains("|")){
+					String oldpo = ponumber;//debug
+					//Corporate orders
+					//old way: Rogers-WEBxxx or ROGERS-WEBxxx plus | as400no
+					//new way: RO-WEBxxx plus | as400no
+					if(ponumber.contains("|")){
 						//note: cannot use string.split() in goovy - use substring instead
 						ponumber = ponumber.substring(0, ponumber.indexOf("|")).trim();
-						//make sure to replace upper case chars with mixed case ones
-						ponumber = ponumber.replace("ROGERS", "Rogers");
 					}
+					//make sure to replace upper-case chars with mixed-case ones
+					ponumber = ponumber.replace("ROGERS", "Rogers");
+					ponumber = ponumber.replace("RO-", "Rogers-");
+					log.info("Original: $oldpo, Formatted: $ponumber");
 				}
 				String invoicenumber = it.InvoiceNumber.text()
 				Data invoice = invoicesearcher.searchByField("invoicenumber", invoicenumber);

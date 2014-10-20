@@ -2087,6 +2087,8 @@ center #addcoment {
     margin: 0;
     padding: 0;
     display: table;
+    width:99.85%
+    
 }
 #left-col {
     width: 221px;

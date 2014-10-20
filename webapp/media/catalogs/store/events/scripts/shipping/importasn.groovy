@@ -166,13 +166,24 @@ class XMLPathProcessor extends PathProcessor
 					return;
 				}
 				//check for corporate orders
-				purchaseOrder = purchaseOrder.trim();//trim first 
-				if(purchaseOrder.toLowerCase().startsWith("rogers") && purchaseOrder.contains("|")){
-					//note: cannot use string.split() in goovy - use substring instead
+//				purchaseOrder = purchaseOrder.trim();//trim first 
+//				if(purchaseOrder.toLowerCase().startsWith("rogers") && purchaseOrder.contains("|")){
+//					//note: cannot use string.split() in goovy - use substring instead
+//					purchaseOrder = purchaseOrder.substring(0, purchaseOrder.indexOf("|")).trim();
+//				}
+//				//make sure to replace upper case chars with mixed case ones
+//				purchaseOrder = purchaseOrder.replace("ROGERS", "Rogers");
+				//Corporate orders
+				//old way: Rogers-WEBxxx or ROGERS-WEBxxx plus | as400no
+				//new way: RO-WEBxxx plus | as400no
+				String oldpo = purchaseOrder;//debug
+				if(purchaseOrder.contains("|")){
 					purchaseOrder = purchaseOrder.substring(0, purchaseOrder.indexOf("|")).trim();
 				}
-				//make sure to replace upper case chars with mixed case ones
+				//make sure to replace upper-case chars with mixed-case ones
 				purchaseOrder = purchaseOrder.replace("ROGERS", "Rogers");
+				purchaseOrder = purchaseOrder.replace("RO-", "Rogers-");
+				log.info("Original: $oldpo, Formatted: $purchaseOrder");
 				Order order = (Order) store.getOrderSearcher().searchById(purchaseOrder);
 				if (order == null){
 					int dash = -1;

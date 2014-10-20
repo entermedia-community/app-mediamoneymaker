@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.openedit.money.Money;
-import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
+import org.openedit.store.adjustments.FixedPriceAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderId;
@@ -75,6 +75,15 @@ public class Coupon {
 			percentage = Double.parseDouble(getInventoryItem().getProperty("percentage"));
 		}
 		return percentage;
+	}
+	public double getFixedPrice()
+	{
+		double fixedprice = 0.0d;
+		if (getInventoryItem().getProperty("fixedprice")!=null && !getInventoryItem().getProperty("fixedprice").isEmpty())
+		{
+			fixedprice = Double.parseDouble(getInventoryItem().getProperty("fixedprice"));
+		}
+		return fixedprice;
 	}
 	
 	public double getDiscount() {
@@ -295,97 +304,6 @@ public class Coupon {
 		return true;
 	}
 	
-//	public void removeCartAdjustment(Cart inCart)
-//	{
-//		Iterator<?> itr = inCart.getAdjustments().iterator();
-//		while (itr.hasNext())
-//		{
-//			Adjustment adjust = (Adjustment) itr.next();
-//			String inventoryid = null;
-//			String adjproduct = null;
-//			if (adjust instanceof SaleAdjustment){
-//				inventoryid = ((SaleAdjustment) adjust).getInventoryItemId();
-//				adjproduct = ((SaleAdjustment) adjust).getProductId();
-//			} else if (adjust instanceof DiscountAdjustment){
-//				inventoryid = ((DiscountAdjustment) adjust).getInventoryItemId();
-//				adjproduct = ((DiscountAdjustment) adjust).getProductId();
-//			} else {
-//				continue;
-//			}
-//			if (inventoryid!=null){
-//				if (getInventoryItem().getSku()!=null && getInventoryItem().getSku().equals(inventoryid)){
-//					inCart.getAdjustments().remove(adjust);//check inventory sku first
-////					return;
-//				}
-//			}
-//			if (adjproduct!=null)
-//			{
-//				String productid = getProductId();
-//				if (productid!=null && productid.equals(adjproduct)){
-//					inCart.getAdjustments().remove(adjust);
-////					return;//check product id if inventory sku isn't found
-//				}
-//			}
-//		}
-//	}
-	
-//	public static void removeOldAdjustmentsAndCoupons(Cart inCart)
-//	{
-//		List<Adjustment> adjustments = new ArrayList<Adjustment>();
-//		List<CartItem> coupons = new ArrayList<CartItem>();
-//		Iterator<?> itr = inCart.getAdjustments().iterator();
-//		while (itr.hasNext())
-//		{
-//			Adjustment adjustment = (Adjustment) itr.next();
-//			String productid = null;
-//			String couponsku = null;
-//			if (adjustment instanceof SaleAdjustment)
-//			{
-//				productid = ((SaleAdjustment) adjustment).getProductId();
-//				couponsku = ((SaleAdjustment) adjustment).getInventoryItemId();
-//			}
-//			else if (adjustment instanceof DiscountAdjustment)
-//			{
-//				productid = ((DiscountAdjustment) adjustment).getProductId();
-//				couponsku = ((DiscountAdjustment) adjustment).getInventoryItemId();
-//			}
-//			if (productid == null || productid.isEmpty())
-//			{
-//				continue;
-//			}
-//			boolean isPresent = false;
-//			Iterator<?> itr2 = inCart.getItems().iterator();
-//			while(itr2.hasNext())
-//			{
-//				CartItem item = (CartItem) itr2.next();
-//				if (Coupon.isCoupon(item) && couponsku!=null && item.getProduct().getInventoryItemBySku(couponsku)!=null)
-//				{
-//					coupons.add(item);
-//				}
-//				if (item.getProduct().getId().equals(productid))
-//				{
-//					isPresent = true;
-//				}
-//			}
-//			if (!isPresent)
-//			{
-//				adjustments.add(adjustment);
-//			}
-//		}
-//		for (Adjustment adjustment:adjustments)
-//		{
-//			inCart.getAdjustments().remove(adjustment);
-//		}
-//		for (CartItem coupon:coupons)
-//		{
-//			inCart.removeItem(coupon);
-//		}
-//		if (inCart.isEmpty())
-//		{
-//			inCart.getAdjustments().clear();
-//		}
-//	}
-	
 	public static void recalculateAdjustments(Cart inCart){
 		//adds all Cart Adjustments associated with Coupon to the cart
 		inCart.getAdjustments().clear();
@@ -396,6 +314,7 @@ public class Coupon {
 			String sku = couponitem.getInventoryItem().getSku();
 			double percentage = coupon.getPercentage();
 			double discount = coupon.getDiscount();
+			double fixedprice = coupon.getFixedPrice();
 			//go through list of affected products
 			List<CartItem> affecteditems = coupon.getAllAffectedCartItems(inCart);
 			for(CartItem item:affecteditems){//need to add an adjustment for each affected cart item
@@ -412,7 +331,15 @@ public class Coupon {
 					adjustment.setInventoryItemId(sku);
 					adjustment.setDiscount(discount);
 					inCart.addAdjustment(adjustment);
-				} else {
+				}else if (fixedprice > 0){  
+					FixedPriceAdjustment adjustment = new FixedPriceAdjustment();
+					adjustment.setProductId(productid);
+					adjustment.setInventoryItemId(sku);
+					double difference = adjustment.getDifference(item, fixedprice);//calculating the difference amount
+					adjustment.setDiscount(difference);
+					inCart.addAdjustment(adjustment);
+				} 
+				else {
 					Money subtotal = inCart.getSubTotal();
 					Money couponValue = coupon.getInventoryItem().getYourPrice();
 					if ( (couponValue.doubleValue() * -1) > subtotal.doubleValue()){

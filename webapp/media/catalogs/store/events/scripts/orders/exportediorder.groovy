@@ -366,7 +366,11 @@ public class ExportEdiOrder extends EnterMediaObject {
 				{
 					Qualifier("PO")
 					if(order.getId().toLowerCase().startsWith("rogers") && rogersPO!=null){
-						ReferenceNbr(order.getId() + "|" + rogersPO)
+//						ReferenceNbr(order.getId() + "|" + rogersPO)
+						//Corporate orders
+						//old way: Rogers-WEBxxx plus | as400no
+						//new way: RO-WEBxxx plus | as400no
+						ReferenceNbr(order.getId().replace("Rogers-", "RO-") + "|" + rogersPO)
 					}else{
 						ReferenceNbr(order.getId())
 					}

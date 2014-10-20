@@ -146,7 +146,7 @@ public void init(){
 }
 
 public String parseDate(String str){
-	SimpleDateFormat format = new SimpleDateFormat("MM/dd/YYYY");
+	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 	try{
 		Date date = format.parse(str);
 		return DateStorageUtil.getStorageUtil().formatForStorage(date);

@@ -75,7 +75,7 @@ public void init(){
 			shipping.setAddress2("");
 			shipping.setCity(targetstore.get("city"));
 			shipping.setState(targetstore.get("province"));
-			shipping.setZipCode(targetstore.get("zip"));
+			shipping.setZipCode(targetstore.get("postalcode"));
 			shipping.setCountry(targetstore.get("country"));
 			shipping.setDescription(targetstore.get("description"));
 			shipping.setProperty("phone", targetstore.get("phone1"));
@@ -88,7 +88,7 @@ public void init(){
 			billing.setAddress2("");
 			billing.setCity(targetstore.get("city"));
 			billing.setState(targetstore.get("province"));
-			billing.setZipCode(targetstore.get("zip"));
+			billing.setZipCode(targetstore.get("postalcode"));
 			billing.setCountry(targetstore.get("country"));
 			billing.setDescription(targetstore.get("description"));
 			billing.setProperty("phone", targetstore.get("phone1"));
