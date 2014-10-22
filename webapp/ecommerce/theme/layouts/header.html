@@ -54,6 +54,8 @@
 			#end
         	</span>
 		</div>
-		$pages.include("/$applicationid/theme/layouts/dropdownlist.html",$context)
+		#if($user)
+			$pages.include("/$applicationid/theme/layouts/dropdownlist.html",$context)
+		#end
 	</div>
 </div>
