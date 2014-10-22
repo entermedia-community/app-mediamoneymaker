@@ -11,10 +11,9 @@ import javax.xml.validation.SchemaFactory
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.event.WebEvent
-import org.openedit.event.WebEventHandler
-import org.openedit.event.WebEventListener
 import org.openedit.entermedia.MediaArchive
+import org.openedit.event.WebEvent
+import org.openedit.money.Money
 import org.openedit.repository.filesystem.StringItem
 import org.openedit.store.CartItem
 import org.openedit.store.Product
@@ -105,13 +104,10 @@ public class ExportEdiOrder extends EnterMediaObject {
 		for (Iterator orderIterator = orderList.iterator(); orderIterator.hasNext();) {
 
 			Data currentOrder = orderIterator.next();
-
 			Order order = ordersearcher.searchById(currentOrder.getId());
-			
 			if (order == null) {
 				throw new OpenEditException("Invalid Order");
-			}			
-			
+			}
 			String rogersPO = null;
 			if(order.getId().startsWith("Rogers") && order.get("batchid")!=null){
 				String batchid = order.get("batchid");
@@ -119,7 +115,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 				if (batchentry!=null){
 					String po = batchentry.get("as400po");
 					if (po == null || po.trim().isEmpty()){
-						log.info("Skipping Rogers order that does not have PO");
+						log.info("Skipping Rogers order $order that does not have PO");
 						continue;
 					}
 					rogersPO = po;
@@ -148,7 +144,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 						if (!Boolean.parseBoolean(distributor.get("useedi"))) {
 							continue;
 						}
-
+						
 						boolean includedistributor = false;
 						for(Iterator i = order.getItems().iterator(); i.hasNext();){
 							CartItem item = i.next();
@@ -157,7 +153,6 @@ public class ExportEdiOrder extends EnterMediaObject {
 								continue;
 							}
 						}
-
 						if (includedistributor)
 						{
 							log.info("Distributor: " + distributor.name);
@@ -273,7 +268,19 @@ public class ExportEdiOrder extends EnterMediaObject {
 					}
 					AddressType("ST")
 					log.info("Name: " + shipping.getName())
-					AddressName1(shipping.getName())
+					//handle corporate orders
+					if (isCorporateOrder(order)){
+						String storeid = order.get("customer");
+						if (storeid){
+							storeid = " # " + storeid.replace("rogers-","");
+						} else {
+							storeid = "";
+						}
+						AddressName1(shipping.getName()+storeid);
+					}
+					else {
+						AddressName1(shipping.getName())
+					}					
 					AddressIDQual("92")
 					log.info("ID: " + shipping.getId())
 					AddressIDCode(shipping.getId())
@@ -404,15 +411,24 @@ public class ExportEdiOrder extends EnterMediaObject {
 			String saleprice = p.get("clearanceprice");
 			
 			if (isAccepted){
-				//In the case that this is a purchase order, the distributor invoices the customer directly
-				//so this is the retail price that they should invoice the customer, instead of the wholesale price they'd 
-				//invoice Area.
-				UnitPrice(p.getYourPrice().toShortString().replace('$', ''));
+				Money price = null;
+				if (isCorporateOrder(order))
+				{
+					//For corporate orders, the price we need to send is the wholesale price.
+					//ie., the one the distributors put in BEFORE any markup is applied.
+					price = orderItem.getWholesalePrice();
+				} 
+				else 
+				{
+					//In the case that this is a purchase order, the distributor invoices the customer directly
+					//so this is the retail price that they should invoice the customer, instead of the wholesale price they'd
+					//invoice Area.
+					price = p.getYourPrice();
+				}
+				UnitPrice(price.toShortString().replace('$', ''));
+				
 			} else {
-				
-				
 				if (saleprice && saleprice.toDouble() > 0) {
-					
 					UnitPrice(saleprice)
 				} else {
 					UnitPrice(p.get("rogersprice"))
@@ -535,6 +551,7 @@ public class ExportEdiOrder extends EnterMediaObject {
 		return outDate;
 
 	}
+	
 	private String getCountryCode(String inCountryName) {
 		BaseWebPageRequest inReq = context;
 
@@ -547,6 +564,17 @@ public class ExportEdiOrder extends EnterMediaObject {
 		} else {
 			return null;
 		}
+	}
+	
+	protected boolean isCorporateOrder(Order order){
+		boolean iscorporate = false;
+		if (order){
+			//corporate orders: Rogers-WEBxxx
+			if (order.getId().toLowerCase().startsWith("rogers-")){
+				iscorporate = true;
+			}
+		}
+		return iscorporate;
 	}
 	
 	protected void appendToOrderHistory(Order order)

@@ -166,7 +166,7 @@ class XMLPathProcessor extends PathProcessor
 					return;
 				}
 				//check for corporate orders
-//				purchaseOrder = purchaseOrder.trim();//trim first 
+				purchaseOrder = purchaseOrder.trim();//trim first 
 //				if(purchaseOrder.toLowerCase().startsWith("rogers") && purchaseOrder.contains("|")){
 //					//note: cannot use string.split() in goovy - use substring instead
 //					purchaseOrder = purchaseOrder.substring(0, purchaseOrder.indexOf("|")).trim();
