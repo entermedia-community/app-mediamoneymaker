@@ -83,12 +83,13 @@
 						#end
 					</p>
 				</td>
+				#set($sku2 = $sku.replace(".","-"))
 				<td align="center"  style="margin: 3px 0 5px; padding: 5px 10px;">
 					<p class="results-list">$availablenum</p>
-					<input type="hidden" id="${sku}-shipment-available" value="${availablenum}"/>
+					<input type="hidden" id="${sku2}-shipment-available" value="${availablenum}"/>
 				</td>
 				<td align="center">
-					<input type="text" id="${sku}-shipment-quantity" name="${sku}-shipment-quantity" value="${availablenum}" onchange="validateInput('${sku}-shipment',$availablenum);" disabled>
+					<input type="text" id="${sku2}-shipment-quantity" name="${sku}-shipment-quantity" value="${availablenum}" onchange="validateInput('${sku}-shipment',$availablenum);" disabled>
 				</td>
 			</tr>
 				#set($availablenum = 0)
@@ -100,6 +101,7 @@
 	$(".checkbox-entry").change(function(){
 		var checked = $(this).attr('checked');
 		var source = $(this).attr('name');
+		source = source.replace(".","-");
 		var available = $("#"+source+"-available").val();
 		if (checked == undefined)
 		{

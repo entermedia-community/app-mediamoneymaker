@@ -57,6 +57,10 @@ public init(){
 	}
 	Store store = inReq.getPageValue("store");
 	String orderid = webevent.get("orderid");
+	if (orderid == null){
+		log.info("Severe: orderid not provided, exiting");
+		return;
+	}
 	Order order = store.getOrderSearcher().searchById(orderid);
 	if (order == null){
 		log.info("Error: order \"$orderid\" does not exist, exiting");

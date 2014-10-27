@@ -55,7 +55,7 @@ public void init(){
 	hits.each{
 		Product product = searcher.searchById(it.id);
 		if (product && product.getInventoryItemCount() > 0){
-			log.info("Updating $product");
+			log.info("Updating ${product.id} - $product");
 			InventoryItem item = product.getInventoryItem(0);
 			item.setQuantityInStock(quantity);
 			list.add(product);

@@ -476,10 +476,7 @@ class RemotePathProcessor {
 			setProductsUpdated(true);
 		}
 		Page toPage = getArchive().getPageManager().getPage(inProcessedPath);
-		if (toPage.getName() != "Rogers_2014-07-23_1600.csv"){
-			getArchive().getPageManager().movePage(inPage, toPage);
-		}
-		
+		getArchive().getPageManager().movePage(inPage, toPage);
 	}
 	
 	public Product getUpdatedProduct(String inManufacturerSku, String inRogersSku, String inUpc, String inQuantity, StringBuilder inBuf){
@@ -561,7 +558,7 @@ class RemotePathProcessor {
 		if(contentpage && contentpage.isPropertyTrue("disablenhlupdates")){
 			boolean isNHL = Boolean.parseBoolean(inProduct.get("nhl"));
 			if (isNHL){
-//				System.out.println("### Omitting $inProduct -- NHL omission is enabled");
+				log.info("### cannot update inventory for $inProduct (${inProduct.getId()}), disabled for NHL Products");
 				return false;
 			}
 		}

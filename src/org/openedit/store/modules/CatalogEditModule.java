@@ -1224,9 +1224,8 @@ public class CatalogEditModule extends BaseStoreModule {
 	public void selectItem(WebPageRequest inContext) throws OpenEditException {
 		StoreEditor storeEditor = getStoreEditor(inContext);
 		Product product = storeEditor.getCurrentProduct();
-
 		String sku = inContext.getRequestParameter("sku");
-		if (sku != null && sku.length() > 0) {
+		if (product!=null && sku != null && sku.length() > 0) {
 			StoreEditor editor = getStoreEditor(inContext);
 			InventoryItem item = product.getInventoryItemBySku(sku);
 			if (item == null) {
@@ -1248,7 +1247,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		StoreEditor editor = getStoreEditor(inContext);
 		Product product = editor.getCurrentProduct();
 		String sku = inContext.getRequestParameter("newsku");
-		if (sku == null || sku.length() == 0) {
+		if (product==null || sku == null || sku.length() == 0) {
 			return;
 		}
 		InventoryItem old = product.getInventoryItemBySku(sku);
