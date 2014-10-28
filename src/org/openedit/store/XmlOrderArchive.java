@@ -276,7 +276,6 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			}
 			// add customer information, including address
 			// add saving code for entries
-
 			Element shippingdetails = orderElem.addElement("shipping");
 			for (Iterator iterator = inOrder.getShipments().iterator(); iterator
 					.hasNext();) {
@@ -292,14 +291,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						.iterator(); iterator3.hasNext();) {
 					ShipmentEntry entry = (ShipmentEntry) iterator3.next();
 					Element shipEntry = shipElem.addElement("shipping-entry");
-//					shipEntry.addAttribute("sku", entry.getItem().getSku());
 					shipEntry.addAttribute("sku", entry.getSku());
-					shipEntry.addAttribute("quantity",
-							String.valueOf(entry.getQuantity()));
+					shipEntry.addAttribute("quantity",String.valueOf(entry.getQuantity()));
 					for (Iterator iterator4 = entry.getProperties().keySet()
 							.iterator(); iterator4.hasNext();) {
 						String key2 = (String) iterator4.next();
 						String value2 = shipment.get(key2);
+						if ("sku".equals(key2) || "quantity".equals(key2)){
+							continue;
+						}
 						shipEntry.addAttribute(key2, value2);
 					}
 				}

@@ -80,7 +80,7 @@ public void init(){
 			}
 			int available = order.getQuantityAvailableForShipment(cartItem);
 			if (quantity > available){
-				errors.add(["$i","$toString","Quantity exceeds $available, the quantity available to ship, for $sku"]);
+				errors.add(["$i","$toString","Quantity ($quantity) exceeds the quantity available to ship ($available) for $sku"]);
 				continue;
 			}
 			Product product = cartItem.getProduct();
@@ -98,6 +98,7 @@ public void init(){
 				continue;
 			}
 			boolean updateOrder = true;
+			//the waybill is unique
 			Shipment shipment = order.getShipmentByWaybill(waybill);
 			if(shipment == null){
 				shipment = new Shipment();
@@ -108,7 +109,10 @@ public void init(){
 				order.addShipment(shipment);
 				updateOrder = true;
 			}
-			if (!shipment.containsEntryForSku(cartItem.getSku())) {
+			if (shipment.containsEntryForSku(cartItem.getSku())) {
+				errors.add(["$i","$toString","Shipment with waybill \"$waybill\" already created for $sku"]);
+				updateOrder = false;
+			} else {
 				ShipmentEntry entry = new ShipmentEntry();
 				entry.setQuantity(quantity);
 				entry.setSku(cartItem.getSku());

@@ -42,4 +42,15 @@ public class Shipment extends BaseData{
 	public String get(String inId) {
 		return (String) getProperties().get(inId);
 	}
+	
+	public String toString(){
+		StringBuilder buf = new StringBuilder();
+		buf.append(get("waybill")).append(", ").append(get("courier")).append(", ").append(get("shipdate")).append("\n");
+		Iterator<ShipmentEntry> itr = getShipmentEntries().iterator();
+		while(itr.hasNext()){
+			buf.append("\t").append(itr.next().toString());
+			if (itr.hasNext()) buf.append("\n");
+		}
+		return buf.toString();
+	}
 }
