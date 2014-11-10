@@ -754,11 +754,11 @@ public class CartModule extends BaseStoreModule {
 					store.getCatalogId(), "address");
 			Address target = cart.getShippingAddress();
 			target.setId(addressSearcher.nextId());
-			target.setProperty("userprofile", inPageRequest.getUserProfile()
-					.getId());
-			
-			if(inPageRequest.getUserProfile().get("dealer") != null){
-				target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
+			if (inPageRequest.getUserProfile() != null){
+				target.setProperty("userprofile", inPageRequest.getUserProfile().getId());
+				if(inPageRequest.getUserProfile().get("dealer") != null){
+					target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
+				}
 			}
 			addressSearcher.saveData(target, inPageRequest.getUser());
 
@@ -1020,6 +1020,11 @@ public class CartModule extends BaseStoreModule {
 		}
 		String state = inReq.getPageValue("orderhistorystate").toString();
 		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+		if (archive==null)
+		{
+			log.info("Error! Unable to load mediaarchive from webpagecontext, cannot append order history, skipping");
+			return;
+		}
 		WebEvent evt = new WebEvent();
 		evt.setSearchType("detailedorderhistory");//productupdates
 		evt.setCatalogId(archive.getCatalogId());
