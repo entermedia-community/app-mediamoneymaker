@@ -1,5 +1,7 @@
 package org.openedit.store.gateway;
 
+import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,6 +27,8 @@ import com.openedit.util.XmlUtil;
 import com.stripe.Stripe;
 import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
+import com.stripe.model.ChargeRefundCollection;
+
 
 public class StripeOrderProcessor extends BaseOrderProcessor
 {
@@ -171,7 +175,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		String amountstring = totalprice.toShortString().replace(".", "").replace("$", "").replace(",", "");
 		chargeParams.put("amount", amountstring);
 		chargeParams.put("currency", "cad");
-		chargeParams.put("card", inOrder.get("stripetoken")); // obtained with
+		chargeParams.put("card", inOrder.get("stripetoken")); // obtained via js
 		
 		// Stripe.js
 		Map<String,String> initialMetadata = new HashMap<String,String>();
@@ -197,6 +201,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			float net = (float) balance.getNet() / 100;
 			inOrder.setProperty("net", String.valueOf(net));
 			
+			inOrder.setProperty("stripechargeid", c.getId());
 			
 			// inOrder.setProperty("transactionid",
 			// pairs.get("trnId").toString());
@@ -270,6 +275,38 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
-	//	getBeanstreamUtil().refund(inStore, inOrder, inRefund);
+		log.info("refunding order with Stripe");
+		if(inOrder.get("stripetoken") == null || inOrder.get("stripechargeid")==null){
+			log.error("cannot find stripetoken, aborting");
+			return;
+		}
+		String chargeId = inOrder.get("stripechargeid");
+		try{
+			Charge c = Charge.retrieve(chargeId);
+			if (c.getRefunded()){
+				inRefund.setSuccess(false);
+				inRefund.setMessage("Order has already been refunded");
+				inRefund.setDate(new Date());
+			} else {
+				Charge refundedCharge = c.refund();//refunds the full amount
+				if (refundedCharge.getRefunded()){
+					ChargeRefundCollection refunds = refundedCharge.getRefunds();
+					com.stripe.model.Refund refund = refunds.getData().get(0);
+					inRefund.setSuccess(true);
+					inRefund.setAuthorizationCode(refund.getId());
+					inRefund.setTransactionId(refund.getBalanceTransaction());
+					inRefund.setDate(new Date());
+				} else {
+					inRefund.setSuccess(false);
+					inRefund.setMessage("Order could not be refunded");
+					inRefund.setDate(new Date());
+				}
+			}
+		}catch (Exception e){
+			inRefund.setSuccess(false);
+			inRefund.setMessage("An error occurred while processing your transaction.");
+			e.printStackTrace();
+			throw new StoreException(e);
+		}
 	}
 }
