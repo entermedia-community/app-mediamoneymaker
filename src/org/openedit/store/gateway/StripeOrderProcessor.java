@@ -138,25 +138,6 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		Data setting = getSearcherManager().getData(inStore.getCatalogId(), "catalogsettings", "stripe_access_token");
 		if (setting!=null && setting.get("value")!=null){
 			String access_token = setting.get("value");
-			
-//			String fee_structure = inStore.get("fee_structure");
-//			//fee structure - if less than 1 then it's a percentage
-//			//(so we can never have a flat rate fee that's less than $1.00)
-//			//otherwise it's a flat rate
-//			// need to make sure our fee does not exceed total price
-//			double rate = Double.parseDouble(fee_structure);
-//			if (rate <= 0.0d){
-//				log.error("fee structure is invalid, aborting");
-//				OrderState orderState = inStore.getOrderState(Order.REJECTED);
-//				orderState.setDescription("Configuration error: fee structure is invalid");
-//				orderState.setOk(false);
-//				inOrder.setOrderState(orderState);
-//				return;
-//			}
-//			Money fee = new Money(rate);
-//			if (rate < 1.0d){
-//				fee = totalprice.multiply(new Fraction(rate));
-//			}
 			Money fee = calculateFee(inStore,inOrder);
 			if (fee.isNegative() || fee.isZero()){ //error state
 				log.info("Fee is negative for this order "+inOrder.toString()+", rejecting");
@@ -180,7 +161,8 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			chargeParams.put("application_fee",feestring);//amount in cents
 		} else {
 			//process as usual
-			if(inStore.isProductionMode()){
+			//check if an administrator has ordered test mode transaction
+			if(inStore.isProductionMode() && !inOrder.getCart().getBoolean("forcetestmode")){
 				Stripe.apiKey = inStore.get("secretkey");//livesecretkey or secretkey
 			} else{
 				Stripe.apiKey = inStore.get("testsecretkey");
@@ -196,6 +178,12 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		initialMetadata.put("email", inOrder.getCustomer().getEmail());
 		chargeParams.put("description",inOrder.getOrderNumber());
 		chargeParams.put("metadata", initialMetadata);
+		
+		//todo: add metadata
+		//a list of all products they purchased ID - DESCRIPTION 
+		//customer info - first last, shipping and billing
+		//
+		
 		try
 		{
 			Charge c = Charge.create(chargeParams);

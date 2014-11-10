@@ -1030,5 +1030,24 @@ public class CartModule extends BaseStoreModule {
 		evt.setProperty("state",state);
 		archive.getMediaEventHandler().eventFired(evt);
 	}
+	
+	public void changeMode(WebPageRequest inReq) throws Exception{
+		Cart cart = getCart(inReq);
+		if (!"administrator".equals(inReq.getUserProfileValue("settingsgroup"))){
+			//if not administrator, ignore command but also make sure forcetestmode is false
+			if (cart.getBoolean("forcetestmode")){
+				cart.setProperty("forcetestmode", "false");
+			}
+			log.info("ignoring request to change mode of order, user is not an administrator");
+			return;
+		}
+		String mode = inReq.getRequestParameter("mode");
+		if (mode!=null){
+			cart.setProperty("forcetestmode", Boolean.parseBoolean(mode) ? "true" : "false");
+			log.info("changed forcetestmode to "+Boolean.parseBoolean(mode));
+		} else {
+			log.info("did not modify forcetestmode, mode is null");
+		}
+	}
 
 }
