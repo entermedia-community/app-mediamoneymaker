@@ -1,9 +1,12 @@
 package org.openedit.store.gateway;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +28,8 @@ import com.openedit.page.manage.PageManager;
 import com.openedit.users.UserManager;
 import com.openedit.util.XmlUtil;
 import com.stripe.Stripe;
+import com.stripe.model.ApplicationFee;
+import com.stripe.model.ApplicationFeeCollection;
 import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
 import com.stripe.model.ChargeRefundCollection;
@@ -193,6 +198,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			Charge c = Charge.create(chargeParams);
 			OrderState orderState = inStore.getOrderState(Order.AUTHORIZED);
 			String balancetransaction = c.getBalanceTransaction();
+			
 			BalanceTransaction balance = BalanceTransaction.retrieve(balancetransaction);
 			int fee = balance.getFee();
 			float moneyval = (float)fee / 100;
@@ -202,6 +208,9 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			inOrder.setProperty("net", String.valueOf(net));
 			
 			inOrder.setProperty("stripechargeid", c.getId());
+			
+			//handle application fees
+			
 			
 			// inOrder.setProperty("transactionid",
 			// pairs.get("trnId").toString());
@@ -296,6 +305,11 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 					inRefund.setAuthorizationCode(refund.getId());
 					inRefund.setTransactionId(refund.getBalanceTransaction());
 					inRefund.setDate(new Date());
+					//client was refunded at this point, but
+					//partners have not been
+					//handle this at the end
+					handleApplicationFees(chargeId,inRefund);
+					
 				} else {
 					inRefund.setSuccess(false);
 					inRefund.setMessage("Order could not be refunded");
@@ -307,6 +321,34 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			inRefund.setMessage("An error occurred while processing your transaction.");
 			e.printStackTrace();
 			throw new StoreException(e);
+		}
+	}
+	
+	protected void handleApplicationFees(String inChargeId, Refund inRefund){
+		try{
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("charge",inChargeId);
+			ApplicationFeeCollection collection = ApplicationFee.all(params);
+			List<ApplicationFee> fees  = collection.getData();
+			if (fees.size() > 0){
+				//refund all fees
+				StringBuilder buf = new StringBuilder();
+				for (ApplicationFee fee:fees){
+					if (!fee.getRefunded()){
+						ApplicationFee refundedFee = fee.refund();
+						if (!refundedFee.getRefunded()){
+							buf.append("ID:").append(fee.getId()).append(" ");
+						}
+					}
+				}
+				if (buf.toString().isEmpty()){
+					inRefund.setMessage("All application fees were refunded");
+				} else {
+					inRefund.setMessage("Unable to refund all application fees, "+buf.toString().trim());
+				}
+			}
+		}catch (Exception e){
+			log.error(e.getMessage(), e);
 		}
 	}
 }
