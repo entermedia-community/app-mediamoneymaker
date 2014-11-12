@@ -1,8 +1,5 @@
 package org.openedit.store.gateway;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +13,10 @@ import org.openedit.data.SearcherManager;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
+import org.openedit.store.Coupon;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
+import org.openedit.store.customer.Address;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
@@ -184,15 +183,9 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		
 		// Stripe.js
 		Map<String,String> initialMetadata = new HashMap<String,String>();
-		initialMetadata.put("email", inOrder.getCustomer().getEmail());
+		populateMetadata(inOrder,initialMetadata);
 		chargeParams.put("description",inOrder.getOrderNumber());
 		chargeParams.put("metadata", initialMetadata);
-		
-		//todo: add metadata
-		//a list of all products they purchased ID - DESCRIPTION 
-		//customer info - first last, shipping and billing
-		//
-		
 		try
 		{
 			Charge c = Charge.create(chargeParams);
@@ -349,6 +342,31 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			}
 		}catch (Exception e){
 			log.error(e.getMessage(), e);
+		}
+	}
+	
+	protected void populateMetadata(Order inOrder, Map<String,String> inMetadata){
+		inMetadata.put("firstname", inOrder.getCustomer().getFirstName());
+		inMetadata.put("lastname", inOrder.getCustomer().getLastName());
+		inMetadata.put("email", inOrder.getCustomer().getEmail());
+		inMetadata.put("phone", inOrder.getCustomer().getPhone1()!=null ? inOrder.getCustomer().getPhone1() : "");
+		Address billing = inOrder.getCustomer().getBillingAddress();
+		inMetadata.put("billingaddress",billing.toString());
+		Address shipping = inOrder.getCustomer().getShippingAddress();
+		inMetadata.put("shippingaddress",shipping.toString());
+		Iterator<?> itr = inOrder.getItems().iterator();
+		for(int i=1; itr.hasNext(); i++){
+			CartItem item = (CartItem) itr.next();
+			String sku = item.getSku();
+			String name = item.getName();
+			Money price = item.getYourPrice();
+			StringBuilder buf = new StringBuilder();
+			buf.append(sku).append(": ");
+			if (Coupon.isCoupon(item)){
+				buf.append("Coupon - ");
+			}
+			buf.append(name).append(" ").append(price.toShortString());
+			inMetadata.put("cartitem-"+i, buf.toString());
 		}
 	}
 }
