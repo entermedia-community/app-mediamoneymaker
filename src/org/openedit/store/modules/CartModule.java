@@ -728,6 +728,12 @@ public class CartModule extends BaseStoreModule {
 			orderState.setDescription("Error: Cart is empty.<br><br>");
 			return order;
 		}
+		
+		//update gateway if needed
+		if (cart.get("gateway")!=null){
+			order.setProperty("gateway",cart.get("gateway"));
+			cart.setProperty("gateway",null);
+		}
 
 		// Assign default shipping method if one has not been assigned
 		if (cart.getShippingMethod() == null) {
@@ -1052,6 +1058,22 @@ public class CartModule extends BaseStoreModule {
 			log.info("changed forcetestmode to "+Boolean.parseBoolean(mode));
 		} else {
 			log.info("did not modify forcetestmode, mode is null");
+		}
+	}
+	
+	public void changeGateway(WebPageRequest inReq) throws Exception{
+		Cart cart = getCart(inReq);
+		if (!"administrator".equals(inReq.getUserProfileValue("settingsgroup"))){
+			//if not administrator, ignore command but also make sure forcetestmode is false
+			log.info("ignoring request to change gateway of order, user is not an administrator");
+			return;
+		}
+		String gateway = inReq.getRequestParameter("gateway");
+		if (gateway!=null){
+			cart.setProperty("gateway", gateway);
+			log.info("changed gateway of cart to "+gateway);
+		} else {
+			log.info("did not modify gateway, request parameter is null");
 		}
 	}
 

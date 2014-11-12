@@ -1,6 +1,5 @@
 package org.openedit.store.gateway;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,9 +8,10 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.money.Money;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
@@ -31,8 +31,7 @@ import com.openedit.util.XmlUtil;
 
 public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 
-	private static final Log log = LogFactory
-			.getLog(BeanstreamOrderProcessor.class);
+	private static final Log log = LogFactory.getLog(BeanstreamOrderProcessor.class);
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
 	protected BeanstreamUtil fieldBeanstreamUtil;
@@ -75,33 +74,48 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 		fieldPageManager = inPageManager;
 	}
 
-	protected boolean requiresValidation(Store inStore, Order inOrder) {
+	protected boolean requiresValidation(Store inStore, Order inOrder) 
+	{
 
-		Page page = getPageManager().getPage(
-				inStore.getStoreHome() + "/configuration/beanstream.xml");
+		/// if the store is set to beanstream 
+		//		and if the order is not set to something else
+		//	then return true
+		//this way we can have specific orders setup to go through specific gateways
 		
-		
-		if (page.exists()) {
-			return inOrder.getPaymentMethod().requiresValidation();
+		if (inOrder.getPaymentMethod().requiresValidation()){
+			Page page = getPageManager().getPage(inStore.getStoreHome() + "/configuration/beanstream.xml");
+			if (page.exists()){
+				//config may exist but store may not be configured for beanstream
+				String ordergateway = inOrder.get("gateway");
+				if ("beanstream".equals(ordergateway)){
+					return true;
+				}
+				String storegateway = inStore.get("gateway");
+				if ("beanstream".equals(storegateway)){
+					return true;
+				}
+			}
 		}
 		return false;
 	}
 
 	public void processNewOrder(WebPageRequest inContext, Store inStore,
 			Order inOrder) throws StoreException {
-		if (!requiresValidation(inStore, inOrder)) {
+		if (!requiresValidation(inStore, inOrder) ) {
 			return;
 		}
 		// "AUTH_ONLY"); //AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY, CREDIT, VOID,
 		// PRIOR_AUTH_CAPTURE.
+		
+		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
 		if (inStore.isAutoCapture()) {
-			process(inStore, inOrder, "AUTH_CAPTURE");
+			process(archive, inStore, inOrder, "AUTH_CAPTURE");
 		} else {
-			process(inStore, inOrder, "AUTH_ONLY");
+			process(archive, inStore, inOrder,"AUTH_ONLY");
 		}
 	}
 
-	protected void process(Store inStore, Order inOrder, String inType)
+	protected void process(MediaArchive inArchive, Store inStore, Order inOrder, String inType)
 			throws StoreException {
 		try {
 			// See examples at http://www.jcommercesql.com/anet/
@@ -171,7 +185,10 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			post.addParameter("ordCity", customer.getBillingAddress(true).getCity());
 			
 			//map this to the correct codes..
-			post.addParameter("ordProvince", customer.getBillingAddress(true).getState());
+			//post.addParameter("ordProvince", customer.getBillingAddress(true).getState());
+			String province = getBeanstreamState(inArchive,customer.getBillingAddress(true).getState());
+			log.info("input province: "+customer.getBillingAddress(true).getState()+", beanstream province: "+province);
+			post.addParameter("ordProvince", province);
 			post.addParameter("ordPostalCode", customer.getBillingAddress(true).getZipCode());
 			String country = customer.getBillingAddress(true).getCountry();
 			if(country != null){
@@ -188,7 +205,7 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 				if (param.getName().equals("password")){
 					log.info(param.getName()+": ********");
 				} else if (param.getName().equals("trnCardCvd")){
-					log.info(param.getName()+": ********");
+					log.info(param.getName()+": ***");
 				} else if (param.getName().equals("trnCardNumber")){
 					log.info(param.getName()+": ********");
 				} else {
@@ -257,13 +274,26 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			throw new StoreException(e);
 		}
 	}
+	
+	protected String getBeanstreamState(MediaArchive inArchive, String inState){
+		String state = inState;
+		if (inArchive !=null){
+			Searcher searcher = inArchive.getSearcher("states");
+			Data entry = (Data) searcher.searchByField("name",inState);
+			if (entry!=null){
+				return entry.getId();
+			}
+		}
+		return state;
+	}
 
 	public void captureOrder(WebPageRequest inContext, Store inStore,
 			Order inOrder) throws StoreException {
 		if (!requiresValidation(inStore, inOrder)) {
 			return;
 		}
-		process(inStore, inOrder, "");
+		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+		process(archive,inStore, inOrder, "");
 	}
 
 	@Override

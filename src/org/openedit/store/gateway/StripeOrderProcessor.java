@@ -93,11 +93,15 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 
 	protected boolean requiresValidation(Store inStore, Order inOrder)
 	{
-		
-		if(inStore.get("gateway") != null && inStore.get("gateway").equals("stripe")){
-			return true;
+		// if the store is set to stripe 
+		//		and if the order is not set to something else
+		//	then return true
+		//this way we can have specific orders setup to go through specific gateways
+		if (inStore.get("gateway") !=null && inStore.get("gateway").equals("stripe")){
+			if (inOrder.get("gateway") == null || (inOrder.get("gateway").equals("stripe")) ){
+				return true;
+			}
 		}
-		
 		return false;
 	}
 
@@ -277,6 +281,9 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	@Override
 	public void refundOrder(WebPageRequest inContext, Store inStore, Order inOrder, Refund inRefund) throws StoreException
 	{
+		if (!requiresValidation(inStore, inOrder)) {
+			return;
+		}
 		log.info("refunding order with Stripe");
 		if(inOrder.get("stripetoken") == null || inOrder.get("stripechargeid")==null){
 			log.error("cannot find stripetoken, aborting");
