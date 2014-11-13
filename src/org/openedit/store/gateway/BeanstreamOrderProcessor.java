@@ -87,11 +87,11 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			if (page.exists()){
 				//config may exist but store may not be configured for beanstream
 				String ordergateway = inOrder.get("gateway");
+				String storegateway = inStore.get("gateway");
 				if ("beanstream".equals(ordergateway)){
 					return true;
 				}
-				String storegateway = inStore.get("gateway");
-				if ("beanstream".equals(storegateway)){
+				if (storegateway == null || "beanstream".equals(storegateway)){
 					return true;
 				}
 			}
