@@ -26,7 +26,6 @@ import com.openedit.util.PathProcessor
 import groovy.util.slurpersupport.GPathResult;
 
 public void init(){
-	log.info("----- Starting Import ASN -----");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	XMLPathProcessor processor = new XMLPathProcessor();
 	processor.setLogger(log);
@@ -38,7 +37,6 @@ public void init(){
 	processor.setIncludeExtensions("xml");
 	processor.init();
 	processor.process();
-	log.info("----- End Import ASN -----");
 }
 
 class XMLPathProcessor extends PathProcessor

@@ -159,7 +159,13 @@ public class OrderModule extends BaseModule
 				query = searcher.createSearchQuery();
 			}
 			searcher.addActionFilters(inReq,query);
-			query.addMatches("customer",inReq.getUser().getUserName());
+			String userid = inReq.getRequestParameter("id");
+			if(userid != null){
+				query.addMatches("customer",userid);
+			} else{
+				query.addMatches("customer",inReq.getUser().getUserName());
+
+			}
 			query.setSortBy(inReq.findValue("ordersort"));
 			HitTracker orders = searcher.cachedSearch(inReq,query);
 			inReq.putPageValue("orderlist", orders);
