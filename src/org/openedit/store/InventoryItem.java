@@ -87,6 +87,45 @@ public class InventoryItem
 		return sup.getYourPriceByQuantity( i );
 	}
 	
+	public boolean hasTaxExemptAmount(){
+		return !getTaxExemptAmount().isZero();
+	}
+	
+	public Money getTaxExemptAmount(){
+		Money money = new Money(0);
+		if (get("taxemptamount") != null){
+			String val = get("taxemptamount").trim();
+			try{
+				double dollars = Double.parseDouble(val);
+				money = new Money(dollars);
+			}catch (Exception e){}
+		}
+		return money;
+	}
+	
+	public Money getTaxExemptAmountByQuantity(int inQuantity){
+		Money amount = getTaxExemptAmount();
+		if (amount.isZero()){
+			return amount;
+		}
+		return amount.multiply(inQuantity);
+	}
+	
+	public Money getYourPriceTaxable(){
+		Money price = getYourPriceTaxableByQuantity(1);
+		return price;
+	}
+	
+	public Money getYourPriceTaxableByQuantity(int inQuantity){
+		Money price = getYourPriceByQuantity(inQuantity);
+		Money taxexempt = getTaxExemptAmountByQuantity(inQuantity);
+		if (price == null || taxexempt.isZero()){
+			return price;
+		}
+		price = price.subtract(taxexempt);
+		return price;
+	}
+	
 	public Money getWholesalePriceByQuantity(int i)
 	{
 		PriceSupport sup =  getPriceSupport();

@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
+import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.customer.Address;
@@ -278,6 +279,9 @@ public class Cart extends BaseData
 				Money price = calculateAdjustedPrice(item);
 				if (price != null)
 				{
+					if (item.hasTaxExemptAmount()){
+						price = price.subtract(item.getTaxExemptAmount());
+					}
 					for (Iterator iterator = getCustomer().getTaxRates().iterator(); iterator.hasNext();)
 					{
 						TaxRate rate = (TaxRate) iterator.next();
@@ -316,10 +320,10 @@ public class Cart extends BaseData
 				Money price = calculateAdjustedPrice(item);
 				if (price != null)
 				{
-
+					if (item.hasTaxExemptAmount()){
+						price = price.subtract(item.getTaxExemptAmount());
+					}
 					totalTax = totalTax.add(price.multiply(item.getQuantity()).multiply(inTaxRate.getFraction()));
-					
-
 				}
 			}
 		}
@@ -334,8 +338,10 @@ public class Cart extends BaseData
 	public Money getTotalPrice()
 	{
 		Money totalPrice = getSubTotal();
-		totalPrice = totalPrice.add(getTotalShipping());
-		totalPrice = totalPrice.add(getTotalTax());
+		Money shipping = getTotalShipping();
+		Money tax = getTotalTax();
+		totalPrice = totalPrice.add(shipping);
+		totalPrice = totalPrice.add(tax);
 		return totalPrice;
 	}
 
@@ -621,13 +627,14 @@ public class Cart extends BaseData
 	public Map getTaxes()
 	{
 		HashMap map = new HashMap();
-		
-		for (Iterator iterator = getCustomer().getTaxRates().iterator(); iterator.hasNext();)
-		{
-			TaxRate rate = (TaxRate) iterator.next();
-			Money money = getTotalTax(rate);
-			map.put(rate, money);
-
+		if (getCustomer()!= null && getCustomer().getTaxRates()!=null){
+			for (Iterator iterator = getCustomer().getTaxRates().iterator(); iterator.hasNext();)
+			{
+				TaxRate rate = (TaxRate) iterator.next();
+				Money money = getTotalTax(rate);
+				map.put(rate, money);
+	
+			}
 		}
 		return map;
 	}

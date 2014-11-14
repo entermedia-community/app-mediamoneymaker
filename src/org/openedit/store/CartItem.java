@@ -220,6 +220,17 @@ public class CartItem extends BaseData
 		return getYourPrice().multiply(inRate);
 	}
 	
+	public boolean hasTaxExemptAmount(){
+		return (getInventoryItem()!=null && getInventoryItem().hasTaxExemptAmount());
+	}
+	
+	public Money getTaxExemptAmount(){
+		if (hasTaxExemptAmount()){
+			return getInventoryItem().getTaxExemptAmount();
+		}
+		return new Money(0);
+	}
+	
 	public InventoryItem getInventoryItem() 
 	{
 		if( fieldInventoryItem == null && fieldProduct != null && getProduct().getInventoryItemCount() > 0)

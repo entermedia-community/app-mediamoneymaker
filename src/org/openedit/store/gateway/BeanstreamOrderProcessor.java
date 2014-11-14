@@ -118,6 +118,13 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 	protected void process(MediaArchive inArchive, Store inStore, Order inOrder, String inType)
 			throws StoreException {
 		try {
+			
+			//if gateway has not been set, set it so that we can identify where
+			// to issue refunds
+			if (inOrder.get("gateway") == null){
+				inOrder.setProperty("gateway","beanstream");
+			}
+			
 			// See examples at http://www.jcommercesql.com/anet/
 			// load properties (e.g. IP address, username, password) for
 			// accessing authorize.net

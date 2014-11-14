@@ -1379,6 +1379,15 @@ public class CatalogEditModule extends BaseStoreModule {
 		if (sortnum != null) {
 			product.setOrdering(Integer.parseInt(sortnum));
 		}
+		String taxexemptamount = inContext.getRequestParameter("taxexemptamount");
+		if (taxexemptamount!=null){
+			try{
+				taxexemptamount = String.format("%.2f", new Double(Double.parseDouble(taxexemptamount)));
+				product.setProperty("taxexemptamount", taxexemptamount);
+			}catch (Exception e){
+				log.info("error saving taxexemptamount, skipping update; val="+taxexemptamount+", message="+e.getMessage());
+			}
+		}
 		editor.saveProduct(product);
 	}
 
