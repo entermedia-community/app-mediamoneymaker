@@ -735,6 +735,9 @@ public class CartModule extends BaseStoreModule {
 			cart.setProperty("gateway",null);
 		}
 
+		String applicationid = inPageRequest.findValue("applicationid");
+		order.setProperty("applicationid", applicationid);
+		
 		// Assign default shipping method if one has not been assigned
 		if (cart.getShippingMethod() == null) {
 			List shippingMethods = cart.getAvailableShippingMethods();
