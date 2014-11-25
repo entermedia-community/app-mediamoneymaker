@@ -1,7 +1,0 @@
-<page>
-	<path-action name="CartModule.getCart"/>
-	<path-action name="Page.uploadFile"/>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/importas400ids.groovy</script>
-	</path-action>
-</page>

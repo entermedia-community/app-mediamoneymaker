@@ -1,7 +1,0 @@
-<page>
-	<path-action name="Page.uploadFile"/>
-	<property name="allowspecifiedpath">true</property>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/dealers/dealeractions.groovy</script>
-	</path-action>
-</page>

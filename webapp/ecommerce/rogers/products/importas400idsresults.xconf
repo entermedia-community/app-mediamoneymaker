@@ -1,8 +1,0 @@
-<page>
-	<path-action name="CartModule.getCart"/>
-	<path-action name="Page.uploadFile"/>
-	<property name="allowspecifiedpath">true</property>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/products/importrogersas400idsfromorder.groovy</script>
-	</path-action>
-</page>

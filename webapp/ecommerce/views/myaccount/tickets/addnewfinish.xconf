@@ -1,8 +1,0 @@
-<page>
-	<path-action name="DataEditModule.saveData" allowduplicates="true">
-		<property name="searchtype">ticket</property>
-	</path-action>
-	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/tickets/addnotify.groovy</script>
-	</path-action>
-</page>

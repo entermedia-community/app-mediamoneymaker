@@ -1,5 +1,0 @@
-<page>
-<path-action name="CartModule.createCartFromOrder"/>
-   <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
-
-</page>

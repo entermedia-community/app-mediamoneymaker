@@ -1,9 +1,0 @@
-<page>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/submitforreview.groovy</script>
-	</path-action>
-<!--
-	<path-action name="AssetEditModule.handleUploads"/>
--->
-    <path-action name="CartModule.loadProductDetails"/>
-</page>

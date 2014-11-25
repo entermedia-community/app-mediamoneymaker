@@ -1,4 +1,0 @@
-<page>
-	<path-action name="StoreOrderModule.loadOrderById"/>
-	<path-action name="StoreOrderModule.prepareShipment"/>
-</page>

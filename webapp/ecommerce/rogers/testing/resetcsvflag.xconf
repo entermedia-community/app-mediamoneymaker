@@ -1,6 +1,0 @@
-<page>
-	<property name="allowspecifiedpath">true</property>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/orders/resetCSVFlag.groovy</script>
-	</path-action>
-</page>

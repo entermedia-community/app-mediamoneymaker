@@ -1,9 +1,0 @@
-##Grab the companyid and save it on the user
-#if( $data )
-$!customer.setProperty("companyid",$data.id)
-#set( $searcher = $store.getSearcherManager().getSearcher("openedit","user" ) )	
-$searcher.saveData($customer.getUser(),$user)
-Saved User
-#end
-
-$pages.include("index.html")

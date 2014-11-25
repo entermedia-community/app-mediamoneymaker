@@ -1,8 +1,0 @@
-<page>
-	<inner-layout>/${applicationid}/search/advanced/layout.html</inner-layout>
-		<path-action name="StoreSearchModule.fieldSearch" />
-	<property name="fieldname">product</property>
-	<property name="hitsname">hits</property>
-	
-	
-</page>

@@ -1,5 +1,0 @@
-<page>
-	<path-action name="StoreOrderModule.loadOrderById"/>
-	<page-action name="PageValue.loadPageVariable" class="org.openedit.store.util.MathUtilities" bean="mathutil" />
-	<page-action name="PageValue.loadPageVariable" class="org.openedit.store.util.Format" bean="formatutil" />
-</page>

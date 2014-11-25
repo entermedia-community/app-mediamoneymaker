@@ -1,5 +1,0 @@
-<page>
-	<path-action name="StoreOrderModule.loadOrderById"/>
-	<path-action name="StoreOrderModule.cancelOrder"/>
-	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
-</page>

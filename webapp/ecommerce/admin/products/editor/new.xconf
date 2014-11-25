@@ -1,4 +1,0 @@
-<page>
-<path-action name="CatalogEditModule.createProduct" />
-<property name="sendtoeditor">true</property>
-</page>

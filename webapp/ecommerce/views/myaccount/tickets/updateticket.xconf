@@ -1,5 +1,0 @@
-<page>
-	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/workflow/updateticket.groovy</script>
-	</path-action>
-</page>

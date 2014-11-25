@@ -1,6 +1,0 @@
-<page>
-	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
-	<permission name="view">
-		<userprofile value="true" name="superadmin"/>
-	</permission>
- </page>

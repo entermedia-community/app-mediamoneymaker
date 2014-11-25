@@ -1,5 +1,0 @@
-<page>
-	<path-action name="CatalogEditModule.saveProductResultsEdits" />
-	<inner-layout />
-	<layout /> 
-</page>

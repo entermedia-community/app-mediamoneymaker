@@ -1,6 +1,0 @@
-<page>
-	<property name="virtual">true</property>
-	<path-action name="Script.run">
-    	<script>/${catalogid}/events/scripts/products/checkstatus.groovy</script>
-	</path-action>
-</page>

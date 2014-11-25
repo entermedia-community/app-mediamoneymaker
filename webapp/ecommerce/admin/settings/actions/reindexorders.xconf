@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <path-action name="StoreOrderModule.reIndexOrders"/>
-  <property name="text.Order Reindex is finished">
-    <value>Order Reindex is finished</value>
-    <value locale="es">Volver a la Orden ha terminado</value>
-  </property>
-</page>

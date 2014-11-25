@@ -1,8 +1,0 @@
-<page>
-	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/tickets/addticket.groovy</script>
-	</path-action>
-	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/tickets/addnotify.groovy</script>
-	</path-action>
-</page>

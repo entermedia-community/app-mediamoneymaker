@@ -1,9 +1,0 @@
-<page>
-	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
-	<property name="deleteorderhistory">false</property>
-	<path-action name="StoreOrderModule.loadOrderById"/>
-	<path-action name="StoreOrderModule.addOrderState"/>
-	<path-action name="StoreOrderModule.deleteOrderState"/>
-	<path-action name="StoreOrderModule.loadOrderHistory"/>
-	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
-</page>

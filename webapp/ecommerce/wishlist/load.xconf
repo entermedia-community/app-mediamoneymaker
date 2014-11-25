@@ -1,5 +1,0 @@
-<page>
-<path-action name="CartModule.loadWishList"/>
-   <inner-layout>/${applicationid}/layout/resultslayout.html</inner-layout>
-
-</page>

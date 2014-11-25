@@ -1,5 +1,0 @@
-<page>
-	<permission name="view">
-		<userprofile value="true" name="superadmin"/>
-	</permission>
- </page>

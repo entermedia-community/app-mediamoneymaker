@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>  
-	<property name="showlist">true</property>
-	<property name="url-prefix">/${applicationid}/categories/listing/</property>
-	<!-- property name="cancelinnerlayout">/${applicationid}/layout/storelayout.html</property -->
-</page>

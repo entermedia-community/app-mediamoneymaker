@@ -1,5 +1,0 @@
-<page>
-	<path-action name="Script.run" alltypes="true">
-		<script>/${catalogid}/events/scripts/rogers/confirmcorporateorder.groovy</script>
-	</path-action>
-</page>
