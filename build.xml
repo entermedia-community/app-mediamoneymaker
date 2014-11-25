@@ -61,7 +61,6 @@
 						<include name="store/configuration/store.*" />
 						<include name="store/configuration/authorize.*" />
 						<include name="media/catalogs/store/**" />
-						<include name="ecommerce/**" />
 
 					</fileset>
 				</copy>
@@ -108,7 +107,7 @@
 		<jar jarfile="${versionDir}/${appname}-${version}.jar" basedir="${compiled}" >
 			<manifest>
 		    	<attribute name="Built-By" value="${user.name}"/>
-			    <attribute name="Implementation-Title" value="${appname}"/>
+			    <attribute name="Implementation-Title" value="${appnamee}"/>
 			    <attribute name="Implementation-Version" value="${version}"/>
 			    <attribute name="Implementation-Vendor" value="${org}"/>
 		    </manifest>

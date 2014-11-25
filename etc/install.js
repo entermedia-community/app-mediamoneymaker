@@ -48,11 +48,7 @@ files.copyFiles( tmp + "/WEB-INF/base/store", root + "/WEB-INF/base/store");
 
 
 log.add("5. UPGRADE CART FILES");
-files.deleteAll( root + "/WEB-INF/base/media/catalogs/store");
-files.copyFiles( tmp + "/media/catalogs/store", root + "/WEB-INF/base/media/catalogs/store");
 
-files.deleteAll( root + "/WEB-INF/base/ecommerce");
-files.copyFiles( tmp + "/ecommerce", root + "/WEB-INF/base/ecommerce");
 
 
 
