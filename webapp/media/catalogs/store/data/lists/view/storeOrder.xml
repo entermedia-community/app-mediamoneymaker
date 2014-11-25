@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="storeOrderadvancedsearch" module="storeOrder" systemdefined="true" byassettype="false">Advanced Search</property>
-  <property id="storeOrderresultstable" module="storeOrder" systemdefined="true" byassettype="false">Results Table</property>
-    <data id="storeOrdermy_account" module="storeOrder" systemdefined="true" ordering="1358970750797">My Account</data>
-  
-</properties>

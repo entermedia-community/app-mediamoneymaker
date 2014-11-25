@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="wishlistadvancedsearch" module="wishlist" systemdefined="true" byassettype="false">Advanced Search</property>
-  <property id="wishlistresultstable" module="wishlist" systemdefined="true" byassettype="false">Results Table</property>
-  <property id="wishlistbatchedit" module="wishlist" systemdefined="true" byassettype="false">Batch Edit</property>
-</properties>

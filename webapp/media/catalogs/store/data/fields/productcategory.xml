@@ -1,6 +1,0 @@
-
-<properties prefix="productcategory" beanname="xmlFolderSearcher">
-  <property id="id" index="true" stored="true" editable="false" searchtype="productcategory" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="productcategory">Name</property>
-  <property id="sourcepath" searchtype="productcategory">SourcePath</property>
-</properties>

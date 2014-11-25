@@ -1,8 +1,0 @@
-<properties>
-	<property id="id">Claim ID</property>
-	<property id="user" index="true" stored="true" editable="false" type="list" viewtype="list" searchtype="user" listcatalogid="system">User</property>
-	<property id="creationdate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Claim Date</property>
-	<property id="paymentdate" index="true" stored="true" type="date" viewtype="date" pickerformat="mm/dd/yy">Claim Date</property>
-	<property id="status" index="true" stored="true" type="date" type="list" >Claim Status</property>
-	<property id="totalamount" index="true" stored="true">Total Amount</property>
-</properties>

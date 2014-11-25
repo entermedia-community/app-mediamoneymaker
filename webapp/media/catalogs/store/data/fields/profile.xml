@@ -1,9 +1,0 @@
-
-<properties prefix="profile">
-  <property id="id" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile" internalfield="true">Id</property>
-  <property id="name" catalogid="media/catalogs/store" index="true" stored="true" editable="true" searchtype="profile">Name</property>
-  <property id="sourcepath" catalogid="media/catalogs/store" searchtype="profile">SourcePath</property>
-  <property id="firstname" catalogid="media/catalogs/store" index="true" stored="true" editable="true">First Name</property>
-  <property id="lastname" catalogid="media/catalogs/store" index="true" stored="true" editable="true">Last Name</property>
-  <property id="email" catalogid="media/catalogs/store" index="true" stored="true" editable="true">Email</property>
-</properties>

@@ -1,7 +1,0 @@
-<linktree>
-	<a folder="edit/export" module="invoice"  id="invoiceexport"  useajax="false" multiedit="false" name="Export" />
-	
-	<!-- 
-	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
- -->
-</linktree>

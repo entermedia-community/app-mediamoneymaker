@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties usagelabel="This is the default view for registration">
-  <property id="email" index="true" stored="true" editable="false" required="true">Email Address</property>
-  <property id="repfirstname" index="true" stored="true" editable="true" required="true">Samsung Sales Rep First Name</property>
-  <property id="replastname" index="true" stored="true" editable="true" required="true">Samsung Sales Rep Last Name</property>
-  <property id="password" note="Min length 8 characters" viewtype="password-single">Password</property>
-
-</properties>

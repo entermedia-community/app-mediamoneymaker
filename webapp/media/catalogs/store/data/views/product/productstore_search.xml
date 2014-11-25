@@ -1,7 +1,0 @@
-
-<root>
-  <property id="categoryid"/>
-  <property id="manufacturerid" viewtype="manufacturerlist"/>
-  <property id="phone"/>
-  <property id="name"/>
-</root>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<inventoryimports>
-  <inventoryimport description="4" rogerssku="1" quantity="3" upc="2" distributor="102" id="1367417017604" sku="1" transdate="-1" transtime="-1" transdatetime="-1" lastimportdate="0">Affinity</inventoryimport>
-  <inventoryimport description="12" rogerssku="10" quantity="13" upc="10" distributor="105" id="1367417156819" sku="10" transdate="2" transtime="3" transdatetime="4" lastimportdate="20131016111311" name="Cesium">
-    <importurl><![CDATA[https://system.netsuite.com/core/media/media.nl?id=243665&c=392338&h=da40ad7a2365dc952f54&_xt=.csv]]></importurl>Cesium
-  </inventoryimport>
-  <inventoryimport sku="0" quantity="2" upc="-1" distributor="104" id="1368541877006" description="1" transdate="-1" transtime="-1" transdatetime="-1" lastimportdate="0">Microcel</inventoryimport>
-</inventoryimports>

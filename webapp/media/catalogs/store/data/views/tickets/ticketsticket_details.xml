@@ -1,6 +1,0 @@
-
-<root>
-  <property id="product"/>
-  <property id="tickettype"/>
-  <property id="description"/>
-</root>

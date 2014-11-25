@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<invoiceitemstatuss>
-  <invoiceitemstatus id="pending" name="Pending">Pending</invoiceitemstatus>
-  <invoiceitemstatus id="verified" name="Verified">Verified</invoiceitemstatus>
-  <invoiceitemstatus id="conflictdetection" name="Conflict Detection">Conflict Detection</invoiceitemstatus>
-</invoiceitemstatuss>

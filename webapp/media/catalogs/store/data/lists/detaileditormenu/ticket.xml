@@ -1,4 +1,0 @@
-<linktree>
-    <a folder="view" module="ticket"  id="ticketsview" useajax="false" multiedit="false" name="View Ticket" />
-    <a folder="history" module="tickets"  id="ticketshistory" useajax="false" multiedit="false" name="Ticket History" />
-</linktree>

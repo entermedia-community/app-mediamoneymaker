@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<detailedorderhistorytypes>
-  <detailedorderhistorytype id="automatic" name="Automatic">Automatic</detailedorderhistorytype>
-  <detailedorderhistorytype id="userinput" name="User Input">User Input</detailedorderhistorytype>
-</detailedorderhistorytypes>

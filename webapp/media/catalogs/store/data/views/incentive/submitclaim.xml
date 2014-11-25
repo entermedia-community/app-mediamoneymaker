@@ -1,5 +1,0 @@
-<properties>
-	<property id="productcategory" index="true" stored="true" editable="true" type="list">Product Category</property>
-	<property id="producttype" index="true" stored="true" editable="true" type="list">Product Type</property>
-	<property id="productid" index="true" stored="true" editable="true" type="list" viewtype="list">Product</property>
-</properties>	

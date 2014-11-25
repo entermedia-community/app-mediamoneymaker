@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-    <property id="store" viewtype="filteredradio"  editable="true" required="true">Store Details</property>
-    <property id="salesrep" editable="false" viewtype="list">Your Sales Rep</property>
- 
-    
-</properties>

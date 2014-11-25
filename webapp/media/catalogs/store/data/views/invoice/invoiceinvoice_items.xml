@@ -1,7 +1,0 @@
-
-<root>
-  <property id="invoiceid"/>
-  <property id="product"/>
-  <property id="quantity"/>
-  <property id="price"/>
-</root>

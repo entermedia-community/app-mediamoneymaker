@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<root>
-  <property id="product"/>
-  <property id="storeOrder"/>
-  <property id="tickettype"/>
-  <property id="ticketstatus"/>
-  <property id="notes"/>
-</root>

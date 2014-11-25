@@ -1,8 +1,0 @@
-
-<root>
-  <property id="name"/>
-   <property id="creationdate" editable="false"/>
-  <property id="profileid" editable="false"/>
-  <property id="address" editable="false"/>
-  
-</root>

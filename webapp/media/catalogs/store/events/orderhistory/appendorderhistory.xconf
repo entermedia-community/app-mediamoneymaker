@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <property name="virtual">true</property>
-  <property name="eventname">Append Order History</property>
-  <path-action name="Script.run">
-    <script>/${catalogid}/events/scripts/orderhistory/appendorderhistory.groovy</script>
-  </path-action>
-</page>

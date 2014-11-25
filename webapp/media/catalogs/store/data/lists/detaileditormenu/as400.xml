@@ -1,7 +1,0 @@
-<linktree>
-	<a folder="edit/export" module="as400"  id="as400export"  useajax="false" multiedit="false" name="Export" />
-	
-	<!-- 
-	<a folder="librarycollaborators" module="library"  id="libraryassets"  useajax="false" multiedit="false" name="Permissions" />
- -->
-</linktree>

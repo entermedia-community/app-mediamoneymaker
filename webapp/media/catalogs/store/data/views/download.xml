@@ -1,9 +1,0 @@
-<properties>
-
-
-<property id="user"  keyword="true"  index="true" stored="true">User</property>
-<property id="filename" externalid="JobNumber" index="true" stored="true">Filename</property>
-<property id="result" externalid="ClientJobNumber" index="true" stored="true" editable="true">Result</property>
-<property id="date" externalid="ClientCollateralNumber" index="true" stored="true" editable="true">Results</property>
-
-</properties>

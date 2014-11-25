@@ -1,7 +1,0 @@
-
-<viewset>
-  <view fieldname="member" id="member/registration" name="User Profile"/>
-  <view fieldname="member" id="member/workaddress" name="Work Address"/>
-  <view fieldname="member" id="member/contactdetails" name="Home Address Information"/>
-  <view fieldname="member" id="member/additional" name="Additional Information"/>
-</viewset>

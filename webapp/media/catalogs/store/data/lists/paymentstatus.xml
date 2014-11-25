@@ -1,7 +1,0 @@
-<properties>
-<property id="pending">Not Sent</property>
-<property id="approvalneeded">Approval Needed</property>
-<property id="sent">Sent to processor</property>
-<property id="complete">Complete</property>
-
-</properties>

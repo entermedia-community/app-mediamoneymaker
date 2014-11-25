@@ -1,7 +1,0 @@
-
-<properties beanname="dynamicSearcher">
-  <property id="id" index="true" stored="true" editable="true" searchtype="categoryid" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="categoryid">Name</property>
-  <property id="descripfr" index="true" stored="true" editable="true" searchtype="categoryid">DescripFR</property>
-  <property id="active" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="categoryid" internalfield="false" datatype="boolean">Active</property>
-</properties>

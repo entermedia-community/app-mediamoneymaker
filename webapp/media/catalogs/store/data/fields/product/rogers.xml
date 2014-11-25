@@ -1,6 +1,0 @@
-<properties>
-	<property id="rogersas400id" index="true" stored="true" editable="true" searchtype="product">Rogers AS400 ID</property>
-	<property id="fidoas400id" index="true" stored="true" editable="true" searchtype="product">Fido AS400 ID</property>
-	<property id="nhl" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="product" internalfield="false" datatype="boolean">NHL</property>
-	<property id="nhlteam" index="true" stored="true" editable="true" type="list" searchtype="product" internalfield="false" datatype="list">NHL Team</property>
-</properties>

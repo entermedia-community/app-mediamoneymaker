@@ -1,5 +1,0 @@
-<properties>
-	<property id="invoicedate" editable="true" required="true">Invoice Date</property>
-	<property id="invoicenumber" editable="true" required="true">Invoice Number</property>
-	<property id="claimstatus" editable="true" required="true">Current Status</property>
-</properties>

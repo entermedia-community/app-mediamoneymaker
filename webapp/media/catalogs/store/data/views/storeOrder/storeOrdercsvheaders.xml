@@ -1,6 +1,0 @@
-
-<root>
-  <property id="orderdate"/>
-  <property id="orderstatus"/>
-  <property id="shippingstatus"/>
-</root>
