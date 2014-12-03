@@ -21,14 +21,15 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.entermedia.cache.CacheManager;
 import org.entermedia.email.PostMail;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
+import org.openedit.store.adjustments.FixedPriceAdjustment;
 import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -247,7 +248,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					Adjustment adjustment = (Adjustment) iterator.next();
 					if (adjustment instanceof SaleAdjustment)
 					{
-						SaleAdjustment a = (SaleAdjustment) adjustment;
+						SaleAdjustment a = (SaleAdjustment) adjustment;//multiple
 						String val = a.getPercentage().getFraction().toString();
 						String inventoryid = a.getInventoryItemId();
 						String productid = a.getProductId();
@@ -259,12 +260,36 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					}
 					else if (adjustment instanceof DiscountAdjustment)
 					{
-						DiscountAdjustment a = (DiscountAdjustment) adjustment;
+						DiscountAdjustment a = (DiscountAdjustment) adjustment;//multiple
 						String val = String.valueOf(a.getDiscount().doubleValue());
 						String inventoryid = a.getInventoryItemId();
 						String productid = a.getProductId();
 						Element e = orderElem.addElement("adjustment");
 						e.addAttribute("type", "discountadjustment");
+						e.addAttribute("value", val);
+						if (inventoryid!=null) e.addAttribute("inventoryid", inventoryid);
+						if (productid!=null) e.addAttribute("productid", productid);
+					}
+					else if (adjustment instanceof CouponAdjustment)
+					{
+						CouponAdjustment a = (CouponAdjustment) adjustment;//multiple
+						String val = String.valueOf(a.getDiscount().doubleValue());
+						String inventoryid = a.getInventoryItemId();
+						String productid = a.getProductId();
+						Element e = orderElem.addElement("adjustment");
+						e.addAttribute("type", "couponadjustment");
+						e.addAttribute("value", val);
+						if (inventoryid!=null) e.addAttribute("inventoryid", inventoryid);
+						if (productid!=null) e.addAttribute("productid", productid);
+					}
+					else if (adjustment instanceof FixedPriceAdjustment)
+					{
+						FixedPriceAdjustment a = (FixedPriceAdjustment) adjustment;//multiple
+						String val = String.valueOf(a.getDiscount().doubleValue());
+						String inventoryid = a.getInventoryItemId();
+						String productid = a.getProductId();
+						Element e = orderElem.addElement("adjustment");
+						e.addAttribute("type", "fixedpriceadjustment");
 						e.addAttribute("value", val);
 						if (inventoryid!=null) e.addAttribute("inventoryid", inventoryid);
 						if (productid!=null) e.addAttribute("productid", productid);
@@ -678,7 +703,27 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				if (productid!=null) adjustment.setProductId(productid);
 				adjustment.setDiscount(Double.parseDouble(value));
 				adjustments.add(adjustment);
+			} 
+			else if (type.equals("couponadjustment"))
+			{
+				CouponAdjustment adjustment = new CouponAdjustment();
+				if (inventoryid!=null) adjustment.setInventoryItemId(inventoryid);
+				if (productid!=null) adjustment.setProductId(productid);
+				adjustment.setDiscount(Double.parseDouble(value));
+				adjustments.add(adjustment);
 			}
+			else if (type.equals("fixedpriceadjustment"))
+			{
+				FixedPriceAdjustment adjustment = new FixedPriceAdjustment();
+				if (inventoryid!=null) adjustment.setInventoryItemId(inventoryid);
+				if (productid!=null) adjustment.setProductId(productid);
+				adjustment.setDiscount(Double.parseDouble(value));
+				adjustments.add(adjustment);
+			}
+			else {
+				//more adjustments here
+			}
+			
 		}
 		inOrder.setAdjustments(adjustments);
 
