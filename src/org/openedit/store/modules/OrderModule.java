@@ -649,7 +649,9 @@ public class OrderModule extends BaseModule
 		String ordernumber = inContext.getRequestParameter("ordernumber");
 		Store store = getStore(inContext);
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
-		
+		if (order == null){
+			return;
+		}
 		resetPendingRefundStates(order);
 		
 		Money subtotal = new Money("0");
@@ -659,6 +661,9 @@ public class OrderModule extends BaseModule
 		Money total = new Money("0");
 		
 		String [] skus = inContext.getRequestParameters("sku");
+		if (skus == null){
+			skus = new String[]{};
+		}
 		for (String sku:skus)
 		{
 			//shipping-refund
@@ -701,6 +706,7 @@ public class OrderModule extends BaseModule
 		total = total.add(subtotal);
 		ArrayList<String[]> taxes = new ArrayList<String[]>();
 		//list of taxes applied to order
+		@SuppressWarnings("unchecked")
 		Map<TaxRate,Money> taxMap = order.getTaxes();//map of TaxRate,Money
 		Iterator<TaxRate> keys = taxMap.keySet().iterator();
 		while(keys.hasNext())
@@ -806,36 +812,60 @@ public class OrderModule extends BaseModule
 		Money tax = new Money(taxstr);
 		Money total = new Money(totalstr);
 		Money shipping = new Money("0");
-		
 		if (shippingstr != null && !shippingstr.isEmpty())
 		{
 			shipping = new Money(shippingstr);
 		}
-		
-		
 		//build refund
 		Refund refund = new Refund();
 		refund.setSubTotal(subtotal);
 		refund.setTaxAmount(tax);
 		refund.setTotalAmount(total);
-		@SuppressWarnings("unchecked")
-		Iterator<CartItem> itr = ((List<CartItem>)order.getItems()).iterator();
-		while(itr.hasNext())
+		//try to get refund details from form first
+		String [] skus = inContext.getRequestParameters("sku");
+		if (skus!=null)
 		{
-			CartItem cartItem = itr.next();
-			if (cartItem.getRefundState().getRefundStatus().equals(RefundState.REFUND_PENDING))
-			{
-				RefundState state = cartItem.getRefundState();
-				int quantity = state.getPendingQuantity();
-				Money totalprice = state.getPendingPrice();//unitprice * quantity
+			for(String sku:skus){
+				if (inContext.getRequestParameter(sku+"-refund-price")==null ||
+						inContext.getRequestParameter(sku+"-refund-quantity")==null ||
+						inContext.getRequestParameter(sku+"-unit-price")==null )
+ 				{
+					continue;
+				}
+				int quantity = Integer.parseInt(inContext.getRequestParameter(sku+"-refund-quantity"));
+				Money unitprice = new Money(inContext.getRequestParameter(sku+"-unit-price"));
+				Money totalprice = new Money(inContext.getRequestParameter(sku+"-refund-price"));
 				
 				RefundItem refundItem = new RefundItem();
 				refundItem.setShipping(false);
-				refundItem.setId(cartItem.getSku());
+				refundItem.setId(sku);
 				refundItem.setQuantity(quantity);
-				refundItem.setUnitPrice(cartItem.getYourPrice());
+				refundItem.setUnitPrice(unitprice);
 				refundItem.setTotalPrice(totalprice);
 				refund.getItems().add(refundItem);
+			}
+		}
+		else //otherwise check for persisted refund states on order
+		{
+			@SuppressWarnings("unchecked")
+			Iterator<CartItem> itr = ((List<CartItem>)order.getItems()).iterator();
+			while(itr.hasNext())
+			{
+				CartItem cartItem = itr.next();
+				RefundState state = cartItem.getRefundState();
+				if (state.getRefundStatus().equals(RefundState.REFUND_PENDING))
+				{	
+					int quantity = state.getPendingQuantity();
+					Money totalprice = state.getPendingPrice();//unitprice * quantity
+					
+					RefundItem refundItem = new RefundItem();
+					refundItem.setShipping(false);
+					refundItem.setId(cartItem.getSku());
+					refundItem.setQuantity(quantity);
+					refundItem.setUnitPrice(cartItem.getYourPrice());
+					refundItem.setTotalPrice(totalprice);
+					refund.getItems().add(refundItem);
+				}
 			}
 		}
 		//if we want shipping, need to create a RefundItem
