@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -303,31 +304,65 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			return;
 		}
 		String chargeId = inOrder.get("stripechargeid");
+		//set application key
+		Data setting = null;
+		if(inStore.isProductionMode()){
+			 setting = getSearcherManager().getData(inStore.getCatalogId(), "catalogsettings", "stripe_access_token");
+		} else{
+			 setting = getSearcherManager().getData(inStore.getCatalogId(), "catalogsettings", "stripe_test_access_token");
+		}
+		if (setting!=null && setting.get("value")!=null){
+			Stripe.apiKey = setting.get("value");
+		} else {
+			//check if an administrator has ordered test mode transaction
+			if(inStore.isProductionMode() && !inOrder.getCart().getBoolean("forcetestmode")){
+				Stripe.apiKey = inStore.get("secretkey");//livesecretkey or secretkey
+			} else{
+				Stripe.apiKey = inStore.get("testsecretkey");
+			}
+		}
 		try{
+			//load the charge
 			Charge c = Charge.retrieve(chargeId);
-			if (c.getRefunded()){
+			if (c.getRefunded()){//this is true if fully refunded
 				inRefund.setSuccess(false);
 				inRefund.setMessage("Order has already been refunded");
 				inRefund.setDate(new Date());
 			} else {
-				Charge refundedCharge = c.refund();//refunds the full amount
-				if (refundedCharge.getRefunded()){
-					ChargeRefundCollection refunds = refundedCharge.getRefunds();
-					com.stripe.model.Refund refund = refunds.getData().get(0);
-					inRefund.setSuccess(true);
-					inRefund.setAuthorizationCode(refund.getId());
-					inRefund.setTransactionId(refund.getBalanceTransaction());
-					inRefund.setDate(new Date());
-					//client was refunded at this point, but
-					//partners have not been
-					//handle this at the end
+				Integer total = c.getAmount();
+				Integer totalrefunded = c.getAmountRefunded();
+				Integer refundamount = Integer.parseInt(inRefund.getTotalAmount().toShortString().replace(".",""));
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("amount", String.valueOf(refundamount));
+				com.stripe.model.Refund refund = c.getRefunds().create(params);
+				inRefund.setSuccess(true);
+				inRefund.setAuthorizationCode(refund.getId());
+				inRefund.setTransactionId(refund.getBalanceTransaction());
+				inRefund.setDate(new Date());
+				//calculate whether application fees should be handled
+				//may need to change this logic: should we adjust application fees whenever any refund is made?
+				if ( (totalrefunded + refundamount) == total ){
 					handleApplicationFees(chargeId,inRefund);
-					
-				} else {
-					inRefund.setSuccess(false);
-					inRefund.setMessage("Order could not be refunded");
-					inRefund.setDate(new Date());
 				}
+				//OLD!!!
+//				Charge refundedCharge = c.refund();//refunds the full amount
+//				if (refundedCharge.getRefunded()){
+//					ChargeRefundCollection refunds = refundedCharge.getRefunds();
+//					com.stripe.model.Refund refund = refunds.getData().get(0);
+//					inRefund.setSuccess(true);
+//					inRefund.setAuthorizationCode(refund.getId());
+//					inRefund.setTransactionId(refund.getBalanceTransaction());
+//					inRefund.setDate(new Date());
+//					//client was refunded at this point, but
+//					//partners have not been
+//					//handle this at the end
+//					handleApplicationFees(chargeId,inRefund);
+//					
+//				} else {
+//					inRefund.setSuccess(false);
+//					inRefund.setMessage("Order could not be refunded");
+//					inRefund.setDate(new Date());
+//				}
 			}
 		}catch (Exception e){
 			inRefund.setSuccess(false);
