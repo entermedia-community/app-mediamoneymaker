@@ -33,6 +33,7 @@ import com.stripe.model.ApplicationFeeCollection;
 import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
 import com.stripe.model.ChargeRefundCollection;
+import com.stripe.model.Fee;
 
 
 public class StripeOrderProcessor extends BaseOrderProcessor
@@ -214,6 +215,21 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			int fee = balance.getFee();
 			float moneyval = (float)fee / 100;
 			inOrder.setProperty("fee", String.valueOf(moneyval));
+			List<Fee> details = balance.getFeeDetails();
+
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				Fee fee2 = (Fee) iterator.next();
+				float feeval = (float)fee2.getAmount() / 100;
+				if("stripe_fee".equals(fee2.getType())){
+				inOrder.setProperty("stripefee", String.valueOf(feeval));
+				}
+				if("application_fee".equals(fee2.getType())){
+					inOrder.setProperty("profitshare", String.valueOf(feeval));
+
+				}
+			}
+			
 			inOrder.setProperty("balancetransaction", balancetransaction);
 			float net = (float) balance.getNet() / 100;
 			inOrder.setProperty("net", String.valueOf(net));
