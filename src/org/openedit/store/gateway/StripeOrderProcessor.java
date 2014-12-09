@@ -382,6 +382,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 				//refund all fees
 				StringBuilder buf = new StringBuilder();
 				for (ApplicationFee fee:fees){
+					//here we will probably have to refund partial amounts
 					if (!fee.getRefunded()){
 						ApplicationFee refundedFee = fee.refund();
 						if (!refundedFee.getRefunded()){
@@ -404,8 +405,6 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		inMetadata.put("firstname", inOrder.getCustomer().getFirstName());
 		inMetadata.put("lastname", inOrder.getCustomer().getLastName());
 		inMetadata.put("email", inOrder.getCustomer().getEmail());
-	
-//		inMetadata.put("phone", inOrder.getCustomer().getPhone1()!=null ? inOrder.getCustomer().getPhone1() : "");
 		Address billing = inOrder.getCustomer().getBillingAddress();
 		inMetadata.put("billingaddress",billing.toString());
 		Address shipping = inOrder.getCustomer().getShippingAddress();

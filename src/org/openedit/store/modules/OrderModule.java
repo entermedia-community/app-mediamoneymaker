@@ -843,6 +843,14 @@ public class OrderModule extends BaseModule
 				refundItem.setUnitPrice(unitprice);
 				refundItem.setTotalPrice(totalprice);
 				refund.getItems().add(refundItem);
+				
+				//update refundstate of item
+				CartItem cartItem = order.getItem(sku);
+				if (cartItem!=null){
+					cartItem.getRefundState().setPendingQuantity(quantity);
+					cartItem.getRefundState().setRefundStatus(RefundState.REFUND_PENDING);
+					cartItem.getRefundState().setPendingPrice(totalprice);
+				}
 			}
 		}
 		else //otherwise check for persisted refund states on order
