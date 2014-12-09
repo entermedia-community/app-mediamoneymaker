@@ -169,8 +169,8 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 				inOrder.setOrderState(orderState);
 				return;
 			}
-//			totalprice = totalprice.subtract(fee);
-			if (totalprice.isNegative()){
+			Money delta = totalprice.subtract(fee);
+			if (delta.isNegative()){
 				log.error("Configuration error: fee for processing is too big, aborting");
 				OrderState orderState = inStore.getOrderState(Order.REJECTED);
 				orderState.setDescription("Configuration error: fee structure is invalid");
