@@ -677,7 +677,6 @@ public class OrderModule extends BaseModule
 			String quantity = inContext.getRequestParameter(sku+"-refund-quantity");
 			if (sku.equals("shipping"))
 			{
-//				ShippingMethod shippingmethod = order.getShippingMethod();
 				Money shippingcost = order.getTotalShipping();
 				Money shippingrefund = new Money(quantity);
 				if (shippingcost.doubleValue() < shippingrefund.doubleValue())
@@ -725,13 +724,31 @@ public class OrderModule extends BaseModule
 			
 			total = total.add(amount);
 		}
-		
 		if(!shipping.isZero())
 		{
 			subtotal = subtotal.add(shipping);// add the shipping cost to the subtotal
 			total = total.add(shipping);//add the shipping cost to the total
 		}
-		
+		//need to figure out if there are any discrepancies in tax calculation
+		//this occurs only with partial refunds
+		Money currenttotal = new Money("0");
+		List<Refund> refunds = order.getRefunds();
+		for(Refund refund:refunds){
+			currenttotal = currenttotal.add(refund.getTotalAmount());
+		}
+		Money ordertotal = order.getTotalPrice();
+		//say, if order is off by 1 cent
+		Money totalrefunds = currenttotal.add(total);
+		Money delta = ordertotal.subtract(totalrefunds);
+		if (!delta.isZero() && Math.abs(delta.doubleValue()) == 0.01){
+			if (delta.isNegative()){
+				totaltaxes = totaltaxes.subtract(new Money("0.01"));
+				total = total.subtract(new Money("0.01"));
+			} else {
+				totaltaxes = totaltaxes.add(new Money("0.01"));
+				total = total.add(new Money("0.01"));
+			}
+		}
 		inContext.putPageValue("data",order);
 		inContext.putPageValue("order",order);
 		inContext.putPageValue("subtotal", subtotal);

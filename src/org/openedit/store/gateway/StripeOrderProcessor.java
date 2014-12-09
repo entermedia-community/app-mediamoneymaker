@@ -216,24 +216,20 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			float moneyval = (float)fee / 100;
 			inOrder.setProperty("fee", String.valueOf(moneyval));
 			List<Fee> details = balance.getFeeDetails();
-
-			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			for (Iterator<Fee> iterator = details.iterator(); iterator.hasNext();)
 			{
-				Fee fee2 = (Fee) iterator.next();
+				Fee fee2 = iterator.next();
 				float feeval = (float)fee2.getAmount() / 100;
 				if("stripe_fee".equals(fee2.getType())){
-				inOrder.setProperty("stripefee", String.valueOf(feeval));
+					inOrder.setProperty("stripefee", String.valueOf(feeval));
 				}
 				if("application_fee".equals(fee2.getType())){
 					inOrder.setProperty("profitshare", String.valueOf(feeval));
-
 				}
 			}
-			
 			inOrder.setProperty("balancetransaction", balancetransaction);
 			float net = (float) balance.getNet() / 100;
 			inOrder.setProperty("net", String.valueOf(net));
-			
 			inOrder.setProperty("stripechargeid", c.getId());
 			
 			//handle application fees
