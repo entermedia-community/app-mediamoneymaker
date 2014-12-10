@@ -734,6 +734,10 @@ public class CartModule extends BaseStoreModule {
 			order.setProperty("gateway",cart.get("gateway"));
 			cart.setProperty("gateway",null);
 		}
+		//check forcetestmode
+		if (cart.get("forcetestmode") !=null){
+			order.setProperty("forcetestmode",cart.get("forcetestmode"));
+		}
 
 		String applicationid = inPageRequest.findValue("applicationid");
 		order.setProperty("applicationid", applicationid);
