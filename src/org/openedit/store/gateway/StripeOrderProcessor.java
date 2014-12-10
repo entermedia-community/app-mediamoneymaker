@@ -313,6 +313,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		}
 		String chargeId = inOrder.get("stripechargeid");
 		//set application key
+		boolean forcetestmode = inOrder.getBoolean("forcetestmode");
 		Data setting = null;
 		if(inStore.isProductionMode()){
 			 setting = getSearcherManager().getData(inStore.getCatalogId(), "catalogsettings", "stripe_access_token");
@@ -323,7 +324,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			Stripe.apiKey = setting.get("value");
 		} else {
 			//check if an administrator has ordered test mode transaction
-			if(inStore.isProductionMode() && !inOrder.getCart().getBoolean("forcetestmode")){
+			if(inStore.isProductionMode() && !forcetestmode){
 				Stripe.apiKey = inStore.get("secretkey");//livesecretkey or secretkey
 			} else{
 				Stripe.apiKey = inStore.get("testsecretkey");
@@ -348,10 +349,11 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 				inRefund.setTransactionId(refund.getBalanceTransaction());
 				inRefund.setDate(new Date());
 				//calculate whether application fees should be handled
-				//may need to change this logic: should we adjust application fees whenever any refund is made?
-				if ( (totalrefunded + refundamount) == total ){
-					handleApplicationFees(chargeId,inRefund);
-				}
+				//need to fix this logic:
+				//handle application fees work only when we have one item on the cart 
+				//and when the store is not setup to handle profit shares
+				handleApplicationFees(chargeId,inRefund);
+				
 				//OLD!!!
 //				Charge refundedCharge = c.refund();//refunds the full amount
 //				if (refundedCharge.getRefunded()){
