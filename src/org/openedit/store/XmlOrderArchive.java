@@ -222,6 +222,10 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					entry.addAttribute("subtotal", refund.getSubTotal().toShortString());
 					entry.addAttribute("tax", refund.getTaxAmount().toShortString());
 					entry.addAttribute("total", refund.getTotalAmount().toShortString());
+					//include message in refund
+					if (refund.getMessage()!=null){
+						entry.addAttribute("message",refund.getMessage());
+					}
 				}
 				else
 				{
@@ -766,6 +770,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				refund.setSubTotal(new Money(entry.attributeValue("subtotal")));
 				refund.setTaxAmount(new Money(entry.attributeValue("tax")));
 				refund.setTotalAmount(new Money(entry.attributeValue("total")));
+				if (entry.attributeValue("message")!=null){
+					refund.setMessage(entry.attributeValue("message"));
+				}
 			}
 			else
 			{

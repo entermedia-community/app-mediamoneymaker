@@ -340,7 +340,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			} else {
 				Integer total = c.getAmount();
 				Integer totalrefunded = c.getAmountRefunded();
-				Integer refundamount = Integer.parseInt(inRefund.getTotalAmount().toShortString().replace(".",""));
+				Integer refundamount = Integer.parseInt(inRefund.getTotalAmount().toShortString().replace(".","").replace(",",""));
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put("amount", String.valueOf(refundamount));
 				com.stripe.model.Refund refund = c.getRefunds().create(params);
