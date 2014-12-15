@@ -405,6 +405,8 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 				} else {
 					inRefund.setMessage("Unable to refund all application fees, "+buf.toString().trim());
 				}
+			} else {
+				inRefund.setMessage("No application fees were found on this order");
 			}
 		}catch (Exception e){
 			log.error(e.getMessage(), e);
