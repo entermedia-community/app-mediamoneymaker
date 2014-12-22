@@ -19,7 +19,7 @@
   <bean id="FolderModule" class="org.openedit.store.modules.FolderModule">
   </bean>
   
-  <bean id="storeOrderSearcher" class="org.openedit.store.orders.OrderSearcher"  scope="singleton">
+  <bean id="storeOrderSearcher" class="org.openedit.store.orders.OrderSearcher"  >
   	  		<property name="rootDirectory"><ref bean="root"/></property>
   	  			<property name="moduleManager"><ref bean="moduleManager"/></property>
   	  		  	  	<property name="storeArchive"><ref bean="storeArchive" /></property>
@@ -27,7 +27,7 @@
   </bean>
   
   
-  <bean id="productSearcher" class="org.openedit.store.search.ProductLuceneSearcher" scope="singleton">
+  <bean id="productSearcher" class="org.openedit.store.search.ProductLuceneSearcher" >
   	<property name="webEventListener"><ref bean="storeEventHandler"/></property>
     <property name="rootDirectory"><ref bean="root"/></property>
     <property name="pageManager"><ref bean="pageManager" /></property>
@@ -55,7 +55,7 @@
   		<property name="scriptManager"><ref bean="scriptManager" /></property>
  </bean>
 
-  	<bean id="store" class="org.openedit.store.Store" scope="singleton">
+  	<bean id="store" class="org.openedit.store.Store" >
   		<property name="rootDirectory"><ref bean="root"/></property>
   		<property name="webEventListener"><ref bean="storeEventHandler"/></property>
   		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
@@ -75,24 +75,24 @@
  
 
 
-  <bean id="productArchive" class="org.openedit.store.xmldb.XmlProductArchive" scope="singleton">
+  <bean id="productArchive" class="org.openedit.store.xmldb.XmlProductArchive" >
   	<property name="pageManager"><ref bean="pageManager" /></property>
   	<property name="xmlUtil"><ref bean="xmlUtil"/></property>
 	<property name="storeArchive"><ref bean="storeArchive" /></property>
   </bean> 
 
-  <bean id="storeCategoryArchive" class="org.openedit.store.xmldb.XmlCategoryArchive" scope="singleton">
+  <bean id="storeCategoryArchive" class="org.openedit.store.xmldb.XmlCategoryArchive" >
   	<property name="pageManager"><ref bean="pageManager" /></property>
   	<property name="xmlUtil"><ref bean="xmlUtil"/></property>
   </bean> 
 
   <bean id="priceBasedShipping"
-	class="org.openedit.store.shipping.PriceBasedShippingMethod" scope="singleton"/>
+	class="org.openedit.store.shipping.PriceBasedShippingMethod" />
 
   <bean id="weightBasedShipping"
-	class="org.openedit.store.shipping.WeightBasedShippingMethod" scope="singleton"/>
+	class="org.openedit.store.shipping.WeightBasedShippingMethod" />
 	
-  <bean id="CatalogLinkLoader" class="org.openedit.store.links.XmlCatalogLinkLoader" scope="singleton">
+  <bean id="CatalogLinkLoader" class="org.openedit.store.links.XmlCatalogLinkLoader" >
 	<property name="xmlUtil"><ref bean="xmlUtil"/></property>
   </bean>
 
@@ -231,6 +231,19 @@
   
   </bean>	
   
+  <bean id="testingOrderProcessor" class="org.openedit.store.gateway.TestingOrderProcessor">
+    	<property name="pageManager">
+    		<ref bean="pageManager" />
+    	</property>
+    	<property name="userManager">
+    		<ref bean="userManager" />
+    	</property>
+    	<property name="searcherManager">
+    		<ref bean="searcherManager"/>
+    	</property>  
+  
+  </bean>	
+  
   
   <bean id="freshbooksManager" class="org.openedit.cart.freshbooks.FreshbooksManager">
     	<property name="searcherManager">
@@ -279,7 +292,7 @@
  
   
   <bean id="editLogSearcher" 
-		class="org.openedit.logger.LuceneLogSearcher" scope="singleton" >
+		class="org.openedit.logger.LuceneLogSearcher"  >
 		<property name="rootDirectory">
 			<bean class="java.io.File">
 				<constructor-arg><ref bean="root"/></constructor-arg>
@@ -302,7 +315,7 @@
   
  
    
-  <bean id="storeMediaManager" class="org.openedit.store.StoreMediaManager" scope="singleton">
+  <bean id="storeMediaManager" class="org.openedit.store.StoreMediaManager" >
     
     <property name="pageManager"><ref bean="pageManager" /></property>
   	<property name="moduleManager"><ref bean="moduleManager" /></property>
@@ -315,7 +328,7 @@
 
  
 
-	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	scope="singleton">
+	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -328,16 +341,21 @@
 	</bean>
 	
 	
-	<bean id="address" class="org.openedit.store.customer.Address" scope="singleton">
+	<bean id="address" class="org.openedit.store.customer.Address" >
 		
 	
 	</bean>
 	
   
-	
+	<bean id="fbSearcher" class="org.openedit.cart.fresshbooks.FreshbooksSearcher"	>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		
+	</bean>
 	
   
-	<bean id="beanstreamUtil" class="org.openedit.store.gateway.BeanstreamUtil"	scope="singleton">
+	<bean id="beanstreamUtil" class="org.openedit.store.gateway.BeanstreamUtil"	>
 		<property name="pageManager"><ref bean="pageManager" />
 		</property>
 		<property name="userManager"><ref bean="userManager" />
