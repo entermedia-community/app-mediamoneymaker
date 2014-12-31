@@ -455,6 +455,9 @@ public class OrderModule extends BaseModule
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
 		Shipment shipment = null;
 		String [] skus = inReq.getRequestParameters("sku");
+		if (skus == null){
+			skus = new String[]{};
+		}
 		for (String sku:skus)
 		{	
 			if (inReq.getRequestParameter(sku+"-shipment")==null ||
@@ -514,6 +517,9 @@ public class OrderModule extends BaseModule
 		
 		Shipment shipment = null;
 		String [] skus = inReq.getRequestParameters("sku");
+		if (skus == null){
+			skus = new String[]{};
+		}
 		for (String sku:skus)
 		{
 			if (inReq.getRequestParameter(sku+"-shipment-quantity") == null ||
