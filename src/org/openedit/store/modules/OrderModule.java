@@ -1152,6 +1152,7 @@ public class OrderModule extends BaseModule
 		Searcher historysearcher = searcherManager.getSearcher(catalogid, "detailedorderhistory");
 		SearchQuery query = historysearcher.createSearchQuery();
 		query.addMatches("orderid", order.getId());
+		query.addSortBy("orderdateDown");
 		query.addSortBy("id");
 		HitTracker hits = historysearcher.search(query);
 		inContext.putPageValue("orderhistory",hits);
