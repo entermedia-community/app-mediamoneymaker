@@ -655,105 +655,136 @@ public class OrderModule extends BaseModule
 		String ordernumber = inContext.getRequestParameter("ordernumber");
 		Store store = getStore(inContext);
 		Order order = (Order) store.getOrderSearcher().searchById(ordernumber);
-		if (order == null){
+		if (order == null)
+		{
 			return;
 		}
 		resetPendingRefundStates(order);
-		
 		Money subtotal = new Money("0");
 		Money shipping = new Money("0");
-		
+		Money taxrefund = new Money("0");
 		Money totaltaxes = new Money("0");
 		Money total = new Money("0");
+		String taxrefundtally = order.get("taxrefundtally");
 		
+		ArrayList<String[]> taxes = new ArrayList<String[]>();
 		String [] skus = inContext.getRequestParameters("sku");
-		if (skus == null){
-			skus = new String[]{};
-		}
-		for (String sku:skus)
+		if (skus != null)
 		{
-			//shipping-refund
-			if (inContext.getRequestParameter(sku+"-refund")==null ||
-					!inContext.getRequestParameter(sku+"-refund").equals("on") ||
-					inContext.getRequestParameter(sku+"-refund-quantity") == null)
+			for (String sku:skus)
 			{
-				continue;
-			}
-			
-			String quantity = inContext.getRequestParameter(sku+"-refund-quantity");
-			if (sku.equals("shipping"))
-			{
-				Money shippingcost = order.getTotalShipping();
-				Money shippingrefund = new Money(quantity);
-				if (shippingcost.doubleValue() < shippingrefund.doubleValue())
+				//shipping-refund
+				if (inContext.getRequestParameter(sku+"-refund")==null ||
+						!inContext.getRequestParameter(sku+"-refund").equals("on") ||
+						inContext.getRequestParameter(sku+"-refund-quantity") == null)
 				{
-					log.info("Shipping cost too large ("+shippingcost+"), skipping");
 					continue;
 				}
-				shipping = shippingrefund;
-			}
-			else
-			{
-				int intQuantity = Integer.parseInt(quantity);
-				CartItem cartItem = order.getItem(sku);
-				cartItem.getRefundState().setPendingQuantity(intQuantity);
-				cartItem.getRefundState().setRefundStatus(RefundState.REFUND_PENDING);
 				
-				Money price = cartItem.getYourPrice();
-				Money totalPrice = price.multiply(intQuantity);
-				cartItem.getRefundState().setPendingPrice(totalPrice);
-				
-				subtotal = subtotal.add(totalPrice);
-				
+				String quantity = inContext.getRequestParameter(sku+"-refund-quantity");
+				if (sku.equals("shipping"))
+				{
+					Money shippingcost = order.getTotalShipping();
+					Money shippingrefund = new Money(quantity);
+					if (shippingcost.doubleValue() < shippingrefund.doubleValue())
+					{
+						log.info("Shipping cost too large ("+shippingcost+"), skipping");
+						continue;
+					}
+					shipping = shippingrefund;
+				}
+				else if (sku.equals("tax")){
+					Money tax = order.getTax();
+					Money refund = new Money(quantity);
+					if (taxrefundtally != null && !taxrefundtally.isEmpty())
+					{
+						tax = tax.subtract(new Money(taxrefundtally));
+					}
+					int compare = tax.compareTo(refund);//1: tax > refund; 0: tax = refund; -1: tax < refund
+					if (compare < 0){
+						log.info("Tax refund is too large ("+refund+"), skipping");
+						continue;
+					}
+					taxrefund = refund;
+				}
+				else
+				{
+					int intQuantity = Integer.parseInt(quantity);
+					CartItem cartItem = order.getItem(sku);
+					cartItem.getRefundState().setPendingQuantity(intQuantity);
+					cartItem.getRefundState().setRefundStatus(RefundState.REFUND_PENDING);
+					
+					Money price = cartItem.getYourPrice();
+					Money totalPrice = price.multiply(intQuantity);
+					cartItem.getRefundState().setPendingPrice(totalPrice);
+					
+					subtotal = subtotal.add(totalPrice);
+				}
 			}
 		}
-		
-		total = total.add(subtotal);
-		ArrayList<String[]> taxes = new ArrayList<String[]>();
-		//list of taxes applied to order
-		@SuppressWarnings("unchecked")
-		Map<TaxRate,Money> taxMap = order.getTaxes();//map of TaxRate,Money
-		Iterator<TaxRate> keys = taxMap.keySet().iterator();
-		while(keys.hasNext())
+		if (taxrefund.isZero())
 		{
-			TaxRate taxRate = keys.next();
-			Fraction fraction = taxRate.getFraction();//actual tax rate, like 0.1300 for HST
-			Money tally = new Money(subtotal.toShortString());
-			if (!shipping.isZero() && taxRate.isApplyToShipping())
+			total = total.add(subtotal);
+			//only include tax calculations if tax has not already been refunded
+			if (taxrefundtally != null && !taxrefundtally.isEmpty())
 			{
-				tally = tally.add(shipping);
+				//list of taxes applied to order
+				@SuppressWarnings("unchecked")
+				Map<TaxRate,Money> taxMap = order.getTaxes();//map of TaxRate,Money
+				Iterator<TaxRate> keys = taxMap.keySet().iterator();
+				while(keys.hasNext())
+				{
+					TaxRate taxRate = keys.next();
+					Fraction fraction = taxRate.getFraction();//actual tax rate, like 0.1300 for HST
+					Money tally = new Money(subtotal.toShortString());
+					if (!shipping.isZero() && taxRate.isApplyToShipping())
+					{
+						tally = tally.add(shipping);
+					}
+					Money amount = tally.multiply(fraction);
+					totaltaxes = totaltaxes.add(amount);
+					String [] taxinfo =  {taxRate.getName(),amount.toString(),fraction.toString()};
+					taxes.add(taxinfo);
+					
+					total = total.add(amount);
+				}
 			}
-			Money amount = tally.multiply(fraction);
-			totaltaxes = totaltaxes.add(amount);
-			String [] taxinfo =  {taxRate.getName(),amount.toString(),fraction.toString()};
+			if(!shipping.isZero())
+			{
+				subtotal = subtotal.add(shipping);// add the shipping cost to the subtotal
+				total = total.add(shipping);//add the shipping cost to the total
+			}
+			//only check for discrepancies in tax calculations if tax has not already been refunded
+			if (taxrefundtally != null && !taxrefundtally.isEmpty())
+			{
+				//need to figure out if there are any discrepancies in tax calculation
+				//this occurs only with partial refunds
+				Money currenttotal = new Money("0");
+				List<Refund> refunds = order.getRefunds();
+				for(Refund refund:refunds){
+					currenttotal = currenttotal.add(refund.getTotalAmount());
+				}
+				Money ordertotal = order.getTotalPrice();
+				//say, if order is off by 1 cent
+				Money totalrefunds = currenttotal.add(total);
+				Money delta = ordertotal.subtract(totalrefunds);
+				if (!delta.isZero() && Math.abs(delta.doubleValue()) == 0.01){
+					if (delta.isNegative()){
+						totaltaxes = totaltaxes.subtract(new Money("0.01"));
+						total = total.subtract(new Money("0.01"));
+					} else {
+						totaltaxes = totaltaxes.add(new Money("0.01"));
+						total = total.add(new Money("0.01"));
+					}
+				}
+			}
+		} 
+		else
+		{
+			totaltaxes = taxrefund;
+			total = taxrefund;
+			String [] taxinfo =  {"Tax",totaltaxes.toString(),""};
 			taxes.add(taxinfo);
-			
-			total = total.add(amount);
-		}
-		if(!shipping.isZero())
-		{
-			subtotal = subtotal.add(shipping);// add the shipping cost to the subtotal
-			total = total.add(shipping);//add the shipping cost to the total
-		}
-		//need to figure out if there are any discrepancies in tax calculation
-		//this occurs only with partial refunds
-		Money currenttotal = new Money("0");
-		List<Refund> refunds = order.getRefunds();
-		for(Refund refund:refunds){
-			currenttotal = currenttotal.add(refund.getTotalAmount());
-		}
-		Money ordertotal = order.getTotalPrice();
-		//say, if order is off by 1 cent
-		Money totalrefunds = currenttotal.add(total);
-		Money delta = ordertotal.subtract(totalrefunds);
-		if (!delta.isZero() && Math.abs(delta.doubleValue()) == 0.01){
-			if (delta.isNegative()){
-				totaltaxes = totaltaxes.subtract(new Money("0.01"));
-				total = total.subtract(new Money("0.01"));
-			} else {
-				totaltaxes = totaltaxes.add(new Money("0.01"));
-				total = total.add(new Money("0.01"));
-			}
 		}
 		inContext.putPageValue("data",order);
 		inContext.putPageValue("order",order);
@@ -818,7 +849,6 @@ public class OrderModule extends BaseModule
 	}
 	
 	public void refundOrder(WebPageRequest inContext) {
-		
 		String ordernumber = inContext.getRequestParameter("ordernumber");
 		if (ordernumber == null)
 		{
@@ -909,19 +939,42 @@ public class OrderModule extends BaseModule
 			shippingrefund.setTotalPrice(shipping);
 			refund.getItems().add(shippingrefund);
 		}
+		//include specific tax refunds as well
+		if (subtotal.isZero() && tax.isZero() == false)
+		{
+			RefundItem taxrefund = new RefundItem();
+			taxrefund.setShipping(false);
+			taxrefund.setId("tax");
+			taxrefund.setQuantity(1);
+			taxrefund.setUnitPrice(tax);
+			taxrefund.setTotalPrice(tax);
+			refund.getItems().add(taxrefund);
+		}
 		
 		store.getOrderProcessor().refundOrder(inContext, store, order, refund);
 		
 		updateRefundStates(order,refund,false);
 		//update shipping total if successful
-		if (!shipping.isZero() && refund.isSuccess())
-		{
-			String current = order.get("shippingrefundtally");
-			if (current != null && !current.isEmpty())
+		if (refund.isSuccess()){
+			if (!shipping.isZero())
 			{
-				shipping = shipping.add(new Money(current));
+				String current = order.get("shippingrefundtally");
+				if (current != null && !current.isEmpty())
+				{
+					shipping = shipping.add(new Money(current));
+				}
+				order.setProperty("shippingrefundtally", shipping.toShortString());
 			}
-			order.setProperty("shippingrefundtally", shipping.toShortString());
+			else if (subtotal.isZero() && tax.isZero() == false)
+			{
+				//tax portion was refunded
+				String current = order.get("taxrefundtally");
+				if (current != null && !current.isEmpty())
+				{
+					tax = tax.add(new Money(current));
+				}
+				order.setProperty("taxrefundtally", tax.toShortString());
+			}
 		}
 		
 		order.getRefunds().add(refund);
