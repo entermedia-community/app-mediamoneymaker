@@ -726,7 +726,7 @@ public class OrderModule extends BaseModule
 		{
 			total = total.add(subtotal);
 			//only include tax calculations if tax has not already been refunded
-			if (taxrefundtally != null && !taxrefundtally.isEmpty())
+			if (taxrefundtally == null || taxrefundtally.isEmpty())
 			{
 				//list of taxes applied to order
 				@SuppressWarnings("unchecked")
@@ -755,7 +755,7 @@ public class OrderModule extends BaseModule
 				total = total.add(shipping);//add the shipping cost to the total
 			}
 			//only check for discrepancies in tax calculations if tax has not already been refunded
-			if (taxrefundtally != null && !taxrefundtally.isEmpty())
+			if (taxrefundtally == null || taxrefundtally.isEmpty())
 			{
 				//need to figure out if there are any discrepancies in tax calculation
 				//this occurs only with partial refunds
