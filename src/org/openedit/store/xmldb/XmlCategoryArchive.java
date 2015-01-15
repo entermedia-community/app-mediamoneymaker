@@ -240,7 +240,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	}
 
-	protected String listCatalogXml()
+	public String listCatalogXml()
 	{
 		return "/" + getCatalogId() +  "/categories/productcategories.xml";
 	}

@@ -231,18 +231,6 @@
   
   </bean>	
   
-  <bean id="testingOrderProcessor" class="org.openedit.store.gateway.TestingOrderProcessor">
-    	<property name="pageManager">
-    		<ref bean="pageManager" />
-    	</property>
-    	<property name="userManager">
-    		<ref bean="userManager" />
-    	</property>
-    	<property name="searcherManager">
-    		<ref bean="searcherManager"/>
-    	</property>  
-  
-  </bean>	
   
   
   <bean id="freshbooksManager" class="org.openedit.cart.freshbooks.FreshbooksManager">
