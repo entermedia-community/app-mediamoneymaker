@@ -124,6 +124,15 @@ public class BeanstreamOrderProcessor extends BaseOrderProcessor {
 			if (inOrder.get("gateway") == null){
 				inOrder.setProperty("gateway","beanstream");
 			}
+			//set cardtype if it hasn't already been set
+			if (inOrder.get("cardtype") == null){
+				if (inOrder.getPaymentMethod() instanceof CreditPaymentMethod){
+					CreditPaymentMethod method = (CreditPaymentMethod) inOrder.getPaymentMethod();
+					if (method.getCreditCardType() != null){
+						inOrder.setProperty("cardtype", method.getCreditCardType().getId());
+					}
+				}
+			}
 			
 			// See examples at http://www.jcommercesql.com/anet/
 			// load properties (e.g. IP address, username, password) for

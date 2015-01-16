@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +14,7 @@ import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
 import org.openedit.store.Coupon;
+import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.customer.Address;
@@ -32,7 +32,6 @@ import com.stripe.model.ApplicationFee;
 import com.stripe.model.ApplicationFeeCollection;
 import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
-import com.stripe.model.ChargeRefundCollection;
 import com.stripe.model.Fee;
 
 
@@ -147,6 +146,15 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		// to issue refunds
 		if (inOrder.get("gateway") == null){
 			inOrder.setProperty("gateway","stripe");
+		}
+		//set cardtype if it hasn't already been set
+		if (inOrder.get("cardtype") == null){
+			if (inOrder.getPaymentMethod() instanceof CreditPaymentMethod){
+				CreditPaymentMethod method = (CreditPaymentMethod) inOrder.getPaymentMethod();
+				if (method.getCreditCardType() != null){
+					inOrder.setProperty("cardtype", method.getCreditCardType().getId());
+				}
+			}
 		}
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 		Money totalprice = inOrder.getTotalPrice();
