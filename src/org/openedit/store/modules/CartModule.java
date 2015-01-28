@@ -719,6 +719,11 @@ public class CartModule extends BaseStoreModule {
 	public synchronized Order processOrder(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
 		Cart cart = getCart(inPageRequest);
+		if(cart.isEmpty()){
+			inPageRequest.putPageValue("orderState", "Your cart is empty");
+			return null;
+		}
+		
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		OrderState orderState = order.getOrderStatus();
 		cart.setCurrentOrder(order);

@@ -17,6 +17,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermedia.cache.CacheManager;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -29,7 +30,6 @@ import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
-import org.openedit.store.RelatedFile;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
@@ -60,24 +60,26 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 	protected boolean fieldUpdateExistingRecord = true;
 	protected IntCounter fieldIntCounter;
 	protected StoreArchive fieldStoreArchive;
+	protected CacheManager fieldCacheManager;
+
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager cacheTracker)
+	{
+		fieldCacheManager = cacheTracker;
+	}
+	
+	
 	
 	public XmlProductArchive()
 	{
 		log.debug("Created archive");
 	}
 
-	protected Map getProducts()
-	{
-		if (fieldProducts == null)
-		{
-			// HARD means even if the object goes out of scope we still keep it
-			// in the hashmap
-			// until the memory runs low then things get dumped randomly
-			fieldProducts = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.HARD);
-			// fieldProducts = new HashMap();
-		}
-		return fieldProducts;
-	}
+	
 
 	/*
 	 * (non-javadoc)
@@ -88,12 +90,13 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 	{
 		getPageManager().clearCache();
 		// fieldProducts = null;
-		getProducts().clear();
+
+		getCacheManager().clear(getCatalogId() + "products");
 	}
 
 	public void deleteProduct(Product inProduct) throws StoreException
 	{
-		getProducts().remove(inProduct.getSourcePath());
+		getCacheManager().remove(getCatalogId() + "products", inProduct.getId());
 		try
 		{
 			Page page = getPageManager().getPage(buildItemUrl(inProduct));
@@ -110,18 +113,22 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 	{
 		if (inProduct != null)
 		{
-			getProducts().remove(inProduct.getSourcePath());
+			getCacheManager().remove(getCatalogId() + "products", inProduct.getId());
 			getPageManager().clearCache(buildItemUrl(inProduct));
 			getPageManager().clearCache(buildXconfPath(inProduct));
 		}
 	}
 	public Product getProduct(String inId) throws StoreException
 	{
+			
 		if (inId == null)
 		{
 			return null;
 		}
-		
+		Product p = (Product) getCacheManager().get(getCatalogId() + "products", inId);
+		if(p != null){
+			return p;
+		}
 		String sourcePath = getStore().getProductSourcePathFinder().idToPath(inId);
 		if( sourcePath == null)
 		{
@@ -133,7 +140,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 	
 	public Product getProductBySourcePath(String inSourcePath) throws StoreException
 	{
-		Product item = (Product) getProducts().get(inSourcePath);
+		Product item = null;
 		if (item == null)
 		{
 			item = new Product();
@@ -143,12 +150,15 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 			log.debug("Loading " + url);
 			try
 			{
-				getProducts().put(inSourcePath, item);
+				
+				
 				if (!populateProduct(item, url))
 				{
-					getProducts().remove(inSourcePath);
 					log.debug("No Such product " + url);
 					return null;
+				} else{
+					getCacheManager().put(getCatalogId() + "products", item.getId(), item);
+
 				}
 			}
 			catch (OpenEditException e)
@@ -419,11 +429,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 			getXmlUtil().saveXml(rootElement, xconf.getOutputStream(), encoding);
 
 			String id = inProduct.getId();
-			if( getProducts().size() > 1000)
-			{
-				getProducts().clear();
-			}
-			getProducts().put(inProduct.getSourcePath(), inProduct);
+			getCacheManager().put(getCatalogId() + "products", id, inProduct);
 		}
 		catch (Exception ex)
 		{

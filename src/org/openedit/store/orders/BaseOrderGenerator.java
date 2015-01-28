@@ -31,6 +31,8 @@ public class BaseOrderGenerator implements OrderGenerator
 		order.setSubTotal(inCart.getSubTotal());
 		order.setTotalTax(inCart.getTotalTax());
 		order.setTaxes(inCart.getTaxes());
+		order.setProperty("taxexemptamount", inCart.getTaxExemptAmount().toShortString());
+
 		order.setTotalShipping(inCart.getTotalShipping());
 		order.setItems(new ArrayList( inCart.getItems() ) );
 		order.copyAdjustments(inCart);
