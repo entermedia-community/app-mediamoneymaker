@@ -786,7 +786,9 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 //			return searchMultiple(inId.split(":"));
 //		}
 		Product p = getStore().getProduct(inId);
-		
+		if(p != null){
+			return p;
+		}
 		String path = idToPath(inId);
 		if( path == null)
 		{

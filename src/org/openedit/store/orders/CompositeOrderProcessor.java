@@ -65,6 +65,7 @@ public class CompositeOrderProcessor implements OrderProcessor
 			}
 		}
 		finally{
+			
 			updateOrderProcessingState(inStore, inOrder, "complete");
 		}
 	}

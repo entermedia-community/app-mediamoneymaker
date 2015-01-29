@@ -3,10 +3,15 @@
  */
 package org.openedit.store.orders;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.openedit.money.Fraction;
+import org.openedit.money.Money;
 import org.openedit.store.BaseArchive;
+import org.openedit.store.CartItem;
+import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 
@@ -49,4 +54,51 @@ public abstract class BaseOrderProcessor extends BaseArchive implements OrderPro
 	{
 		
 	}
+	
+	
+	protected Money calculateFee(Store inStore, Order inOrder){
+		Money totalFee = new Money("0");
+		@SuppressWarnings("unchecked")
+		Iterator<CartItem> itr = inOrder.getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = itr.next();
+			Product product = item.getProduct();
+			if (product.isCoupon()){
+				continue;
+			}
+			String fee = product.get("partnershipfee");
+			String type = product.get("partnershipfeetype");
+			if (fee!=null && type!=null){
+				if (type.equals("flatrate")){
+					Money money = new Money(fee);
+					if (money.isNegative() || money.isZero()){
+						continue;
+					}
+					totalFee = totalFee.add(money);
+				} else if (type.equals("percentage")){
+					Money itemprice = item.getTotalPrice();
+					double rate = Double.parseDouble(fee);
+					if (rate < 0.0d || rate > 1.0d){
+						continue;
+					}
+					Money money = itemprice.multiply(new Fraction(rate));
+					totalFee = totalFee.add(money);
+				}
+			}
+		}
+		if (totalFee.isZero() && inStore.get("fee_structure")!=null){
+			String fee_structure = inStore.get("fee_structure");
+			double rate = Double.parseDouble(fee_structure);
+			totalFee = new Money(rate);
+			if (rate < 1.0d){
+				totalFee = inOrder.getSubTotal().multiply(new Fraction(rate));
+			}
+		}
+		inOrder.setProperty("profitshare", totalFee.toShortString());
+		return totalFee;
+	}
+
+	
+	
+	
 }
