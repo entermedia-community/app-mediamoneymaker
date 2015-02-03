@@ -23,6 +23,7 @@ log.add("3. REPLACE LIBS");
 var files = new FileUtils();
 files.deleteMatch( web + "/lib/app-mediamoney*.jar");
 files.deleteMatch( web + "/lib/poi*.jar");
+files.deleteMatch( web + "/lib/xmlbeans*.jar");
 files.deleteMatch( web + "/lib/jcsAnet*.jar");
 files.deleteMatch( web + "/lib/openedit-money*.jar");
 files.deleteMatch( web + "/lib/openecho*.jar");
@@ -34,6 +35,7 @@ files.deleteMatch( web + "/lib/store-reports*.jar");
 
 files.copyFileByMatch( tmp + "/WEB-INF/lib/app-mediamoney*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/poi*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/xmlbeans*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/jcsAnet*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/openecho*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/openedit-money*.jar", web + "/lib/");
