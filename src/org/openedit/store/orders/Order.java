@@ -180,6 +180,29 @@ public class Order extends BaseData implements Comparable
 	{
 		fieldShippingMethod = inShippingMethod;
 	}
+	
+	public Money getNonTaxableSubtotal(){
+		Money amount = new Money("0");
+		Iterator<?> itr = getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			if (item == null || item.getProduct() == null || Coupon.isCoupon(item)){
+				continue;
+			}
+			String taxexempt = item.getProduct().get("taxexemptamount");
+			if (taxexempt == null || taxexempt.isEmpty()){
+				continue;
+			}
+			amount = amount.add(new Money(taxexempt));
+		}
+		return amount;
+	}
+	
+	public Money getTaxableSubtotal(){
+		Money nontaxable = getNonTaxableSubtotal();
+		Money subtotal = getSubTotal();
+		return subtotal.subtract(nontaxable);
+	}
 
 	public Money getSubTotal()
 	{
@@ -830,6 +853,18 @@ public class Order extends BaseData implements Comparable
 	{
 		return calculateRefund("subtotal");
 	}
+	
+	public Money calculateRefundNontaxableSubtotal()
+	{
+		return calculateRefund("nontaxablesubtotal");
+	}
+	
+	public Money calculateRefundTaxableSubtotal()
+	{
+		Money nontaxable = calculateRefundNontaxableSubtotal();
+		Money subtotal = calculateRefundSubtotal();
+		return subtotal.subtract(nontaxable);
+	}
 
 	public Money calculateRefundShipping()
 	{
@@ -863,6 +898,23 @@ public class Order extends BaseData implements Comparable
 			else if (inType.equals("subtotal"))
 			{
 				amount = amount.add(refund.getSubTotal());
+			}
+			else if (inType.equals("nontaxablesubtotal"))
+			{
+				Iterator<RefundItem> itr = refund.getItems().iterator();
+				while(itr.hasNext()){
+					RefundItem item = itr.next();
+					String productid = item.getId();
+					CartItem cartitem = getCartItemByProductID(productid);
+					if (cartitem == null || cartitem.getProduct() == null ||  Coupon.isCoupon(cartitem)){
+						continue;
+					}
+					String taxexempt = cartitem.getProduct().get("taxexemptamount");
+					if (taxexempt != null && !taxexempt.isEmpty()){
+						Money money = new Money(taxexempt);
+						amount = amount.add(money);
+					}
+				}
 			}
 		}
 		return amount;
