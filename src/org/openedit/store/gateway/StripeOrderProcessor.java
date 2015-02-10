@@ -170,7 +170,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		if (setting!=null && setting.get("value")!=null){
 			String access_token = setting.get("value");
 			Money fee = calculateFee(inStore,inOrder);
-			if (fee.isNegative() || fee.isZero()){ //error state
+			if (fee.isNegative()){ //error state
 				log.info("Fee is negative for this order "+inOrder.toString()+", rejecting");
 				OrderState orderState = inStore.getOrderState(Order.REJECTED);
 				orderState.setDescription("Configuration error: fee structure is invalid");
