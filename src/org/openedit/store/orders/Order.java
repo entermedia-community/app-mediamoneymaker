@@ -359,15 +359,19 @@ public class Order extends BaseData implements Comparable
 			OrderState status = getOrderStatus();// authorized
 			if ("authorized".equals(status.getId()))
 			{
-				if (isFullyRefunded() && !hasPartialShipments())
+				if (isFullyRefunded() /*&& !hasPartialShipments()*/)
 				{
 					canCancel = true;
 				}
 			}
-			else
+			else if ("accepted".equals(status.getId()))
 			{
-				canCancel = !hasPartialShipments();
+				canCancel = true;
 			}
+//			else
+//			{
+//				canCancel = !hasPartialShipments();
+//			}
 		}
 		return canCancel;
 	}
