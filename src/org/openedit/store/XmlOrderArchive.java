@@ -407,6 +407,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 
 				paymentElem.addAttribute("expiration_date",
 						m.getExpirationDateString());
+				paymentElem.addAttribute("cardholder_name", m.getCardHolderName() == null ? "" : m.getCardHolderName());
+				
 				boolean bill = m.getBillMeLater();
 				paymentElem.addAttribute("bill_me_later", String.valueOf(bill));
 				paymentElem.addAttribute("note", m.getNote());
@@ -1072,11 +1074,8 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				paymentMethod.setExpirationYear(Integer.parseInt(yearStr));
 			}
 		}
-		String note = inPaymentMethodElem.attributeValue("note");
-		if (note == null) {
-			note = "";
-		}
-		paymentMethod.setNote(note);
+		paymentMethod.setCardHolderName(inPaymentMethodElem.attributeValue("cardholder_name") == null ? "" : inPaymentMethodElem.attributeValue("cardholder_name"));
+		paymentMethod.setNote(inPaymentMethodElem.attributeValue("note") == null ? "" : inPaymentMethodElem.attributeValue("note"));
 		String billmelater = inPaymentMethodElem
 				.attributeValue("bill_me_later");
 		paymentMethod.setBillMeLater("true".equals(billmelater));

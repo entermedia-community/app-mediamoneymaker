@@ -21,10 +21,19 @@ public class CreditPaymentMethod extends PaymentMethod
 	protected String fieldNote;
 	protected boolean fieldBillMeLater; //TODO: extract into a BillMeLaterPaymentMethod class
 	protected String fieldCardVerificationCode = "";
+	protected String fieldCardHolderName = "";
 
 	public CreditPaymentMethod()
 	{
 		super();
+	}
+
+	public String getCardHolderName() {
+		return fieldCardHolderName;
+	}
+
+	public void setCardHolderName(String inCardHolderName) {
+		fieldCardHolderName = inCardHolderName;
 	}
 
 	public String getCardNumber()
@@ -141,6 +150,7 @@ public class CreditPaymentMethod extends PaymentMethod
 	{
 		fieldNote = inNote;
 	}
+	
 	public String getMaskedCardNumber(){
 		if (getCardNumber()==null || getCardNumber().isEmpty())
 			return getCardNumber();

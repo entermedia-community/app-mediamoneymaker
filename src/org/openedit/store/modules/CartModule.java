@@ -666,12 +666,14 @@ public class CartModule extends BaseStoreModule {
 		if (expirationYear != null && !expirationYear.trim().equals("")) {
 			method.setExpirationYear(Integer.valueOf(expirationYear).intValue());
 		}
-
+		//cardholder name
+		String cardholdername = inReq.getRequestParameter("cardholdername");
+		method.setCardHolderName(cardholdername == null || cardholdername.isEmpty() ? "" : cardholdername);
+		//note
 		String note = inReq.getRequestParameter("ordernote");
 		if (note != null) {
 			method.setNote(note);
 		}
-
 		String bill = inReq.getRequestParameter("billmelater");
 		boolean billMeLater = (bill != null && bill.equalsIgnoreCase("true"));
 		method.setBillMeLater(billMeLater);
@@ -843,7 +845,7 @@ public class CartModule extends BaseStoreModule {
 			event.setUser(inPageRequest.getUser());
 			event.setProperty("orderid", order.getId());
 			
-			getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
+			//getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
 		}
 		return order;
 	}
