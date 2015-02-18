@@ -386,6 +386,12 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		inMetadata.put("firstname", inOrder.getCustomer().getFirstName());
 		inMetadata.put("lastname", inOrder.getCustomer().getLastName());
 		inMetadata.put("email", inOrder.getCustomer().getEmail());
+		if (inOrder.getPaymentMethod() instanceof CreditPaymentMethod){
+			String cardholdername = ((CreditPaymentMethod) inOrder.getPaymentMethod()).getCardHolderName();
+			if (cardholdername!=null && cardholdername.isEmpty()==false){
+				inMetadata.put("cardholdername",cardholdername);
+			}
+		}
 		Address billing = inOrder.getCustomer().getBillingAddress();
 		inMetadata.put("billingaddress",billing.toString());
 		Address shipping = inOrder.getCustomer().getShippingAddress();
