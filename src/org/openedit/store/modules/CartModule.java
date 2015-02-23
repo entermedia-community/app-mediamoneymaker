@@ -402,18 +402,26 @@ public class CartModule extends BaseStoreModule {
 		}
 		
 		Address taxRateAddress = null;
+		String taxrate = null;
 		if (customer.getShippingAddress()!=null && 
 				customer.getShippingAddress().getState()!=null &&
 				!customer.getShippingAddress().getState().isEmpty()){
 			taxRateAddress = customer.getShippingAddress();
+			taxrate = taxRateAddress.getState();
 			
 		} else if (customer.getBillingAddress()!=null && 
 				customer.getBillingAddress().getState()!=null &&
 				!customer.getBillingAddress().getState().isEmpty()){
 			taxRateAddress = customer.getBillingAddress();
+			taxrate = taxRateAddress.getState();
 		}
-		if (taxRateAddress!=null){
-			List<?> taxrates = cart.getStore().getTaxRatesFor(taxRateAddress.getState());
+		UserProfile profile = (UserProfile) cart.getStore().getSearcherManager().getSearcher(store.getCatalogId(), "userprofile").searchById(customer.getUser().getId());
+		if(profile != null){
+			taxrate = profile.get("state_province");
+		}
+				
+		if (taxrate != null){
+			List<?> taxrates = cart.getStore().getTaxRatesFor(taxrate);
 			customer.setTaxRates(taxrates);
 		}
 
