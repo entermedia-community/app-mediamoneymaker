@@ -93,8 +93,8 @@ public class InventoryItem
 	
 	public Money getTaxExemptAmount(){
 		Money money = new Money(0);
-		if (get("taxemptamount") != null){
-			String val = get("taxemptamount").trim();
+		if (get("taxexemptamount") != null){
+			String val = get("taxexemptamount").trim();
 			try{
 				double dollars = Double.parseDouble(val);
 				money = new Money(dollars);
