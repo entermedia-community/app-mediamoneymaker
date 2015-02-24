@@ -742,16 +742,22 @@ public class OrderModule extends BaseModule
 				{
 					TaxRate taxRate = keys.next();
 					Fraction fraction = taxRate.getFraction();//actual tax rate, like 0.1300 for HST
+					
 					Money tally = new Money(subtotal.toShortString());
+					
 					if (!shipping.isZero() && taxRate.isApplyToShipping())
 					{
 						tally = tally.add(shipping);
+					}
+					if(order.get("taxexemptamount") != null){
+						Money taxfree = new Money(order.get("taxexemptamount"));
+						tally = tally.subtract(taxfree);
 					}
 					Money amount = tally.multiply(fraction);
 					totaltaxes = totaltaxes.add(amount);
 					String [] taxinfo =  {taxRate.getName(),amount.toString(),fraction.toString()};
 					taxes.add(taxinfo);
-					
+				
 					total = total.add(amount);
 				}
 			}
