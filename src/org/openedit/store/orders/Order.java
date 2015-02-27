@@ -50,6 +50,21 @@ public class Order extends BaseData implements Comparable
 	protected Customer fieldCustomer;
 	protected List fieldItems;
 	protected List fieldAdjustments;
+	
+	public boolean hasProfitShare(){
+		Iterator<?> itr = this.getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			if (item.getProduct()!=null){
+				String fee = item.getProduct().get("partnershipfee");
+				if (fee!=null && !fee.isEmpty()){
+					log.info("hasprofitshare: found "+fee+" for order #"+this.getId());
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	protected TreeSet<String> fieldMissingItems;
 
@@ -554,6 +569,11 @@ public class Order extends BaseData implements Comparable
 		{
 			Money refundamount = calculateRefundTotal();
 			return refundamount.toShortString();
+		}
+		
+		if ("hasprofitshare".equals(inId))
+		{
+			return hasProfitShare()+"";
 		}
 
 		return (String) getProperties().get(inId);
