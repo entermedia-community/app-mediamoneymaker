@@ -417,7 +417,9 @@ public class CartModule extends BaseStoreModule {
 		}
 		UserProfile profile = (UserProfile) cart.getStore().getSearcherManager().getSearcher(store.getCatalogId(), "userprofile").searchById(customer.getUser().getId());
 		if(profile != null){
-			taxrate = profile.get("state_province");
+			if(profile.get("state_province") != null){
+				taxrate = profile.get("state_province");
+			}
 		}
 				
 		if (taxrate != null){
