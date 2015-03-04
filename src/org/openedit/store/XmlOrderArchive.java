@@ -536,6 +536,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				if (Boolean.parseBoolean(save))
 				{
 					String value = inItem.getProduct().get(detail.getId());
+					if (value == null){
+						value = detail.get("savewithorderdefault");
+					}
 					if (value!=null)
 					{
 						List<?> props = itemElem.elements("property");
