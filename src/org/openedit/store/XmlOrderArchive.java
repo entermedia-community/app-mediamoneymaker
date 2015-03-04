@@ -23,6 +23,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.email.PostMail;
 import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
@@ -509,8 +510,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			int quantity = inItem.getRefundState().getQuantity();
 			entry.addAttribute("quantity", String.valueOf(quantity));
 		}
-
-		if (inItem.getProperties() != null) {
+		//load defined properties
+        if (inItem.getProperties() != null) 
+        {
 			for (Iterator it = inItem.getProperties().keySet().iterator(); it
 					.hasNext();) {
 				String key = (String) it.next();
@@ -519,9 +521,46 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 					Element extraInfoElem = itemElem.addElement("property");
 					extraInfoElem.addAttribute("name", key);
 					extraInfoElem.setText(value);
+					log.info("adding name="+key+", value="+value);
 				}
 			}
 		}
+		//add those properties that should be saved with order
+		Collection<?> details = inStore.getProductSearcher().getPropertyDetails();
+        if (details!=null && details.size() > 0)
+        {
+			for (Iterator<?> iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				String save = detail.get("savewithorder");
+				if (Boolean.parseBoolean(save))
+				{
+					String value = inItem.getProduct().get(detail.getId());
+					if (value!=null)
+					{
+						List<?> props = itemElem.elements("property");
+						boolean isfound = false;
+						for(Object prop:props)
+						{
+							Element e = (Element) prop;
+							if (e.attributeValue("name")!=null && e.attributeValue("name").equals("product_"+detail.getId()))
+							{
+								//don't overwrite original value!
+								isfound = true;
+								break;
+							}
+						}
+						if (!isfound)
+						{
+							Element extraInfoElem = itemElem.addElement("property");
+							extraInfoElem.addAttribute("name", "product_"+detail.getId());
+							extraInfoElem.setText(value);
+							log.info("saving for first time: name=product_"+detail.getId()+", value="+value);
+						}
+					}
+				}
+			}
+        }
 	}
 
 	protected void appendAddress(Element inCustomerElem, Address inAddress) {
