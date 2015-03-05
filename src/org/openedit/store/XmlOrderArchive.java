@@ -557,6 +557,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						{
 							Element extraInfoElem = itemElem.addElement("property");
 							extraInfoElem.addAttribute("name", "product_"+detail.getId());
+							extraInfoElem.addAttribute("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 							extraInfoElem.setText(value);
 							log.info("saving for first time: name=product_"+detail.getId()+", value="+value);
 						}
