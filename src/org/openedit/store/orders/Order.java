@@ -930,6 +930,12 @@ public class Order extends BaseData implements Comparable
 					RefundItem item = itr.next();
 					String productid = item.getId();
 					CartItem cartitem = getCartItemByProductID(productid);
+					if (cartitem == null){
+						cartitem = getCartItemByProductSku(productid);
+					}
+					if (cartitem == null){
+						cartitem = getItem(productid);
+					}
 					if (cartitem == null || cartitem.getProduct() == null ||  Coupon.isCoupon(cartitem)){
 						continue;
 					}
