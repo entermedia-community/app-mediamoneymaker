@@ -854,8 +854,7 @@ public class CartModule extends BaseStoreModule {
 			event.setOperation("orders/orderprocessed");
 			event.setUser(inPageRequest.getUser());
 			event.setProperty("orderid", order.getId());
-			
-			//getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
+			getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
 		}
 		return order;
 	}
