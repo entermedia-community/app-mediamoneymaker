@@ -17,12 +17,12 @@ public class VotingModule extends BaseStoreModule  {
 		User user = inReq.getUser();
 		String oldvote = (String) user.getProperty("votedfor");
 		String id = inReq.getRequestParameter("productid");
-		processVote(store, user, id, changes);
+		processVote(inReq, store, user, id, changes);
 		
 	
 		}
 	
-	public void processVote(Store store, User user, String id, boolean allowVoteChange) throws StoreException {
+	public void processVote(WebPageRequest inReq, Store store, User user, String id, boolean allowVoteChange) throws StoreException {
 		
 		String oldvote = (String)user.getProperty("votedfor");
 		if(id.equals(oldvote)){
@@ -58,7 +58,7 @@ public class VotingModule extends BaseStoreModule  {
 				}
 			}
 			user.put("votedfor", id);
-			getUserManager().saveUser(user);
+			getUserManager(inReq).saveUser(user);
 		
 	}}
 }

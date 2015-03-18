@@ -278,10 +278,10 @@ public class CartModule extends BaseStoreModule {
 			if ((username != null || email != null) && password != null) {
 				User user = null;
 				if(username != null){
-					user = getUserManager().getUser(username);
+					user = getUserManager(inReq).getUser(username);
 				}
 				if(user == null && email != null){
-					user = getUserManager().getUserByEmail(email);
+					user = getUserManager(inReq).getUserByEmail(email);
 				}
 				if (user != null && cart.getCustomer().getUserName().equals(user.getUserName())) {
 					log.info("Already created " + username);
@@ -294,14 +294,14 @@ public class CartModule extends BaseStoreModule {
 		if ((username != null || email != null) && password != null) {
 			User user = null;
 			if(username != null){
-				user = getUserManager().getUser(username);
+				user = getUserManager(inReq).getUser(username);
 			}
 			if(user == null && email != null){
-				user = getUserManager().getUserByEmail(email);
+				user = getUserManager(inReq).getUserByEmail(email);
 			}
 			
 			if(user != null){
-				if (getUserManager().authenticate(user, password)) {
+				if (getUserManager(inReq).authenticate(user, password)) {
 					customer = store.getCustomerArchive().getCustomer(username);
 					inReq.putSessionValue("user", user);
 				} else{

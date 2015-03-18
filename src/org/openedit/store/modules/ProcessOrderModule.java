@@ -44,7 +44,7 @@ public class ProcessOrderModule extends BaseStoreModule {
 	String permission = inRequest.getRequestParameter("permission");
 	
 	for (int i = 0; i < users.length; i++) {
-		User user = getUserManager().getUser(users[i]);
+		User user = getUserManager(inRequest).getUser(users[i]);
 		//getSecurityArchive().addUserPermission(user, store, product,permission);
 	
 	}

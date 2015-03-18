@@ -309,7 +309,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		} else {
 			if (!inContext.getUserName().equals(prod.get("user"))
 					&& !inContext.getUser().isInGroup(
-							getUserManager().getGroup("administrators"))) {
+							getUserManager(inContext).getGroup("administrators"))) {
 				return;
 			}
 			if (path.charAt(path.length() - 1) != '/') {
