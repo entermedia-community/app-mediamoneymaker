@@ -7,6 +7,8 @@ import java.io.File;
 
 import org.openedit.store.customer.Customer;
 
+import com.openedit.users.UserManager;
+
 
 /**
  * @author cburkey
@@ -36,5 +38,7 @@ public interface CustomerArchive
 	 * @param inCustomerDirectory
 	 */
 	public abstract void setCustomersDirectory(File inCustomerDirectory);
+	public void setUserManager( UserManager inUserManager );
+
 
 }

@@ -51,6 +51,7 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
 import com.openedit.util.PathUtilities;
 import com.openedit.web.Crumb;
 
@@ -548,6 +549,8 @@ public class Store extends BaseData {
 		if( fieldCategoryArchive == null)
 		{
 			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(), "storeCategoryArchive");
+		
+			
 		}
 		return fieldCategoryArchive;
 	}
@@ -561,6 +564,8 @@ public class Store extends BaseData {
 		if( fieldCustomerArchive == null)
 		{
 			fieldCustomerArchive = (CustomerArchive)getModuleManager().getBean(getCatalogId(), "customerArchive");
+			UserManager um =  (UserManager) getModuleManager().getBean(getCatalogId(), "userManager");
+			fieldCustomerArchive.setUserManager(um);
 		}
 		return fieldCustomerArchive;
 	}
