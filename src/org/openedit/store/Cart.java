@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
-import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.customer.Address;

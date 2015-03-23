@@ -2,19 +2,9 @@ package org.openedit.store.orders;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-import org.apache.commons.collections.list.LazyList;
-import org.dom4j.Element;
 import org.openedit.data.BaseData;
-import org.openedit.money.Fraction;
 import org.openedit.money.Money;
-import org.openedit.store.CartItem;
-import org.openedit.store.ShippingMethod;
-import org.openedit.store.StoreException;
-import org.openedit.store.TaxRate;
 
 public class Refund extends BaseData{
 	

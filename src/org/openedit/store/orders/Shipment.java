@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.openedit.data.BaseData;
-import org.openedit.util.DateStorageUtil;
 
 public class Shipment extends BaseData{
 

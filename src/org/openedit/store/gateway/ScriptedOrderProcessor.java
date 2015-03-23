@@ -1,6 +1,5 @@
 package org.openedit.store.gateway;
 
-import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.orders.Order;

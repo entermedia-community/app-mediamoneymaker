@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.openedit.store.CartItem;
-import org.openedit.store.orders.Order;
 
 public class RecurringProfile {
 	

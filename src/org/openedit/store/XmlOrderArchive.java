@@ -215,6 +215,21 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			{
 				Refund refund = itr.next();
 				Element entry = orderElem.addElement("refund");
+				
+				for (Iterator i = refund.getProperties().keySet().iterator(); i
+						.hasNext();) {
+					String key = i.next().toString();
+					if (key == null || key.trim().length() == 0
+							|| inOrder.get(key) == null
+							|| inOrder.get(key).trim().length() == 0) {
+						continue;
+					}
+					Element newProperty = entry.addElement("property");
+					newProperty.addAttribute("name", key);
+					newProperty.setText(inOrder.get(key));
+				}
+				
+				
 				entry.addAttribute("date", DateStorageUtil.getStorageUtil().formatForStorage(refund.getDate()));
 				entry.addAttribute("success",String.valueOf(refund.isSuccess()));
 				if (refund.isSuccess())
@@ -811,6 +826,13 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(formated);
 			refund.setDate(date);
 			refund.setSuccess(entry.attributeValue("success").equals("true"));
+			for (Iterator rf = entry.elementIterator("property"); rf
+					.hasNext();) {
+				Element propElement = (Element) rf.next();
+				refund.setProperty(propElement.attributeValue("name"),
+						propElement.getText());
+			}
+			
 			if (refund.isSuccess())
 			{
 				refund.setTransactionId(entry.attributeValue("transactionid"));

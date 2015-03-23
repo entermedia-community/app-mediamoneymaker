@@ -3,18 +3,13 @@
  */
 package org.openedit.store.modules;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearchQueryArchive;
 import org.openedit.store.Cart;
-import org.openedit.store.Category;
-import org.openedit.store.SearchFilter;
 import org.openedit.store.Store;
 
 import com.openedit.OpenEditException;

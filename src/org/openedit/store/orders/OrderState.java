@@ -3,7 +3,6 @@
  */
 package org.openedit.store.orders;
 
-import java.util.ArrayList;
 
 /**
  * @author dbrown

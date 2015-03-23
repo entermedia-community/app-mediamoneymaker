@@ -2,40 +2,26 @@ package org.openedit.store.orders;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.store.FSDirectory;
 import org.openedit.Data;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
-import org.openedit.data.lucene.LuceneSearchQuery;
 import org.openedit.store.CartItem;
-import org.openedit.store.Category;
-import org.openedit.store.Option;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
-import org.openedit.store.customer.Customer;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.ListHitTracker;
-import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 
 public class OrderSearcher extends BaseLuceneSearcher {

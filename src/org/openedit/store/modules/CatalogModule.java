@@ -11,7 +11,6 @@ import org.openedit.links.Link;
 import org.openedit.links.LinkTree;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
-import org.openedit.store.SearchFilter;
 import org.openedit.store.Store;
 import org.openedit.store.links.CatalogTreeRenderer;
 import org.openedit.store.links.CatalogWebTreeModel;

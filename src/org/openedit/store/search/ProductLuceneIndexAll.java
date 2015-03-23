@@ -10,7 +10,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 
-import com.openedit.OpenEditException;
 import com.openedit.page.PageSettings;
 import com.openedit.users.User;
 

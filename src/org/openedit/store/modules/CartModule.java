@@ -27,8 +27,6 @@ import org.openedit.store.ProductAdder;
 import org.openedit.store.PurchaseOrderMethod;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.Store;
-import org.openedit.store.adjustments.Adjustment;
-import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
@@ -36,7 +34,6 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
-import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -44,6 +41,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.users.User;
+import com.openedit.users.UserSearcher;
 import com.openedit.util.PathUtilities;
 
 /**

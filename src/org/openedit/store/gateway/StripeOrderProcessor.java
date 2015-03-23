@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.SearcherManager;
-import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
 import org.openedit.store.Coupon;
@@ -305,6 +304,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 			if (c.getRefunded()){//this is true if fully refunded
 				inRefund.setSuccess(false);
 				inRefund.setMessage("Order has already been refunded");
+
 				inRefund.setDate(new Date());
 			} else {
 				Integer total = c.getAmount();
@@ -317,6 +317,8 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 				params.put("amount", String.valueOf(refundamount));
 				com.stripe.model.Refund refund = c.getRefunds().create(params);
 				inRefund.setSuccess(true);
+				inRefund.setProperty("refundedby" , inContext.getUserName());
+
 				inRefund.setAuthorizationCode(refund.getId());
 				inRefund.setTransactionId(refund.getBalanceTransaction());
 				inRefund.setDate(new Date());

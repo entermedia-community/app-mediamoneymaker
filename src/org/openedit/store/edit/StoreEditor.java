@@ -3,7 +3,6 @@
  */
 package org.openedit.store.edit;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.money.Money;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;

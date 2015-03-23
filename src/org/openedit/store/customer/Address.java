@@ -5,8 +5,6 @@ package org.openedit.store.customer;
 
 import org.openedit.xml.ElementData;
 
-import com.openedit.users.PropertyContainer;
-
 /**
  * @author dbrown
  *

@@ -3,32 +3,22 @@
  */
 package org.openedit.cart.freshbooks;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.store.CartItem;
-import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
 import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.util.XmlUtil;
 

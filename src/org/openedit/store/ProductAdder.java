@@ -16,10 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
-import org.openedit.store.adjustments.Adjustment;
-import org.openedit.store.adjustments.CouponAdjustment;
-import org.openedit.store.adjustments.DiscountAdjustment;
-import org.openedit.store.adjustments.SaleAdjustment;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;

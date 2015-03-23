@@ -1,7 +1,6 @@
 package org.openedit.store.adjustments;
 
 import org.apache.commons.logging.Log;
-
 import org.apache.commons.logging.LogFactory;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;

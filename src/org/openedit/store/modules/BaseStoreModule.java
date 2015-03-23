@@ -4,7 +4,6 @@
 package org.openedit.store.modules;
 
 import org.openedit.Data;
-import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.modules.BaseMediaModule;
 import org.openedit.logger.LuceneLogSearcher;
 import org.openedit.store.Cart;
@@ -14,7 +13,6 @@ import org.openedit.store.StoreArchive;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.modules.BaseModule;
 import com.openedit.util.PathUtilities;
 
 public class BaseStoreModule extends BaseMediaModule

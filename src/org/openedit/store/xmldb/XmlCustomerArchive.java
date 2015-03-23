@@ -12,11 +12,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.store.CustomerArchive;
 import org.openedit.store.StoreException;
 import org.openedit.store.customer.Customer;
-import org.openedit.users.UserSearcher;
 
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.UserManagerException;
+import com.openedit.users.UserSearcher;
 
 /**
  * @author cburkey
