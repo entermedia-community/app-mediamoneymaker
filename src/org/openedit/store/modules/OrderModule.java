@@ -1000,7 +1000,8 @@ public class OrderModule extends BaseModule
 		event.setProperty("applicationid", inContext.findValue("applicationid"));
 		event.setOperation("orderhistory/appendorderhistory");
 		event.setProperty("orderid", order.getId());
-		event.setProperty("type","automatic");
+		event.setProperty("userid",inContext.getUser()==null ? "" : inContext.getUser().getId());
+		event.setProperty("type","userinput");
 		event.setProperty("state","itemsrefunded");
 		event.setProperty("refundid",refund.isSuccess() ? refund.getTransactionId() : "");
 		archive.getMediaEventHandler().eventFired(event);
