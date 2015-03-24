@@ -34,6 +34,7 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -41,7 +42,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.users.User;
-import com.openedit.users.UserSearcher;
 import com.openedit.util.PathUtilities;
 
 /**
