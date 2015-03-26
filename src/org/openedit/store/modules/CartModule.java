@@ -42,6 +42,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
 import com.openedit.util.PathUtilities;
 
 /**
@@ -50,7 +51,7 @@ import com.openedit.util.PathUtilities;
  */
 public class CartModule extends BaseStoreModule {
 	protected List fieldListConverters;
-
+	
 	private static final Log log = LogFactory.getLog(CartModule.class);
 
 	public CartModule() {
@@ -276,10 +277,10 @@ public class CartModule extends BaseStoreModule {
 			if ((username != null || email != null) && password != null) {
 				User user = null;
 				if(username != null){
-					user = getUserManager(inReq).getUser(username);
+					user = store.getUserManager().getUser(username);
 				}
 				if(user == null && email != null){
-					user = getUserManager(inReq).getUserByEmail(email);
+					user = store.getUserManager().getUserByEmail(email);
 				}
 				if (user != null && cart.getCustomer().getUserName().equals(user.getUserName())) {
 					log.info("Already created " + username);
