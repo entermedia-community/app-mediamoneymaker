@@ -469,6 +469,10 @@ public class CartModule extends BaseStoreModule {
 				.setCountry(getAddressValue(inPageRequest, inPrefix, "country"));
 		inAddress
 				.setZipCode(getAddressValue(inPageRequest, inPrefix, "zipCode"));
+		String desc = getAddressValue(inPageRequest, inPrefix, "description");
+		if (desc!=null){
+			inAddress.setDescription(desc);
+		}
 	}
 
 	private String getAddressValue(WebPageRequest inPageRequest,

@@ -102,7 +102,7 @@ public class VirtualCreditOrderProcessor extends BaseOrderProcessor {
 			return;//no op
 		}
 		String userid = customer.getUser().getId();
-		Searcher searcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "userprofile");
+		Searcher searcher = archive.getSearcher("userprofile");
 		Data userprofile = (Data) searcher.searchById(userid);
 		Money balance = getMoney(userprofile.get(PROCESSOR_ID));
 		if (balance.isZero() || balance.isNegative()){
