@@ -10,6 +10,8 @@
 
 
   <bean id="CartModule" class="org.openedit.store.modules.CartModule">
+    	  			<property name="userManager"><ref bean="userManager"/></property>
+  
   </bean>
   
   <bean id="StoreSearchModule" class="org.openedit.store.modules.StoreSearchModule">

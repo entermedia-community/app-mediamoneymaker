@@ -51,7 +51,16 @@ import com.openedit.util.PathUtilities;
  */
 public class CartModule extends BaseStoreModule {
 	protected List fieldListConverters;
+	protected UserManager fieldUserManager;
 	
+	public UserManager getUserManager() {
+		return fieldUserManager;
+	}
+
+	public void setUserManager(UserManager inUserManager) {
+		fieldUserManager = inUserManager;
+	}
+
 	private static final Log log = LogFactory.getLog(CartModule.class);
 
 	public CartModule() {
@@ -293,10 +302,10 @@ public class CartModule extends BaseStoreModule {
 		if ((username != null || email != null) && password != null) {
 			User user = null;
 			if(username != null){
-				user = getUserManager(inReq).getUser(username);
+				user = getUserManager().getUser(username);
 			}
 			if(user == null && email != null){
-				user = getUserManager(inReq).getUserByEmail(email);
+				user = getUserManager().getUserByEmail(email);
 			}
 			
 			if(user != null){
