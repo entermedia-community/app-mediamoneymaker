@@ -113,6 +113,7 @@
  	<property name="moduleManager"><ref bean="moduleManager"/></property>
  	<property name="orderProcessors">
 		<list>
+			<value>virtualcreditOrderProcessor</value>
 			<value>stripeOrderProcessor</value>	
 		    <value>monerisOrderProcessor</value>
 		    <value>directPaymentProcessor</value>
@@ -173,8 +174,16 @@
 
   <bean id="authorizeNetOrderProcessor" class="org.openedit.store.gateway.AuthorizeNetOrderProcessor">
   </bean>
+  
+  <bean id="virtualCreditAccount" class="org.openedit.cart.virtualcredit.VirtualCreditAccount">
+  </bean>	
 
 
+  <bean id="virtualcreditOrderProcessor" class="org.openedit.cart.virtualcredit.VirtualCreditOrderProcessor">
+  	<property name="virtualCreditAccount">
+    		<ref bean="virtualCreditAccount" />
+    	</property>
+  </bean>	
 
 
 
