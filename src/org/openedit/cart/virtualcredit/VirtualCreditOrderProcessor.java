@@ -141,9 +141,9 @@ public class VirtualCreditOrderProcessor extends BaseOrderProcessor {
 			return;//no op
 		}
 		Money value = getIncrementValue(inRefund);
-		if (value.isNegative()){
+		if (value.isNegative() || value.isZero()){
 			inRefund.setSuccess(false);
-			inRefund.setMessage("Unable to increment credit");
+			inRefund.setMessage("Unable to update credit balance");
 			inRefund.setDate(new Date());
 			return;
 		}
