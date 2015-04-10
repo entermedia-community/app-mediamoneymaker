@@ -596,11 +596,14 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			}
 			Product product = inItem.getProduct();
     		InventoryItem inventory = product.getInventoryItemBySku(sku);
-    		int stock = inventory.getQuantityInStock();
-			Element instock = itemElem.addElement("property");
-			instock.addAttribute("name", "instock");
-			instock.setText(String.valueOf(stock));
-			log.info("saving the remaining stock for \""+sku+"\", #"+stock);
+    		if (inventory!=null)
+    		{
+    			int stock = inventory.getQuantityInStock();
+				Element instock = itemElem.addElement("property");
+				instock.addAttribute("name", "instock");
+				instock.setText(String.valueOf(stock));
+				log.info("saving the remaining stock for \""+sku+"\", #"+stock);
+    		}
         }
 	}
 
