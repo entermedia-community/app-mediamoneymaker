@@ -582,6 +582,26 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				}
 			}
         }
+        if (Boolean.parseBoolean(inStore.get("saveinstock")))
+        {
+        	String sku = inItem.getSku();
+        	List<?> props = itemElem.elements("property");
+			for(Object prop:props)
+			{
+				Element e = (Element) prop;
+				if (e.attributeValue("name")!=null && e.attributeValue("name").equals("instock"))
+				{
+					return;
+				}
+			}
+			Product product = inItem.getProduct();
+    		InventoryItem inventory = product.getInventoryItemBySku(sku);
+    		int stock = inventory.getQuantityInStock();
+			Element instock = itemElem.addElement("property");
+			instock.addAttribute("name", "instock");
+			instock.setText(String.valueOf(stock));
+			log.info("saving the remaining stock for \""+sku+"\", #"+stock);
+        }
 	}
 
 	protected void appendAddress(Element inCustomerElem, Address inAddress) {
