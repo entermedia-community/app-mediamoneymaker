@@ -602,6 +602,9 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 				Element instock = itemElem.addElement("property");
 				instock.addAttribute("name", "instock");
 				instock.setText(String.valueOf(stock));
+				Element timestamp = itemElem.addElement("property");
+				timestamp.addAttribute("name", "instock_timestamp");
+				timestamp.setText(DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				log.info("saving the remaining stock for \""+sku+"\", #"+stock);
     		}
         }
