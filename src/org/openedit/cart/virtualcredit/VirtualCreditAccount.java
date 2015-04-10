@@ -71,7 +71,7 @@ public class VirtualCreditAccount {
 			log.info("cannot decrement: insufficient funds (no overdraft)");
 			return false;
 		}
-		else if (!overdraft.isNegative()){
+		if (!overdraft.isNegative()){
 			overdraft = overdraft.multiply(-1.0d);
 		}
 		int compare = newvalue.compareTo(overdraft);

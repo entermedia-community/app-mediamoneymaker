@@ -774,7 +774,9 @@ public class OrderModule extends BaseModule
 				Money currenttotal = new Money("0");
 				List<Refund> refunds = order.getRefunds();
 				for(Refund refund:refunds){
-					currenttotal = currenttotal.add(refund.getTotalAmount());
+					if (refund.getTotalAmount()!=null){
+						currenttotal = currenttotal.add(refund.getTotalAmount());
+					}
 				}
 				Money ordertotal = order.getTotalPrice();
 				//say, if order is off by 1 cent

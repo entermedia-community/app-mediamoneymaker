@@ -253,6 +253,10 @@ public class CartModule extends BaseStoreModule {
 	public void createCustomer(WebPageRequest inReq) throws Exception {
 		Store store = getStore(inReq);
 		Cart cart = getCart(inReq);
+		if (cart.getCustomer() != null && cart.getCustomer().getUser()!=null){
+			log.info("customer \""+cart.getCustomer().getUser()+"\" already present on cart, aborting");
+			return;
+		}
 		
 		//page could have username, email, password + first/last names
 		String username = inReq.getRequestParameter("userName");
