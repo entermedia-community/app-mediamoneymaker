@@ -50,6 +50,7 @@ public class Order extends BaseData implements Comparable
 	protected Customer fieldCustomer;
 	protected List fieldItems;
 	protected List fieldAdjustments;
+	protected String fieldId;
 	
 	public boolean hasProfitShare(){
 		Iterator<?> itr = this.getItems().iterator();
@@ -292,8 +293,7 @@ public class Order extends BaseData implements Comparable
 	 */
 	public String getId()
 	{
-		String name = get("id");
-		return name;
+		return fieldId;
 	}
 
 	public String getOrderNumber()
@@ -310,7 +310,7 @@ public class Order extends BaseData implements Comparable
 	 */
 	public void setId(String inId)
 	{
-		setProperty("id", inId);
+		fieldId = inId;
 	}
 
 	/**
