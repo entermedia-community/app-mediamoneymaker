@@ -260,7 +260,7 @@ public class Order extends BaseData implements Comparable
 	 */
 	public Order(String inId, Date inDate)
 	{
-		fieldId = inId;
+		setId(inId);
 		fieldDate = inDate;
 	}
 
@@ -292,7 +292,8 @@ public class Order extends BaseData implements Comparable
 	 */
 	public String getId()
 	{
-		return fieldId;
+		String name = get("id");
+		return name;
 	}
 
 	public String getOrderNumber()
@@ -309,7 +310,7 @@ public class Order extends BaseData implements Comparable
 	 */
 	public void setId(String inId)
 	{
-		fieldId = inId;
+		setProperty("id", inId);
 	}
 
 	/**
