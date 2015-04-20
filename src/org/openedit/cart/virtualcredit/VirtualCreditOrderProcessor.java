@@ -74,7 +74,7 @@ public class VirtualCreditOrderProcessor extends BaseOrderProcessor {
 	 * @return
 	 */
 	protected Money getDecrementValue(Order inOrder){
-		return inOrder.getSubTotal();// NOT SURE ABOUT THIS: maybe it should be total???
+		return inOrder.getTotalPrice();//when we decrement, we get the total
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class VirtualCreditOrderProcessor extends BaseOrderProcessor {
 	 * @return
 	 */
 	protected Money getIncrementValue(Refund inRefund){
-		return inRefund.getSubTotal();// again, not sure which one to use
+		return inRefund.getTotalAmount();//when we increment, we get the refund total
 	}
 	
 	@Override
