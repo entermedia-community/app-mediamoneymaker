@@ -272,7 +272,7 @@ public class CartTest extends StoreTestCase {
 		context.putSessionValue(store.getCatalogId() + "cart", cart);
 		// test that inventory item's in stock quantity is decreased by cart
 		// item's quantity
-		int quantityInStock = firstItem.getInventoryItem().getQuantityInStock();
+		double quantityInStock = firstItem.getInventoryItem().getQuantityInStock();
 
 		Order order = cartModule.processOrder(context);
 		assertTrue(order.getOrderStatus().isOk());

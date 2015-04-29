@@ -559,6 +559,10 @@ public class Product extends BaseData implements Data
 		{
 			setName(inValue);
 		}
+		else if( "customprice".equals(inKey))
+		{
+			setCustomPrice(Boolean.parseBoolean(inValue));
+		}
 		else if( "sourcepath".equals(inKey))
 		{
 			setSourcePath(inValue);

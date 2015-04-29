@@ -629,16 +629,16 @@ public class Order extends BaseData implements Comparable
 		fieldShipments = inShipments;
 	}
 
-	public int getQuantityAvailableForShipment(CartItem cartItem)
+	public double getQuantityAvailableForShipment(CartItem cartItem)
 	{
 		if (cartItem.getProduct() != null && cartItem.getProduct().isCoupon())
 		{
 			return 0;
 		}
-		int quantity = cartItem.getQuantity();
-		int quantityShipped = getQuantityShipped(cartItem);
-		int quantityRefunded = getQuantityRefunded(cartItem);
-		int quantityToBeShipped = quantity - quantityRefunded;
+		double quantity = cartItem.getQuantity();
+		double quantityShipped = getQuantityShipped(cartItem);
+		double quantityRefunded = getQuantityRefunded(cartItem);
+		double quantityToBeShipped = quantity - quantityRefunded;
 		return quantityToBeShipped - quantityShipped;
 	}
 
@@ -648,10 +648,10 @@ public class Order extends BaseData implements Comparable
 		{
 			return true;
 		}
-		int quantity = cartItem.getQuantity();
-		int quantityShipped = getQuantityShipped(cartItem);
-		int quantityRefunded = getQuantityRefunded(cartItem);
-		int quantityToBeShipped = quantity - quantityRefunded;
+		double quantity = cartItem.getQuantity();
+		double quantityShipped = getQuantityShipped(cartItem);
+		double quantityRefunded = getQuantityRefunded(cartItem);
+		double quantityToBeShipped = quantity - quantityRefunded;
 		// log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
 		// This assumes that refunds can only occur before a shipment is sent
 		return (quantityToBeShipped == quantityShipped);

@@ -77,7 +77,7 @@ public class ProductAdder
 				}
 				continue;
 			}
-			int quantity = 0;
+			double quantity = 0;
 			String quantityStr = (String) params.get("quantity" + counter);
 			if(i == 0)
 			{
@@ -87,13 +87,8 @@ public class ProductAdder
 			// Quantity
 			if (quantityStr != null && !quantityStr.equals("quantity") && quantityStr.length() != 0)
 			{
-				if (!quantityStr.contains(".")) {
-					quantity = Integer.parseInt(quantityStr);
-					quantityspecified = true;
-				} else {
-					String[] arr = quantityStr.split("\\.");
-					quantity = Integer.parseInt(arr[0]);
-				}
+				quantity = Double.parseDouble(quantityStr);
+				quantityspecified = true;
 			}
 			else if (quantityStr != null && quantityStr.length() == 0)
 			{
@@ -169,7 +164,7 @@ public class ProductAdder
 				}
 			}
 			cartItem.setInventoryItem(inventory);
-			int oldquantity = cartItem.getQuantity();
+			double oldquantity = cartItem.getQuantity();
 			if (quantityspecified && inReload)
 			{
 				cartItem.setQuantity(quantity);

@@ -1021,7 +1021,7 @@ public class CartModule extends BaseStoreModule {
 				if(product != null){
 					CartItem cartitem = new CartItem();
 					cartitem.setProduct(product);
-					cartitem.setQuantity(Integer.parseInt(item.get("quantity")));
+					cartitem.setQuantity(Double.parseDouble(item.get("quantity")));
 					cart.addItem(cartitem);
 				}
 			}

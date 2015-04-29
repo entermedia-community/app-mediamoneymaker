@@ -598,7 +598,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
     		InventoryItem inventory = product.getInventoryItemBySku(sku);
     		if (inventory!=null)
     		{
-    			int stock = inventory.getQuantityInStock();
+    			double stock = inventory.getQuantityInStock();
 				Element instock = itemElem.addElement("property");
 				instock.addAttribute("name", "instock");
 				instock.setText(String.valueOf(stock));
@@ -1050,7 +1050,7 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			throws StoreException {
 		CartItem item = new CartItem();
 		// item.setSku(inItemElem.attributeValue("sku"));
-		item.setQuantity(Integer.parseInt(inItemElem.attributeValue("quantity")));
+		item.setQuantity(Double.parseDouble(inItemElem.attributeValue("quantity")));
 		item.setYourPrice(new Money(inItemElem.attributeValue("price")));
 		item.setWholesalePrice(inItemElem.attributeValue("wholesaleprice")==null ? null : new Money(inItemElem.attributeValue("wholesaleprice")));
 		item.setShippingPrefix(inItemElem.attributeValue("shipto"));

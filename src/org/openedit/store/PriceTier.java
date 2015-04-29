@@ -11,14 +11,14 @@ import org.openedit.money.Money;
  */
 public class PriceTier
 {
-	protected int fieldThresholdQuantity;
+	protected double fieldThresholdQuantity;
 	protected Price fieldPrice;
 	
-	public int getThresholdQuantity()
+	public double getThresholdQuantity()
 	{
 		return fieldThresholdQuantity;
 	}
-	public void setThresholdQuantity( int thresholdQuantity )
+	public void setThresholdQuantity( double thresholdQuantity )
 	{
 		fieldThresholdQuantity = thresholdQuantity;
 	}
@@ -64,15 +64,6 @@ public class PriceTier
 		}
 	}
 
-	public int hashCode()
-	{
-		int code = getThresholdQuantity() << 16;
-		if ( getPrice() != null )
-		{
-			code ^= getPrice().hashCode();
-		}
-		return code;
-	}
 	
 	public PriceTier copy()
 	{

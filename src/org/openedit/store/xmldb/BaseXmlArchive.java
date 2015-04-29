@@ -139,7 +139,7 @@ public class BaseXmlArchive extends BaseArchive
 		for (Iterator iter = prices.iterator(); iter.hasNext();)
 		{
 			Configuration priceConfig = (Configuration) iter.next();
-			int quantity = Integer.valueOf(priceConfig.getAttribute("quantity")).intValue();
+			double quantity = Double.valueOf(priceConfig.getAttribute("quantity")).doubleValue();
 
 			Price price = new Price();
 			String inRegion = priceConfig.getAttribute("region"); //Not used anyplace

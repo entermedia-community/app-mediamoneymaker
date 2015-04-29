@@ -25,7 +25,7 @@ import org.openedit.money.Money;
  */
 public class InventoryItem
 {
-	protected int fieldQuantityInStock;
+	protected double fieldQuantityInStock;
 	protected Map fieldProperties;
 	protected Set fieldOptions;
 	protected String fieldSku;
@@ -73,7 +73,7 @@ public class InventoryItem
 	{
 		return getYourPriceByQuantity(1);
 	}
-	public Money getYourPriceByQuantity(int i)
+	public Money getYourPriceByQuantity(double i)
 	{
 		PriceSupport sup =  getPriceSupport();
 		if ( sup == null )
@@ -103,7 +103,7 @@ public class InventoryItem
 		return money;
 	}
 	
-	public Money getTaxExemptAmountByQuantity(int inQuantity){
+	public Money getTaxExemptAmountByQuantity(double inQuantity){
 		Money amount = getTaxExemptAmount();
 		if (amount.isZero()){
 			return amount;
@@ -116,7 +116,7 @@ public class InventoryItem
 		return price;
 	}
 	
-	public Money getYourPriceTaxableByQuantity(int inQuantity){
+	public Money getYourPriceTaxableByQuantity(double inQuantity){
 		Money price = getYourPriceByQuantity(inQuantity);
 		Money taxexempt = getTaxExemptAmountByQuantity(inQuantity);
 		if (price == null || taxexempt.isZero()){
@@ -126,7 +126,7 @@ public class InventoryItem
 		return price;
 	}
 	
-	public Money getWholesalePriceByQuantity(int i)
+	public Money getWholesalePriceByQuantity(double i)
 	{
 		PriceSupport sup =  getPriceSupport();
 		if ( sup == null && getProduct()!=null)
@@ -140,12 +140,12 @@ public class InventoryItem
 		return sup.getWholesalePriceByQuantity( i );
 	}
 	
-	public int getQuantityInStock()
+	public double getQuantityInStock()
 	{
 		return fieldQuantityInStock;
 	}
 
-	public void setQuantityInStock(int inQuantityInStock)
+	public void setQuantityInStock(double inQuantityInStock)
 	{
 		fieldQuantityInStock = inQuantityInStock;
 	}
@@ -160,7 +160,7 @@ public class InventoryItem
 		fieldQuantityInStock = fieldQuantityInStock + inIncrease;
 	}
 	
-	public void decreaseQuantityInStock(int inDecrease)
+	public void decreaseQuantityInStock(double inDecrease)
 	{
 		if ( fieldQuantityInStock == -1 || fieldQuantityInStock == 0)
 		{

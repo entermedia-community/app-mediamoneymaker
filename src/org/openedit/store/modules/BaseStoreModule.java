@@ -94,7 +94,7 @@ public class BaseStoreModule extends BaseMediaModule
 			}
 		}
 		
-		
+		inReq.putPageValue("product", product);
 		
 		return product;
 	}
