@@ -850,11 +850,9 @@ public class CartModule extends BaseStoreModule {
 					store.getCatalogId(), "address");
 			Address target = cart.getShippingAddress();
 			target.setId(addressSearcher.nextId());
-			if (inPageRequest.getUserProfile() != null){
-				target.setProperty("userprofile", inPageRequest.getUserProfile().getId());
-				if(inPageRequest.getUserProfile().get("dealer") != null){
-					target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
-				}
+			target.setProperty("userprofile", cart.getCustomer().getId());
+			if(inPageRequest.getUserProfile().get("dealer") != null){
+				target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
 			}
 			addressSearcher.saveData(target, inPageRequest.getUser());
 
@@ -872,8 +870,7 @@ public class CartModule extends BaseStoreModule {
 						target.setName(storeName);
 					}
 				}
-				target.setProperty("userprofile", inPageRequest
-						.getUserProfile().getId());
+				target.setProperty("userprofile", cart.getCustomer().getId());
 				addressSearcher.saveData(target, inPageRequest.getUser());
 			}
 		}
@@ -954,64 +951,71 @@ public class CartModule extends BaseStoreModule {
 	 */
 	public void reIndexStore(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
-
 		store.reindexAll();
 		store.getCategoryArchive().reloadCategories();
 	}
 
 	public void loadCustomerAddressList(WebPageRequest inReq) {
-		if (inReq.getUser() == null) {
-			return;
-		}
-		Store store = getStore(inReq);
-		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null) {
-			return;
-		}
-		Searcher addressSearcher = store.getSearcherManager().getSearcher(
-				store.getCatalogId(), "address");
-
-		HitTracker addresslist;
-		String inDealer = inReq.getUserProfile().get("dealer");
-		if (inDealer != null) {
-			addresslist = addressSearcher.fieldSearch("dealer", inDealer);
-		} else {
-			addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
-		}
-		if (addresslist != null && addresslist.size() > 0) {
-			inReq.putPageValue("addresslist", addresslist);
-		} else {
-			Data userAddress = (Data) addressSearcher.searchById(inReq.getUser().getId());
-			if (userAddress != null) {
-				List<Data> addr = new ArrayList<Data>();
-				addr.add(userAddress);
-				inReq.putPageValue("addresslist", addr);					
-			} else {
-				inReq.putPageValue("addresslist", null);
-			}
-		}
-//		if (inReq.getUser() == null)
-//		{
+//		if (inReq.getUser() == null) {
 //			return;
 //		}
 //		Store store = getStore(inReq);
-//		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null)
-//		{
+//		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null) {
 //			return;
 //		}
-//		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+//		Searcher addressSearcher = store.getSearcherManager().getSearcher(
+//				store.getCatalogId(), "address");
+//
 //		HitTracker addresslist;
 //		String inDealer = inReq.getUserProfile().get("dealer");
-//		if (inDealer != null)
-//		{
-//			SearchQuery query = addressSearcher.createSearchQuery();
-//			query.addMatches("dealer", inDealer);
-//			addresslist = addressSearcher.cachedSearch(inReq, query);
-//			inReq.putPageValue("addresslist", addresslist);
-//		}
-//		else
-//		{
+//		if (inDealer != null) {
+//			addresslist = addressSearcher.fieldSearch("dealer", inDealer);
+//		} else {
 //			addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
 //		}
+//		if (addresslist != null && addresslist.size() > 0) {
+//			inReq.putPageValue("addresslist", addresslist);
+//		} else {
+//			Data userAddress = (Data) addressSearcher.searchById(inReq.getUser().getId());
+//			if (userAddress != null) {
+//				List<Data> addr = new ArrayList<Data>();
+//				addr.add(userAddress);
+//				inReq.putPageValue("addresslist", addr);					
+//			} else {
+//				inReq.putPageValue("addresslist", null);
+//			}
+//		}
+		if (inReq.getUser() == null)
+		{
+			return;
+		}
+		Store store = getStore(inReq);
+		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null)
+		{
+			return;
+		}
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
+		HitTracker addresslist;
+		String inDealer = inReq.getUserProfile().get("dealer");
+		if (inDealer != null)
+		{
+			SearchQuery query = addressSearcher.createSearchQuery();
+			query.addMatches("dealer", inDealer);
+			addresslist = addressSearcher.cachedSearch(inReq, query);
+		}
+		else
+		{
+			String userid = inReq.getUserProfile().getId();
+			Cart cart = getCart(inReq);
+			if (cart!=null){
+				Customer customer = cart.getCustomer();
+				if (customer!=null){
+					userid = customer.getId();
+				}
+			}
+			addresslist = addressSearcher.fieldSearch("userprofile", userid);
+		}
+		inReq.putPageValue("addresslist", addresslist);
 	}
 
 	public void selectShippingAddress(WebPageRequest inReq) {
