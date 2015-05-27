@@ -479,7 +479,14 @@ public class OrderModule extends BaseModule
 					continue;
 				}
 			}
-			int quantity = Integer.parseInt(inReq.getRequestParameter(sku+"-shipment-quantity"));
+			int quantity  = 0;
+			String val = inReq.getRequestParameter(sku+"-shipment-quantity");
+			if (val.contains(".")){
+				double d = Double.parseDouble(val);
+				quantity = (int) d;
+			} else {
+				quantity = Integer.parseInt(val);
+			}
 			ShipmentEntry entry = new ShipmentEntry();
 			entry.setSku(sku);
 			entry.setQuantity(quantity);
@@ -715,7 +722,14 @@ public class OrderModule extends BaseModule
 				}
 				else
 				{
-					int intQuantity = Integer.parseInt(quantity);
+					int intQuantity = 0;
+					if (quantity.contains(".")){
+						double d = Double.parseDouble(quantity);
+						intQuantity = (int) d;
+					}
+					else {
+						intQuantity = Integer.parseInt(quantity);
+					}
 					CartItem cartItem = order.getItem(sku);
 					cartItem.getRefundState().setPendingQuantity(intQuantity);
 					cartItem.getRefundState().setRefundStatus(RefundState.REFUND_PENDING);
