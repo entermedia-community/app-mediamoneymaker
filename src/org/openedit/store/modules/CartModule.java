@@ -557,7 +557,7 @@ public class CartModule extends BaseStoreModule {
 	
 	public void loadActiveUsers(WebPageRequest inReq) throws OpenEditException {
 		Store store = getStore(inReq);
-		Searcher searcher = store.getUserManager().getUserSearcher();
+		Searcher searcher = store.getSearcherManager().getSearcher("system", "user");
 		SearchQuery query = searcher.createSearchQuery();
 		query.addExact("enabled","true");
 		query.addSortBy("id");

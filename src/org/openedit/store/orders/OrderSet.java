@@ -260,7 +260,7 @@ public class OrderSet {
 			}
 			
 			if (taxrates == null || taxrates.size()==0) {
-				throw new OpenEditException("Taxrates is null");
+			//	throw new OpenEditException("Taxrates is null");
 			}
 			customer.setTaxRates(taxrates);
 			cart.setCustomer(customer);
