@@ -40,6 +40,7 @@ import org.openedit.util.DateStorageUtil;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
@@ -500,8 +501,15 @@ public class CartModule extends BaseStoreModule {
 	}
 
 	public Customer loadCustomer(WebPageRequest inPageRequest) throws Exception {
-		Customer customer = null;
+		Store store = getStore(inPageRequest);
 		Cart cart = getCart(inPageRequest);
+		if (cart.getCustomer() != null && cart.getCustomer().getUser()!=null){
+			log.info("customer \""+cart.getCustomer().getUser()+"\" already present on cart, aborting");
+			populateAddressList(cart.getCustomer());
+			inPageRequest.putPageValue("customer", cart.getCustomer());
+			return cart.getCustomer();
+		}
+		Customer customer = null;
 		String customerId = inPageRequest.getRequestParameter("customerId");
 		if (customerId == null) {
 			User user = inPageRequest.getUser();
@@ -509,13 +517,9 @@ public class CartModule extends BaseStoreModule {
 				customerId = user.getUserName();
 			}
 		}
-
 		if (customerId != null) {
-			Store store = getStore(inPageRequest);
-
 			customer = store.getCustomerArchive().getCustomer(customerId);
 			if (customer == null) {
-				// set error
 				inPageRequest.putPageValue("errorMessage", "No such customer");
 			} else {
 				cart.setCustomer(customer);
@@ -523,20 +527,66 @@ public class CartModule extends BaseStoreModule {
 		}
 		if (cart.getCustomer() != null) {
 			populateAddressList(cart.getCustomer());
-
 			inPageRequest.putPageValue("customer", cart.getCustomer());
-		} else {
-			
 		}
-
 		return customer;
+	}
+	
+	public void initSelectCustomer(WebPageRequest inReq) throws OpenEditException {
+		User user = inReq.getUser();
+		if (user == null){
+			log.info("user not signed in, cannot prepare select customer, aborting");
+			return;
+		}
+		Cart cart = getCart(inReq);
+		if (cart == null){
+			log.info("cart is null, aborting");
+			return;
+		}
+		Customer customer = cart.getCustomer();
+		if (customer == null){
+			log.info("customer has not been set on the cart, ready to select customer");
+			return;
+		}
+		if (customer.getId().equals(user.getId())){
+			log.info("customer is the same as the user logged in, resetting customer");
+			cart.setCustomer(null);
+			inReq.putPageValue("customer",null);
+		}
+	}
+	
+	public void loadActiveUsers(WebPageRequest inReq) throws OpenEditException {
+		Store store = getStore(inReq);
+		Searcher searcher = store.getSearcherManager().getSearcher("system", "user");
+		SearchQuery query = searcher.createSearchQuery();
+		query.addExact("enabled","true");
+		query.addSortBy("id");
+		HitTracker activeaccounts = searcher.search(query);
+		inReq.putPageValue("accounts",activeaccounts);
+	}
+	
+	public void selectCustomer(WebPageRequest inReq) throws OpenEditException{
+		Cart cart = getCart(inReq);
+		String customerId = inReq.getRequestParameter("customerId");
+		if (customerId != null) {
+			Store store = getStore(inReq);
+			Customer customer = store.getCustomerArchive().getCustomer(customerId);
+			if (customer == null) {
+				inReq.putPageValue("errorMessage", "No such customer");
+			} else {
+				cart.setCustomer(customer);
+			}
+			if (cart.getCustomer() != null) {
+				populateAddressList(cart.getCustomer());
+				inReq.putPageValue("customer", cart.getCustomer());
+			}
+		}
 	}
 
 	private void populateAddressList(Customer customer) {
 		User user = customer.getUser();
 		String alist = (String) user.getProperty("addresslist");
 		customer.getAddressList().clear();
-
 		if (alist != null && !alist.equals("")) {
 			String[] current = alist.split(",");
 			for (int i = 0; i < current.length; i++) {
@@ -800,11 +850,9 @@ public class CartModule extends BaseStoreModule {
 					store.getCatalogId(), "address");
 			Address target = cart.getShippingAddress();
 			target.setId(addressSearcher.nextId());
-			if (inPageRequest.getUserProfile() != null){
-				target.setProperty("userprofile", inPageRequest.getUserProfile().getId());
-				if(inPageRequest.getUserProfile().get("dealer") != null){
-					target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
-				}
+			target.setProperty("userprofile", cart.getCustomer().getId());
+			if(inPageRequest.getUserProfile().get("dealer") != null){
+				target.setProperty("dealer", inPageRequest.getUserProfileValue("dealer"));
 			}
 			addressSearcher.saveData(target, inPageRequest.getUser());
 
@@ -822,8 +870,7 @@ public class CartModule extends BaseStoreModule {
 						target.setName(storeName);
 					}
 				}
-				target.setProperty("userprofile", inPageRequest
-						.getUserProfile().getId());
+				target.setProperty("userprofile", cart.getCustomer().getId());
 				addressSearcher.saveData(target, inPageRequest.getUser());
 			}
 		}
@@ -904,41 +951,71 @@ public class CartModule extends BaseStoreModule {
 	 */
 	public void reIndexStore(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
-
 		store.reindexAll();
 		store.getCategoryArchive().reloadCategories();
 	}
 
 	public void loadCustomerAddressList(WebPageRequest inReq) {
-		if (inReq.getUser() == null) {
+//		if (inReq.getUser() == null) {
+//			return;
+//		}
+//		Store store = getStore(inReq);
+//		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null) {
+//			return;
+//		}
+//		Searcher addressSearcher = store.getSearcherManager().getSearcher(
+//				store.getCatalogId(), "address");
+//
+//		HitTracker addresslist;
+//		String inDealer = inReq.getUserProfile().get("dealer");
+//		if (inDealer != null) {
+//			addresslist = addressSearcher.fieldSearch("dealer", inDealer);
+//		} else {
+//			addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
+//		}
+//		if (addresslist != null && addresslist.size() > 0) {
+//			inReq.putPageValue("addresslist", addresslist);
+//		} else {
+//			Data userAddress = (Data) addressSearcher.searchById(inReq.getUser().getId());
+//			if (userAddress != null) {
+//				List<Data> addr = new ArrayList<Data>();
+//				addr.add(userAddress);
+//				inReq.putPageValue("addresslist", addr);					
+//			} else {
+//				inReq.putPageValue("addresslist", null);
+//			}
+//		}
+		if (inReq.getUser() == null)
+		{
 			return;
 		}
 		Store store = getStore(inReq);
-		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null) {
+		if (inReq.getUser() == null || inReq.getUserProfile().getId() == null)
+		{
 			return;
 		}
-		Searcher addressSearcher = store.getSearcherManager().getSearcher(
-				store.getCatalogId(), "address");
-
+		Searcher addressSearcher = store.getSearcherManager().getSearcher(store.getCatalogId(), "address");
 		HitTracker addresslist;
 		String inDealer = inReq.getUserProfile().get("dealer");
-		if (inDealer != null) {
-			addresslist = addressSearcher.fieldSearch("dealer", inDealer);
-		} else {
-			addresslist = addressSearcher.fieldSearch("userprofile", inReq.getUserProfile().getId());
+		if (inDealer != null)
+		{
+			SearchQuery query = addressSearcher.createSearchQuery();
+			query.addMatches("dealer", inDealer);
+			addresslist = addressSearcher.cachedSearch(inReq, query);
 		}
-		if (addresslist != null && addresslist.size() > 0) {
-			inReq.putPageValue("addresslist", addresslist);
-		} else {
-			Data userAddress = (Data) addressSearcher.searchById(inReq.getUser().getId());
-			if (userAddress != null) {
-				ArrayList<Data> addr = new ArrayList<Data>();
-				addr.add(userAddress);
-				inReq.putPageValue("addresslist", addr);					
-			} else {
-				inReq.putPageValue("addresslist", null);
+		else
+		{
+			String userid = inReq.getUserProfile().getId();
+			Cart cart = getCart(inReq);
+			if (cart!=null){
+				Customer customer = cart.getCustomer();
+				if (customer!=null){
+					userid = customer.getId();
+				}
 			}
+			addresslist = addressSearcher.fieldSearch("userprofile", userid);
 		}
+		inReq.putPageValue("addresslist", addresslist);
 	}
 
 	public void selectShippingAddress(WebPageRequest inReq) {

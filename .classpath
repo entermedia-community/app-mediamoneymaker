@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jcsAnetGWv1_02.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/openecho1.2.6.jar"/>
 	<classpathentry kind="lib" path="lib/compile/jakarta-servlet-api-4.jar"/>
-	<classpathentry kind="lib" path="lib/poi-3.0.2-FINAL-20080204.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-server"/>
 	<classpathentry exported="true" kind="lib" path="lib/openedit-money-5.626.jar"/>
 	<classpathentry kind="lib" path="lib/paypal_base.jar"/>
@@ -15,5 +14,8 @@
 	<classpathentry kind="lib" path="lib/JavaAPI.jar"/>
 	<classpathentry kind="lib" path="lib/store-reports.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/poi-3.10.1-20140818.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.10.1-20140818.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.10.1-20140818.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

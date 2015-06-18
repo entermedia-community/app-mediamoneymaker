@@ -4,6 +4,7 @@
 package org.openedit.store;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,8 @@ public class Category implements Data
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
 
+	
+	
 	public Category()
 	{
 	}
@@ -732,6 +735,19 @@ public Category(String inId, String inName)
 //		return null;
 //	}
 	
-	
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" | ");
+			}
+		}
+		setProperty(inKey,values.toString());
+	}
 	
 }

@@ -113,7 +113,7 @@ public class VirtualCreditAccount {
 	 * @return
 	 */
 	protected boolean updateBalance(MediaArchive inArchive, String inUserId, Money inValue, boolean inSubtract){
-		Lock lock = inArchive.getLockManager().lockIfPossible(inArchive.getCatalogId(), "userprofile/virtualcreditaccount/" + inUserId, inUserId);
+		Lock lock = inArchive.getLockManager().lockIfPossible( "userprofile/virtualcreditaccount/" + inUserId, inUserId);
 		if (lock!=null){
 			try{
 				if (inSubtract){

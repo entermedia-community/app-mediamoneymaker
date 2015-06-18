@@ -94,6 +94,14 @@ public abstract class BaseOrderProcessor extends BaseArchive implements OrderPro
 				totalFee = inOrder.getSubTotal().multiply(new Fraction(rate));
 			}
 		}
+		String fee = inOrder.get("fee");//transaction fee
+		if (fee!=null && fee.isEmpty()==false){
+			Money transfee = new Money(fee);
+			if (transfee.isZero() == false){
+				transfee = transfee.multiply(new Fraction(0.5d));//divide by 2
+				totalFee = totalFee.subtract(transfee);
+			}
+		}
 		inOrder.setProperty("profitshare", Double.toString(totalFee.doubleValue()));
 		return totalFee;
 	}

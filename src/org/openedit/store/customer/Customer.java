@@ -5,6 +5,7 @@
 package org.openedit.store.customer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -357,6 +358,22 @@ public class Customer implements Data {
 	public void setProperties(Map<String, String> inProperties) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" | ");
+			}
+		}
+		setProperty(inKey,values.toString());
 	}
 
 }
