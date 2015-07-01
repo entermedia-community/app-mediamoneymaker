@@ -5,7 +5,7 @@ importPackage( Packages.java.io );
 importPackage( Packages.com.openedit.modules.update );
 
 
-var war = "http://dev.entermediasoftware.com/jenkins/job/dev_app-mediamoneymaker/lastSuccessfulBuild/artifact/deploy/ROOT.war";
+var war = "http://dev.entermediasoftware.com/jenkins/job/dev_app-mediamoneymaker_integer/lastSuccessfulBuild/artifact/deploy/ROOT.war";
 
 var root = moduleManager.getBean("root").getAbsolutePath();
 var web = root + "/WEB-INF";
