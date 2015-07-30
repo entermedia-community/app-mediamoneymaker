@@ -1005,7 +1005,10 @@ public class OrderModule extends BaseModule
 			}
 		}
 		
+		//add refund
 		order.getRefunds().add(refund);
+		//update shipping status
+		order.setProperty("shippingstatus",order.isFullyShipped() ? "shipped" : "partialshipped");
 		store.saveOrder(order);
 		
 		//record this in order history
