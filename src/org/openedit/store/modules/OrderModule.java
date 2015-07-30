@@ -1004,8 +1004,10 @@ public class OrderModule extends BaseModule
 				order.setProperty("taxrefundtally", tax.toShortString());
 			}
 		}
-		
+		//add refund
 		order.getRefunds().add(refund);
+		//update shipping status
+		order.setProperty("shippingstatus",order.isFullyShipped() ? "shipped" : "partialshipped");
 		store.saveOrder(order);
 		
 		//record this in order history
