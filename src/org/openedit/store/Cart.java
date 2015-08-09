@@ -331,13 +331,19 @@ public class Cart extends BaseData {
 
 	public Money getSubTotal() {
 		Money totalPrice = Money.ZERO;
-
 		for (Iterator it = getItemIterator(); it.hasNext();) {
 			CartItem item = (CartItem) it.next();
-			Money toadd = calculateAdjustedPrice(item);
-			if (toadd != null) {
-				toadd = toadd.multiply(item.getQuantity());
-				totalPrice = totalPrice.add(toadd);
+			if(item.getFloat("pricesubtotal")!=0)
+			{
+				totalPrice = totalPrice.add(new Money(item.getFloat("pricesubtotal")));
+			}
+			else 
+			{
+				Money toadd = calculateAdjustedPrice(item);
+				if (toadd != null) {
+					toadd = toadd.multiply(item.getQuantity());
+					totalPrice = totalPrice.add(toadd);
+				}
 			}
 		}
 		return totalPrice;

@@ -180,6 +180,26 @@ public class ProductAdder
 			
 			cartItem.setOptions(options);
 			cartItem.setProperties(properties);
+			
+			//add weight if provided
+			String weight = (String) params.get("weight" + counter);
+			if ( weight != null)
+			{
+				double w = toDouble(weight,-1.0);
+				if (w != -1.0)
+				{
+					cartItem.setProperty("weight",String.format("%.2f", w));
+				}
+			}
+			String weightsubtotal = (String) params.get("weightsubtotal" + counter);
+			if ( weightsubtotal != null)
+			{
+				double w = toDouble(weightsubtotal,-1.0);
+				if (w != -1.0)
+				{
+					cartItem.setProperty("weightsubtotal",String.format("%.2f", w));
+				}
+			}
 
 			// product.setproperty(title); (if title is a property on the
 			// product...the value should come from the options)
@@ -742,5 +762,12 @@ public class ProductAdder
 		 */
 
 		return properties;
+	}
+	
+	protected double toDouble(String inValue, double inDefault){
+		try{
+			return Double.parseDouble(inValue);
+		}catch(Exception e){}
+		return inDefault;
 	}
 }

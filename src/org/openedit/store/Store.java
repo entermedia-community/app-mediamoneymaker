@@ -37,7 +37,6 @@ import org.openedit.store.process.ElectronicOrderManager;
 import org.openedit.store.search.ProductSearcher;
 import org.openedit.store.search.ProductSecurityArchive;
 import org.openedit.store.search.SearchFilterArchive;
-import org.openedit.users.UserSearcher;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
