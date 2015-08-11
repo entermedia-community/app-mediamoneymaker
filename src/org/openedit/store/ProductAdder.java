@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.money.Money;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -128,7 +129,19 @@ public class ProductAdder
 					Coupon removedCoupon = new Coupon(inventory);
 //					removedCoupon.removeCartAdjustment(inCart);
 				}
-			} else {
+			}
+			else if (product.getBoolean("datecontrolledinventory"))
+			{
+				String refdate = inReq.getRequestParameter("date");
+				refdate = DateStorageUtil.getStorageUtil().checkFormat(refdate);
+				Date date = DateStorageUtil.getStorageUtil().parseFromStorage(refdate);
+				if (date != null)
+				{
+					inventory = product.getInventoryItemByDate(date);
+				}
+			}
+			if (inventory == null)
+			{
 				inventory = product.getInventoryItemByOptions(options);
 				if (inventory == null)
 				{

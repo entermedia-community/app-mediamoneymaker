@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -688,6 +689,37 @@ public class Product extends BaseData implements Data
 		}
 		return null;
 	}
+	
+	/**
+	 * gets the matching inventory by date
+	 * this assumes the inventory items have a startdate, stopdate
+	 * @param inDate
+	 * @return
+	 */
+	public InventoryItem getInventoryItemByDate(Date inDate)
+	{
+		if (inDate != null)
+		{
+			for (Iterator iter = getInventoryItems().iterator(); iter.hasNext();)
+			{
+				InventoryItem element = (InventoryItem) iter.next();
+				//special price: startdate and stopdate are both set
+				//real price: startdate is set, stopdate is future startdate or null
+				//future price: startdate is set, future stopdate is not set
+				Date datestart = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("startdate"));
+				Date datestop = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("stopdate"));
+				if (datestart!=null && (inDate.after(datestart) || inDate.equals(datestart)) )
+				{
+					if (datestop == null || inDate.before(datestop))
+					{
+						return element;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	public InventoryItem getInventoryItemByOptions(Collection inOptions)
 	{
 		for (Iterator iter = getInventoryItems().iterator(); iter.hasNext();)

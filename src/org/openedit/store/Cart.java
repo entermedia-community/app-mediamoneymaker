@@ -333,9 +333,9 @@ public class Cart extends BaseData {
 		Money totalPrice = Money.ZERO;
 		for (Iterator it = getItemIterator(); it.hasNext();) {
 			CartItem item = (CartItem) it.next();
-			if(item.getFloat("pricesubtotal")!=0)
+			if(item.get("pricesubtotal")!=null)
 			{
-				totalPrice = totalPrice.add(new Money(item.getFloat("pricesubtotal")));
+				totalPrice = totalPrice.add(new Money(item.get("pricesubtotal").replace(",","")));
 			}
 			else 
 			{
