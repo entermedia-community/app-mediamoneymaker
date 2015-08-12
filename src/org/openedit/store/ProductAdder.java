@@ -170,11 +170,9 @@ public class ProductAdder
 			}
 			cartItem.setInventoryItem(inventory);
 			int oldquantity = cartItem.getQuantity();
-			if (quantityspecified && inReload)
-			{
-				cartItem.setQuantity(quantity);
-			}
-			else if(quantityspecified && existing == null){
+			//check for forcequantity (prevent addition)
+			boolean forcequantity = Boolean.parseBoolean((String) params.get("forcequantity" + counter));
+			if ( (quantityspecified && inReload) || (quantityspecified && existing == null) || forcequantity){
 				cartItem.setQuantity(quantity);
 			}
 			else
