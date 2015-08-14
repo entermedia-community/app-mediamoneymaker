@@ -364,7 +364,7 @@ public class Coupon {
 			if (Coupon.isCoupon(item) || item.getProduct() == null){
 				continue;
 			}
-			if (productIds.contains(item.getProduct().getId())){
+			if (productIds.contains(item.getProduct().getId()) || productIds.size() == 0){
 				int minquantity = getMininumProductQuantity();
 				if (minquantity > 0 && item.getQuantity() < minquantity){
 					continue;
