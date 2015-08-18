@@ -46,6 +46,7 @@ public class ProductAdder
 			}
 			else
 			{
+				
 				counter = "." + i;
 			}
 			String productId = (String) params.get("productid" + counter);

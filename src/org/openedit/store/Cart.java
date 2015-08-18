@@ -260,6 +260,9 @@ public class Cart extends BaseData {
 				totalTax = totalTax.add(shipping.multiply(rate.getFraction()));
 			}
 		}
+		if(totalTax.isNegative()){
+			return Money.ZERO;
+		}
 		return totalTax;
 	}
 
@@ -289,6 +292,9 @@ public class Cart extends BaseData {
 		if (inTaxRate.isApplyToShipping()) {
 			Money shipping = getTotalShipping();
 			totalTax = totalTax.add(shipping.multiply(inTaxRate.getFraction()));
+		}
+		if(totalTax.isNegative()){
+			return Money.ZERO;
 		}
 		return totalTax;
 	}
@@ -320,6 +326,9 @@ public class Cart extends BaseData {
 		Money tax = getTotalTax();
 		totalPrice = totalPrice.add(shipping);
 		totalPrice = totalPrice.add(tax);
+		if(totalPrice.isNegative()){
+			return Money.ZERO;
+		}
 		return totalPrice;
 	}
 
@@ -339,6 +348,9 @@ public class Cart extends BaseData {
 				toadd = toadd.multiply(item.getQuantity());
 				totalPrice = totalPrice.add(toadd);
 			}
+		}
+		if(totalPrice.doubleValue() < 0){
+			return Money.ZERO;
 		}
 		return totalPrice;
 	}
@@ -689,7 +701,11 @@ public class Cart extends BaseData {
 		if (adjustment.isZero()) {
 			return total;
 		}
-		return adjustment.multiply(inCartItem.getQuantity());
+		Money finals = adjustment.multiply(inCartItem.getQuantity());
+		if(finals.isNegative()){
+			return Money.ZERO;
+		} 
+		return finals;
 	}
 
 	public Money getCouponPrice(CartItem inCartItem) {
@@ -701,6 +717,9 @@ public class Cart extends BaseData {
 			if (new Coupon(inCartItem.getInventoryItem()).isSingleValueCoupon()) {
 				price = inCartItem.getYourPrice();
 			}
+		}
+		if(price.isNegative()){
+			return Money.ZERO;
 		}
 		return price;
 	}
