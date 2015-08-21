@@ -167,7 +167,9 @@ public class Product extends BaseData implements Data
 		{
 			return getCatalogId();
 		}
-
+		if ("instock".equals(inAttribute)){
+			return String.valueOf(isInStock());
+		}
 		String value = (String)getProperties().get(inAttribute);
 //		if ( value instanceof PageProperty)
 //		{
