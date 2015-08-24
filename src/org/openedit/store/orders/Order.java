@@ -5,6 +5,8 @@ package org.openedit.store.orders;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -409,6 +411,39 @@ public class Order extends BaseData implements Comparable
 			fieldItems = new ArrayList();
 		}
 		return fieldItems;
+	}
+	
+	public List getItemsSorted(){
+		return getItemsSorted("name");
+	}
+	
+	public List getItemsSorted(final String inCartField){
+		if (inCartField == null){
+			return getItems();
+		}
+		List<CartItem> sorted = new ArrayList<CartItem>();
+		Iterator itr = getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			sorted.add(item);
+		}
+		Collections.sort(sorted, new Comparator<CartItem>(){
+			@Override
+			public int compare(CartItem o1, CartItem o2) {
+				String val1 = o1.get(inCartField);
+				String val2 = o2.get(inCartField);
+				if (val1 == null && val2 == null){
+					return 0;
+				}
+				if (val1 == null && val2!=null){
+					return 1;
+				}
+				if (val1 !=null && val2 == null){
+					return -1;
+				}
+				return val1.compareTo(val2);
+			}});
+		return sorted;
 	}
 
 	public void setItems(List inItems)
