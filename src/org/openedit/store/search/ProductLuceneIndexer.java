@@ -18,6 +18,8 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.index.FieldInfo;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.openedit.Data;
@@ -170,7 +172,7 @@ public class ProductLuceneIndexer {
 	// PathUtilities.extractDirectoryPath(inSourcePath) + "/";
 	// doc.add(new Field("foldersourcepath", folderSourcePath, Field.Store.YES,
 	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	//
+	//"
 	// //for SF - Jobs
 	// String clientview = inDir.getProperty("clientview");
 	// if (("true").equals(clientview))
@@ -461,6 +463,26 @@ public class ProductLuceneIndexer {
 				}
 			}
 
+//			if (det.isExternalSort() )
+//			{
+//				String sortfield = det.getSortProperty();
+//				if ( det.isList() && det.getListCatalogId() != null)
+//				{
+//					Data row = getSearcherManager().getData(det.getListCatalogId(), det.getListId(), inValue);
+//					if( row != null)
+//					{
+//						inValue = row.getName();
+//					}
+//				}
+//				if (inValue != null)
+//				{
+//					inValue = inValue.toString().toLowerCase();
+//				}
+//				inDoc.add(new Field(sortfield, inValue, SORT_FIELD_TYPE ));
+//			}
+//			
+			
+			
 			if (det.isDataType("boolean")) {
 				if (Boolean.parseBoolean(prop)) {
 					inDoc.add(new Field(det.getId(), "true", Field.Store.YES,
@@ -471,6 +493,8 @@ public class ProductLuceneIndexer {
 				}
 
 			}
+			
+			
 
 			else if (det.isDataType("permission")) {
 				populatePermission(inDoc, inProduct, det.getId());
@@ -489,6 +513,8 @@ public class ProductLuceneIndexer {
 					}
 				}
 			}
+			
+			
 		}
 
 	}
@@ -602,6 +628,19 @@ public class ProductLuceneIndexer {
 		 * Field.Index.ANALYZED)); }
 		 */
 	}
+	
+	protected static final FieldType SORT_FIELD_TYPE = getSortFieldType();
+
+	static FieldType getSortFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(false);
+		type.setTokenized(false);
+		type.setOmitNorms(true); 
+		return type;
+	}
 
 	protected void populateDescription(Document doc, Product product,
 			PropertyDetails inDetails, Set inCategories) throws StoreException {
@@ -609,8 +648,11 @@ public class ProductLuceneIndexer {
 			// This cannot be used in sorts since it is ANALYZED. For sorts use
 			doc.add(new Field("name", product.getName(), Field.Store.YES,
 					Field.Index.ANALYZED));
-			doc.add(new Field("name_sortable", product.getName().toLowerCase(),
-					Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
+		
+			
+			doc.add(new Field("name_sortable",  product.getName().toLowerCase(), SORT_FIELD_TYPE ));
+			doc.add(new Field("name_sorted",  product.getName().toLowerCase(), SORT_FIELD_TYPE ));
+
 		}
 		String htmlPath = product.getSourcePath() + ".html";
 		// Low level reading in of text
