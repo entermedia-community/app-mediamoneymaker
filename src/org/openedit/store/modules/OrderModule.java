@@ -1004,7 +1004,6 @@ public class OrderModule extends BaseModule
 				order.setProperty("taxrefundtally", tax.toShortString());
 			}
 		}
-		
 		//add refund
 		order.getRefunds().add(refund);
 		//update shipping status
@@ -1200,7 +1199,13 @@ public class OrderModule extends BaseModule
 					Product product = cartItem.getProduct();
 					store.getProductArchive().saveProduct(product);
 				}
-				//save order
+				
+				
+				String [] fields = inContext.getRequestParameters("field");
+				if(fields != null){
+					orderSearcher.updateData(inContext, fields, order);
+				}
+				
 				store.saveOrder(order);
 				//add to list
 				orderList.add(order.getId());
