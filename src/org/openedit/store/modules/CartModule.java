@@ -895,7 +895,7 @@ public class CartModule extends BaseStoreModule {
 			for (Iterator iter = cart.getItemIterator(); iter.hasNext();) {
 				CartItem cartItem = (CartItem) iter.next();
 				Product product = cartItem.getProduct();
-				store.getProductArchive().saveProduct(product);
+				store.saveProduct(product);
 			}
 			// Order succeeded - remove cart
 			cart.removeAllItems();
