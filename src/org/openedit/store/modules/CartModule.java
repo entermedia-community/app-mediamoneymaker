@@ -3,7 +3,6 @@
  */
 package org.openedit.store.modules;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -820,6 +819,29 @@ public class CartModule extends BaseStoreModule {
 		//check forcetestmode
 		if (cart.get("forcetestmode") !=null){
 			order.setProperty("forcetestmode",cart.get("forcetestmode"));
+		}
+		//check for cases where an out of stock item will cancel order processing
+		String checkstock = inPageRequest.getRequestParameter("cancelonoutofstock");
+		if (checkstock == null){
+			checkstock = cart.get("cancelonoutofstock");
+		}
+		if (Boolean.parseBoolean(checkstock)){
+			log.info("checking out of stock status");
+			Product outofstock = null;
+			for (Iterator iter = cart.getItemIterator(); iter.hasNext();) {
+				CartItem cartItem = (CartItem) iter.next();
+				InventoryItem inventoryItem = cartItem.getInventoryItem();
+				if (inventoryItem != null && inventoryItem.getQuantityInStock() == 0) {
+					outofstock = cartItem.getProduct();
+					break;
+				}
+			}
+			if (outofstock != null){
+				log.info("at least one item is out of stock, cancelling order processing");
+				orderState.setOk(false);
+				orderState.setDescription("\""+outofstock.getName()+"\" is no longer in stock");
+				return order;
+			}
 		}
 
 		String applicationid = inPageRequest.findValue("applicationid");
