@@ -311,7 +311,6 @@ public class Cart extends BaseData {
 			}
 
 		}
-
 		return exemptamount;
 	}
 	

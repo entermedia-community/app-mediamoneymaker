@@ -1005,9 +1005,6 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			inOrder.setProperty(name,val);
 		}
 		
-		System.out.println("##### SUBTOTAL SURCHARGE: "+inOrder.get("percentsurchargesubtotal")+", TOTAL SURCHARGE: "+inOrder.get("percentsurchargetotal"));
-		
-		
 		Element shippingdetails = inOrderElement.element("shipping");
 		if(shippingdetails != null){
 			
