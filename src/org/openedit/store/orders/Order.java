@@ -18,6 +18,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
+import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -197,6 +198,35 @@ public class Order extends BaseData implements Comparable
 	public void setShippingMethod(ShippingMethod inShippingMethod)
 	{
 		fieldShippingMethod = inShippingMethod;
+	}
+	
+	public Money getSurcharge(){
+		//surcharge handles either a surcharge on subtotal or a subcharge on total
+		//only one percentage should be provided
+		//subtotal is checked first
+		Money tally = null;
+		double percentage = 0.0d;
+		String surchargestr = get("percentsurchargesubtotal");
+		if (surchargestr != null){
+			tally = getSubTotal();
+		} else {
+			surchargestr = get("percentsurchargetotal");
+			if (surchargestr != null){
+				tally = getTotalPrice();
+			}
+		}
+		if (surchargestr != null){
+			try{
+				percentage = Double.parseDouble(surchargestr);
+			}catch (Exception e){
+				log.error(e.getMessage(), e);
+			}
+		}
+		if (percentage > 0 && tally != null){
+			Fraction fraction = new Fraction(percentage);
+			return tally.multiply(fraction);
+		}
+		return null;
 	}
 	
 	public Money getNonTaxableSubtotal(){
@@ -546,6 +576,22 @@ public class Order extends BaseData implements Comparable
 		{
 			return getTax() != null ? getTax().toShortString().replace(",", "") : "0";
 		}
+//		if ("percentsurchargetotal".equals(inId))
+//		{
+//			Double surcharge = getSurchagePercentTotal();
+//			if (surcharge != null){
+//				return String.format("%.3f",surcharge.doubleValue());
+//			}
+//			return null;
+//		}
+//		if ("percentsurchargesubtotal".equals(inId))
+//		{
+//			Double surcharge = getSurchargePercentSubtotal();
+//			if (surcharge != null){
+//				return String.format("%.3f",surcharge.doubleValue());
+//			}
+//			return null;
+//		}
 		if ("total".equals(inId))
 		{
 			return getTotalPrice() != null ? getTotalPrice().toShortString().replace(",", "") : "0";
@@ -630,7 +676,6 @@ public class Order extends BaseData implements Comparable
 		{
 			return;
 		}
-
 		getProperties().put(inKey, inVal);
 	}
 

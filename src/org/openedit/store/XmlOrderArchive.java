@@ -1000,9 +1000,12 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 		for (Iterator it = inOrderElement.elementIterator("property"); it
 				.hasNext();) {
 			Element propElement = (Element) it.next();
-			inOrder.setProperty(propElement.attributeValue("name"),
-					propElement.getText());
+			String name = propElement.attributeValue("name");
+			String val = propElement.getText();
+			inOrder.setProperty(name,val);
 		}
+		
+		System.out.println("##### SUBTOTAL SURCHARGE: "+inOrder.get("percentsurchargesubtotal")+", TOTAL SURCHARGE: "+inOrder.get("percentsurchargetotal"));
 		
 		
 		Element shippingdetails = inOrderElement.element("shipping");

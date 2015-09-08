@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
+import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.customer.Address;
@@ -312,6 +313,60 @@ public class Cart extends BaseData {
 		}
 
 		return exemptamount;
+	}
+	
+	protected Double fieldSurchargePercentTotal;
+	protected Double fieldSurchargePercentSubtotal;
+	
+	public void setSurchargePercentTotal(Double inSurchargePercentTotal){
+		fieldSurchargePercentTotal = inSurchargePercentTotal;
+	}
+	
+	public void setSurchargePercentTotal(String inSurchargePercentTotal){
+		if (inSurchargePercentTotal!= null){
+			fieldSurchargePercentTotal = Double.parseDouble(inSurchargePercentTotal);
+		} else {
+			fieldSurchargePercentTotal = null;
+		}
+	}
+	
+	public Double getSurchagePercentTotal(){
+		return fieldSurchargePercentTotal;
+	}
+	
+	public void setSurchargePercentSubtotal(Double inSurchargePercentSubtotal){
+		fieldSurchargePercentSubtotal = inSurchargePercentSubtotal;
+	}
+	
+	public void setSurchargePercentSubtotal(String inSurchargePercentSubtotal){
+		if (inSurchargePercentSubtotal!= null){
+			fieldSurchargePercentSubtotal = Double.parseDouble(inSurchargePercentSubtotal);
+		} else {
+			fieldSurchargePercentSubtotal = null;
+		}
+	}
+	
+	public Double getSurchagePercentSubtotal(){
+		return fieldSurchargePercentSubtotal;
+	}
+	
+	public Money getSurcharge(){
+		//surcharge handles either a surcharge on subtotal or a subcharge on total
+		//only one percentage should be provided
+		//subtotal is checked first
+		Money tally = null;
+		Double percentage = getSurchagePercentSubtotal();
+		if (percentage != null){
+			tally = getSubTotal();
+		} else {
+			percentage = getSurchagePercentTotal();
+			tally = getTotalPrice();
+		}
+		if (percentage != null && tally != null){
+			Fraction fraction = new Fraction(percentage.doubleValue());
+			return tally.multiply(fraction);
+		}
+		return null;
 	}
 
 	public Money getTotalPrice() {
