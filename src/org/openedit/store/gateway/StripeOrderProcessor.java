@@ -203,6 +203,13 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		chargeParams.put("currency", "cad");
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained via js
 		
+		String descriptor = inStore.get("statement_descriptor");
+		if(descriptor != null){
+			chargeParams.put("statement_descriptor", descriptor);
+		}
+		
+		
+		
 		// Stripe.js
 		Map<String,String> initialMetadata = new HashMap<String,String>();
 		populateMetadata(inOrder,initialMetadata);

@@ -587,6 +587,7 @@ public class CartModule extends BaseStoreModule {
 		User user = customer.getUser();
 		String alist = (String) user.getProperty("addresslist");
 		customer.getAddressList().clear();
+		
 		if (alist != null && !alist.equals("")) {
 			String[] current = alist.split(",");
 			for (int i = 0; i < current.length; i++) {
