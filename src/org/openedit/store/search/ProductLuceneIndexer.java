@@ -27,6 +27,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.data.lucene.NumberUtils;
 import org.openedit.money.Money;
 import org.openedit.store.Category;
@@ -42,7 +43,7 @@ import com.openedit.util.FileUtils;
 import com.openedit.util.OutputFiller;
 import com.openedit.util.PathUtilities;
 
-public class ProductLuceneIndexer {
+public class ProductLuceneIndexer  extends LuceneIndexer{
 	static final Log log = LogFactory.getLog(ProductLuceneIndexer.class);
 	protected Analyzer fieldAnalyzer;
 	protected boolean usesSearchSecurity = false;
@@ -301,12 +302,14 @@ public class ProductLuceneIndexer {
 		return doc;
 	}
 
-	protected void populateProduct(IndexWriter writer, Product product,
+	protected Document populateProduct(IndexWriter writer, Product product,
 			boolean add, PropertyDetails inDetails) throws OpenEditException {
 		if (product.isAvailable()) {
 			Document doc = createProductDoc(product, inDetails);
 			writeDoc(writer, product.getId().toLowerCase(), doc, add);
+			return doc;
 		}
+		return null;
 	}
 
 	protected void populatePermission(Product p, Document inDoc,
@@ -519,7 +522,7 @@ public class ProductLuceneIndexer {
 
 	}
 
-	protected void populateDateJoin(PropertyDetail inDetail, Document doc,
+	public void populateDateJoin(PropertyDetail inDetail, Document doc,
 			Collection allParentCategories, String inField, boolean inIsStored) {
 		StringBuffer buffer = new StringBuffer();
 		Date tosave = null;
@@ -569,13 +572,13 @@ public class ProductLuceneIndexer {
 		}
 	}
 
-	protected void populateJoinData(PropertyDetail inDetail, Document doc,
+	public void populateJoinData(PropertyDetail inDetail, Document doc,
 			Collection allParentCategories, String inField) {
 		populateJoinData(inDetail.getId(), doc, allParentCategories, inField,
 				inDetail.isStored());
 	}
 
-	protected void populateJoinData(String inType, Document doc,
+	public void populateJoinData(String inType, Document doc,
 			Collection inDataElements, String inField, boolean inIsStored) {
 		StringBuffer buffer = new StringBuffer();
 		for (Iterator iter = inDataElements.iterator(); iter.hasNext();) {

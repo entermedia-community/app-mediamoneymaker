@@ -4,6 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.data.PropertyDetails;
 import org.openedit.repository.ContentItem;
@@ -21,7 +23,26 @@ public class ProductLuceneIndexAll extends ProductProcessor
 	protected ProductArchive fieldProductArchive;
 	protected ProductLuceneIndexer fieldIndexer;
 	protected Boolean fieldIndexFolders;
+	protected TaxonomyWriter fieldTaxonomyWriter;
+	protected FacetsConfig fieldFacetConfig;
 	
+	
+	public FacetsConfig getFacetConfig() {
+		return fieldFacetConfig;
+	}
+
+	public void setFacetConfig(FacetsConfig inFacetConfig) {
+		fieldFacetConfig = inFacetConfig;
+	}
+
+	public TaxonomyWriter getTaxonomyWriter() {
+		return fieldTaxonomyWriter;
+	}
+
+	public void setTaxonomyWriter(TaxonomyWriter inFieldTaxonomyWriter) {
+		fieldTaxonomyWriter = inFieldTaxonomyWriter;
+	}
+
 	private boolean doesIndexFolders()
 	{
 		if (fieldIndexFolders == null)
@@ -80,6 +101,9 @@ public class ProductLuceneIndexAll extends ProductProcessor
 		fieldWriter = inWriter;
 	}
 	
+	
+	
+	
 	public void processSourcePath(String inSourcePath)
 	{
 		IndexWriter writer = getWriter();
@@ -107,6 +131,8 @@ public class ProductLuceneIndexAll extends ProductProcessor
 		{
 
 			Document doc = getIndexer().createProductDoc(product, getDetails());
+			getIndexer().updateFacets(getDetails(), doc, getTaxonomyWriter(), getFacetConfig());
+
 			String id = product.getId().toLowerCase();
 			getIndexer().writeDoc(writer, id, doc, true);
 			// remove it from mem
