@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -433,7 +434,8 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			for (Iterator iter = inProducts.iterator(); iter.hasNext();)
 			{
 				Product product = (Product) iter.next();
-				getIndexer().populateProduct(getIndexWriter(), product, false, details);
+				Document doc = getIndexer().populateProduct(getIndexWriter(), product, false, details);
+				getIndexer().updateFacets(details, doc, getTaxonomyWriter(), getFacetConfig());
 				getProductPaths().put( product.getId(), product.getSourcePath()); //This might use up mem. Need to fix
 				//getProductPaths().remove( product.getId() );
 			}
@@ -471,7 +473,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 
 			log.info("Listing all products");
 
-			indexAll(inWriter);
+			indexAll(inWriter, inTaxonomyWriter);
 
 			
 			
@@ -486,7 +488,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 		}
 	}
 
-	protected void indexAll(IndexWriter writer) throws IOException, OpenEditException
+	protected void indexAll(IndexWriter writer,TaxonomyWriter inTaxonomyWriter) throws IOException, OpenEditException
 	{
 		
 		
@@ -498,7 +500,10 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			reindexer.setPageManager(getPageManager());
 			reindexer.setProductArchive(getProductArchive());
 			reindexer.setIndexer(getIndexer());
+			reindexer.setTaxonomyWriter(getTaxonomyWriter());
+			reindexer.setFacetConfig(getFacetConfig());
 			reindexer.process();
+			
 
 			getProductPaths().clear();
 
