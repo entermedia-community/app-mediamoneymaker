@@ -16,13 +16,16 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.entermedia.connectors.lucene.IndexAllAssets;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.LuceneSearchQuery;
+import org.openedit.entermedia.Asset;
 import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.store.Cart;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
@@ -43,6 +46,7 @@ import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
+import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
 public class ProductLuceneSearcher extends BaseLuceneSearcher implements ProductSearcher, ProductPathFinder
@@ -410,6 +414,7 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			fieldIndexer.setUsesSearchSecurity(doesIndexSecurely());
 			fieldIndexer.setNumberUtils(getNumberUtils());
 			fieldIndexer.setRootDirectory(getRootDirectory());
+			//fieldIndexer.set
 		}
 		return fieldIndexer;
 	}
@@ -465,60 +470,147 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	 * 
 	 * @see org.openedit.store.search.ProductSearcher#reIndexAll()
 	 */
-	public void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) throws OpenEditException
+	
+	
+	
+	protected void reIndexAll(final IndexWriter writer,final TaxonomyWriter inTaxonomyWriter)
 	{
-		
+		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
+		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
+		// writer.mergeFactor = 10;
+		// writer.setMergeFactor(100);
+		// writer.setMaxBufferedDocs(2000);
+		final PropertyDetails details = getPropertyDetails();
 		try
 		{
-
-			log.info("Listing all products");
-
-			indexAll(inWriter, inTaxonomyWriter);
-
+			PathProcessor reindexer = new PathProcessor() {
+				protected String makeSourcePath(ContentItem inItem)
+				{
+					String path = inItem.getPath();
+					path = path.substring(getRootPath().length());
+					if (path.endsWith("/data.xml"))
+					{
+						path = path.substring(0, path.length() - "/data.xml".length());
+					}
+					else if (path.endsWith(".xconf")) //take off xconf
+					{
+						path = path.substring(0, path.length() - ".xconf".length());			
+					}
+					path = path.replace('\\', '/');
+					return path;
+				}	
 			
-			
-		}
-		catch (IOException ex)
-		{
-			throw new StoreException(ex);
-		}
-		finally
-		{
-			//fieldRunningReindex = false;
-		}
-	}
+				@Override
+				public boolean acceptFile(ContentItem inItem) {
+					String ext = PathUtilities.extractPageType(inItem.getPath());
+					if(ext != null && ext.contains("xconf")){
+						return true;
+					}
+					return false;
+				}
+				public void processFile(ContentItem inContent, User inUser)
+				{
+					String path = makeSourcePath(inContent); //Does this deal with folder based assets?
+					try
+					{
+						Product asset = getStore().getProductBySourcePath(path);
+						if (asset != null)
+						{
+							// This should try to convert the Id into a path. The path will be null if the asset is not in the index.
+//							if (fieldSourcePaths.contains(asset.getSourcePath())) //Hack to deal with folders with sub assets in it
+//							{
+//								return;
+//							}
+							Document doc = getIndexer().populateProduct(writer, asset, false, details);
+							doc = getIndexer().updateFacets(details, doc, inTaxonomyWriter, getFacetConfig());
+							getIndexer().writeDoc(writer, asset.getId().toLowerCase(), doc, false);
 
-	protected void indexAll(IndexWriter writer,TaxonomyWriter inTaxonomyWriter) throws IOException, OpenEditException
-	{
-		
-		
-		try
-		{
-			ProductLuceneIndexAll reindexer = new ProductLuceneIndexAll();
-			reindexer.setWriter(writer);
-			reindexer.setRootPath("/WEB-INF/data/" + getCatalogId() + "/products/");
+//							incrementCount();
+//							logcount++;
+//							if (logcount == 1000)
+//							{
+//								log.info("Reindex processed " + getExecCount() + " index updates so far");
+//								logcount = 0;
+//							}
+						}
+						else
+						{
+							log.info("Error loading asset: " + path);
+						}
+					}
+					catch (Throwable ex)
+					{
+						log.error("Could not read asset: " + path + " continuing " + ex, ex);
+					}
+				}
+			};
 			reindexer.setPageManager(getPageManager());
-			reindexer.setProductArchive(getProductArchive());
-			reindexer.setIndexer(getIndexer());
-			reindexer.setTaxonomyWriter(getTaxonomyWriter());
-			reindexer.setFacetConfig(getFacetConfig());
-			reindexer.process();
-			
+			reindexer.setIncludeExtensions(".xconf");
+			//reindexer.setIndexer(getIndexer());
+			//reindexer.setTaxonomyWriter(inTaxonomyWriter);
+			//reindexer.setMediaArchive(getMediaArchive());
 
-			getProductPaths().clear();
+			/* Search in the new path, if it exists */
+			Page root = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/products/");
+			if (root.exists())
+			{
+				reindexer.setRootPath(root.getPath());
+				reindexer.process();
+			}
 
-			log.info("Reindex started on with " + reindexer.getExecCount() + " products");
-			
+			/* Search in the old place */
+			// reindexer.setRootPath("/" + getCatalogId() + "/assets/");
+			// reindexer.process();
+
+			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
+			// writer.optimize();
+			if (inTaxonomyWriter != null)
+			{
+				inTaxonomyWriter.commit();
+			}
+			writer.commit();
 
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			throw new OpenEditException(e);
+			log.error(ex);
+			throw new OpenEditException(ex);
 		}
-		
-		// HitCollector
-		log.info("Reindex done");
 	}
+	
+	
+
+//	protected void indexAll(IndexWriter writer,TaxonomyWriter inTaxonomyWriter) throws IOException, OpenEditException
+//	{
+//		
+//		
+//		try
+//		{
+//			ProductLuceneIndexAll reindexer = new ProductLuceneIndexAll();
+//			reindexer.setWriter(writer);
+//			reindexer.setRootPath("/WEB-INF/data/" + getCatalogId() + "/products/");
+//			reindexer.setPageManager(getPageManager());
+//			reindexer.setProductArchive(getProductArchive());
+//			reindexer.setIndexer(getIndexer());
+//			reindexer.setTaxonomyWriter(inTaxonomyWriter);
+//			reindexer.setFacetConfig(getFacetConfig());
+//			reindexer.process();
+//			
+//
+//			getProductPaths().clear();
+//
+//			log.info("Reindex started on with " + reindexer.getExecCount() + " products");
+//			
+//
+//		}
+//		catch (Exception e)
+//		{
+//			throw new OpenEditException(e);
+//		}
+//		
+//		// HitCollector
+//		log.info("Reindex done");
+//	}
 	
 	private boolean doesSearchSecurely(WebPageRequest inReq)
 	{

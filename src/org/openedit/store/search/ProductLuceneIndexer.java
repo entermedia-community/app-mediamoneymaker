@@ -109,101 +109,13 @@ public class ProductLuceneIndexer  extends LuceneIndexer{
 		}
 	}
 
-	// public Document createFolderDoc(Page inDir, String inSourcePath, String
-	// inId)
-	// {
-	// Document doc = new Document();
-	// doc.add(new Field("datatype", "folder", Field.Store.YES,
-	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	//
-	// Field id = new Field("id", inId, Field.Store.YES,
-	// Field.Index.ANALYZED);
-	// doc.add(id); // Why is this tokenized? Guess so we can find lower
-	// // case versions
-	//
-	// doc.add(new Field("name", inDir.getName(), Field.Store.YES,
-	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	//
-	// doc.add(new Field("sourcepath", inSourcePath + "/", Field.Store.YES,
-	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	//
-	// String[] dirs = inSourcePath.split("/");
-	// StringBuffer description = new StringBuffer();
-	//
-	// for (int i = 0; i < dirs.length; i++)
-	// {
-	// description.append(dirs[i]);
-	// description.append(' ');
-	// }
-	// doc.add(new Field("description", description.toString(), Field.Store.NO,
-	// Field.Index.ANALYZED));
-	//
-	//
-	// if (usesSearchSecurity())
-	// {
-	// populatePermission(doc, inDir, "viewasset");
-	// }
-	//
-	// Map pageProperties = inDir.getPageSettings().getProperties();
-	// for (Iterator iterator = pageProperties.keySet().iterator();
-	// iterator.hasNext();)
-	// {
-	// PageProperty prop =
-	// (PageProperty)pageProperties.get((String)iterator.next());
-	// indexProperty(doc, prop.getName(), prop.getValue());
-	// }
-	//
-	// Product product = getStore().getProductBySourcePath(inSourcePath + "/");
-	// if (product != null)
-	// {
-	// Map productProperties = product.getProperties();
-	// for (Iterator iterator = productProperties.keySet().iterator();
-	// iterator.hasNext();)
-	// {
-	// String key = (String) iterator.next();
-	// String val = (String)productProperties.get(key);
-	// indexProperty(doc, key, val);
-	// }
-	// }
-	//
-	//
-	// String folderSourcePath =
-	// PathUtilities.extractDirectoryPath(inSourcePath) + "/";
-	// doc.add(new Field("foldersourcepath", folderSourcePath, Field.Store.YES,
-	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	//
-	// //for SF - Jobs
-	// String clientview = inDir.getProperty("clientview");
-	// if (("true").equals(clientview))
-	// {
-	// doc.add(new Field("clientview", "true", Field.Store.YES,
-	// Field.Index.NOT_ANALYZED_NO_NORMS));
-	// }
-	//
-	// return doc;
-	// }
-
-	private void indexProperty(Document doc, String key, String val) {
-		if (key != null && val != null) {
-			doc.add(new Field(key, val, Field.Store.YES,
-					Field.Index.NOT_ANALYZED_NO_NORMS));
-		}
-	}
+	
+	
 
 	public Document createProductDoc(Product product, PropertyDetails inDetails) {
 		Document doc = new Document();
 
-		String datatype = product.getProperty("datatype");
-		if (datatype == null) {
-			datatype = "original";
-		}
-		doc.add(new Field("datatype", datatype, Field.Store.YES,
-				Field.Index.NOT_ANALYZED_NO_NORMS));
 
-		Field id = new Field("id", product.getId(), Field.Store.YES,
-				Field.Index.ANALYZED);
-		doc.add(id); // Why is this tokenized? Guess so we can find lower
-		// case versions
 
 		Field path = new Field("sourcepath", product.getSourcePath(),
 				Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
@@ -251,7 +163,7 @@ public class ProductLuceneIndexer  extends LuceneIndexer{
 
 		Set catalogs = buildCatalogSet(product);
 
-		populateDescription(doc, product, inDetails, catalogs);
+		//populateDescription(doc, product, inDetails, catalogs);
 		populateJoinData("category", doc, catalogs, "id", false);
 
 		// populateSecurity(doc, product, catalogs);
@@ -259,8 +171,21 @@ public class ProductLuceneIndexer  extends LuceneIndexer{
 			populatePermission(doc, product, "viewproduct");
 		}
 		populateExactCategory(doc, product);
-		populateProperties(doc, product, inDetails);
+		StringBuffer keywords = new StringBuffer();
 
+		readStandardProperties(inDetails, product, keywords, doc);
+		List details = inDetails.getDetails();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			readProperty(product, doc, keywords, detail);
+		}
+		readDescription(doc, keywords);
+
+		
+
+		
+		
 		/*
 		 * StringBuffer sizes = new StringBuffer(); for (Iterator iters =
 		 * product.getSizes().iterator(); iters.hasNext();) { String size =
@@ -383,118 +308,7 @@ public class ProductLuceneIndexer  extends LuceneIndexer{
 		populatePermission(inProduct, inDoc, add, inPermission);
 	}
 
-	protected void populateProperties(Document inDoc, Product inProduct,
-			PropertyDetails inDetails) throws OpenEditException {
-		List list = inDetails.findIndexProperties();
-		for (Iterator iter = list.iterator(); iter.hasNext();) {
-			PropertyDetail det = (PropertyDetail) iter.next();
-			if (det.getId().equals("name") || det.getId().equals("description")
-					|| det.getId().equals("id")
-					|| det.getId().equals("category")
-					|| det.getId().equals("datatype")
-					|| det.getId().equals("productrelated")) {
-				// These are already hardcoded
-				continue;
-			}
-			if (det.getType() != null && det.getType().endsWith("join")) {
-				// get the values from another list
-				String id = det.getExternalId();
-				if (id == null) {
-					id = det.getId();
-				}
-				String table = id.substring(0, id.indexOf('.'));
-				String field = id.substring(id.indexOf('.') + 1);
-				Searcher searcher = getSearcherManager().getSearcher(
-						det.getCatalogId(getStore().getCatalogId()), table);
-				// get this data productstates.stateid
-				// search by product id
-				Collection values = searcher.fieldSearch("productid",
-						inProduct.getId());
-				if (values != null) {
-					if (det.getType().startsWith("date")) {
-						populateDateJoin(det, inDoc, values, field, true);
-					} else {
-						populateJoinData(det, inDoc, values, field);
-					}
-				}
-				continue;
-			}
 
-			String prop = inProduct.get(det.getId());
-			if (prop == null && inProduct.getSourcePage() != null) {
-				// try the .xconf structure
-				prop = inProduct.getSourcePage().get(det.getId());
-			}
-			if (prop != null) {
-				if (det.isDate()) {
-					String date = inProduct.getProperty(det.getId());
-					if (date != null && date.length() > 0) {
-						try {
-							Date realdate = DateStorageUtil.getStorageUtil().parseFromStorage(date);
-							prop = DateTools.dateToString(realdate,
-									Resolution.SECOND);
-							inDoc.add(new Field(det.getId(), prop,
-									Field.Store.YES,
-									Field.Index.NOT_ANALYZED_NO_NORMS));
-						} catch (Exception ex) {
-							log.error("Problem parsing date (input="+date+"): "
-									+ ex.getMessage());
-						}
-					}
-				}
-
-				else if (det.isDataType("double") || det.isDataType("number")
-						|| det.isDataType("long")) {
-					try {
-						String sortable = getNumberUtils().double2sortableStr(
-								prop);
-						inDoc.add(new Field(det.getId() + "_sortable",
-								sortable, Field.Store.YES,
-								Field.Index.NOT_ANALYZED_NO_NORMS));
-					} finally {
-						inDoc.add(new Field(det.getId(), prop, Field.Store.YES,
-								Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-				} else if (det.isStored()) {
-					inDoc.add(new Field(det.getId(), prop, Field.Store.YES,
-							Field.Index.ANALYZED));
-				} else {
-					inDoc.add(new Field(det.getId(), prop, Field.Store.NO,
-							Field.Index.ANALYZED));
-				}
-			}
-
-			if (det.isDataType("boolean")) {
-				if (Boolean.parseBoolean(prop)) {
-					inDoc.add(new Field(det.getId(), "true", Field.Store.YES,
-							Field.Index.NOT_ANALYZED_NO_NORMS));
-				} else {
-					inDoc.add(new Field(det.getId(), "false", Field.Store.YES,
-							Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-
-			}
-
-			else if (det.isDataType("permission")) {
-				populatePermission(inDoc, inProduct, det.getId());
-
-			}
-			
-			else if (det.isList() && det.isSortable()){
-				String listcatalogid = det.getListCatalogId();
-				String listid = det.getListId();
-				String remoteid = inProduct.get(det.getId());
-				if (remoteid!=null){
-					Data remote = getSearcherManager().getData(listcatalogid, listid, remoteid);
-					if (remote!=null){
-						inDoc.add(new Field(det.getId() + "_sorted",	remote.getName(), Field.Store.YES, 
-								Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-				}
-			}
-		}
-
-	}
 
 	public void populateDateJoin(PropertyDetail inDetail, Document doc,
 			Collection allParentCategories, String inField, boolean inIsStored) {
