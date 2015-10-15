@@ -403,6 +403,13 @@ public class CartModule extends BaseStoreModule {
 			
 			cart.setBillingAddress(customer.getBillingAddress());
 		}
+		else
+		{
+			if (customer.getBillingAddress().getAddress1() != null && !customer.getBillingAddress().getAddress1().isEmpty())
+			{
+				cart.setBillingAddress(customer.getBillingAddress());
+			}
+		}
 		if (inReq.getRequestParameter("shipping.address1.value") != null && 
 				!inReq.getRequestParameter("shipping.address1.value").isEmpty()) {
 			log.info("Shipping address found, saving it");
@@ -411,6 +418,13 @@ public class CartModule extends BaseStoreModule {
 			log.info("Shipping address " +customer.getShippingAddress()); 
 			
 			cart.setShippingAddress(customer.getShippingAddress());
+		}
+		else
+		{
+			if (customer.getShippingAddress().getAddress1() != null && !customer.getShippingAddress().getAddress1().isEmpty())
+			{
+				cart.setShippingAddress(customer.getShippingAddress());
+			}
 		}
 		
 		Address taxRateAddress = null;
@@ -820,29 +834,6 @@ public class CartModule extends BaseStoreModule {
 		if (cart.get("forcetestmode") !=null){
 			order.setProperty("forcetestmode",cart.get("forcetestmode"));
 		}
-		//check for cases where an out of stock item will cancel order processing
-		String checkstock = inPageRequest.getRequestParameter("cancelonoutofstock");
-		if (checkstock == null){
-			checkstock = cart.get("cancelonoutofstock");
-		}
-		if (Boolean.parseBoolean(checkstock)){
-			log.info("checking out of stock status");
-			Product outofstock = null;
-			for (Iterator iter = cart.getItemIterator(); iter.hasNext();) {
-				CartItem cartItem = (CartItem) iter.next();
-				InventoryItem inventoryItem = cartItem.getInventoryItem();
-				if (inventoryItem != null && inventoryItem.getQuantityInStock() == 0) {
-					outofstock = cartItem.getProduct();
-					break;
-				}
-			}
-			if (outofstock != null){
-				log.info("at least one item is out of stock, cancelling order processing");
-				orderState.setOk(false);
-				orderState.setDescription("\""+outofstock.getName()+"\" is no longer in stock");
-				return order;
-			}
-		}
 
 		String applicationid = inPageRequest.findValue("applicationid");
 		order.setProperty("applicationid", applicationid);
@@ -917,7 +908,7 @@ public class CartModule extends BaseStoreModule {
 			for (Iterator iter = cart.getItemIterator(); iter.hasNext();) {
 				CartItem cartItem = (CartItem) iter.next();
 				Product product = cartItem.getProduct();
-				store.saveProduct(product);
+				store.getProductArchive().saveProduct(product);
 			}
 			// Order succeeded - remove cart
 			cart.removeAllItems();
