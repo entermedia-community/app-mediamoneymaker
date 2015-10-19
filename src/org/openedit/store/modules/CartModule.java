@@ -3,7 +3,6 @@
  */
 package org.openedit.store.modules;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -806,7 +805,7 @@ public class CartModule extends BaseStoreModule {
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		OrderState orderState = order.getOrderStatus();
 		cart.setCurrentOrder(order);
-
+		
 		if (cart.isEmpty()) {
 			orderState.setOk(false);
 			orderState.setDescription("Error: Cart is empty.<br><br>");
