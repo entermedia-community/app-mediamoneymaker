@@ -5,6 +5,7 @@ package org.openedit.store;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -15,7 +16,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.money.Money;
+import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.SecurityGroupAdjustment;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -26,6 +30,16 @@ public class ProductAdder
 	private static final Log log = LogFactory.getLog(ProductAdder.class);
 
 	protected static final String PRODUCTID = "productid";
+	
+	protected DiscountCalculator fieldDiscountCalculator;
+	
+	public DiscountCalculator getDiscountCalculator(){
+		return fieldDiscountCalculator;
+	}
+	
+	public void setDiscountCalculator(DiscountCalculator inDiscountCalculator){
+		fieldDiscountCalculator = inDiscountCalculator;
+	}
 
 	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload) throws StoreException
 	{
@@ -264,9 +278,58 @@ public class ProductAdder
 		}
 		//recalculate adjustments every time
 		Coupon.recalculateAdjustments(inCart);
+		//check for user role adjustments
+		applySecurityGroupAdjustments(inReq,inCart);
 	}
 	
-	private void removeCoupon(Cart inCart, Coupon inCoupon)
+	/**
+	 * 
+	 * @param inReq
+	 * @param inCart
+	 * @throws StoreException
+	 */
+	protected void applySecurityGroupAdjustments(WebPageRequest inReq, Cart inCart) throws StoreException{
+		DiscountCalculator calculator = getDiscountCalculator();
+		if (calculator == null){
+			MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+			calculator = (DiscountCalculator) archive.getModuleManager().getBean("discountCalculator");
+			setDiscountCalculator(calculator);
+		}
+		//remove old adjustments
+		List<Adjustment> list = new ArrayList<Adjustment>();
+		Iterator<?> itr = inCart.getAdjustments().iterator();
+		while(itr.hasNext()){
+			Adjustment adjustment = (Adjustment) itr.next();
+			if (adjustment instanceof SecurityGroupAdjustment){
+				list.add(adjustment);
+			}
+		}
+		for(Adjustment adjustment:list){
+			inCart.getAdjustments().remove(adjustment);
+		}
+		//add new ones
+		itr = inCart.getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			Product product = item.getProduct();
+			if (product == null || Coupon.isCoupon(item)){
+				continue;
+			}
+			Money discount = calculator.getDiscount(inReq,item);
+			if (discount.isZero()){
+				continue;
+			}
+			SecurityGroupAdjustment adjustment = new SecurityGroupAdjustment();
+			adjustment.setDiscount(discount);
+			adjustment.setProductId(product.getId());
+			if (item.getInventoryItem() != null){
+				adjustment.setInventoryItemId(item.getInventoryItem().getSku());
+			}
+			inCart.addAdjustment(adjustment);
+		}
+	}
+	
+	protected void removeCoupon(Cart inCart, Coupon inCoupon)
 	{
 		Iterator itr = inCart.getInventoryItems().iterator();
 		while (itr.hasNext())

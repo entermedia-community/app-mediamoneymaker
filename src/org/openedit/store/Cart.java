@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.SecurityGroupAdjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.Order;
@@ -369,6 +370,23 @@ public class Cart extends BaseData {
 			}
 		}
 		return totalPrice;
+	}
+	
+	public Money getAdjustedUnitPrice(CartItem inItem){
+		Money price = inItem.getYourPrice();
+		Iterator<?> itr = getAdjustments().iterator();
+		while(itr.hasNext()){
+			Adjustment adjustment = (Adjustment) itr.next();
+			if (adjustment instanceof SecurityGroupAdjustment && inItem.getProduct() != null){
+				SecurityGroupAdjustment sadjustment = (SecurityGroupAdjustment) adjustment;
+				if (inItem.getProduct().getId().equals(sadjustment.getProductId())){
+					Money discount = sadjustment.getDiscount();
+					price = price.subtract(discount);
+					break;
+				}
+			}
+		}
+		return price;
 	}
 
 	protected Money calculateAdjustedPrice(CartItem inItem) {

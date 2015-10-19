@@ -130,6 +130,7 @@ public class CartItem extends BaseData
 		}
 		return price;
 	}
+	
 	public void setYourPrice(Money inMoney)
 	{
 		fieldYourPrice = inMoney;

@@ -166,7 +166,6 @@ public class CartModule extends BaseStoreModule {
 	public void updateCart(WebPageRequest inPageRequest) throws Exception {
 		Cart cart = getCart(inPageRequest);
 		getProductAdder().updateCart(inPageRequest, cart);
-
 	}
 
 	/**

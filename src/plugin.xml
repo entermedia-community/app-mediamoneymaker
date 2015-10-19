@@ -361,6 +361,9 @@
 		</property>
 		<property name="userManager"><ref bean="userManager" />
 		</property>
-		
 	</bean>
+	
+	<bean id="discountCalculator" class="org.openedit.store.DiscountCalculator">
+    </bean>
+    
 </beans>
