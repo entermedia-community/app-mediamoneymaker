@@ -12,7 +12,7 @@ import org.openedit.money.Money;
 import com.openedit.WebPageRequest;
 import com.openedit.users.User;
 
-public class DiscountCalculator {
+public class DiscountCalculator implements MoneyCalculator {
 	
 	private static final Log log = LogFactory.getLog(DiscountCalculator.class);
 	
@@ -102,6 +102,7 @@ public class DiscountCalculator {
 				}
 			}
 		}
+//		System.out.println("@@@@@@@@@@@@@@ price "+price);
 		return price;
 	}
 	

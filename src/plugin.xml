@@ -363,7 +363,7 @@
 		</property>
 	</bean>
 	
-	<bean id="discountCalculator" class="org.openedit.store.DiscountCalculator">
+	<bean id="discountCalculator" class="org.openedit.store.DiscountCalculator" scope="prototype">
     </bean>
     
 </beans>

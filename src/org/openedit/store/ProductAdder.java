@@ -31,14 +31,14 @@ public class ProductAdder
 
 	protected static final String PRODUCTID = "productid";
 	
-	protected DiscountCalculator fieldDiscountCalculator;
+	protected MoneyCalculator fieldMoneyCalculator;
 	
-	public DiscountCalculator getDiscountCalculator(){
-		return fieldDiscountCalculator;
+	public MoneyCalculator getMoneyCalculator(){
+		return fieldMoneyCalculator;
 	}
 	
-	public void setDiscountCalculator(DiscountCalculator inDiscountCalculator){
-		fieldDiscountCalculator = inDiscountCalculator;
+	public void setMoneyCalculator(MoneyCalculator inMoneyCalculator){
+		fieldMoneyCalculator = inMoneyCalculator;
 	}
 
 	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload) throws StoreException
@@ -289,11 +289,11 @@ public class ProductAdder
 	 * @throws StoreException
 	 */
 	protected void applySecurityGroupAdjustments(WebPageRequest inReq, Cart inCart) throws StoreException{
-		DiscountCalculator calculator = getDiscountCalculator();
+		MoneyCalculator calculator = getMoneyCalculator();
 		if (calculator == null){
 			MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
-			calculator = (DiscountCalculator) archive.getModuleManager().getBean("discountCalculator");
-			setDiscountCalculator(calculator);
+			calculator = (MoneyCalculator) archive.getModuleManager().getBean("discountCalculator");
+			setMoneyCalculator(calculator);
 		}
 		//remove old adjustments
 		List<Adjustment> list = new ArrayList<Adjustment>();
