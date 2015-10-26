@@ -166,6 +166,14 @@ public class CartModule extends BaseStoreModule {
 	public void updateCart(WebPageRequest inPageRequest) throws Exception {
 		Cart cart = getCart(inPageRequest);
 		getProductAdder().updateCart(inPageRequest, cart);
+		String [] fields = inPageRequest.getRequestParameters("field");
+		if (fields == null || fields.length == 0){
+			return;
+		}
+		for (String field:fields){
+			String val = inPageRequest.getRequestParameter(field + ".value");
+			cart.setProperty(field,val);
+		}
 	}
 
 	/**
@@ -813,7 +821,6 @@ public class CartModule extends BaseStoreModule {
 			inPageRequest.putPageValue("orderState", "Your cart is empty");
 			return null;
 		}
-		
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		OrderState orderState = order.getOrderStatus();
 		cart.setCurrentOrder(order);
@@ -848,7 +855,14 @@ public class CartModule extends BaseStoreModule {
 		order.setShippingAddress(cart.getShippingAddress());
 		order.setBillingAddress(cart.getBillingAddress());
 		
-//		log.info("#### ADJUSTMENTS 1: "+order.getAdjustments());
+		//copy properties over from cart to order
+		Iterator<?> keys = cart.getProperties().keySet().iterator();
+		while(keys.hasNext()){
+			String key = (String) keys.next();
+			String value = (String) cart.getProperties().get(key);
+			order.setProperty(key,value);
+			cart.getProperties().remove(key);
+		}
 		
 		// Export order to XML
 		store.saveOrder(order);
