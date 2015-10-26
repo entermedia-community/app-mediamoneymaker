@@ -861,8 +861,8 @@ public class CartModule extends BaseStoreModule {
 			String key = (String) keys.next();
 			String value = (String) cart.getProperties().get(key);
 			order.setProperty(key,value);
-			cart.getProperties().remove(key);
 		}
+		cart.getProperties().clear();//clear all properties on cart
 		
 		// Export order to XML
 		store.saveOrder(order);
