@@ -813,6 +813,14 @@ public class CartModule extends BaseStoreModule {
 			}
 		}
 	}
+	
+	public void deleteCartProperties(WebPageRequest inRequest){
+		Cart cart = getCart(inRequest);
+		if (cart == null){
+			return;
+		}
+		cart.getProperties().clear();
+	}
 
 	public synchronized Order processOrder(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
@@ -862,7 +870,6 @@ public class CartModule extends BaseStoreModule {
 			String value = (String) cart.getProperties().get(key);
 			order.setProperty(key,value);
 		}
-		cart.getProperties().clear();//clear all properties on cart
 		
 		// Export order to XML
 		store.saveOrder(order);
