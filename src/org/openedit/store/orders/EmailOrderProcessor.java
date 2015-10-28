@@ -77,7 +77,12 @@ public class EmailOrderProcessor extends BaseOrderProcessor implements OrderProc
 			}
 
 			TemplateWebEmail mailer = postMail.getTemplateWebEmail();
-			mailer.setFrom( inStore.getFromAddress() );
+			String from = inContext.findValue("from-address");//check for override of from-address
+			if( from == null)
+			{
+				from = inStore.getFromAddress();
+			}
+			mailer.setFrom(from);
 			mailer.setWebPageContext(inContext);
 			// Email clerk
 			PageProperty prop = new PageProperty("customeremail");
