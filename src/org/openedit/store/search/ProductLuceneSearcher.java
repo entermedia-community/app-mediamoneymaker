@@ -439,8 +439,13 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 			for (Iterator iter = inProducts.iterator(); iter.hasNext();)
 			{
 				Product product = (Product) iter.next();
+				
+				
+				
 				Document doc = getIndexer().populateProduct(getIndexWriter(), product, false, details);
-				getIndexer().updateFacets(details, doc, getTaxonomyWriter(), getFacetConfig());
+				doc = getIndexer().updateFacets(details, doc, getTaxonomyWriter(), getFacetConfig());
+				getIndexer().writeDoc(getIndexWriter(), product.getId().toLowerCase(), doc, false);
+			
 				getProductPaths().put( product.getId(), product.getSourcePath()); //This might use up mem. Need to fix
 				//getProductPaths().remove( product.getId() );
 			}
