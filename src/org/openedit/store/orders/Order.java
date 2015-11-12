@@ -1092,5 +1092,17 @@ public class Order extends BaseData implements Comparable
 		}
 		return latest;
 	}
+	
+	/**
+	 * generic way of retrieving a date
+	 * @param inValue
+	 * @return
+	 */
+	public Date getDate(String inValue){
+		String str = get(inValue);
+		str = DateStorageUtil.getStorageUtil().checkFormat(str);
+		Date d = DateStorageUtil.getStorageUtil().parseFromStorage(str);
+		return d;
+	}
 
 }
