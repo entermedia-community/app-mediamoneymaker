@@ -206,6 +206,7 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		// Stripe.js
 		Map<String,String> initialMetadata = new HashMap<String,String>();
 		populateMetadata(inOrder,initialMetadata);
+		log.info("Stripe Metadata: "+initialMetadata);
 		chargeParams.put("description",inOrder.getOrderNumber());
 		chargeParams.put("metadata", initialMetadata);
 		try
@@ -401,19 +402,27 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		inMetadata.put("billingaddress",billing.toString());
 		Address shipping = inOrder.getCustomer().getShippingAddress();
 		inMetadata.put("shippingaddress",shipping.toString());
+		StringBuilder meta = new StringBuilder();
 		Iterator<?> itr = inOrder.getItems().iterator();
 		for(int i=1; itr.hasNext(); i++){
 			CartItem item = (CartItem) itr.next();
 			String sku = item.getSku();
-			String name = item.getName();
 			Money price = item.getYourPrice();
+			int quantity = item.getQuantity();
 			StringBuilder buf = new StringBuilder();
 			buf.append(sku).append(": ");
 			if (Coupon.isCoupon(item)){
-				buf.append("Coupon - ");
+				buf.append("coupon - ");
 			}
-			buf.append(name).append(" ").append(price.toShortString());
-			inMetadata.put("cartitem-"+i, buf.toString());
+//			buf.append(name)
+			buf.append(String.valueOf(quantity)).append("x");
+			buf.append(price.toShortString());
+//			inMetadata.put("cartitem-"+i, buf.toString());
+			if (itr.hasNext()){
+				buf.append(";");
+			}
+			meta.append(buf.toString());
 		}
+		inMetadata.put("cartitems",meta.toString());
 	}
 }
