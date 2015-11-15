@@ -1172,5 +1172,17 @@ public class Order extends BaseData implements Comparable
 		}
 		return latest;
 	}
+	
+	/**
+	 * 
+	 * @param inField
+	 * @return
+	 */
+	public Date getDate(String inField){
+		String value = get(inField);
+		value = DateStorageUtil.getStorageUtil().checkFormat(value);
+		Date date = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+		return date;
+	}
 
 }
