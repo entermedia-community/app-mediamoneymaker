@@ -26,6 +26,7 @@ import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.adjustments.Adjustment;
+import org.openedit.store.adjustments.SecurityGroupAdjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
@@ -1103,6 +1104,28 @@ public class Order extends BaseData implements Comparable
 		str = DateStorageUtil.getStorageUtil().checkFormat(str);
 		Date d = DateStorageUtil.getStorageUtil().parseFromStorage(str);
 		return d;
+	}
+	
+	/**
+	 * gets the combined your price and adjustment price of a product
+	 * @param inItem
+	 * @return
+	 */
+	public Money getAdjustedUnitPrice(CartItem inItem){
+		Money price = inItem.getYourPrice();
+		Iterator<?> itr = getAdjustments().iterator();
+		while(itr.hasNext()){
+			Adjustment adjustment = (Adjustment) itr.next();
+			if (adjustment instanceof SecurityGroupAdjustment && inItem.getProduct() != null){
+				SecurityGroupAdjustment sadjustment = (SecurityGroupAdjustment) adjustment;
+				if (inItem.getProduct().getId().equals(sadjustment.getProductId())){
+					Money discount = sadjustment.getDiscount();
+					price = price.subtract(discount);
+					break;
+				}
+			}
+		}
+		return price;
 	}
 
 }
