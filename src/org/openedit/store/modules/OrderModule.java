@@ -490,6 +490,18 @@ public class OrderModule extends BaseModule
 			ShipmentEntry entry = new ShipmentEntry();
 			entry.setSku(sku);
 			entry.setQuantity(quantity);
+			String[] fields = inReq.getRequestParameters(sku + "-field");
+			if (fields != null && fields.length > 0)
+			{
+				for (String field : fields)
+				{
+					String fieldval = inReq.getRequestParameter(sku + "-" + field + ".value");
+					if (fieldval != null && !fieldval.isEmpty())
+					{
+						entry.setProperty(field, fieldval);
+					}
+				}
+			}
 			if (shipment == null)
 			{
 				shipment = new Shipment();
@@ -550,6 +562,18 @@ public class OrderModule extends BaseModule
 			ShipmentEntry entry = new ShipmentEntry();
 			entry.setSku(sku);
 			entry.setQuantity(quantity);
+			String[] fields = inReq.getRequestParameters(sku + "-field");
+			if (fields != null && fields.length > 0)
+			{
+				for (String field : fields)
+				{
+					String fieldval = inReq.getRequestParameter(sku + "-" + field + ".value");
+					if (fieldval != null && !fieldval.isEmpty())
+					{
+						entry.setProperty(field, fieldval);
+					}
+				}
+			}
 			if (shipment == null)
 			{
 				shipment = new Shipment();
