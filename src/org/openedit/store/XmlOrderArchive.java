@@ -347,6 +347,21 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 						}
 						shipEntry.addAttribute(key2, value2);
 					}
+					// add properties to shipping-entry
+					for (Iterator iterator4 = entry.getProperties().keySet()
+							.iterator(); iterator4.hasNext();) {
+						String key3 = (String) iterator4.next();
+						String value3 = (String) entry.get(key3);
+						if (value3 != null && !value3.isEmpty()){
+							System.out.println("key3  " + key3 + ": value : " + value3);
+							if ("sku".equals(key3) || "quantity".equals(key3)){
+								continue;
+							}
+							Element extraInfoElem = shipEntry.addElement("property");
+							extraInfoElem.addAttribute("name", key3);
+							extraInfoElem.setText(value3);
+						}
+					}
 				}
 
 			}
@@ -1028,6 +1043,15 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 //					entry.setCartItem(inOrder.getItem(sku));
 					entry.setSku(sku);
 					entry.setQuantity(Integer.parseInt(quantity));
+					//add props
+					for (Iterator it = details.elementIterator("property"); it.hasNext();){
+						Element property = (Element) it.next();
+						String propertyname = property.attributeValue("name");
+						if ("sku".equals(propertyname) || "quantity".equals(propertyname)){
+							continue;
+						}
+						entry.setProperty(property.attributeValue("name"), property.getText());
+					}
 					for (Iterator iterator2 = details.attributeIterator(); iterator2.hasNext();) {
 						Attribute object = (Attribute) iterator2.next();
 						String key = object.getName();
