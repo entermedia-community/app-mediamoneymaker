@@ -6,6 +6,7 @@ package org.openedit.store;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
@@ -700,7 +702,7 @@ public class Product extends BaseData implements Data
 	{
 		if (inDate != null)
 		{
-			for (Iterator iter = getInventoryItems().iterator(); iter.hasNext();)
+			for (Iterator<?> iter = getInventoryItems().iterator(); iter.hasNext();)
 			{
 				InventoryItem element = (InventoryItem) iter.next();
 				//special price: startdate and stopdate are both set
@@ -708,6 +710,14 @@ public class Product extends BaseData implements Data
 				//future price: startdate is set, future stopdate is not set
 				Date datestart = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("startdate"));
 				Date datestop = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("stopdate"));
+				if (datestart!=null){
+					datestart = DateUtils.round(datestart,Calendar.DAY_OF_MONTH);
+				}
+				if (datestop!=null){
+					datestop = DateUtils.round(datestop,Calendar.DAY_OF_MONTH);
+					datestop = DateUtils.addDays(datestop,1);//ahead one day
+					datestop = DateUtils.addSeconds(datestop,-1);//back one second
+				}
 				if (datestart!=null && (inDate.after(datestart) || inDate.equals(datestart)) )
 				{
 					if (datestop == null || inDate.before(datestop))
