@@ -200,7 +200,11 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		}
 		String amountstring = totalprice.toShortString().replace(".", "").replace("$", "").replace(",", "");
 		chargeParams.put("amount", amountstring);
-		chargeParams.put("currency", "cad");
+		String currency = inStore.get("currency");
+		if(currency == null){
+			currency = "cad";
+		}
+		chargeParams.put("currency", currency);
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained via js
 		
 		String descriptor = inStore.get("statement_descriptor");
