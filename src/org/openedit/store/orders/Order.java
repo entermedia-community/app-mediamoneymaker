@@ -655,7 +655,7 @@ public class Order extends BaseData implements Comparable
 		int quantityToBeShipped = quantity - quantityRefunded;
 		// log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
 		// This assumes that refunds can only occur before a shipment is sent
-		return (quantityToBeShipped + quantityRefunded >=  quantity);
+		return (quantityShipped + quantityRefunded >=  quantity);
 	}
 
 	public int getQuantityRefunded(CartItem cartItem)
