@@ -15,8 +15,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-
-import com.openedit.util.FileUtils;
+import org.openedit.util.FileUtils;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com

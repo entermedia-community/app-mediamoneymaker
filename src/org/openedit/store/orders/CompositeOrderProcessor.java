@@ -12,11 +12,10 @@ import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.ModuleManager;
-import com.openedit.WebPageRequest;
 
 public class CompositeOrderProcessor implements OrderProcessor
 {

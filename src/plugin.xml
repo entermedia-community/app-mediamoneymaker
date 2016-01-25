@@ -25,15 +25,20 @@
   	  		<property name="rootDirectory"><ref bean="root"/></property>
   	  			<property name="moduleManager"><ref bean="moduleManager"/></property>
   	  		  	  	<property name="storeArchive"><ref bean="storeArchive" /></property>
-  	  		  	
+  	  		  	<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
   </bean>
   
   
-  <bean id="productSearcher" class="org.openedit.store.search.ProductLuceneSearcher" scope="prototype">
+  <bean id="productSearcher" class="org.openedit.store.search.ProductSearcher" scope="prototype">
   	<property name="webEventListener"><ref bean="storeEventHandler"/></property>
     <property name="rootDirectory"><ref bean="root"/></property>
     <property name="pageManager"><ref bean="pageManager" /></property>
   	<property name="storeArchive"><ref bean="storeArchive" /></property>
+  	<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
   </bean>
   
   <bean id="CatalogModule" class="org.openedit.store.modules.CatalogModule">
@@ -339,6 +344,9 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		
 		<property name="prefix"><value>addresses</value></property>
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
 	</bean>
 	
 	
@@ -352,7 +360,9 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
 	</bean>
 	
   

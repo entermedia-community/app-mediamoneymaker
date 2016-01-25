@@ -8,10 +8,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.ModuleManager;
 import org.openedit.store.CatalogConverter;
 import org.openedit.store.Store;
-
-import com.openedit.ModuleManager;
 //TODO: Make it implement an Interface
 public class CompositeConverter extends CatalogConverter
 {

@@ -12,8 +12,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.entermediadb.scripts.GroovyScriptRunner;
+import org.entermediadb.scripts.Script;
+import org.entermediadb.scripts.ScriptManager;
+import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.config.XMLConfiguration;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.CreditCardType;
 import org.openedit.store.HandlingCharge;
 import org.openedit.store.ProductPathFinder;
@@ -27,17 +36,7 @@ import org.openedit.store.shipping.BaseShippingMethod;
 import org.openedit.store.shipping.CompositeShippingMethod;
 import org.openedit.store.shipping.PriceBasedShippingMethod;
 import org.openedit.store.shipping.WeightBasedShippingMethod;
-
-import com.openedit.ModuleManager;
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.config.XMLConfiguration;
-import com.openedit.entermedia.scripts.GroovyScriptRunner;
-import com.openedit.entermedia.scripts.Script;
-import com.openedit.entermedia.scripts.ScriptManager;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.util.XmlUtil;
+import org.openedit.util.XmlUtil;
 
 /**
  * Creates and sets up our store object. This class is responsible for

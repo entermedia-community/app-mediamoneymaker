@@ -7,16 +7,15 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.email.PostMail;
-import org.entermedia.email.Recipient;
-import org.entermedia.email.TemplateWebEmail;
+import org.entermediadb.email.PostMail;
+import org.entermediadb.email.Recipient;
+import org.entermediadb.email.TemplateWebEmail;
+import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
+import org.openedit.page.PageProperty;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
-import com.openedit.page.PageProperty;
-import com.openedit.page.manage.PageManager;
 
 /**
  * @author cburkey

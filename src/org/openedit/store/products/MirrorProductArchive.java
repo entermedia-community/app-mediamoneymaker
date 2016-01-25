@@ -9,8 +9,7 @@ import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 public class MirrorProductArchive implements ProductArchive
 {

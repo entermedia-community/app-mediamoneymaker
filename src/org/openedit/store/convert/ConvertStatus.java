@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openedit.store.Product;
-
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 
 public class ConvertStatus

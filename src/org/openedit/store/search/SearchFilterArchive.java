@@ -5,17 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
+import org.openedit.page.Permission;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.SearchFilter;
+import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
-import com.openedit.page.Permission;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.util.PathUtilities;
 
 public class SearchFilterArchive
 {

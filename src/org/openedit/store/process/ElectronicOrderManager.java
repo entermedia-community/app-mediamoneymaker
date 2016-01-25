@@ -8,15 +8,14 @@ import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.dom4j.Element;
+import org.openedit.OpenEditException;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.OpenEditException;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.util.XmlUtil;
+import org.openedit.users.User;
+import org.openedit.util.XmlUtil;
 
 public class ElectronicOrderManager {
 

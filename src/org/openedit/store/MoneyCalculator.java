@@ -1,8 +1,7 @@
 package org.openedit.store;
 
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
-
-import com.openedit.WebPageRequest;
 
 
 public interface MoneyCalculator {	

@@ -13,8 +13,7 @@ import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.util.FileUtils;
+import org.openedit.util.FileUtils;
 
 /**
  * This class needs to be refactored, and even possibly eliminated.

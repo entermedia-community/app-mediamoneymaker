@@ -3,20 +3,19 @@ package org.openedit.store.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openedit.OpenEditException;
+import org.openedit.page.Page;
+import org.openedit.page.Permission;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
-
-import com.openedit.OpenEditException;
-import com.openedit.page.Page;
-import com.openedit.page.Permission;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.util.strainer.BlankFilter;
-import com.openedit.util.strainer.Filter;
-import com.openedit.util.strainer.GroupFilter;
-import com.openedit.util.strainer.OrFilter;
-import com.openedit.util.strainer.UserFilter;
+import org.openedit.users.User;
+import org.openedit.util.strainer.BlankFilter;
+import org.openedit.util.strainer.Filter;
+import org.openedit.util.strainer.GroupFilter;
+import org.openedit.util.strainer.OrFilter;
+import org.openedit.util.strainer.UserFilter;
 
 public class XmlProductSecurityArchive implements ProductSecurityArchive
 {

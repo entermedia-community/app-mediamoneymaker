@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.entermedia.MediaArchive;
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
@@ -14,8 +15,6 @@ import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
-
-import com.openedit.WebPageRequest;
 
 /**
  * VirtualCreditOrderProcessor used to increment a virtual credit of a user when purchasing products

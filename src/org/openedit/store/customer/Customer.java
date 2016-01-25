@@ -14,9 +14,8 @@ import org.openedit.Data;
 import org.openedit.money.Fraction;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.TaxRate;
-
-import com.openedit.users.User;
-import com.openedit.users.filesystem.FileSystemUser;
+import org.openedit.users.User;
+import org.openedit.users.filesystem.FileSystemUser;
 
 /**
  * A customer with nice getters and setters on top of the standard user object.

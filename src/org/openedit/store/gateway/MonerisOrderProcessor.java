@@ -5,7 +5,9 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
@@ -13,17 +15,14 @@ import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.util.XmlUtil;
 
 import JavaAPI.CvdInfo;
 import JavaAPI.HttpsPostRequest;
 import JavaAPI.Purchase;
 import JavaAPI.Receipt;
-
-import com.openedit.WebPageRequest;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.util.XmlUtil;
 
 public class MonerisOrderProcessor extends BaseOrderProcessor
 {

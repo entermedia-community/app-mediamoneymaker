@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.openedit.WebPageRequest;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.BaseArchive;
@@ -14,8 +15,6 @@ import org.openedit.store.CartItem;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.WebPageRequest;
 
 public abstract class BaseOrderProcessor extends BaseArchive implements OrderProcessor
 {

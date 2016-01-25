@@ -7,14 +7,13 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.CartItem;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.ModuleManager;
-import com.openedit.WebPageRequest;
-import com.openedit.page.manage.PageManager;
 
 /**
  * @author cburkey

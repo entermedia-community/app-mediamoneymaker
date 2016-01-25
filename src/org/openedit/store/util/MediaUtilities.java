@@ -1,17 +1,16 @@
 package org.openedit.store.util;
 
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.MediaArchive;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.store.Product;
 import org.openedit.store.orders.Order;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.entermedia.scripts.EnterMediaObject;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
 
 public class MediaUtilities extends EnterMediaObject {
 

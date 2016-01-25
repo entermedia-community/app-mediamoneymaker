@@ -3,7 +3,7 @@
  */
 package org.openedit.store;
 
-import com.openedit.OpenEditRuntimeException;
+import org.openedit.OpenEditRuntimeException;
 
 
 /**

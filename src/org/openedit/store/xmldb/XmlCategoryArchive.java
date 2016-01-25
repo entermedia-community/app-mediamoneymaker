@@ -14,19 +14,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.openedit.OpenEditException;
+import org.openedit.OpenEditRuntimeException;
+import org.openedit.config.Configuration;
+import org.openedit.config.XMLConfiguration;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.store.Category;
 import org.openedit.store.CategoryArchive;
 import org.openedit.store.StoreException;
-
-import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.config.Configuration;
-import com.openedit.config.XMLConfiguration;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.util.PathUtilities;
-import com.openedit.util.XmlUtil;
+import org.openedit.util.PathUtilities;
+import org.openedit.util.XmlUtil;
 
 /**
  * @author cburkey

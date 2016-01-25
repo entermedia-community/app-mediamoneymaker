@@ -19,20 +19,24 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
-import org.entermedia.upload.FileUpload;
-import org.entermedia.upload.FileUploadItem;
-import org.entermedia.upload.UploadRequest;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.FilteredTracker;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.money.Money;
+import org.openedit.page.Page;
 import org.openedit.repository.RepositoryException;
 import org.openedit.store.Category;
 import org.openedit.store.Image;
@@ -45,14 +49,9 @@ import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
 import org.openedit.store.edit.StoreEditor;
+import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 import org.openedit.xml.ElementData;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.page.Page;
-import com.openedit.util.FileUtils;
-import com.openedit.util.PathUtilities;
 
 /**
  * @author cburkey
@@ -149,77 +148,8 @@ public class CatalogEditModule extends BaseStoreModule {
 		}
 	}
 
-	public void uploadProductDownloads(WebPageRequest inContext)
-			throws OpenEditException {
-		FileUpload command = new FileUpload();
-		command.setPageManager(getPageManager());
-		UploadRequest properties = command.parseArguments(inContext);
-		if (properties == null) {
-			return;
-		}
-		String id = (String) inContext.getRequestParameter("postfix");
-		// handle the upload
-		// figure out path
-		if (id != null && id.length() > 0) {
-			String filename = properties.getFirstItem().getName();
-			StoreEditor editor = getStoreEditor(inContext);
 
-			Product product = editor.getCurrentProduct();
-			String path = editor.getStore().getStoreHome();
-
-			String finalpath = path + "/products/downloads/" + product.getId()
-					+ "-" + id + ".pdf";
-
-			properties.saveFirstFileAs(finalpath, inContext.getUser());
-			// try to make a thumb for this?
-
-			String thumbpath = path + "/products/downloads/" + product.getId()
-					+ "-" + id + ".jpg";
-
-			File in = new File(getRoot(), finalpath);
-			File out = new File(getRoot(), thumbpath);
-			ConvertInstructions inStructions = new ConvertInstructions();
-			inStructions.setMaxScaledSize(175, 175);
-			// getImageConverter().resizeImage(in, out, inStructions);
-
-		}
-	}
-
-	public void uploadProductResources(WebPageRequest inContext)
-			throws OpenEditException {
-		FileUpload command = new FileUpload();
-		command.setPageManager(getPageManager());
-		UploadRequest properties = command.parseArguments(inContext);
-		if (properties == null) {
-			return;
-		}
-		String id = (String) inContext.getRequestParameter("postfix");
-		// handle the upload
-		// figure out path
-		if (id != null && id.length() > 0) {
-			String filename = properties.getFirstItem().getName();
-			StoreEditor editor = getStoreEditor(inContext);
-
-			Product product = editor.getCurrentProduct();
-			String path = editor.getStore().getStoreHome();
-
-			String finalpath = path + "/products/downloads/" + product.getId()
-					+ "-" + id + ".pdf";
-
-			properties.saveFirstFileAs(finalpath, inContext.getUser());
-			// try to make a thumb for this?
-
-			String thumbpath = path + "/products/downloads/" + product.getId()
-					+ "-" + id + ".jpg";
-
-			File in = new File(getRoot(), finalpath);
-			File out = new File(getRoot(), thumbpath);
-			ConvertInstructions inStructions = new ConvertInstructions();
-			inStructions.setMaxScaledSize(175, 175);
-			// getImageConverter().resizeImage(in, out, inStructions);
-
-		}
-	}
+	
 
 	public void uploadItemImages(WebPageRequest inContext)
 			throws OpenEditException {
@@ -1760,7 +1690,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		String catalogid = inReq.getRequestParameter("catalogid");
 
 		if (getPageManager().getRepository().doesExist("/" + catalogid)) {
-			StoreArchive storeDataReader = (StoreArchive) getBeanFactory()
+			StoreArchive storeDataReader = (StoreArchive) getModuleManager()
 					.getBean("storeArchive");
 			Store store = storeDataReader.getStore(catalogid);
 			inReq.putPageValue("store", store);

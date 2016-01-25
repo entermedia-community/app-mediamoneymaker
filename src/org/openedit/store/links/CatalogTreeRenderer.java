@@ -1,10 +1,9 @@
 package org.openedit.store.links;
 
+import org.entermediadb.webui.tree.HtmlTreeRenderer;
+import org.entermediadb.webui.tree.TreeRenderer;
+import org.entermediadb.webui.tree.WebTree;
 import org.openedit.store.Category;
-
-import com.openedit.webui.tree.HtmlTreeRenderer;
-import com.openedit.webui.tree.TreeRenderer;
-import com.openedit.webui.tree.WebTree;
 
 /**
  * A {@link TreeRenderer} that renders {@link WebTree}s whose nodes are

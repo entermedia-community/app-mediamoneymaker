@@ -1,9 +1,9 @@
 package org.openedit.store;
 
 
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
 
 public interface StoreArchive
 {

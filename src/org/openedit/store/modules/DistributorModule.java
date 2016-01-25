@@ -1,12 +1,11 @@
 package org.openedit.store.modules;
 
+import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.store.Store;
 import org.openedit.store.search.ProductSearcher;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
 
 public class DistributorModule extends BaseStoreModule {
 	

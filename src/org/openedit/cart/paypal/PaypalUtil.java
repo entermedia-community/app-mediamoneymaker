@@ -10,10 +10,9 @@ import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
-
-import com.openedit.WebPageRequest;
 
 public class PaypalUtil {
 

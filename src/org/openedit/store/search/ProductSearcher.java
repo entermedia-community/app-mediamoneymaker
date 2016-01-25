@@ -1,56 +1,754 @@
 package org.openedit.store.search;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.openedit.data.Searcher;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
+import org.entermediadb.links.Link;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.OpenEditRuntimeException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetails;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.money.Money;
+import org.openedit.page.Page;
+import org.openedit.page.PageSettings;
+import org.openedit.page.manage.PageManager;
+import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.store.Cart;
+import org.openedit.store.Category;
+import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.ProductArchive;
 import org.openedit.store.ProductPathFinder;
 import org.openedit.store.Store;
+import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
+import org.openedit.users.Group;
+import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathProcessor;
+import org.openedit.util.PathUtilities;
 
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-
-public interface ProductSearcher extends Searcher, ProductPathFinder
+public class ProductSearcher extends BaseElasticSearcher implements  ProductPathFinder
 {
-	public abstract void fieldSearch(WebPageRequest inPageRequest, Cart cart) throws OpenEditException;
+	static final Log log = LogFactory.getLog(ProductSearcher.class);
+	protected static final String CATALOGIDX = "catalogid";
+	protected static final String CATEGORYID = "categoryid";
+	protected Store fieldStore;
+	protected DecimalFormat fieldDecimalFormatter;
+	protected PageManager fieldPageManager;
+	protected Map fieldProductPaths;
+	private Boolean fieldUsesSearchSecurity;
+	protected ProductLuceneIndexer fieldIndexer;
+	protected StoreArchive fieldStoreArchive;
 
-	public HitTracker search(SearchQuery inQuery);
+	public ProductSearcher()
+	{
+		setFireEvents(true);
+	}
 
-	public abstract void searchCatalogs(WebPageRequest inPageRequest, Cart cart) throws Exception;
+	/**
+	 * @see org.openedit.store.search.ProductSearcher#fieldSearch(com.openedit.WebPageRequest,
+	 *      org.openedit.store.Cart)
+	 */
+	public void fieldSearch(WebPageRequest inPageRequest, Cart cart) throws OpenEditException
+	{
 
-	public abstract void searchExactCatalogs(WebPageRequest inPageRequest, Cart cart) throws Exception;
+		SearchQuery search = addStandardSearchTerms(inPageRequest);
+		if (search == null)
+		{
+			return; // Noop
+		}
+		// Catalog stuff
+		String withincatalog = inPageRequest.getRequestParameter("department");
+		Category department = null;
+		if (withincatalog != null && !"all".equals(withincatalog))
+		{
+			department = getStore().getCategory(withincatalog);
+			search.addMatches("category", withincatalog);
+			//search.putInput("department", department.getId());
+		}
+		cart.setLastVisitedCatalog(department);
 
-	public abstract HitTracker searchStore(WebPageRequest inPageRequest, Cart cart) throws Exception;
+		String type = inPageRequest.getRequestParameter("type");
+		//search.putInput("type", type);
 
-	public abstract void updateIndex(Product inProduct) throws StoreException;
+		// Filter stuff
+		String include = inPageRequest.getRequestParameter("search.includefilter");
+		boolean includeFilter = Boolean.parseBoolean(include);
+		search(inPageRequest, search);
 
-	public abstract void updateIndex(List inProducts, boolean inOptimize) throws StoreException;
+	}
 
-	public abstract ProductArchive getProductArchive();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#searchCatalogs(com.openedit.
+	 * WebPageRequest, org.openedit.store.Cart)
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#searchCatalogs(com.openedit.
+	 * WebPageRequest, org.openedit.store.Cart)
+	 */
+	public void searchCatalogs(WebPageRequest inPageRequest, Cart cart) throws Exception
+	{
+		SearchQuery search = createSearchQuery();
 
-	public abstract Store getStore();
+		Category catalog = null;
+		String catalogId = inPageRequest.getRequestParameter(CATEGORYID);
+		if (catalogId == null)
+		{
+			Page page = inPageRequest.getPage();
+			catalogId = page.get(CATEGORYID);
+		}
+		if (catalogId == null)
+		{
+			catalog = (Category) inPageRequest.getPageValue("category");
+		}
 
-	public abstract void setStore(Store inStore);
+		if (catalog == null && catalogId == null)
+		{
+			// get it from the path?
+			String path = inPageRequest.getPath();
 
-	public abstract void deleteFromIndex(Product inProduct) throws StoreException;
+			catalogId = PathUtilities.extractPageName(path);
+			if (catalogId.endsWith(".draft"))
+			{
+				catalogId = catalogId.replace(".draft", "");
+			}
+		}
 
-	public abstract void deleteFromIndex(String inId) throws StoreException;
+		// Why the content page? Page page = inPageRequest.getContentPage();
+		if (catalog == null)
+		{
+			catalog = getStore().getCategory(catalogId);
+		}
+		if (catalog == null)
+		{
+			if (inPageRequest.getContentPage() == inPageRequest.getPage())
+			{
+				String val = inPageRequest.findValue("showmissingcategories");
+				if (!Boolean.parseBoolean(val))
+				{
+					inPageRequest.redirect(getStore().getStoreHome() + "/search/nosuchcatalog.html");
+				}
+			}
+			log.error("No such catalog " + catalogId);
+			return;
+		}
+		else
+		{
+			catalogId = catalog.getId();
+		}
+		inPageRequest.putPageValue("catalog", catalog); // @deprecated
+		inPageRequest.putPageValue("category", catalog); // @deprecated
 
-	public abstract void deleteFromIndex(HitTracker inOld);
+		cart.setLastVisitedCatalog(catalog); // this is prone
+		String actualid = catalogId;
+		if (catalog.getLinkedToCategoryId() != null)
+		{
+			actualid = catalog.getLinkedToCategoryId();
+		}
 
-	public abstract HitTracker getAllHits();
+		search.addMatches("category", actualid);
 
-	public abstract void flush();
+		boolean selected = true;
+		if (catalog.getParentCatalog() == null)
+		{
+			selected = false; // The top level catalog does not count as a
+			// selection
+		}
 
-	//public abstract Product getProduct(String inId);
+		Link crumb = getStore().buildLink(catalog, inPageRequest.findValue("url-prefix"));
+		inPageRequest.putSessionValue("crumb", crumb);
+
+		String sortBy = catalog.get("sortfield");
+		search.setSortBy(sortBy);
+
+		cachedSearch(inPageRequest, search);
+
+	}
+
+	public void updateIndex(Product inProduct) throws StoreException
+	{
+		List all = new ArrayList(1);
+		all.add(inProduct);
+		updateIndex(all, null);
+		clearIndex(); //Does not flush because it will flush if needed anyways on a search
+
+	}
+
+	//	public Analyzer getAnalyzer()
+	//	{
+	//		if (fieldAnalyzer == null)
+	//		{
+	////			CompositeAnalyzer composite = new CompositeAnalyzer();
+	////			composite.setAnalyzer("description", new StemmerAnalyzer());
+	////			composite.setAnalyzer("id", new NullAnalyzer());
+	////			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+	////			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
+	////			record.setUseTokens(false);
+	////			composite.setAnalyzer("cumulusid", record);
+	////			composite.setAnalyzer("name_sortable", record);
+	////			fieldAnalyzer = composite;
+	//			
+	//			Map analyzermap = new HashMap();
+	//			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
+	//			//composite.setAnalyzer("description", new StemmerAnalyzer());
+	//			
+	//			analyzermap.put("id", new NullAnalyzer());
+	//			analyzermap.put("foldersourcepath", new NullAnalyzer());
+	//			analyzermap.put("sourcepath", new NullAnalyzer());
+	//			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
+	//			record.setUseTokens(false);
+	//			analyzermap.put("cumulusid", record);
+	//			analyzermap.put("name_sortable", record);
+	//			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
+	//
+	//			fieldAnalyzer = composite;
+	//			
+	//			
+	//		}
+	//		return fieldAnalyzer;
+	//	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#updateIndex(java.util.List,
+	 * boolean)
+	 */
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openedit.store.search.ProductSearcher#reIndexAll()
+	 */
+
+	public void reIndexAll()
+	{
+		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
+		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
+		// writer.mergeFactor = 10;
+		// writer.setMergeFactor(100);
+		// writer.setMaxBufferedDocs(2000);
+		final PropertyDetails details = getPropertyDetails();
+		try
+		{
+			PathProcessor reindexer = new PathProcessor()
+			{
+				protected String makeSourcePath(ContentItem inItem)
+				{
+					String path = inItem.getPath();
+					path = path.substring(getRootPath().length());
+					if (path.endsWith("/data.xml"))
+					{
+						path = path.substring(0, path.length() - "/data.xml".length());
+					}
+					else if (path.endsWith(".xconf")) //take off xconf
+					{
+						path = path.substring(0, path.length() - ".xconf".length());
+					}
+					path = path.replace('\\', '/');
+					return path;
+				}
+
+				@Override
+				public boolean acceptFile(ContentItem inItem)
+				{
+					String ext = PathUtilities.extractPageType(inItem.getPath());
+					if (ext != null && ext.contains("xconf"))
+					{
+						return true;
+					}
+					return false;
+				}
+
+				public void processFile(ContentItem inContent, User inUser)
+				{
+					String path = makeSourcePath(inContent); //Does this deal with folder based assets?
+					try
+					{
+						Product asset = getStore().getProductBySourcePath(path);
+						if (asset != null)
+						{
+							updateIndex(asset);
+						}
+						else
+						{
+							log.info("Error loading asset: " + path);
+						}
+					}
+					catch (Throwable ex)
+					{
+						log.error("Could not read asset: " + path + " continuing " + ex, ex);
+					}
+				}
+			};
+			reindexer.setPageManager(getPageManager());
+			reindexer.setIncludeExtensions(".xconf");
+			//reindexer.setIndexer(getIndexer());
+			//reindexer.setTaxonomyWriter(inTaxonomyWriter);
+			//reindexer.setMediaArchive(getMediaArchive());
+
+			/* Search in the new path, if it exists */
+			Page root = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/products/");
+			if (root.exists())
+			{
+				reindexer.setRootPath(root.getPath());
+				reindexer.process();
+			}
+
+		}
+		catch (Throwable ex)
+		{
+			log.error(ex);
+			throw new OpenEditException(ex);
+		}
+	}
+
+	private boolean doesSearchSecurely(WebPageRequest inReq)
+	{
+		if (inReq.getUser().hasPermission("oe.archive.administration"))
+		{
+			return false;
+		}
+
+		return doesIndexSecurely();
+	}
+
+	private boolean doesIndexSecurely()
+	{
+		if (fieldUsesSearchSecurity == null)
+		{
+			PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings("/" + getCatalogId() + "/products/");
+			String val = settings.getPropertyValue("usessearchsecurity", null);
+			if (val != null && Boolean.valueOf(val).booleanValue())
+			{
+				fieldUsesSearchSecurity = Boolean.TRUE;
+			}
+			else
+			{
+				fieldUsesSearchSecurity = Boolean.FALSE;
+			}
+		}
+		return fieldUsesSearchSecurity.booleanValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openedit.store.search.ProductSearcher#getProductArchive()
+	 */
+	public ProductArchive getProductArchive()
+	{
+		return getStore().getProductArchive();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openedit.store.search.ProductSearcher#getStore()
+	 */
+	public Store getStore()
+	{
+		if (fieldStore == null)
+		{
+			fieldStore = getStoreArchive().getStore(getCatalogId());
+		}
+		return fieldStore;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#setStore(org.openedit.store.
+	 * Store)
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#setStore(org.openedit.store.
+	 * Store)
+	 */
+	public void setStore(Store inStore)
+	{
+		fieldStore = inStore;
+		setCatalogId(inStore.getCatalogId());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#deleteFromIndex(org.openedit.
+	 * store.Product)
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openedit.store.search.ProductSearcher#deleteFromIndex(org.openedit.
+	 * store.Product)
+	 */
 	
-	public String createFilter(WebPageRequest inPageRequest, boolean selected);
+	public void deleteData(Data inData)
+	{
+		if (!(inData instanceof Product))
+		{
+			inData = getProductArchive().getProductBySourcePath(inData.get("sourcepath"));
+		}
+		if (inData != null)
+		{
+			getProductArchive().deleteProduct((Product) inData);
+		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openedit.store.search.ProductSearcher#deleteFromIndex(java.lang.
+	 * String)
+	 */
 
+	// // this is actually a date time
+	// public SimpleDateFormat getLuceneDateFormat() {
+	// if (fieldLuceneDateFormat == null) {
+	// fieldLuceneDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+	// }
+	// return fieldLuceneDateFormat;
+	// }
 
+	// public boolean isAddProductsToParentCatalog() {
+	// return fieldAddProductsToParentCatalog;
+	// }
+	//
+	// public void setAddProductsToParentCatalog(boolean
+	// inAddProductsToParentCatalog) {
+	// fieldAddProductsToParentCatalog = inAddProductsToParentCatalog;
+	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openedit.store.search.ProductSearcher#getAllHits()
+	 */
+	//	public HitTracker getAllHits(WebPageRequest inReq)
+	//	{
+	//		SearchQuery query = new SearchQuery();
+	//		query.addMatches("id", "*");
+	//		if( inReq == null)
+	//		{
+	//			return search(query);
+	//		}
+	//		else
+	//		{
+	//			return cachedSearch(inReq, query);
+	//		}
+	//	}
+
+	public void saveData(Data inData, User inUser)
+	{
+		try
+		{
+			if (inData instanceof Product)
+			{
+				Product product = (Product) inData;
+				if (product.getId() == null)
+				{
+					product.setId(getProductArchive().nextProductNumber());
+				}
+				if (product.getSourcePath() == null)
+				{
+					product.setSourcePath(product.getId());
+				}
+				if (product.get("createdon") == null)
+				{
+					String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+					product.setProperty("createdon", date);
+				}
+				getProductArchive().saveProduct(product);
+				updateIndex(product);
+			}
+
+		}
+		catch (StoreException e)
+		{
+			throw new OpenEditRuntimeException(e);
+		}
+	}
+
+	public PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager)
+	{
+		fieldPageManager = inPageManager;
+	}
+
+	// public Product getProduct(String inId)
+	// {
+	// return getProductArchive().getProduct(inId);
+	// }
+
+	public String idToPath(String inProductId)
+	{
+		String path = (String) getProductPaths().get(inProductId);
+		if (path == null)
+		{
+			SearchQuery query = createSearchQuery();
+			query.addExact("id", inProductId);
+
+			HitTracker hit = search(query);
+			if (hit.size() > 0)
+			{
+				path = (String) ((Data) hit.get(0)).get("sourcepath");
+				getProductPaths().put(inProductId, path);
+			}
+		}
+		return path;
+	}
+
+	public Map getProductPaths()
+	{
+		if (fieldProductPaths == null)
+		{
+			fieldProductPaths = new HashMap();
+		}
+		return fieldProductPaths;
+	}
+
+	public StoreArchive getStoreArchive()
+	{
+		return fieldStoreArchive;
+	}
+
+	public void setStoreArchive(StoreArchive inStoreArchive)
+	{
+		fieldStoreArchive = inStoreArchive;
+	}
+
+	public Data createNewData()
+	{
+		return new Product();
+	}
+
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	{
+
+		Product product = (Product) inData;
+
+		// if(test.getUser() == null ){
+		// log.info("test with invalid user - skipping");
+		// return;
+		// }
+		super.updateIndex(inContent, inData, inDetails);
+
+		try
+		{
+
+			Money price = product.getYourPrice();
+			if (price != null)
+			{
+				inContent.field("yourprice", price.toString());
+				String shortprice = price.toShortString();
+				shortprice = shortprice.replaceAll("\\.", "");
+				inContent.field("priceOrdering", shortprice);
+				if (product.isOnSale())
+				{
+					Money regular = product.getRetailPrice();
+					if (regular != null)
+					{
+						inContent.field("regularprice", regular.toString());
+					}
+				}
+			}
+			// this may be invalid field of -1 but we still need to add it for
+			// the search to work
+			if (product.getOrdering() != -1)
+			{
+				inContent.field("ordering", product.getOrdering());
+			}
+
+			//			Set catalogs = buildCatalogSet(product);
+
+			//populateDescription(doc, product, inDetails, catalogs);
+
+			// populateSecurity(doc, product, catalogs);
+			populatePermission(inContent, product, "viewproduct");
+
+			StringBuffer items = new StringBuffer();
+			for (Iterator iter = product.getInventoryItems().iterator(); iter.hasNext();)
+			{
+				InventoryItem item = (InventoryItem) iter.next();
+				items.append(item.getSku());
+				items.append(" ");
+			}
+			if (items.length() > 0)
+			{
+				inContent.field("items", items.toString().trim());
+			}
+
+			String folderpath = product.getSourcePath();
+			if (folderpath.endsWith("/"))
+			{
+				folderpath = folderpath.substring(0, folderpath.length() - 1);
+			}
+			folderpath = PathUtilities.extractDirectoryPath(folderpath) + "/";
+			inContent.field("foldersourcepath", folderpath);
+
+		}
+		catch (IOException e)
+		{
+			throw new OpenEditException(e);
+		}
+
+	}
+
+	private void populatePermission(XContentBuilder inContent, Product p, String inPermission) throws IOException
+	{
+
+		// permission is "viewasset" for earch security
+		boolean secure = false;
+		StringBuffer buffer = new StringBuffer();
+
+		if (p.get("group") != null)
+		{
+
+			Collection<?> groups = p.getValues("group");
+			if (groups.size() > 0)
+			{
+				secure = true;
+			}
+			Iterator<?> itr = groups.iterator();
+			while (itr.hasNext())
+			{
+				String group = (String) itr.next();
+				buffer.append(" ");
+				buffer.append("group_" + group);
+			}
+		}
+
+		String distributorid = p.get("distributor");
+		if (distributorid != null)
+		{
+			buffer.append(" distributor_" + distributorid);
+		}
+
+		if (p.get("user") != null)
+		{
+			String[] users = p.get("user").split("\\s");
+
+			if (users.length > 0)
+			{
+
+				secure = true;
+			}
+
+			for (int i = 0; i < users.length; i++)
+			{
+				String user = users[i];
+				buffer.append(" ");
+				buffer.append("user_" + user);
+
+			}
+		}
+
+		if (secure == false)
+		{
+			buffer.append("blank");
+			buffer.append(" ");
+			buffer.append("true");
+
+		}
+
+		inContent.field(inPermission, buffer.toString());
+
+	}
+
+	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
+	{
+		//modify in query if we are using search security
+		addShowOnly(inPageRequest, inSearch);
+		if (doesIndexSecurely() && !inSearch.isSecurityAttached())
+		{
+			//TODO: This should be in a child query with 	child.setFilter(true);
+
+			//viewasset = "admin adminstrators guest designers"
+			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
+			User currentUser = inPageRequest.getUser();
+			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
+			if (currentUser != null)
+			{
+				UserProfile profile = inPageRequest.getUserProfile();
+				if (profile != null)
+				{
+					//Get the libraries
+					Collection libraries = profile.getCombinedLibraries();
+					if (libraries != null)
+					{
+						for (Iterator iterator = libraries.iterator(); iterator.hasNext();)
+						{
+							String library = (String) iterator.next();
+							buffer.append(" library_" + library);
+						}
+					}
+
+					if (profile.get("distributor") != null)
+					{
+						buffer.append(" distributor_" + profile.get("distributor"));
+					}
+				}
+				//				if(currentUser.getProperty("zone") != null)
+				//				{
+				//					buffer.append(" zone" + currentUser.getProperty("zone"));
+				//				}
+				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
+				{
+					String allow = ((Group) iterator.next()).getId();
+					buffer.append(" group_" + allow);
+				}
+				buffer.append(" user_" + currentUser.getUserName());
+
+			}
+			inSearch.addOrsGroup("viewproduct", buffer.toString().toLowerCase());
+			inSearch.setSecurityAttached(true);
+		}
+		//add user profile search filters
+
+		HitTracker hits = super.cachedSearch(inPageRequest, inSearch);
+
+		return hits;
+	}
+
+	public String nextId()
+	{
+		return getProductArchive().nextProductNumber();
+	}
 }

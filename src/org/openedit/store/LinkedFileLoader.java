@@ -3,7 +3,7 @@
  */
 package org.openedit.store;
 
-import org.openedit.links.LinkTree;
+import org.entermediadb.links.LinkTree;
 
 /**
  * @author cburkey

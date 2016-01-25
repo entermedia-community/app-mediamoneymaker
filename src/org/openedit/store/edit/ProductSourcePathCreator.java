@@ -1,8 +1,7 @@
 package org.openedit.store.edit;
 
 import org.openedit.store.Product;
-
-import com.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities;
 
 public class ProductSourcePathCreator
 {

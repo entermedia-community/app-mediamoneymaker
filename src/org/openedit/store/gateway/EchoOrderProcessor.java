@@ -12,6 +12,7 @@ import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
@@ -24,7 +25,6 @@ import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
 import com.openecho.Echo;
-import com.openedit.WebPageRequest;
 
 /**
  * @author cburkey

@@ -5,7 +5,7 @@ package org.openedit.store;
 
 import java.util.List;
 
-import com.openedit.OpenEditException;
+import org.openedit.OpenEditException;
 
 
 /**

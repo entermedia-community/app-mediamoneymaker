@@ -2,6 +2,8 @@ package org.openedit.cart.paypal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.OpenEditRuntimeException;
+import org.openedit.WebPageRequest;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
@@ -11,11 +13,9 @@ import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.WebPageRequest;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
 import com.paypal.sdk.core.nvp.NVPDecoder;
 import com.paypal.sdk.core.nvp.NVPEncoder;
 import com.paypal.sdk.exceptions.PayPalException;

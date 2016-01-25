@@ -3,12 +3,11 @@ package org.openedit.store.links;
 import java.util.Iterator;
 
 import org.dom4j.Element;
-import org.openedit.links.Link;
-import org.openedit.links.XmlLinkLoader;
+import org.entermediadb.links.Link;
+import org.entermediadb.links.XmlLinkLoader;
+import org.openedit.OpenEditException;
 import org.openedit.store.Category;
 import org.openedit.store.Store;
-
-import com.openedit.OpenEditException;
 
 public class XmlCatalogLinkLoader extends XmlLinkLoader
 {

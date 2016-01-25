@@ -1,9 +1,8 @@
 package org.openedit.store;
 
-import org.openedit.entermedia.MediaArchive;
-
-import com.openedit.ModuleManager;
-import com.openedit.page.manage.PageManager;
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.ModuleManager;
+import org.openedit.page.manage.PageManager;
 
 public class StoreMediaManager {
 

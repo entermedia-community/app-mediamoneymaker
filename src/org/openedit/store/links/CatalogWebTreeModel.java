@@ -7,14 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.entermediadb.webui.tree.BaseTreeModel;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Category;
 import org.openedit.store.CategoryArchive;
 import org.openedit.store.SearchFilter;
-
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.util.RequestUtils;
-import com.openedit.webui.tree.BaseTreeModel;
+import org.openedit.users.User;
+import org.openedit.util.RequestUtils;
 
 public class CatalogWebTreeModel extends BaseTreeModel {
 	protected User fieldUser;

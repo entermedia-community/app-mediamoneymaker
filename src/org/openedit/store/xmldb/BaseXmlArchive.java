@@ -5,14 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Element;
+import org.openedit.config.Configuration;
 import org.openedit.money.Money;
 import org.openedit.store.BaseArchive;
 import org.openedit.store.Option;
 import org.openedit.store.Price;
 import org.openedit.store.PriceSupport;
 import org.openedit.store.PriceTier;
-
-import com.openedit.config.Configuration;
 
 public class BaseXmlArchive extends BaseArchive
 {	

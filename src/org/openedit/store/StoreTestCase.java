@@ -5,15 +5,14 @@ package org.openedit.store;
 
 import java.util.ArrayList;
 
+import org.openedit.BaseTestCase;
+import org.openedit.TestFixture;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.Order;
 import org.openedit.store.shipping.FixedCostShippingMethod;
-
-import com.openedit.BaseTestCase;
-import com.openedit.TestFixture;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com

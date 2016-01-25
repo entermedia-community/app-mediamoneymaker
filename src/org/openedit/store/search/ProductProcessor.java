@@ -1,9 +1,8 @@
 package org.openedit.store.search;
 
 import org.openedit.repository.ContentItem;
-
-import com.openedit.util.PathProcessor;
-import com.openedit.util.PathUtilities;
+import org.openedit.util.PathProcessor;
+import org.openedit.util.PathUtilities;
 
 public abstract class ProductProcessor extends PathProcessor
 {

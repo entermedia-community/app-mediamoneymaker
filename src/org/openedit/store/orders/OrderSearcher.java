@@ -9,22 +9,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
-import org.apache.lucene.index.IndexWriter;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
-import org.openedit.data.PropertyDetails;
-import org.openedit.data.lucene.BaseLuceneSearcher;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.store.CartItem;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
+import org.openedit.users.User;
 
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.users.User;
-
-public class OrderSearcher extends BaseLuceneSearcher {
+public class OrderSearcher extends 	BaseElasticSearcher {
 	private static final Log log = LogFactory.getLog(OrderSearcher.class);
 	protected Store fieldStore;
 	protected OrderArchive fieldOrderArchive;
@@ -42,11 +38,8 @@ public class OrderSearcher extends BaseLuceneSearcher {
 
 	
 
-	private void buildIndex(IndexWriter inWriter,
-			TaxonomyWriter inTaxonomyWriter, List inList) throws Exception {
-		PropertyDetails details = getPropertyDetailsArchive()
-				.getPropertyDetails("storeOrder");
-
+	private void buildIndex( List inList) throws Exception {
+		ArrayList orders = new ArrayList();
 		for (Iterator iterator = inList.iterator(); iterator.hasNext();) {
 			OrderId id = (OrderId) iterator.next();
 			SubmittedOrder order = getOrderArchive().loadSubmittedOrder(
@@ -54,7 +47,9 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			if (order != null) {
 				// Document doc = new Document();
 				// updateIndex(order, doc, details);
-				updateIndex(inWriter, inTaxonomyWriter, order);
+				
+				orders.add(order);
+				
 				// updateIndex(order);
 				// inWriter.addDocument(doc);
 			} else {
@@ -63,6 +58,7 @@ public class OrderSearcher extends BaseLuceneSearcher {
 			}
 		}
 
+		updateIndex(orders, null);
 	}
 
 	public OrderArchive getOrderArchive() {
@@ -151,11 +147,10 @@ public class OrderSearcher extends BaseLuceneSearcher {
 	// }
 
 	@Override
-	protected void reIndexAll(IndexWriter inWriter,
-			TaxonomyWriter inTaxonomyWriter) {
+	public void reIndexAll() {
 		List list = getOrderArchive().listAllOrderIds(getStore());
 		try {
-			buildIndex(inWriter, inTaxonomyWriter, list);
+			buildIndex( list);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}

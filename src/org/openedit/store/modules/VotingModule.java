@@ -1,12 +1,11 @@
 package org.openedit.store.modules;
 
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.WebPageRequest;
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 public class VotingModule extends BaseStoreModule  {
 

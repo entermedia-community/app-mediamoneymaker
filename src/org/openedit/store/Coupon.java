@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
@@ -14,8 +15,6 @@ import org.openedit.store.adjustments.SaleAdjustment;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderId;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.WebPageRequest;
 
 public class Coupon {
 	

@@ -21,12 +21,15 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.entermedia.email.PostMail;
+import org.entermediadb.email.PostMail;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
+import org.openedit.page.Page;
 import org.openedit.store.adjustments.Adjustment;
 import org.openedit.store.adjustments.CouponAdjustment;
 import org.openedit.store.adjustments.DiscountAdjustment;
@@ -45,17 +48,13 @@ import org.openedit.store.orders.RefundState;
 import org.openedit.store.orders.Shipment;
 import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.users.filesystem.FileSystemUser;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.page.Page;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.users.filesystem.FileSystemUser;
-import com.openedit.util.PathUtilities;
-import com.openedit.util.StringEncryption;
-import com.openedit.util.XmlUtil;
+import org.openedit.util.PathUtilities;
+import org.openedit.util.StringEncryption;
+import org.openedit.util.XmlUtil;
 
 /**
  * TODO: Make this have a getCatalogId() method

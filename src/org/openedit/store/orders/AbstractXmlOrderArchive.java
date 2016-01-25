@@ -16,8 +16,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.util.FileUtils;
+import org.openedit.util.FileUtils;
 
 /**
  * @author dbrown

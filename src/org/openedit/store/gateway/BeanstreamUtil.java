@@ -10,16 +10,15 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.Refund;
-
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.util.XmlUtil;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.util.XmlUtil;
 
 public class BeanstreamUtil {
 

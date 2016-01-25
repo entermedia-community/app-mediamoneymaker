@@ -2,13 +2,12 @@ package org.openedit.store.search;
 
 import java.util.List;
 
+import org.openedit.OpenEditException;
+import org.openedit.page.Page;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
-
-import com.openedit.OpenEditException;
-import com.openedit.page.Page;
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 public interface ProductSecurityArchive {
 

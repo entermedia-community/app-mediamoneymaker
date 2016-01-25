@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditPaymentMethod;
@@ -21,8 +23,6 @@ import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
 
 import com.jcommercesql.gateway.authorizenet.AuthorizeNetCC;
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
 
 /**
  * @author cburkey

@@ -34,9 +34,8 @@ import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.orders.Order;
-
-import com.openedit.users.User;
-import com.openedit.util.XmlUtil;
+import org.openedit.users.User;
+import org.openedit.util.XmlUtil;
 
 public class FreshbooksManager {
 	

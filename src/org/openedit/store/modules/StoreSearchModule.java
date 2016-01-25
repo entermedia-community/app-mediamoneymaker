@@ -8,15 +8,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryArchive;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.store.Cart;
 import org.openedit.store.Store;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.ListHitTracker;
-import com.openedit.hittracker.SearchQuery;
 
 public class StoreSearchModule extends BaseStoreModule
 {
@@ -85,22 +84,13 @@ public class StoreSearchModule extends BaseStoreModule
 		store.getProductSearcher().searchCatalogs(inPageRequest, getCart(inPageRequest));
 	}
 
-	public void searchExactCatalogs(WebPageRequest inPageRequest) throws Exception
-	{
-		Store store = getStore(inPageRequest);
-		store.getProductSearcher().searchExactCatalogs(inPageRequest, getCart(inPageRequest));
-	}
-
+	
 	/**
 	 * This should all be moved to the new CatalogModule and into objects
 	 * 
 	 * @param inPageRequest
 	 */
-	public HitTracker searchStore(WebPageRequest inPageRequest) throws Exception
-	{
-		Store store = getStore(inPageRequest);
-		return store.getProductSearcher().searchStore(inPageRequest, getCart(inPageRequest));
-	}
+	
 
 	public Cart getCart(WebPageRequest inPageRequest) throws OpenEditException
 	{
@@ -179,9 +169,7 @@ public class StoreSearchModule extends BaseStoreModule
 		getStore(inReq).getProductSearcher().clearIndex();
 	}
 
-	public void flush(WebPageRequest inReq) throws OpenEditException{
-		getStore(inReq).getProductSearcher().flush();
-	}
+	
 
 	public void saveSearchQuery(WebPageRequest inReq) {
 		HitTracker hits = loadHits(inReq);

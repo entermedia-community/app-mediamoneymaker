@@ -18,9 +18,12 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.money.Money;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.store.Category;
@@ -30,11 +33,7 @@ import org.openedit.store.Option;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.OpenEditException;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.util.XmlUtil;
+import org.openedit.util.XmlUtil;
 
 /**
  * @author cburkey
@@ -313,7 +312,6 @@ public class StoreEditor
 	public void deleteProduct(Product inProduct) throws StoreException
 	{
 		getStore().getProductArchive().deleteProduct(inProduct);
-		getStore().getProductSearch().deleteFromIndex(inProduct);
 
 		if (getCurrentProduct() != null && inProduct.getId().equals(getCurrentProduct().getId()))
 		{

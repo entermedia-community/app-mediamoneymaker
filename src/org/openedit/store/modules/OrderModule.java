@@ -15,12 +15,17 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.modules.BaseModule;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
@@ -44,12 +49,6 @@ import org.openedit.store.orders.Shipment;
 import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.modules.BaseModule;
 
 /**
  * @author dbrown
@@ -212,7 +211,7 @@ public class OrderModule extends BaseModule
 			OrderArchive archive = store.getOrderArchive();
 			archive.changeOrderStatus(state, store, order);
 			order.setOrderState(state);
-			store.getOrderSearcher().updateIndex(order);
+			store.getOrderSearcher().saveData(order, null);
 		}
 
 	}
@@ -240,7 +239,7 @@ public class OrderModule extends BaseModule
 
 		
 		store.saveOrder(order);
-		store.getOrderSearcher().updateIndex(order);
+		store.getOrderSearcher().saveData(order, null);
 	}
 
 	public void captureOrder(WebPageRequest inContext) throws Exception

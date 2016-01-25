@@ -1,11 +1,10 @@
 package org.openedit.store.modules;
 
 
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.MediaArchiveModule;
+import org.openedit.WebPageRequest;
 import org.openedit.cart.paypal.PaypalUtil;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.modules.MediaArchiveModule;
-
-import com.openedit.WebPageRequest;
 
 public class PaypalModule extends MediaArchiveModule{
 	protected PaypalUtil fieldPaypalUtil;

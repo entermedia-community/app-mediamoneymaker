@@ -3,14 +3,13 @@ package org.openedit.store.links;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openedit.links.LinkModule;
-import org.openedit.links.XmlLinkLoader;
+import org.entermediadb.links.LinkModule;
+import org.entermediadb.links.XmlLinkLoader;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
 
 public class StoreLinkModule extends LinkModule
 {

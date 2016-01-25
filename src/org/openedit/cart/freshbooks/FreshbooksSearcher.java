@@ -3,12 +3,11 @@ package org.openedit.cart.freshbooks;
 import java.util.Collection;
 
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.data.BaseSearcher;
-
-import com.openedit.OpenEditException;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.User;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.users.User;
 
 public class FreshbooksSearcher extends BaseSearcher{
 

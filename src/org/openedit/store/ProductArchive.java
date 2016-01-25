@@ -4,8 +4,7 @@
 package org.openedit.store;
 
 import org.openedit.data.PropertyDetails;
-
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 /**
  * @author cburkey

@@ -16,10 +16,14 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.entermedia.cache.CacheManager;
+import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
+import org.openedit.config.Configuration;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.OutputStreamItem;
 import org.openedit.repository.filesystem.StringItem;
@@ -32,14 +36,9 @@ import org.openedit.store.ProductPathFinder;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
-
-import com.openedit.OpenEditException;
-import com.openedit.config.Configuration;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.util.IntCounter;
-import com.openedit.util.XmlUtil;
+import org.openedit.users.User;
+import org.openedit.util.IntCounter;
+import org.openedit.util.XmlUtil;
 
 /**
  * A product archive that stores the data about each product in an

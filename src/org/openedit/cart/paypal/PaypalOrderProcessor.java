@@ -5,7 +5,10 @@ package org.openedit.cart.paypal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.email.PostMail;
+import org.entermediadb.email.PostMail;
+import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
@@ -13,10 +16,6 @@ import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderProcessor;
 import org.openedit.store.orders.Refund;
-
-import com.openedit.ModuleManager;
-import com.openedit.WebPageRequest;
-import com.openedit.page.manage.PageManager;
 
 /**
  * @author Ian Miller, ian@ijsolutions.ca

@@ -8,12 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
-import org.openedit.data.lucene.LuceneSearchQuery;
+import org.entermediadb.elasticsearch.ElasticSearchQuery;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.users.Group;
+import org.openedit.users.User;
 import org.openedit.xml.XmlFile;
-
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.Group;
-import com.openedit.users.User;
 
 public class SearchFilter
 {
@@ -165,7 +164,7 @@ public class SearchFilter
 	public String toFilter(boolean inUsesSecurity)
 	{
 
-		SearchQuery andgroup = new LuceneSearchQuery();
+		SearchQuery andgroup = new ElasticSearchQuery();
 		// orgroup.setAndTogether(false);
 		List checks = listAllFilters();
 
@@ -196,7 +195,7 @@ public class SearchFilter
 			}
 		}
 		// AND together with these OR ed things
-		SearchQuery orgroup = new LuceneSearchQuery();
+		SearchQuery orgroup = new ElasticSearchQuery();
 		orgroup.setAndTogether(false);
 
 		// Add security filters

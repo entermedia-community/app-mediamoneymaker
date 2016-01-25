@@ -7,19 +7,18 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.links.Link;
-import org.openedit.links.LinkTree;
+import org.entermediadb.links.Link;
+import org.entermediadb.links.LinkTree;
+import org.entermediadb.webui.tree.WebTree;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.links.CatalogTreeRenderer;
 import org.openedit.store.links.CatalogWebTreeModel;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.util.RequestUtils;
-import com.openedit.util.ZipUtil;
-import com.openedit.webui.tree.WebTree;
+import org.openedit.util.RequestUtils;
+import org.openedit.util.ZipUtil;
 
 public class CatalogModule extends BaseStoreModule
 {

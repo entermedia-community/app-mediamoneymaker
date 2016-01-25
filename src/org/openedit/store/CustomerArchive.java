@@ -6,8 +6,7 @@ package org.openedit.store;
 import java.io.File;
 
 import org.openedit.store.customer.Customer;
-
-import com.openedit.users.UserManager;
+import org.openedit.users.UserManager;
 
 
 /**

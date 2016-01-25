@@ -2,15 +2,14 @@
 
 package org.openedit.store.modules;
 
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.event.WebEventListener;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.process.ElectronicOrderManager;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 public class ProcessOrderModule extends BaseStoreModule {
 

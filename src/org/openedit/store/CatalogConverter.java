@@ -5,8 +5,8 @@ package org.openedit.store;
 
 import java.util.List;
 
-import com.openedit.ModuleManager;
-import com.openedit.util.PathUtilities;
+import org.openedit.ModuleManager;
+import org.openedit.util.PathUtilities;
 
 /**
  * @author cburkey

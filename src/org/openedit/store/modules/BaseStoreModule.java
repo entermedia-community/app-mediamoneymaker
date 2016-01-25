@@ -3,17 +3,15 @@
  */
 package org.openedit.store.modules;
 
+import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
-import org.openedit.entermedia.modules.BaseMediaModule;
-import org.openedit.logger.LuceneLogSearcher;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Cart;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities;
 
 public class BaseStoreModule extends BaseMediaModule
 {
@@ -21,10 +19,7 @@ public class BaseStoreModule extends BaseMediaModule
 	protected static final String CATEGORYID = "categoryid";
 
 	
-	public LuceneLogSearcher getLogSearcher(String inCatalogId, String inType)
-	{
-		return (LuceneLogSearcher)getSearcherManager().getSearcher(inCatalogId, inType);
-	}
+	
 	
 	public Store getStore(String inCatalogid) throws OpenEditException{
 		String	readername = "storeArchive";

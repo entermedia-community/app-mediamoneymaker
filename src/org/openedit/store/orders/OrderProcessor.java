@@ -3,10 +3,9 @@
  */
 package org.openedit.store.orders;
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.WebPageRequest;
 
 
 public interface OrderProcessor

@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openedit.OpenEditException;
 import org.openedit.money.Money;
 import org.openedit.store.CatalogConverter;
 import org.openedit.store.Category;
@@ -15,9 +16,7 @@ import org.openedit.store.Price;
 import org.openedit.store.PriceSupport;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
-
-import com.openedit.OpenEditException;
-import com.openedit.util.FileUtils;
+import org.openedit.util.FileUtils;
 
 public class CsvConverter extends CatalogConverter
 {

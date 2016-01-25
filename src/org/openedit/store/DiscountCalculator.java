@@ -4,13 +4,12 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.entermedia.MediaArchive;
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
-
-import com.openedit.WebPageRequest;
-import com.openedit.users.User;
+import org.openedit.users.User;
 
 public class DiscountCalculator implements MoneyCalculator {
 	

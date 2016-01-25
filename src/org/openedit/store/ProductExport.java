@@ -5,7 +5,7 @@ package org.openedit.store;
 
 import java.io.Writer;
 
-import com.openedit.OpenEditException;
+import org.openedit.OpenEditException;
 
 public interface ProductExport
 {

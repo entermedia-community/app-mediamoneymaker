@@ -19,11 +19,10 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
-
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.page.Page;
+import org.openedit.page.Page;
 
 /**
  * @author cburkey

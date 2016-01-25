@@ -6,10 +6,9 @@ package org.openedit.store.orders;
 import java.util.List;
 import java.util.Map;
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
-
-import com.openedit.WebPageRequest;
 
 /**
  * An interface implemented by classes that can write orders to and read orders

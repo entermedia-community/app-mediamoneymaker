@@ -2,10 +2,10 @@ package org.openedit.cart.virtualcredit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.locks.Lock;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.MediaArchive;
+import org.openedit.locks.Lock;
 import org.openedit.money.Money;
 import org.openedit.store.StoreException;
 

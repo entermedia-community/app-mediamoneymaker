@@ -9,11 +9,16 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.links.Link;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
-import org.openedit.links.Link;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -33,17 +38,11 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities;
 
 /**
  * @author cburkey
@@ -227,7 +226,7 @@ public class CartModule extends BaseStoreModule {
 	}
 
 	protected ProductAdder getProductAdder() {
-		ProductAdder adder = (ProductAdder) getBeanFactory().getBean(
+		ProductAdder adder = (ProductAdder) getModuleManager().getBean(
 				"ProductAdder");
 		return adder;
 	}

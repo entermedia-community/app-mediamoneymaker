@@ -17,8 +17,7 @@ import org.openedit.store.CatalogConverter;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.convert.ConvertStatus;
-
-import com.openedit.util.OutputFiller;
+import org.openedit.util.OutputFiller;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com

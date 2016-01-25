@@ -18,8 +18,6 @@ import org.openedit.store.Store;
 import org.openedit.store.TaxRate;
 import org.openedit.store.customer.Customer;
 
-import com.openedit.OpenEditException;
-
 public class OrderSet {
 	
 	private static final Log log = LogFactory.getLog( OrderSet.class );
