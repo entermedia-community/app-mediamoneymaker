@@ -6,19 +6,14 @@ package com.openedit.modules.cart.editor;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openedit.data.CompositeData;
-import org.openedit.entermedia.modules.DataEditModule;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Category;
 import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.edit.StoreEditor;
 import org.openedit.store.modules.CatalogEditModule;
-import org.openedit.store.modules.StoreSearchModule;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities;
 
 /**
  * @author cburkey

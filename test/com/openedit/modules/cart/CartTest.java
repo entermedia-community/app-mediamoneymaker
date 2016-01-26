@@ -5,8 +5,8 @@
 package com.openedit.modules.cart;
 
 import java.util.Iterator;
-import java.util.List;
 
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -20,15 +20,12 @@ import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.adjustments.SaleAdjustment;
-import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.modules.CartModule;
 import org.openedit.store.orders.BaseOrderGenerator;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderGenerator;
 import org.openedit.store.shipping.WeightBasedShippingMethod;
-
-import com.openedit.WebPageRequest;
 
 /**
  * @author dbrown

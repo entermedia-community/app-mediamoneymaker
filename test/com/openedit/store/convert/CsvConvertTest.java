@@ -10,8 +10,7 @@ import org.openedit.store.Product;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.convert.CsvConverter;
-
-import com.openedit.util.OutputFiller;
+import org.openedit.util.OutputFiller;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com

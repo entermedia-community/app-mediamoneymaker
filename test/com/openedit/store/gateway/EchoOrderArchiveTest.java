@@ -3,13 +3,12 @@
  */
 package com.openedit.store.gateway;
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.CreditCardType;
 import org.openedit.store.CreditPaymentMethod;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.gateway.EchoOrderProcessor;
 import org.openedit.store.orders.Order;
-
-import com.openedit.WebPageRequest;
 
 /**
  * @author Dave Connerth

@@ -1,14 +1,13 @@
 package com.openedit.store;
 
-import org.openedit.data.lucene.LuceneHitTracker;
+import org.openedit.WebPageRequest;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.store.Category;
 import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.modules.StoreSearchModule;
 import org.openedit.store.search.ProductSecurityArchive;
-
-import com.openedit.WebPageRequest;
 
 public class ProductSecurityTest extends StoreTestCase{
 
@@ -37,12 +36,12 @@ public class ProductSecurityTest extends StoreTestCase{
 		    inRequest.setRequestParameter("operation",new String[] {"matches"});
 		    inRequest.setRequestParameter("description.value","ok");
 		    module.fieldSearch(inRequest);
-		    LuceneHitTracker hits = (LuceneHitTracker)inRequest.getPageValue("hits");
+		    HitTracker hits = (HitTracker)inRequest.getPageValue("hits");
 			assertTrue(hits.size() > 0);
 			//test user can't find it.
 		    inRequest.setUser(getFixture().getUserManager().getUser("testuser"));		
 		    module.fieldSearch(inRequest);
-		    hits = (LuceneHitTracker)inRequest.getPageValue("hits");
+		    hits = (HitTracker)inRequest.getPageValue("hits");
 			assertTrue(hits.getTotal() == 0);
 		    
 			

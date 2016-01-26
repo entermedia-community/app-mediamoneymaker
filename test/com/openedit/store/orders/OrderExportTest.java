@@ -3,14 +3,13 @@
  */
 package com.openedit.store.orders;
 
+import org.openedit.WebPageRequest;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.Store;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.modules.CartModule;
 import org.openedit.store.orders.Order;
-
-import com.openedit.WebPageRequest;
 
 /**
  * @author cburkey

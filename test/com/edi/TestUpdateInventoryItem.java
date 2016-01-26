@@ -1,10 +1,9 @@
 package com.edi;
 
-import org.openedit.entermedia.publishing.PublishResult;
+import org.entermediadb.asset.publishing.PublishResult;
+import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.store.InventoryItem;
 import org.openedit.store.Product;
-
-import com.openedit.entermedia.scripts.EnterMediaObject;
 
 public class TestUpdateInventoryItem  extends EnterMediaObject{
 

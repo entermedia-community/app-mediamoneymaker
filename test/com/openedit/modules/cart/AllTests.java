@@ -3,13 +3,14 @@
  */
 package com.openedit.modules.cart;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.openedit.BaseTestCase;
 
-import com.openedit.BaseTestCase;
 import com.openedit.modules.cart.editor.CatalogEditTest;
 import com.openedit.store.PriceSupportTest;
 import com.openedit.store.orders.OrderExportTest;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @author cburkey

@@ -3,6 +3,7 @@
  */
 package com.openedit.store.gateway;
 
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -14,8 +15,6 @@ import org.openedit.store.customer.Customer;
 import org.openedit.store.gateway.BeanstreamUtil;
 import org.openedit.store.modules.CartModule;
 import org.openedit.store.orders.Order;
-
-import com.openedit.WebPageRequest;
 
 /**
  * @author Ian Miller

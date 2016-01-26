@@ -3,36 +3,22 @@
  */
 package com.openedit.store.gateway;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.openedit.Data;
-import org.openedit.cart.freshbooks.FreshbooksStatus;
+import org.openedit.WebPageRequest;
 import org.openedit.cart.freshbooks.FreshbooksManager;
-import org.openedit.cart.freshbooks.RecurringProfile;
-import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.money.Money;
+import org.openedit.cart.freshbooks.FreshbooksStatus;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.CreditCardType;
 import org.openedit.store.CreditPaymentMethod;
-import org.openedit.store.InventoryItem;
-import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
-import org.openedit.store.gateway.EchoOrderProcessor;
 import org.openedit.store.modules.CartModule;
 import org.openedit.store.orders.Order;
-
-import com.openedit.WebPageRequest;
-import com.openedit.users.filesystem.FileSystemUser;
+import org.openedit.users.filesystem.FileSystemUser;
 
 /**
  * @author Ian Miller

@@ -3,6 +3,7 @@ package com.openedit.store.orders;
 import java.util.Set;
 
 import org.junit.Test;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
 import org.openedit.store.CustomerArchive;
@@ -16,9 +17,6 @@ import org.openedit.store.modules.CartModule;
 import org.openedit.store.modules.OrderModule;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderSet;
-
-import com.openedit.WebPageRequest;
-//import org.openedit.store.modules.OrderModule;
 
 public class OrderSetTest  extends StoreTestCase {
 

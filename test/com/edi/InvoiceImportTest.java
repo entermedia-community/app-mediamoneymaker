@@ -3,14 +3,13 @@ package com.edi;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.Store;
 import org.openedit.store.StoreTestCase;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
 
 public class InvoiceImportTest extends StoreTestCase {
 

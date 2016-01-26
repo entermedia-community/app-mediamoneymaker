@@ -1,8 +1,8 @@
 package com.openedit.store;
 
-import junit.framework.TestCase;
-
 import org.openedit.store.products.SegmentedProductPathFinder;
+
+import junit.framework.TestCase;
 
 public class SegmentedProductPathFinderTest extends TestCase
 {

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.lucene.document.Document;
+import org.openedit.WebPageRequest;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -16,13 +18,9 @@ import org.openedit.store.StoreTestCase;
 import org.openedit.store.customer.Customer;
 import org.openedit.store.modules.CartModule;
 import org.openedit.store.modules.OrderModule;
-import org.openedit.store.modules.ProductControlModule;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.Shipment;
 import org.openedit.store.orders.ShipmentEntry;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
 
 public class OrderTest extends StoreTestCase {
 
@@ -69,89 +67,7 @@ public class OrderTest extends StoreTestCase {
 		assertTrue(hits.size() > 0);
 	}
 
-	public void xTestOrderItemUpdate() throws Exception {
-		Store store = getStore();
-		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
-		OrderModule orderModule = (OrderModule) getFixture().getModuleManager().getModule("StoreOrderModule");
-		ProductControlModule assetControl = (ProductControlModule) getFixture().getModuleManager().getModule("AssetControlModule");
-		WebPageRequest context = getFixture().createPageRequest("/store/index.html");
-		Cart cart = cartModule.getCart(context);
-		cart.setCustomer(new Customer(context.getUser()));
-
-		Product product = new Product();
-		product.setId("abcd");
-		product.addInventoryItem(new InventoryItem("abcd1"));
-
-		Product product2 = new Product();
-		product2.setId("defg");
-		product2.addInventoryItem(new InventoryItem("abcd2"));
-
-		store.saveProduct(product);
-		store.saveProduct(product2);
-		CartItem item = new CartItem();
-		item.setProduct(product);
-		item.setQuantity(1);
-		item.setStatus("accepted");
-		cart.addItem(item);
-
-		CartItem item2 = new CartItem();
-		item2.setProduct(product2);
-		item2.setQuantity(1);
-		item2.setStatus("accepted");
-		cart.addItem(item2);
-
-		Order order = store.getOrderGenerator().createNewOrder(store, cart);
-		
-		order.setProperty("notes", "This is a note");
-		
-		store.saveOrder(order);
-
-		context.setRequestParameter("sku", new String[] { item.getSku(), item2.getSku() });
-		context.setRequestParameter("abcd1.status", "rejected");
-		context.setRequestParameter("abcd2.status", "approved");
-
-		String orderid = order.getId();
-		context.setRequestParameter("ordernumber", orderid);
-		orderModule.changeItemStatus(context);
-		CartItem test = store.getOrderArchive().loadSubmittedOrder(store, "admin", orderid).getItem("abcd1");
-		assertEquals("rejected", test.getStatus());
-
-		// test download permission
-		String path = store.getCatalogId() + "/products/" + store.getProductPathFinder().idToPath("abcd") + ".html";
-		WebPageRequest accessrequest = getFixture().createPageRequest(path);
-		getFixture().getEngine().executePathActions(accessrequest);
-		getFixture().getEngine().executePageActions(accessrequest);
-
-		assertEquals(Boolean.FALSE, accessrequest.getPageValue("candownload"));
-
-		path = store.getCatalogId() + "/products/" + store.getProductPathFinder().idToPath("defg") + ".html";
-		accessrequest = getFixture().createPageRequest(path);
-		getFixture().getEngine().executePathActions(accessrequest);
-		getFixture().getEngine().executePageActions(accessrequest);
-
-		assertEquals(Boolean.TRUE, accessrequest.getPageValue("candownload"));
-
-		// test date limited
-
-		Calendar rightNow = Calendar.getInstance();
-
-		rightNow.add(Calendar.YEAR, (-1));
-		Date searchDate = rightNow.getTime();
-		order.setDate(searchDate);
-		store.saveOrder(order);
-		path = store.getCatalogId() + "/products/" + store.getProductPathFinder().idToPath("defg") + ".html";
-		accessrequest = getFixture().createPageRequest(path);
-		getFixture().getEngine().executePathActions(accessrequest);
-		getFixture().getEngine().executePageActions(accessrequest);
-		assertEquals(Boolean.FALSE, accessrequest.getPageValue("candownload"));
-		//test download count limited.
-		order.setDate(new Date());
-		store.saveOrder(order);
-		assertEquals(Boolean.TRUE, accessrequest.getPageValue("candownload"));
-		
-
-	}
-
+	
 	public void xtestMultipleAddressSupport() throws Exception {
 		Store store = getStore();
 		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");

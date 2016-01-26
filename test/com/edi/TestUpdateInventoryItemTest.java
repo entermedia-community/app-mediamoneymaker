@@ -2,7 +2,7 @@ package com.edi;
 
 import static org.junit.Assert.assertEquals;
 
-import org.openedit.entermedia.publishing.PublishResult;
+import org.entermediadb.asset.publishing.PublishResult;
 
 public class TestUpdateInventoryItemTest {
 

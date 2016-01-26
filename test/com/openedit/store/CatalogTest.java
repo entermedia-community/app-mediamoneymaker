@@ -5,14 +5,13 @@ package com.openedit.store;
 
 import java.util.List;
 
+import org.entermediadb.webui.tree.WebTree;
+import org.openedit.WebPageRequest;
 import org.openedit.store.Category;
 import org.openedit.store.Option;
 import org.openedit.store.StoreTestCase;
 import org.openedit.store.modules.CatalogModule;
-
-import com.openedit.WebPageRequest;
-import com.openedit.users.filesystem.FileSystemGroup;
-import com.openedit.webui.tree.WebTree;
+import org.openedit.users.filesystem.FileSystemGroup;
 
 
 /**

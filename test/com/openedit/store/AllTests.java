@@ -6,8 +6,6 @@ package com.openedit.store;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.openedit.store.convert.MainFrameConvertTest;
-
 /**
  * The test suite for this package.
  * 
@@ -25,7 +23,6 @@ public class AllTests
 		//suite.addTestSuite(CustomerTest.class);
 		suite.addTestSuite(ItemTest.class);
 		suite.addTestSuite(CatalogTest.class);
-		suite.addTestSuite(SearchTest.class);
 		suite.addTestSuite(ProductEditTest.class);
 		suite.addTestSuite(SizeComparatorTest.class);
 		suite.addTestSuite(SegmentedProductPathFinderTest.class);

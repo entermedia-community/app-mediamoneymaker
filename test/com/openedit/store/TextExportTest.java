@@ -5,9 +5,9 @@ package com.openedit.store;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.openedit.store.TextExport;
+
+import junit.framework.TestCase;
 
 /**
  * @author Matthew Avery, mavery@einnovation.com

@@ -1,7 +1,6 @@
 package com.openedit.store.gateway;
 
-import java.util.Date;
-
+import org.openedit.WebPageRequest;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -16,9 +15,6 @@ import org.openedit.store.modules.CartModule;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
-import org.openedit.store.orders.SubmittedOrder;
-
-import com.openedit.WebPageRequest;
 
 public class MonerisTest extends StoreTestCase {
 	
