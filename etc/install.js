@@ -6,6 +6,7 @@ importPackage( Packages.org.entermediadb.modules.update );
 
 
 
+
 var war = "http://dev.entermediasoftware.com/jenkins/job/em9_app-mediamoneymaker_integer/lastSuccessfulBuild/artifact/deploy/ROOT.war";
 
 var root = moduleManager.getBean("root").getAbsolutePath();
