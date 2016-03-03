@@ -2,11 +2,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans projectname="app-mediamoneymaker"  default-lazy-init="true">
- 	<bean id="customerDirectory" class="java.io.File">
- 		<constructor-arg><ref bean="root"/></constructor-arg>
-		 <constructor-arg><value>/WEB-INF/users</value></constructor-arg>
-	</bean>	
-
+ 
+ 
+ 
+ 
 
 
   <bean id="CartModule" class="org.openedit.store.modules.CartModule">
@@ -110,7 +109,6 @@
   </bean>
 
   <bean id="customerArchive" class="org.openedit.store.xmldb.XmlCustomerArchive">
-  	<property name="customersDirectory"><ref bean="customerDirectory" /></property>  
   	<property name="userManager"><ref bean="userManager" /></property>
   </bean>
 
@@ -334,20 +332,6 @@
 
  
 
-	<bean id="addressSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="newDataName"><value>address</value></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
-		
-		<property name="prefix"><value>addresses</value></property>
-		<property name="elasticNodeManager">
-			<ref bean="elasticNodeManager" />
-		</property>
-	</bean>
 	
 	
 	<bean id="address" class="org.openedit.store.customer.Address" scope="prototype">

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.page.manage.PageManager;
 import org.openedit.store.CustomerArchive;
 import org.openedit.store.StoreException;
 import org.openedit.store.customer.Customer;
@@ -27,9 +28,8 @@ public class XmlCustomerArchive implements CustomerArchive
 	
 	protected Map fieldCustomers;
 	protected UserManager fieldUserManager;
-	
+
 	protected UserSearcher fieldCustomerSearch;
-	protected File fieldCustomerDirectory;
 	
 	public Customer getCustomer(String inId) throws StoreException
 	{
@@ -145,15 +145,12 @@ public class XmlCustomerArchive implements CustomerArchive
 	/* (non-javadoc)
 	 * @see com.openedit.store.CustomerArchive#setCustomersDirectory(java.io.File)
 	 */
-	public void setCustomersDirectory(File inCustomerDirectory)
-	{
-		fieldCustomerDirectory = inCustomerDirectory;
-	}
+//	public void setCustomersDirectory(File inCustomerDirectory)
+//	{
+//		fieldCustomerDirectory = inCustomerDirectory;
+//	}
 	
-	public File getCustomerDirectory()
-	{
-		return fieldCustomerDirectory;
-	}
+	
 	
 	
 		

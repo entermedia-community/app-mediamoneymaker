@@ -36,7 +36,7 @@ public interface CustomerArchive
 	/**
 	 * @param inCustomerDirectory
 	 */
-	public abstract void setCustomersDirectory(File inCustomerDirectory);
+	
 	public void setUserManager( UserManager inUserManager );
 
 

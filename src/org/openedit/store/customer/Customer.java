@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openedit.Data;
+import org.openedit.data.ValuesMap;
 import org.openedit.money.Fraction;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.TaxRate;
@@ -42,7 +43,8 @@ public class Customer implements Data {
 	protected String fieldUserName;
 	protected List addressList;
 	protected List fieldTaxRates;
-	
+	protected ValuesMap fieldProperties;
+
 	/**
 	 * Creates a customer that uses the given user to store its information.
 	 * 
@@ -53,6 +55,18 @@ public class Customer implements Data {
 
 	}
 
+	
+	public ValuesMap getProperties()
+	{
+		if (fieldProperties == null)
+		{
+			fieldProperties = new ValuesMap();
+		}
+		return fieldProperties;
+	}
+
+	
+	
 	public Customer() 
 	{
 		fieldUser = new FileSystemUser();
@@ -349,30 +363,25 @@ public class Customer implements Data {
 		
 	}
 
-	public Map getProperties() {
-		return getUser().getProperties();
+	public void setProperties(Map inProperties)
+	{
+		getProperties().putAll(inProperties);
 	}
-
-	@Override
-	public void setProperties(Map<String, String> inProperties) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	
 	public void setValues(String inKey, Collection<String> inValues)
 	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
+		getProperties().put(inKey, inValues);
+
 	}
 
+	@Override
+	public Object getValue(String inKey)
+	{
+		return getProperties().get(inKey);
+	}
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		getProperties().put(inKey, inValue);
+	}
 }

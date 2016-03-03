@@ -172,11 +172,13 @@ public class OrderSearcher extends 	BaseElasticSearcher {
 	@Override
 	public void saveData(Data inData, User inUser) {
 		if (inData instanceof Order) {
-			getStore().saveOrder((Order)inData);
-			//Order order = (Order) inData;
-			//getOrderArchive().saveOrder(getStore(), order);
+			//getStore().saveOrder((Order)inData);
+			Order order = (Order) inData;
+			getOrderArchive().saveOrder(getStore(), order);
 		}
-//		updateIndex(inData);
+		ArrayList orders = new ArrayList();
+		orders.add(inData);
+		updateIndex(orders, null);
 		
 	}
 

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openedit.Data;
+import org.openedit.data.ValuesMap;
 
 /**
  * @author cburkey
@@ -30,7 +31,6 @@ public class Category implements Data
 	protected List fieldChildren;
 	protected Category fieldParentCatalog;
 	protected String fieldParentId;
-	protected Map fieldProperties;
 	protected Map fieldImages;
 	protected Map fieldLinkedFiles; //these are links to files that this catalog might include (such as PDF's)
 	protected String fieldBrochure;
@@ -38,7 +38,18 @@ public class Category implements Data
 	protected List fieldOptions;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
+	protected ValuesMap fieldProperties;
+	
+	public ValuesMap getProperties()
+	{
+		if (fieldProperties == null)
+		{
+			fieldProperties = new ValuesMap();
+		}
+		return fieldProperties;
+	}
 
+	
 	
 	
 	public Category()
@@ -373,19 +384,9 @@ public Category(String inId, String inName)
 		}
 		return null;
 	}
-	public Map getProperties()
-	{
-		if ( fieldProperties == null )
-		{
-			fieldProperties = new HashMap();
-		}
-		return fieldProperties;
-	}
+	
 
-	public void setProperties(Map inProperties)
-	{
-		fieldProperties = inProperties;
-	}
+	
 
 	public void setProperty( String inKey, String inValue )
 	{
@@ -735,19 +736,29 @@ public Category(String inId, String inName)
 //		return null;
 //	}
 	
+	
+	
+
+	public void setProperties(Map inProperties)
+	{
+		getProperties().putAll(inProperties);
+	}
+	
 	public void setValues(String inKey, Collection<String> inValues)
 	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
+		getProperties().put(inKey, inValues);
+
+	}
+
+	@Override
+	public Object getValue(String inKey)
+	{
+		return getProperties().get(inKey);
+	}
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		getProperties().put(inKey, inValue);
 	}
 	
 }
