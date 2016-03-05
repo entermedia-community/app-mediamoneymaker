@@ -496,14 +496,7 @@ public class Product extends BaseData implements Data
 	{
 		fieldDefaultCategory = inDefaultCategory;
 	}
-	public Map getProperties()
-	{
-		if ( fieldProperties == null)
-		{
-			fieldProperties = ListOrderedMap.decorate(new HashMap());
-		}
-		return fieldProperties;
-	}
+
 	public String getProperty( String inKey )
 	{
 		if ("id".equals(inKey))
