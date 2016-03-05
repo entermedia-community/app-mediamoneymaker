@@ -13,11 +13,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.LuceneSearchQuery;
@@ -914,4 +916,33 @@ public class ProductLuceneSearcher extends BaseLuceneSearcher implements Product
 	public String nextId() {
 	return getProductArchive().nextProductNumber();
 }	
+	
+	
+	protected FacetsConfig fieldFacetConfig;
+
+	public FacetsConfig getFacetConfig()
+	{
+		if (fieldFacetConfig == null)
+		{
+			fieldFacetConfig =  new FacetsConfig();
+			//config.setHierarchical("Publish Date", true);
+			//config.setIndexFieldName("author", "facet_author");
+			for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if( detail.isMultiValue() || detail.getId().equals("category"))
+				{
+					fieldFacetConfig.setMultiValued(detail.getId(), true);
+				}
+			}
+
+		}
+		return fieldFacetConfig;
+	}
+
+	public void setFacetConfig(FacetsConfig inFacetConfig)
+	{
+		fieldFacetConfig = inFacetConfig;
+	}
+	
 }
