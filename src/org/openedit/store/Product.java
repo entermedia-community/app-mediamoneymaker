@@ -148,6 +148,14 @@ public class Product extends BaseData implements Data
 	 * This will look in all the category objects if needed
 	 */
 	
+	@Override
+	public Object getValue(String inKey)
+	{
+		// TODO Auto-generated method stub
+		return get(inKey);
+	}
+	
+	
 	public String get(String inAttribute)
 	{
 		if( "name".equals(inAttribute ) )

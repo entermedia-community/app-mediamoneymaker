@@ -13,15 +13,15 @@ var root = moduleManager.getBean("root").getAbsolutePath();
 var web = root + "/WEB-INF";
 var tmp = web + "/tmp";
 
-log.add("1. GET THE LATEST WAR FILE");
+log.info("1. GET THE LATEST WAR FILE");
 var downloader = new Downloader();
 downloader.download( war, tmp + "/ROOT.war");
 
-log.add("2. UNZIP WAR FILE");
+log.info("2. UNZIP WAR FILE");
 var unziper = new ZipUtil();
 unziper.unzip(  tmp + "/ROOT.war",  tmp );
 
-log.add("3. REPLACE LIBS");
+log.info("3. REPLACE LIBS");
 var files = new FileUtils();
 files.deleteMatch( web + "/lib/app-mediamoney*.jar");
 files.deleteMatch( web + "/lib/poi*.jar");
@@ -46,12 +46,12 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/gson*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/stripe*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/store-reports*.jar", web + "/lib/");
 
-log.add("5. UPGRADE CART FILES");
+log.info("5. UPGRADE CART FILES");
 files.deleteAll( root + "/WEB-INF/base/store");
 files.copyFiles( tmp + "/WEB-INF/base/store", root + "/WEB-INF/base/store");
 
 
-log.add("5. UPGRADE CART FILES");
+log.info("5. UPGRADE CART FILES");
 
 
 
@@ -59,7 +59,7 @@ log.add("5. UPGRADE CART FILES");
 
 files.deleteAll(tmp);
 
-log.add("6. UGRADE COMPLETED");
+log.info("6. UGRADE COMPLETED");
 importPackage( Packages.java.util );
 importPackage( Packages.java.lang );
 importPackage( Packages.com.openedit.modules.update );

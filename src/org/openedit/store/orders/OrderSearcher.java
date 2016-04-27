@@ -182,9 +182,8 @@ public class OrderSearcher extends 	BaseElasticSearcher {
 		
 	}
 
-	@Override
-	public String nextId() {
-		return getStore().getOrderGenerator().nextOrderNumber(getStore());
-	}
+//	public String nextId() {
+//		return getStore().getOrderGenerator().nextOrderNumber(getStore());
+//	}
 
 }

@@ -478,10 +478,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 			if (inData instanceof Product)
 			{
 				Product product = (Product) inData;
-				if (product.getId() == null)
-				{
-					product.setId(getProductArchive().nextProductNumber());
-				}
+				
 				if (product.getSourcePath() == null)
 				{
 					product.setSourcePath(product.getId());
@@ -491,8 +488,9 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 					String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 					product.setProperty("createdon", date);
 				}
-				getProductArchive().saveProduct(product);
 				updateIndex(product);
+				getProductArchive().saveProduct(product);
+
 			}
 
 		}
@@ -615,13 +613,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 				inContent.field("items", items.toString().trim());
 			}
 
-			String folderpath = product.getSourcePath();
-			if (folderpath.endsWith("/"))
-			{
-				folderpath = folderpath.substring(0, folderpath.length() - 1);
-			}
-			folderpath = PathUtilities.extractDirectoryPath(folderpath) + "/";
-			inContent.field("foldersourcepath", folderpath);
+			
 
 		}
 		catch (IOException e)
@@ -747,8 +739,13 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 		return hits;
 	}
 
-	public String nextId()
+	
+	public Object searchById(String inId)
 	{
-		return getProductArchive().nextProductNumber();
+		return getProductArchive().getProduct(inId);
+		
 	}
+	
+	
+	
 }
