@@ -22,6 +22,7 @@ import org.openedit.config.Configuration;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.event.WebEvent;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
@@ -428,6 +429,19 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 
 			String id = inProduct.getId();
 			getCacheManager().put(getCatalogId() + "products", id, inProduct);
+			
+			if(getWebEventListener() != null)
+			{
+				WebEvent event = new WebEvent();
+				event.setSearchType("products");
+				event.setCatalogId(getCatalogId());
+				event.setOperation("product/saved");
+				event.setProperty("dataid", inProduct.getId());
+				event.setProperty("id", inProduct.getId());
+				getWebEventListener().eventFired(event);
+			}
+			
+			
 		}
 		catch (Exception ex)
 		{

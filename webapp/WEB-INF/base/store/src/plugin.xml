@@ -85,7 +85,9 @@
   	<property name="xmlUtil"><ref bean="xmlUtil"/></property>
 	<property name="storeArchive"><ref bean="storeArchive" /></property>
 			<property name="cacheManager"><ref bean="cacheManager"/></property>
-	
+	<property name="webEventListener">
+			<ref bean="pathEventHandler" />
+		</property>
   </bean> 
 
   <bean id="storeCategoryArchive" class="org.openedit.store.xmldb.XmlCategoryArchive" scope="prototype">
