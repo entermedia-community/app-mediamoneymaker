@@ -33,6 +33,8 @@
   	<property name="webEventListener"><ref bean="storeEventHandler"/></property>
     <property name="rootDirectory"><ref bean="root"/></property>
     <property name="pageManager"><ref bean="pageManager" /></property>
+    <property name="moduleManager"><ref bean="moduleManager" /></property>
+
   	<property name="storeArchive"><ref bean="storeArchive" /></property>
   	<property name="elasticNodeManager">
 			<ref bean="elasticNodeManager" />
