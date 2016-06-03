@@ -482,16 +482,26 @@ public class Order extends BaseData implements Comparable
 		return sum;
 	}
 
+	
+	@Override
 	public String get(String inId)
+	{
+		// TODO Auto-generated method stub
+		return (String)getValue(inId);
+	}
+	
+	
+	
+	public Object getValue(String inId)
 	{
 		if ("id".equals(inId))
 		{
 			return getId();
 		}
-		if ("orderdate".equals(inId) && getDate() != null)
-		{
-			return DateStorageUtil.getStorageUtil().formatForStorage(getDate());
-		}
+//		if ("orderdate".equals(inId) && getDate() != null)
+//		{
+//			return getDate();
+//		}
 		if ("customer".equals(inId) && getCustomer() != null)
 		{
 			return getCustomer().getId();
@@ -506,7 +516,7 @@ public class Order extends BaseData implements Comparable
 		}
 		if ("totalshipping".equals(inId))
 		{
-			return getTotalShipping() != null ? getTotalShipping().toShortString().replace(",", "") : "0";
+			return getTotalShipping().doubleValue();
 		}
 		if ("tax".equals(inId))
 		{
