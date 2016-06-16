@@ -277,7 +277,7 @@ public class ProductAdder
 		//recalculate adjustments every time
 		Coupon.recalculateAdjustments(inCart);
 		//check for user role adjustments
-		applySecurityGroupAdjustments(inReq,inCart);
+		//applySecurityGroupAdjustments(inReq,inCart);
 	}
 	
 	/**
