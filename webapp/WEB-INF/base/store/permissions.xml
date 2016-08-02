@@ -1,0 +1,4 @@
+<permissions name="Store">
+<permission id="oe.cart.admin" description="Store Manager" />
+</permissions>
+
