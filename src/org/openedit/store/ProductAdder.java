@@ -14,30 +14,19 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.WebPageRequest;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.money.Money;
-import org.openedit.store.adjustments.Adjustment;
-import org.openedit.store.adjustments.SecurityGroupAdjustment;
-import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
+
+import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.users.User;
 
 public class ProductAdder
 {
 	private static final Log log = LogFactory.getLog(ProductAdder.class);
 
 	protected static final String PRODUCTID = "productid";
-	
-	protected MoneyCalculator fieldMoneyCalculator;
-	
-	public MoneyCalculator getMoneyCalculator(){
-		return fieldMoneyCalculator;
-	}
-	
-	public void setMoneyCalculator(MoneyCalculator inMoneyCalculator){
-		fieldMoneyCalculator = inMoneyCalculator;
-	}
 
 	public void addItem(WebPageRequest inReq, Cart inCart, boolean inReload) throws StoreException
 	{
@@ -58,7 +47,6 @@ public class ProductAdder
 			}
 			else
 			{
-				
 				counter = "." + i;
 			}
 			String productId = (String) params.get("productid" + counter);
@@ -90,7 +78,7 @@ public class ProductAdder
 				}
 				continue;
 			}
-			int quantity = 0;
+			double quantity = 0;
 			String quantityStr = (String) params.get("quantity" + counter);
 			if(i == 0)
 			{
@@ -100,13 +88,8 @@ public class ProductAdder
 			// Quantity
 			if (quantityStr != null && !quantityStr.equals("quantity") && quantityStr.length() != 0)
 			{
-				if (!quantityStr.contains(".")) {
-					quantity = Integer.parseInt(quantityStr);
-					quantityspecified = true;
-				} else {
-					String[] arr = quantityStr.split("\\.");
-					quantity = Integer.parseInt(arr[0]);
-				}
+				quantity = Double.parseDouble(quantityStr);
+				quantityspecified = true;
 			}
 			else if (quantityStr != null && quantityStr.length() == 0)
 			{
@@ -146,7 +129,19 @@ public class ProductAdder
 					Coupon removedCoupon = new Coupon(inventory);
 //					removedCoupon.removeCartAdjustment(inCart);
 				}
-			} else {
+			}
+			else if (product.getBoolean("datecontrolledinventory"))
+			{
+				String refdate = inReq.getRequestParameter("date");
+				refdate = DateStorageUtil.getStorageUtil().checkFormat(refdate);
+				Date date = DateStorageUtil.getStorageUtil().parseFromStorage(refdate);
+				if (date != null)
+				{
+					inventory = product.getInventoryItemByDate(date);
+				}
+			}
+			if (inventory == null)
+			{
 				inventory = product.getInventoryItemByOptions(options);
 				if (inventory == null)
 				{
@@ -182,10 +177,12 @@ public class ProductAdder
 				}
 			}
 			cartItem.setInventoryItem(inventory);
-			int oldquantity = cartItem.getQuantity();
-			//check for forcequantity (prevent addition)
-			boolean forcequantity = Boolean.parseBoolean((String) params.get("forcequantity" + counter));
-			if ( (quantityspecified && inReload) || (quantityspecified && existing == null) || forcequantity){
+			double oldquantity = cartItem.getQuantity();
+			if (quantityspecified && inReload)
+			{
+				cartItem.setQuantity(quantity);
+			}
+			else if(quantityspecified && existing == null){
 				cartItem.setQuantity(quantity);
 			}
 			else
@@ -196,6 +193,26 @@ public class ProductAdder
 			
 			cartItem.setOptions(options);
 			cartItem.setProperties(properties);
+			
+			//add weight if provided
+			String weight = (String) params.get("weight" + counter);
+			if ( weight != null)
+			{
+				double w = toDouble(weight,-1.0);
+				if (w != -1.0)
+				{
+					cartItem.setProperty("weight",String.format("%.2f", w));
+				}
+			}
+			String weightsubtotal = (String) params.get("weightsubtotal" + counter);
+			if ( weightsubtotal != null)
+			{
+				double w = toDouble(weightsubtotal,-1.0);
+				if (w != -1.0)
+				{
+					cartItem.setProperty("weightsubtotal",String.format("%.2f", w));
+				}
+			}
 
 			// product.setproperty(title); (if title is a property on the
 			// product...the value should come from the options)
@@ -276,58 +293,9 @@ public class ProductAdder
 		}
 		//recalculate adjustments every time
 		Coupon.recalculateAdjustments(inCart);
-		//check for user role adjustments
-		//applySecurityGroupAdjustments(inReq,inCart);
 	}
 	
-	/**
-	 * 
-	 * @param inReq
-	 * @param inCart
-	 * @throws StoreException
-	 */
-	protected void applySecurityGroupAdjustments(WebPageRequest inReq, Cart inCart) throws StoreException{
-		MoneyCalculator calculator = getMoneyCalculator();
-		if (calculator == null){
-			MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
-			calculator = (MoneyCalculator) archive.getModuleManager().getBean("discountCalculator");
-			setMoneyCalculator(calculator);
-		}
-		//remove old adjustments
-		List<Adjustment> list = new ArrayList<Adjustment>();
-		Iterator<?> itr = inCart.getAdjustments().iterator();
-		while(itr.hasNext()){
-			Adjustment adjustment = (Adjustment) itr.next();
-			if (adjustment instanceof SecurityGroupAdjustment){
-				list.add(adjustment);
-			}
-		}
-		for(Adjustment adjustment:list){
-			inCart.getAdjustments().remove(adjustment);
-		}
-		//add new ones
-		itr = inCart.getItems().iterator();
-		while(itr.hasNext()){
-			CartItem item = (CartItem) itr.next();
-			Product product = item.getProduct();
-			if (product == null || Coupon.isCoupon(item)){
-				continue;
-			}
-			Money discount = calculator.getDiscount(inReq,item);
-			if (discount.isZero()){
-				continue;
-			}
-			SecurityGroupAdjustment adjustment = new SecurityGroupAdjustment();
-			adjustment.setDiscount(discount);
-			adjustment.setProductId(product.getId());
-			if (item.getInventoryItem() != null){
-				adjustment.setInventoryItemId(item.getInventoryItem().getSku());
-			}
-			inCart.addAdjustment(adjustment);
-		}
-	}
-	
-	protected void removeCoupon(Cart inCart, Coupon inCoupon)
+	private void removeCoupon(Cart inCart, Coupon inCoupon)
 	{
 		Iterator itr = inCart.getInventoryItems().iterator();
 		while (itr.hasNext())
@@ -807,5 +775,12 @@ public class ProductAdder
 		 */
 
 		return properties;
+	}
+	
+	protected double toDouble(String inValue, double inDefault){
+		try{
+			return Double.parseDouble(inValue);
+		}catch(Exception e){}
+		return inDefault;
 	}
 }

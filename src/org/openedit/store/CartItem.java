@@ -27,7 +27,7 @@ import org.openedit.store.orders.Shipment;
  */
 public class CartItem extends BaseData
 {	
-	protected int fieldQuantity = 1;
+	protected double fieldQuantity = 1;
 	protected Money fieldYourPrice;
 	protected Money fieldWholesalePrice;
 	protected InventoryItem fieldInventoryItem;
@@ -78,7 +78,7 @@ public class CartItem extends BaseData
 		{
 			return null;
 		}
-		int quantity = getQuantity();
+		double quantity = getQuantity();
 		Money price = Money.ZERO;
 		Money priceByQuantity = getInventoryItem().getWholesalePriceByQuantity(quantity);
 		if (priceByQuantity != null)
@@ -112,7 +112,7 @@ public class CartItem extends BaseData
 		{
 			return null;
 		}
-		int quantity = getQuantity();
+		double quantity = getQuantity();
 		Money price = Money.ZERO;
 		Money priceByQuantity = getInventoryItem().getYourPriceByQuantity(quantity);
 		if (priceByQuantity != null)
@@ -135,12 +135,12 @@ public class CartItem extends BaseData
 	{
 		fieldYourPrice = inMoney;
 	}
-	public int getQuantity()
+	public double getQuantity()
 	{
 		return fieldQuantity;
 	}
 
-	public void setQuantity(int quantity) throws StoreException
+	public void setQuantity(double quantity) throws StoreException
 	{
 		fieldQuantity = quantity;
 		

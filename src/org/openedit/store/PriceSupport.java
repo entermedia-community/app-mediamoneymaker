@@ -17,7 +17,7 @@ public class PriceSupport
 {
 	protected List fieldTiers;
 	
-	public Money getYourPriceByQuantity(int inQuantity)
+	public Money getYourPriceByQuantity(double inQuantity)
 	{
 		Money price = Money.ZERO;
 		// This code assumes that the tier prices must be entered in ascending price order.
@@ -34,7 +34,7 @@ public class PriceSupport
 
 	}
 	
-	public Money getWholesalePriceByQuantity(int inQuantity)
+	public Money getWholesalePriceByQuantity(double inQuantity)
 	{
 		Money wholesale = Money.ZERO;
 		// This code assumes that the tier prices must be entered in ascending price order.
@@ -62,7 +62,7 @@ public class PriceSupport
 		return fieldTiers;
 	}
 	
-	public void addTierPrice( int inQuantity, Price inPrice )
+	public void addTierPrice( double inQuantity, Price inPrice )
 	{
 		
 		int finalPlace = -1;

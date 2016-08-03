@@ -734,7 +734,7 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		InventoryItem currentItem = new InventoryItem();
 		currentItem.setProduct(inProduct);
 		String inventory = inItemConfig.getAttribute("inventory");
-		currentItem.setQuantityInStock(Integer.parseInt(inventory));
+		currentItem.setQuantityInStock(Double.parseDouble(inventory));
 		String sku = inItemConfig.getAttribute("sku");
 		currentItem.setSku(sku);
 

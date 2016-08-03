@@ -9,10 +9,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
-import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
 import org.openedit.money.Money;
-import org.openedit.page.manage.PageManager;
 import org.openedit.store.CartItem;
 import org.openedit.store.Coupon;
 import org.openedit.store.CreditPaymentMethod;
@@ -23,9 +21,11 @@ import org.openedit.store.orders.BaseOrderProcessor;
 import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.Refund;
-import org.openedit.users.UserManager;
-import org.openedit.util.XmlUtil;
 
+import com.openedit.WebPageRequest;
+import com.openedit.page.manage.PageManager;
+import com.openedit.users.UserManager;
+import com.openedit.util.XmlUtil;
 import com.stripe.Stripe;
 import com.stripe.model.ApplicationFee;
 import com.stripe.model.ApplicationFeeCollection;
@@ -200,18 +200,23 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		}
 		String amountstring = totalprice.toShortString().replace(".", "").replace("$", "").replace(",", "");
 		chargeParams.put("amount", amountstring);
-		String currency = inStore.getProperty("currency");
+		String currency = inStore.get("currency");
 		if(currency == null){
-			currency = "usd";
+			currency = "cad";
 		}
-		
 		chargeParams.put("currency", currency);
 		chargeParams.put("card", inOrder.get("stripetoken")); // obtained via js
+		
+		String descriptor = inStore.get("statement_descriptor");
+		if(descriptor != null){
+			chargeParams.put("statement_descriptor", descriptor);
+		}
+		
+		
 		
 		// Stripe.js
 		Map<String,String> initialMetadata = new HashMap<String,String>();
 		populateMetadata(inOrder,initialMetadata);
-		log.info("Stripe Metadata: "+initialMetadata);
 		chargeParams.put("description",inOrder.getOrderNumber());
 		chargeParams.put("metadata", initialMetadata);
 		try
@@ -407,27 +412,19 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 		inMetadata.put("billingaddress",billing.toString());
 		Address shipping = inOrder.getCustomer().getShippingAddress();
 		inMetadata.put("shippingaddress",shipping.toString());
-		StringBuilder meta = new StringBuilder();
 		Iterator<?> itr = inOrder.getItems().iterator();
 		for(int i=1; itr.hasNext(); i++){
 			CartItem item = (CartItem) itr.next();
 			String sku = item.getSku();
+			String name = item.getName();
 			Money price = item.getYourPrice();
-			int quantity = item.getQuantity();
 			StringBuilder buf = new StringBuilder();
 			buf.append(sku).append(": ");
 			if (Coupon.isCoupon(item)){
-				buf.append("coupon - ");
+				buf.append("Coupon - ");
 			}
-//			buf.append(name)
-			buf.append(String.valueOf(quantity)).append("x");
-			buf.append(price.toShortString());
-//			inMetadata.put("cartitem-"+i, buf.toString());
-			if (itr.hasNext()){
-				buf.append(";");
-			}
-			meta.append(buf.toString());
+			buf.append(name).append(" ").append(price.toShortString());
+			inMetadata.put("cartitem-"+i, buf.toString());
 		}
-		inMetadata.put("cartitems",meta.toString());
 	}
 }

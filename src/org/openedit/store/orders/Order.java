@@ -5,6 +5,8 @@ package org.openedit.store.orders;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.BaseData;
+import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -26,7 +29,6 @@ import org.openedit.store.PaymentMethod;
 import org.openedit.store.Product;
 import org.openedit.store.ShippingMethod;
 import org.openedit.store.adjustments.Adjustment;
-import org.openedit.store.adjustments.SecurityGroupAdjustment;
 import org.openedit.store.customer.Address;
 import org.openedit.store.customer.Customer;
 import org.openedit.util.DateStorageUtil;
@@ -196,6 +198,35 @@ public class Order extends BaseData implements Comparable
 	public void setShippingMethod(ShippingMethod inShippingMethod)
 	{
 		fieldShippingMethod = inShippingMethod;
+	}
+	
+	public Money getSurcharge(){
+		//surcharge handles either a surcharge on subtotal or a subcharge on total
+		//only one percentage should be provided
+		//subtotal is checked first
+		Money tally = null;
+		double percentage = 0.0d;
+		String surchargestr = get("percentsurchargesubtotal");
+		if (surchargestr != null){
+			tally = getSubTotal();
+		} else {
+			surchargestr = get("percentsurchargetotal");
+			if (surchargestr != null){
+				tally = getTotalPrice();
+			}
+		}
+		if (surchargestr != null){
+			try{
+				percentage = Double.parseDouble(surchargestr);
+			}catch (Exception e){
+				log.error(e.getMessage(), e);
+			}
+		}
+		if (percentage > 0 && tally != null){
+			Fraction fraction = new Fraction(percentage);
+			return tally.multiply(fraction);
+		}
+		return null;
 	}
 	
 	public Money getNonTaxableSubtotal(){
@@ -411,6 +442,39 @@ public class Order extends BaseData implements Comparable
 		}
 		return fieldItems;
 	}
+	
+	public List getItemsSorted(){
+		return getItemsSorted("name");
+	}
+	
+	public List getItemsSorted(final String inCartField){
+		if (inCartField == null){
+			return getItems();
+		}
+		List<CartItem> sorted = new ArrayList<CartItem>();
+		Iterator itr = getItems().iterator();
+		while(itr.hasNext()){
+			CartItem item = (CartItem) itr.next();
+			sorted.add(item);
+		}
+		Collections.sort(sorted, new Comparator<CartItem>(){
+			@Override
+			public int compare(CartItem o1, CartItem o2) {
+				String val1 = o1.get(inCartField);
+				String val2 = o2.get(inCartField);
+				if (val1 == null && val2 == null){
+					return 0;
+				}
+				if (val1 == null && val2!=null){
+					return 1;
+				}
+				if (val1 !=null && val2 == null){
+					return -1;
+				}
+				return val1.compareTo(val2);
+			}});
+		return sorted;
+	}
 
 	public void setItems(List inItems)
 	{
@@ -482,26 +546,16 @@ public class Order extends BaseData implements Comparable
 		return sum;
 	}
 
-	
-	@Override
 	public String get(String inId)
-	{
-		// TODO Auto-generated method stub
-		return (String)getValue(inId);
-	}
-	
-	
-	
-	public Object getValue(String inId)
 	{
 		if ("id".equals(inId))
 		{
 			return getId();
 		}
-//		if ("orderdate".equals(inId) && getDate() != null)
-//		{
-//			return getDate();
-//		}
+		if ("orderdate".equals(inId) && getDate() != null)
+		{
+			return DateStorageUtil.getStorageUtil().formatForStorage(getDate());
+		}
 		if ("customer".equals(inId) && getCustomer() != null)
 		{
 			return getCustomer().getId();
@@ -516,12 +570,28 @@ public class Order extends BaseData implements Comparable
 		}
 		if ("totalshipping".equals(inId))
 		{
-			return getTotalShipping().doubleValue();
+			return getTotalShipping() != null ? getTotalShipping().toShortString().replace(",", "") : "0";
 		}
 		if ("tax".equals(inId))
 		{
 			return getTax() != null ? getTax().toShortString().replace(",", "") : "0";
 		}
+//		if ("percentsurchargetotal".equals(inId))
+//		{
+//			Double surcharge = getSurchagePercentTotal();
+//			if (surcharge != null){
+//				return String.format("%.3f",surcharge.doubleValue());
+//			}
+//			return null;
+//		}
+//		if ("percentsurchargesubtotal".equals(inId))
+//		{
+//			Double surcharge = getSurchargePercentSubtotal();
+//			if (surcharge != null){
+//				return String.format("%.3f",surcharge.doubleValue());
+//			}
+//			return null;
+//		}
 		if ("total".equals(inId))
 		{
 			return getTotalPrice() != null ? getTotalPrice().toShortString().replace(",", "") : "0";
@@ -606,7 +676,6 @@ public class Order extends BaseData implements Comparable
 		{
 			return;
 		}
-
 		getProperties().put(inKey, inVal);
 	}
 
@@ -640,16 +709,16 @@ public class Order extends BaseData implements Comparable
 		fieldShipments = inShipments;
 	}
 
-	public int getQuantityAvailableForShipment(CartItem cartItem)
+	public double getQuantityAvailableForShipment(CartItem cartItem)
 	{
 		if (cartItem.getProduct() != null && cartItem.getProduct().isCoupon())
 		{
 			return 0;
 		}
-		int quantity = cartItem.getQuantity();
-		int quantityShipped = getQuantityShipped(cartItem);
-		int quantityRefunded = getQuantityRefunded(cartItem);
-		int quantityToBeShipped = quantity - quantityRefunded;
+		double quantity = cartItem.getQuantity();
+		double quantityShipped = getQuantityShipped(cartItem);
+		double quantityRefunded = getQuantityRefunded(cartItem);
+		double quantityToBeShipped = quantity - quantityRefunded;
 		return quantityToBeShipped - quantityShipped;
 	}
 
@@ -659,13 +728,13 @@ public class Order extends BaseData implements Comparable
 		{
 			return true;
 		}
-		int quantity = cartItem.getQuantity();
-		int quantityShipped = getQuantityShipped(cartItem);
-		int quantityRefunded = getQuantityRefunded(cartItem);
-		int quantityToBeShipped = quantity - quantityRefunded;
+		double quantity = cartItem.getQuantity();
+		double quantityShipped = getQuantityShipped(cartItem);
+		double quantityRefunded = getQuantityRefunded(cartItem);
+		double quantityToBeShipped = quantity - quantityRefunded;
 		// log.info("order "+this.getId()+" shipping details: quantity="+quantity+", amount shipped="+quantityShipped+", amount refunded: "+quantityRefunded+", amount to be shipped: "+quantityToBeShipped);
 		// This assumes that refunds can only occur before a shipment is sent
-		return (quantityShipped + quantityRefunded >=  quantity);
+		return (quantityToBeShipped == quantityShipped);
 	}
 
 	public int getQuantityRefunded(CartItem cartItem)
@@ -1105,37 +1174,15 @@ public class Order extends BaseData implements Comparable
 	}
 	
 	/**
-	 * generic way of retrieving a date
-	 * @param inValue
+	 * 
+	 * @param inField
 	 * @return
 	 */
-	public Date getDate(String inValue){
-		String str = get(inValue);
-		str = DateStorageUtil.getStorageUtil().checkFormat(str);
-		Date d = DateStorageUtil.getStorageUtil().parseFromStorage(str);
-		return d;
-	}
-	
-	/**
-	 * gets the combined your price and adjustment price of a product
-	 * @param inItem
-	 * @return
-	 */
-	public Money getAdjustedUnitPrice(CartItem inItem){
-		Money price = inItem.getYourPrice();
-		Iterator<?> itr = getAdjustments().iterator();
-		while(itr.hasNext()){
-			Adjustment adjustment = (Adjustment) itr.next();
-			if (adjustment instanceof SecurityGroupAdjustment && inItem.getProduct() != null){
-				SecurityGroupAdjustment sadjustment = (SecurityGroupAdjustment) adjustment;
-				if (inItem.getProduct().getId().equals(sadjustment.getProductId())){
-					Money discount = sadjustment.getDiscount();
-					price = price.subtract(discount);
-					break;
-				}
-			}
-		}
-		return price;
+	public Date getDate(String inField){
+		String value = get(inField);
+		value = DateStorageUtil.getStorageUtil().checkFormat(value);
+		Date date = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+		return date;
 	}
 
 }

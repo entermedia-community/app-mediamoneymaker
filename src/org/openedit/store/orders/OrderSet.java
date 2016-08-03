@@ -138,7 +138,7 @@ public class OrderSet {
 		return qty;
 	}
 	
-	public int getQuantityInStock( Product product ) {
+	public double getQuantityInStock( Product product ) {
 		InventoryItem item = product.getInventoryItem(0);
 		return item.getQuantityInStock();
 	}

@@ -9,16 +9,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.links.Link;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
+import org.openedit.links.Link;
 import org.openedit.profile.UserProfile;
 import org.openedit.store.Cart;
 import org.openedit.store.CartItem;
@@ -38,11 +33,17 @@ import org.openedit.store.orders.Order;
 import org.openedit.store.orders.OrderArchive;
 import org.openedit.store.orders.OrderState;
 import org.openedit.store.orders.SubmittedOrder;
-import org.openedit.users.User;
-import org.openedit.users.UserManager;
 import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.PathUtilities;
+
+import com.openedit.OpenEditException;
+import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
+import com.openedit.page.Page;
+import com.openedit.users.User;
+import com.openedit.users.UserManager;
+import com.openedit.util.PathUtilities;
 
 /**
  * @author cburkey
@@ -165,14 +166,7 @@ public class CartModule extends BaseStoreModule {
 	public void updateCart(WebPageRequest inPageRequest) throws Exception {
 		Cart cart = getCart(inPageRequest);
 		getProductAdder().updateCart(inPageRequest, cart);
-		String [] fields = inPageRequest.getRequestParameters("field");
-		if (fields == null || fields.length == 0){
-			return;
-		}
-		for (String field:fields){
-			String val = inPageRequest.getRequestParameter(field + ".value");
-			cart.setProperty(field,val);
-		}
+
 	}
 
 	/**
@@ -226,7 +220,7 @@ public class CartModule extends BaseStoreModule {
 	}
 
 	protected ProductAdder getProductAdder() {
-		ProductAdder adder = (ProductAdder) getModuleManager().getBean(
+		ProductAdder adder = (ProductAdder) getBeanFactory().getBean(
 				"ProductAdder");
 		return adder;
 	}
@@ -409,13 +403,6 @@ public class CartModule extends BaseStoreModule {
 			
 			cart.setBillingAddress(customer.getBillingAddress());
 		}
-		else
-		{
-			if (customer.getBillingAddress().getAddress1() != null && !customer.getBillingAddress().getAddress1().isEmpty())
-			{
-				cart.setBillingAddress(customer.getBillingAddress());
-			}
-		}
 		if (inReq.getRequestParameter("shipping.address1.value") != null && 
 				!inReq.getRequestParameter("shipping.address1.value").isEmpty()) {
 			log.info("Shipping address found, saving it");
@@ -424,13 +411,6 @@ public class CartModule extends BaseStoreModule {
 			log.info("Shipping address " +customer.getShippingAddress()); 
 			
 			cart.setShippingAddress(customer.getShippingAddress());
-		}
-		else
-		{
-			if (customer.getShippingAddress().getAddress1() != null && !customer.getShippingAddress().getAddress1().isEmpty())
-			{
-				cart.setShippingAddress(customer.getShippingAddress());
-			}
 		}
 		
 		Address taxRateAddress = null;
@@ -606,6 +586,7 @@ public class CartModule extends BaseStoreModule {
 		User user = customer.getUser();
 		String alist = (String) user.getProperty("addresslist");
 		customer.getAddressList().clear();
+		
 		if (alist != null && !alist.equals("")) {
 			String[] current = alist.split(",");
 			for (int i = 0; i < current.length; i++) {
@@ -812,14 +793,6 @@ public class CartModule extends BaseStoreModule {
 			}
 		}
 	}
-	
-	public void deleteCartProperties(WebPageRequest inRequest){
-		Cart cart = getCart(inRequest);
-		if (cart == null){
-			return;
-		}
-		cart.getProperties().clear();
-	}
 
 	public synchronized Order processOrder(WebPageRequest inPageRequest) throws Exception {
 		Store store = getStore(inPageRequest);
@@ -828,10 +801,11 @@ public class CartModule extends BaseStoreModule {
 			inPageRequest.putPageValue("orderState", "Your cart is empty");
 			return null;
 		}
+		
 		Order order = store.getOrderGenerator().createNewOrder(store, cart);
 		OrderState orderState = order.getOrderStatus();
 		cart.setCurrentOrder(order);
-
+		
 		if (cart.isEmpty()) {
 			orderState.setOk(false);
 			orderState.setDescription("Error: Cart is empty.<br><br>");
@@ -862,13 +836,7 @@ public class CartModule extends BaseStoreModule {
 		order.setShippingAddress(cart.getShippingAddress());
 		order.setBillingAddress(cart.getBillingAddress());
 		
-		//copy properties over from cart to order
-		Iterator<?> keys = cart.getProperties().keySet().iterator();
-		while(keys.hasNext()){
-			String key = (String) keys.next();
-			String value = (String) cart.getProperties().get(key);
-			order.setProperty(key,value);
-		}
+//		log.info("#### ADJUSTMENTS 1: "+order.getAdjustments());
 		
 		// Export order to XML
 		store.saveOrder(order);
@@ -1130,7 +1098,7 @@ public class CartModule extends BaseStoreModule {
 				if(product != null){
 					CartItem cartitem = new CartItem();
 					cartitem.setProduct(product);
-					cartitem.setQuantity(Integer.parseInt(item.get("quantity")));
+					cartitem.setQuantity(Double.parseDouble(item.get("quantity")));
 					cart.addItem(cartitem);
 				}
 			}

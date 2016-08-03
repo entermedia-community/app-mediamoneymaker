@@ -6,6 +6,7 @@ package org.openedit.store;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -16,13 +17,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
-import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
-import org.openedit.page.Page;
+import org.openedit.util.DateStorageUtil;
+
+import com.openedit.OpenEditRuntimeException;
+import com.openedit.page.Page;
 
 /**
  * @author cburkey
@@ -148,14 +152,6 @@ public class Product extends BaseData implements Data
 	 * This will look in all the category objects if needed
 	 */
 	
-	@Override
-	public Object getValue(String inKey)
-	{
-		// TODO Auto-generated method stub
-		return get(inKey);
-	}
-	
-	
 	public String get(String inAttribute)
 	{
 		if( "name".equals(inAttribute ) )
@@ -174,9 +170,7 @@ public class Product extends BaseData implements Data
 		{
 			return getCatalogId();
 		}
-		if ("instock".equals(inAttribute)){
-			return String.valueOf(isInStock());
-		}
+
 		String value = (String)getProperties().get(inAttribute);
 //		if ( value instanceof PageProperty)
 //		{
@@ -504,7 +498,14 @@ public class Product extends BaseData implements Data
 	{
 		fieldDefaultCategory = inDefaultCategory;
 	}
-
+	public Map getProperties()
+	{
+		if ( fieldProperties == null)
+		{
+			fieldProperties = ListOrderedMap.decorate(new HashMap());
+		}
+		return fieldProperties;
+	}
 	public String getProperty( String inKey )
 	{
 		if ("id".equals(inKey))
@@ -560,6 +561,10 @@ public class Product extends BaseData implements Data
 		else if( "name".equals(inKey))
 		{
 			setName(inValue);
+		}
+		else if( "customprice".equals(inKey))
+		{
+			setCustomPrice(Boolean.parseBoolean(inValue));
 		}
 		else if( "sourcepath".equals(inKey))
 		{
@@ -686,6 +691,45 @@ public class Product extends BaseData implements Data
 		}
 		return null;
 	}
+	
+	/**
+	 * gets the matching inventory by date
+	 * this assumes the inventory items have a startdate, stopdate
+	 * @param inDate
+	 * @return
+	 */
+	public InventoryItem getInventoryItemByDate(Date inDate)
+	{
+		if (inDate != null)
+		{
+			for (Iterator<?> iter = getInventoryItems().iterator(); iter.hasNext();)
+			{
+				InventoryItem element = (InventoryItem) iter.next();
+				//special price: startdate and stopdate are both set
+				//real price: startdate is set, stopdate is future startdate or null
+				//future price: startdate is set, future stopdate is not set
+				Date datestart = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("startdate"));
+				Date datestop = DateStorageUtil.getStorageUtil().parseFromStorage(element.getProperty("stopdate"));
+				if (datestart!=null){
+					datestart = DateUtils.round(datestart,Calendar.DAY_OF_MONTH);
+				}
+				if (datestop!=null){
+					datestop = DateUtils.round(datestop,Calendar.DAY_OF_MONTH);
+					datestop = DateUtils.addDays(datestop,1);//ahead one day
+					datestop = DateUtils.addSeconds(datestop,-1);//back one second
+				}
+				if (datestart!=null && (inDate.after(datestart) || inDate.equals(datestart)) )
+				{
+					if (datestop == null || inDate.before(datestop))
+					{
+						return element;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	public InventoryItem getInventoryItemByOptions(Collection inOptions)
 	{
 		for (Iterator iter = getInventoryItems().iterator(); iter.hasNext();)
