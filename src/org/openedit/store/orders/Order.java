@@ -546,7 +546,7 @@ public class Order extends BaseData implements Comparable
 		return sum;
 	}
 
-	public String get(String inId)
+	public String getValue(String inId)
 	{
 		if ("id".equals(inId))
 		{
@@ -661,23 +661,7 @@ public class Order extends BaseData implements Comparable
 		return (String) getProperties().get(inId);
 	}
 
-	public Map getProperties()
-	{
-		if (fieldProperties == null)
-		{
-			fieldProperties = ListOrderedMap.decorate(new HashMap());
-		}
-		return fieldProperties;
-	}
-
-	public void setProperty(String inKey, String inVal)
-	{
-		if ("distributor".equals(inKey))
-		{
-			return;
-		}
-		getProperties().put(inKey, inVal);
-	}
+	
 
 	public Map getTaxes()
 	{

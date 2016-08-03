@@ -15,6 +15,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.store.CartItem;
+import org.openedit.store.Product;
 import org.openedit.store.Store;
 import org.openedit.store.StoreArchive;
 import org.openedit.store.StoreException;
@@ -182,6 +183,17 @@ public class OrderSearcher extends 	BaseElasticSearcher {
 		
 	}
 
+	
+	public void updateIndex(Order  inOrder) throws StoreException
+	{
+		List all = new ArrayList(1);
+		all.add(inOrder);
+		updateIndex(all, null);
+		clearIndex(); //Does not flush because it will flush if needed anyways on a search
+
+	}
+	
+	
 //	public String nextId() {
 //		return getStore().getOrderGenerator().nextOrderNumber(getStore());
 //	}

@@ -140,7 +140,7 @@ public class CartItem extends BaseData
 		return fieldQuantity;
 	}
 
-	public void setQuantity(double quantity) throws StoreException
+	public void setQuantity(double quantity) 
 	{
 		fieldQuantity = quantity;
 		

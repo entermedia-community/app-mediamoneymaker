@@ -190,7 +190,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 
 	}
 
-	public void updateIndex(Product inProduct) throws StoreException
+	 public void updateIndex(Product inProduct) throws StoreException
 	{
 		List all = new ArrayList(1);
 		all.add(inProduct);

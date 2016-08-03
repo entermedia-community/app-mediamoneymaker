@@ -17,13 +17,23 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.entermediadb.links.Link;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
+import org.openedit.OpenEditRuntimeException;
+import org.openedit.WebPageRequest;
+import org.openedit.config.Configuration;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
-import org.openedit.links.Link;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
+import org.openedit.page.manage.MimeTypeMap;
+import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.store.convert.ConvertStatus;
 import org.openedit.store.customer.Customer;
@@ -37,23 +47,13 @@ import org.openedit.store.process.ElectronicOrderManager;
 import org.openedit.store.search.ProductSearcher;
 import org.openedit.store.search.ProductSecurityArchive;
 import org.openedit.store.search.SearchFilterArchive;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.util.PathUtilities;
+import org.openedit.web.Crumb;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-import com.openedit.ModuleManager;
-import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.WebPageRequest;
-import com.openedit.config.Configuration;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-import com.openedit.page.manage.MimeTypeMap;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.util.PathUtilities;
-import com.openedit.web.Crumb;
 
 /**
  * @author cburkey
@@ -396,7 +396,7 @@ public class Store extends BaseData {
 			String desc = product.getDescription();
 			getProductArchive().saveProductDescription(product, desc);
 		}
-		getProductSearcher().updateIndex(inProducts, true);
+		getProductSearcher().updateIndex(inProducts, null);
 	}
 
 	public void save() throws StoreException {

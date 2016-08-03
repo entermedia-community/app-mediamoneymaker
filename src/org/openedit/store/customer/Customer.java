@@ -10,20 +10,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.money.Fraction;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.TaxRate;
+import org.openedit.users.User;
+import org.openedit.users.filesystem.FileSystemUser;
 
-import com.openedit.users.User;
-import com.openedit.users.filesystem.FileSystemUser;
 
 /**
  * A customer with nice getters and setters on top of the standard user object.
  * 
  * @author dbrown
  */
-public class Customer implements Data {
+public class Customer extends BaseData {
 	public static final String NAME = "Name";
 	public static final String PHONE1 = "Phone1";
 	public static final String FAX = "Fax";
@@ -354,11 +354,7 @@ public class Customer implements Data {
 		return getUser().getProperties();
 	}
 
-	@Override
-	public void setProperties(Map<String, String> inProperties) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 	
 	public void setValues(String inKey, Collection<String> inValues)
@@ -376,4 +372,8 @@ public class Customer implements Data {
 		setProperty(inKey,values.toString());
 	}
 
+	
+
+	
+	
 }

@@ -21,12 +21,11 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.BaseData;
 import org.openedit.money.Money;
+import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.OpenEditRuntimeException;
-import com.openedit.page.Page;
 
 /**
  * @author cburkey
@@ -38,7 +37,7 @@ public class Product extends BaseData implements Data
 	protected String fieldName;
 	protected String fieldSourcePath;
 	protected String fieldCatalogId;
-	protected Page fieldSourcePage;
+	protected org.openedit.page.Page fieldSourcePage;
 	protected String fieldDescription;
 	protected String fieldHandlingChargeLevel;
 	protected List fieldCategories;

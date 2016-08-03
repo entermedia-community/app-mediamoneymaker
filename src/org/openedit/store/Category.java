@@ -12,13 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.openedit.Data;
+import org.openedit.data.BaseData;
 
 /**
  * @author cburkey
  *
  */
-public class Category implements Data
+public class Category extends BaseData
 {
 	protected String fieldName;
 	protected String fieldId;
