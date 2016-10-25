@@ -60,7 +60,8 @@ public class Order extends BaseData implements Comparable
 		while(itr.hasNext()){
 			CartItem item = (CartItem) itr.next();
 			if (item.getProduct()!=null){
-				String fee = item.getProduct().get("partnershipfee");
+				log.info(item.getProduct());
+				String fee = (String) item.getProduct().getValue("partnershipfee");
 				if (fee!=null && !fee.isEmpty()){
 					log.info("hasprofitshare: found "+fee+" for order #"+this.getId());
 					return true;
@@ -546,7 +547,7 @@ public class Order extends BaseData implements Comparable
 		return sum;
 	}
 
-	public String getValue(String inId)
+	public Object getValue(String inId)
 	{
 		if ("id".equals(inId))
 		{
@@ -635,7 +636,7 @@ public class Order extends BaseData implements Comparable
 			{
 				CartItem item = (CartItem) iterator.next();
 				Product p = item.getProduct();
-				String distributor = p.getProperty("distributor");
+				String distributor = p.get("distributor");
 				if (distributor != null && !buffer.toString().contains(distributor))
 				{
 					buffer.append(p.get("distributor"));
@@ -655,7 +656,7 @@ public class Order extends BaseData implements Comparable
 		
 		if ("hasprofitshare".equals(inId))
 		{
-			return hasProfitShare()+"";
+			return hasProfitShare();
 		}
 
 		return (String) getProperties().get(inId);

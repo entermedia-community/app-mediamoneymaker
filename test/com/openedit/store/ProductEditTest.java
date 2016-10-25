@@ -32,12 +32,12 @@ public class ProductEditTest extends StoreTestCase
 	{
 		String originaltext = "Some weird & whacky product attribute's to \"insert\"";
 		Product product = getStore().getProduct("1");
-		product.addProperty("insertdata",originaltext);
+		product.setValue("insertdata",originaltext);
 		 
 		getStore().saveProduct(product);
 		getStore().clear();
 		product = getStore().getProduct("1");
-		String returntext = product.getProperty("insertdata");
+		String returntext = product.get("insertdata");
 		assertEquals(originaltext, returntext);
 		
 	}

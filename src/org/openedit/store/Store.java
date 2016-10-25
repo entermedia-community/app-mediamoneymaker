@@ -1340,8 +1340,15 @@ public class Store extends BaseData {
 		return get(inKey);
 	}
 
-public UserManager getUserManager() {
-		
-		return (UserManager) getModuleManager().getBean("system", "userManager");
-	}
+
+public Customer createCustomer()
+{
+	User user = (User) getSearcherManager().getSearcher(getCatalogId(), "user").createNewData();
+	return new Customer(user);
+}
+
+public UserManager getUserManager()
+{
+	return (UserManager) getModuleManager().getBean(getCatalogId(), "userManager");
+}
 }

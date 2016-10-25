@@ -583,7 +583,7 @@ public class CartModule extends BaseStoreModule {
 
 	private void populateAddressList(Customer customer) {
 		User user = customer.getUser();
-		String alist = (String) user.getProperty("addresslist");
+		String alist = (String) user.get("addresslist");
 		customer.getAddressList().clear();
 		
 		if (alist != null && !alist.equals("")) {
@@ -592,16 +592,16 @@ public class CartModule extends BaseStoreModule {
 				String prefix = current[i];
 				Address address = new Address();
 				address.setPrefix(prefix);
-				address.setAddress1((String) user.getProperty(prefix
+				address.setAddress1((String) user.get(prefix
 						+ "Address1"));
-				address.setAddress2((String) user.getProperty(prefix
+				address.setAddress2((String) user.get(prefix
 						+ "Address2"));
-				address.setCity((String) user.getProperty(prefix + "City"));
+				address.setCity((String) user.get(prefix + "City"));
 				address.setCountry((String) user
-						.getProperty(prefix + "Country"));
-				address.setState((String) user.getProperty(prefix + "State"));
+						.get(prefix + "Country"));
+				address.setState((String) user.get(prefix + "State"));
 				address.setZipCode((String) user
-						.getProperty(prefix + "ZipCode"));
+						.get(prefix + "ZipCode"));
 				customer.addAddress(address);
 			}
 		}
@@ -639,7 +639,7 @@ public class CartModule extends BaseStoreModule {
 			String[] fields = new String[] { "Address1", "Address2", "City",
 					"State", "ZipCode", "Country" };
 			for (int i = 0; i < fields.length; i++) {
-				customer.getUser().remove(prefix + fields[i]);
+				customer.getUser().setValue(prefix + fields[i], null);
 			}
 			updateAddresses(customer);
 			getStore(inPageRequest).saveCustomer(customer);
@@ -667,9 +667,9 @@ public class CartModule extends BaseStoreModule {
 		}
 		String list = buff.toString();
 		if (list.length() == 0) {
-			customer.getUser().remove("addresslist");
+			customer.getUser().setValue("addresslist", null);
 		} else {
-			customer.getUser().put("addresslist", buff.toString());
+			customer.getUser().setValue("addresslist", buff.toString());
 		}
 	}
 	

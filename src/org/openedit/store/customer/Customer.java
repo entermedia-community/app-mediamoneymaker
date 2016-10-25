@@ -15,7 +15,6 @@ import org.openedit.money.Fraction;
 import org.openedit.store.PaymentMethod;
 import org.openedit.store.TaxRate;
 import org.openedit.users.User;
-import org.openedit.users.filesystem.FileSystemUser;
 
 
 /**
@@ -54,10 +53,7 @@ public class Customer extends BaseData {
 
 	}
 
-	public Customer() 
-	{
-		fieldUser = new FileSystemUser();
-	}
+
 	public void setUserName(String inUsername)
 	{
 		getUser().setUserName(inUsername);
@@ -108,15 +104,15 @@ public class Customer extends BaseData {
 	}
 
 	public void setAllowEmail(boolean inValue) {
-		getUser().safePut(ALLOW_EMAIL, String.valueOf(inValue));
+		getUser().setValue(ALLOW_EMAIL, String.valueOf(inValue));
 	}
 
 	public String getTaxExemptId() {
-		return getUser().getString(TAX_EXEMPT_ID);
+		return getUser().get(TAX_EXEMPT_ID);
 	}
 
 	public void setTaxExemptId(String inString) {
-		getUser().safePut(TAX_EXEMPT_ID, inString);
+		getUser().setValue(TAX_EXEMPT_ID, inString);
 	}
 
 	public String getName() {
@@ -124,7 +120,7 @@ public class Customer extends BaseData {
 	}
 	public void setName(String inName)
 	{
-		getUser().safePut(NAME, inName);
+		getUser().setValue(NAME, inName);
 	}
 	public PaymentMethod getPaymentMethod() {
 		return fieldPaymentMethod;
@@ -135,19 +131,19 @@ public class Customer extends BaseData {
 	}
 
 	public String getPhone1() {
-		return getUser().getString(PHONE1);
+		return getUser().get(PHONE1);
 	}
 
 	public void setPhone1(String inPhone1) {
-		getUser().safePut(PHONE1, inPhone1);
+		getUser().setValue(PHONE1, inPhone1);
 	}
 
 	public String getCompany() {
-		return getUser().getString(COMPANY);
+		return getUser().get(COMPANY);
 	}
 
 	public void setCompany(String inCompany) {
-		getUser().safePut(COMPANY, inCompany);
+		getUser().setValue(COMPANY, inCompany);
 	}
 
 	public List getTaxRates() {
@@ -171,19 +167,19 @@ public class Customer extends BaseData {
 	}
 
 	public String getReferenceNumber() {
-		return getUser().getString(REFERENCE);
+		return getUser().get(REFERENCE);
 	}
 
 	public void setReferenceNumber(String inReferenceNumber) {
-		getUser().safePut(REFERENCE, inReferenceNumber);
+		getUser().setValue(REFERENCE, inReferenceNumber);
 	}
 
 	public String getTitle() {
-		return getUser().getString(TITLE);
+		return getUser().get(TITLE);
 	}
 
 	public void setTitle(String inTitle) {
-		getUser().safePut(TITLE, inTitle);
+		getUser().setValue(TITLE, inTitle);
 	}
 
 	// See UserManagerModule.clean
@@ -264,27 +260,27 @@ public class Customer extends BaseData {
 	}
 
 	public String getFax() {
-		return getUser().getString(FAX);
+		return getUser().get(FAX);
 	}
 
 	public void setFax(String inFax) {
-		getUser().safePut(FAX, inFax);
+		getUser().setValue(FAX, inFax);
 	}
 
 	public String getUserField1() {
-		return getUser().getString(USERFIELD1);
+		return getUser().get(USERFIELD1);
 	}
 
 	public void setUserField1(String inUserField1) {
-		getUser().safePut(USERFIELD1, inUserField1);
+		getUser().setValue(USERFIELD1, inUserField1);
 	}
 
 	public String getUserField2() {
-		return getUser().getString(USERFIELD2);
+		return getUser().get(USERFIELD2);
 	}
 
 	public void setUserField2(String inUserField2) {
-		getUser().safePut(USERFIELD2, inUserField2);
+		getUser().setValue(USERFIELD2, inUserField2);
 	}
 
 	public void setPassword(String inPassword) {
@@ -334,7 +330,7 @@ public class Customer extends BaseData {
 
 	public void setProperty( String inId, String inValue )
 	{
-		getUser().put( inId, inValue);
+		getUser().setValue( inId, inValue);
 		
 	}
 
@@ -350,28 +346,10 @@ public class Customer extends BaseData {
 		
 	}
 
-	public Map getProperties() {
-		return getUser().getProperties();
-	}
-
 	
 	
 	
-	public void setValues(String inKey, Collection<String> inValues)
-	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
-	}
-
+	
 	
 
 	

@@ -586,7 +586,7 @@ public class CatalogEditModule extends BaseStoreModule {
 				if (product == null) {
 					throw new OpenEditException("Product is not found " + key);
 				}
-				String oldvalue = product.getProperty(key);
+				String oldvalue = product.get(key);
 				product.setProperty(fieldid, value);
 				// null check
 				if (value != null && !value.equals(oldvalue)) {
@@ -883,7 +883,7 @@ public class CatalogEditModule extends BaseStoreModule {
 			for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 				PropertyDetail detail = (PropertyDetail) iterator.next();
 				if (!properties.containsKey(detail.getId())) {
-					String val = editor.getCurrentProduct().getProperty(
+					String val = editor.getCurrentProduct().get(
 							detail.getId());
 					if (val == null) {
 						val = "";
@@ -977,7 +977,7 @@ public class CatalogEditModule extends BaseStoreModule {
 		for (int i = 0; i < fields.length; i++) {
 			String field = fields[i];
 			String value = inReq.getRequestParameter(field + ".value");
-			String oldval = product.getProperty(field);
+			String oldval = product.get(field);
 
 			if (value != null) {
 				product.setProperty(field, value);

@@ -31,7 +31,7 @@ public class ElectronicOrderManager {
 	}
 
 	public void addUserPermission(User inUser, Store store, Product inProduct, String inPermission) throws StoreException {
-		String users = inProduct.getProperty(inPermission);
+		String users = inProduct.get(inPermission);
 		if(users == null){
 			users = inUser.getUserName();
 			
@@ -45,7 +45,7 @@ public class ElectronicOrderManager {
 	}
 
 	public void removeUserPermission(User inUser, Store store, Product inProduct, String inPermission) throws StoreException {
-		String users = inProduct.getProperty(inPermission);
+		String users = inProduct.get(inPermission);
 		if (users.contains(inUser.getUserName())) {
 			users.replaceAll(inUser.getUserName(), " ");
 		}

@@ -373,19 +373,7 @@ public Category(String inId, String inName)
 		}
 		return null;
 	}
-	public Map getProperties()
-	{
-		if ( fieldProperties == null )
-		{
-			fieldProperties = new HashMap();
-		}
-		return fieldProperties;
-	}
-
-	public void setProperties(Map inProperties)
-	{
-		fieldProperties = inProperties;
-	}
+	
 
 	public void setProperty( String inKey, String inValue )
 	{

@@ -91,9 +91,9 @@ public abstract class StoreTestCase extends BaseTestCase
 		cheapToy.setInventoryItem(item);
 		return cheapToy;
 	}
-	protected Customer createCustomer()
+	protected Customer createCustomer() throws Exception
 	{
-		Customer customer = new Customer();
+		Customer customer = getStore().createCustomer();
 		Address address = customer.getBillingAddress();
 		address.setAddress1( "5052 Gray Rd");
 		address.setCity("Cincinnati");
@@ -133,12 +133,12 @@ public abstract class StoreTestCase extends BaseTestCase
 		paymentMethod.setExpirationYear( 2004 );
 		return paymentMethod;
 	}
-	protected Cart createCart() throws StoreException
+	protected Cart createCart() throws Exception
 	{
 		Cart cart = new Cart();
 		
 		cart.addItem( createCheapToyCartItem() );
-		cart.setCustomer( createCustomer() );
+		cart.setCustomer( getStore().createCustomer() );
 		cart.setShippingMethod( createShippingMethod() );
 		return cart;
 	}

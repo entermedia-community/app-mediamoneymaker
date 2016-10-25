@@ -9,12 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.links.Link;
@@ -308,7 +305,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 				}
 			};
 			reindexer.setPageManager(getPageManager());
-			reindexer.setIncludeExtensions(".xconf");
+			reindexer.setIncludeMatches("*.xconf");
 			//reindexer.setIndexer(getIndexer());
 			//reindexer.setTaxonomyWriter(inTaxonomyWriter);
 			//reindexer.setMediaArchive(getMediaArchive());
@@ -702,15 +699,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 				if (profile != null)
 				{
 					//Get the libraries
-					Collection libraries = profile.getCombinedLibraries();
-					if (libraries != null)
-					{
-						for (Iterator iterator = libraries.iterator(); iterator.hasNext();)
-						{
-							String library = (String) iterator.next();
-							buffer.append(" library_" + library);
-						}
-					}
+					
 
 					if (profile.get("distributor") != null)
 					{

@@ -27,6 +27,7 @@ import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.Searcher;
 import org.openedit.money.Fraction;
 import org.openedit.money.Money;
 import org.openedit.page.Page;
@@ -50,7 +51,6 @@ import org.openedit.store.orders.ShipmentEntry;
 import org.openedit.store.orders.SubmittedOrder;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.users.filesystem.FileSystemUser;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.StringEncryption;
@@ -901,11 +901,11 @@ public class XmlOrderArchive extends AbstractXmlOrderArchive implements
 			inOrder.addRefund(refund);
 		}
  
-		Customer customer = new Customer();
+		Customer customer = inStore.createCustomer();
 		Element customerElem = inOrderElement.element("customer");
 		String username = customerElem.attributeValue("customerid");
-
-		User user = new FileSystemUser();
+		Searcher usersearcher = inStore.getSearcherManager().getSearcher(inStore.getCatalogId(), "user");
+		User user =(User) usersearcher.createNewData();
 		user.setVirtual(true);
 		user.setUserName(username);
 		customer.setUser(user);

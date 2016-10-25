@@ -5,20 +5,8 @@ package com.openedit.store.gateway;
 
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.openedit.WebPageRequest;
 import org.openedit.cart.freshbooks.FreshbooksManager;
-import org.openedit.cart.freshbooks.FreshbooksStatus;
-import org.openedit.store.Cart;
-import org.openedit.store.CartItem;
-import org.openedit.store.CreditCardType;
-import org.openedit.store.CreditPaymentMethod;
-import org.openedit.store.Store;
 import org.openedit.store.StoreTestCase;
-import org.openedit.store.customer.Address;
-import org.openedit.store.customer.Customer;
-import org.openedit.store.modules.CartModule;
-import org.openedit.store.orders.Order;
-import org.openedit.users.filesystem.FileSystemUser;
 
 /**
  * @author Ian Miller
@@ -37,106 +25,8 @@ public class FreshbookTest extends StoreTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void xxtestCreateCustomer() throws Exception {
-		FreshbooksManager util = new FreshbooksManager();
-		util.setToken("627d27a09019099d6c8b0e989c1ba8f0");
-		util.setUrl("https://learningevolved.freshbooks.com/api/2.1/xml-in");
-		
-		Customer customer = new Customer(new FileSystemUser());
-		customer.getUser().setId("testuser");
-		customer.setFirstName("Shawn");
-		customer.setLastName("Test");
-		customer.setEmail("TEST@shawnbest.com");
-
-		Address address = new Address();
-		address.setAddress1("123 Anywhere St.");
-		address.setState("Ontario");//Propercase!
-		address.setCity("Collingwood");
-		address.setCountry("Canada");//Propercase!
-		address.setZipCode("L9Y 3T7");
-		
-		util.createCustmer(customer, address, null);
-	}
 	
-	public void xxtestProcessInvoice() throws Exception {
-		
-		Customer customer = new Customer(new FileSystemUser());
-		customer.getUser().setId("testuser1222");
-		customer.setFirstName("Sean");
-		customer.setLastName("Martin");
-		customer.setEmail("smartin@shawnbest.com");
-
-		Address address = new Address();
-		address.setAddress1("123 Anywhere St.");
-		address.setState("Ontario");//Propercase!
-		address.setCity("Collingwood");
-		address.setCountry("Canada");//Propercase!
-		address.setZipCode("L9Y 3T7");
-		
-		customer.setBillingAddress(address);//add address to customer as a billing address
-		
-		//setup order
-		Store store = getStore();
-		CartModule cartModule = (CartModule) getFixture().getModuleManager().getModule("CartModule");
-
-		WebPageRequest context = getFixture().createPageRequest();
-		Cart cart = cartModule.getCart(context);
-		cart.setCustomer(customer);
-		
-		cart.addItem(createCheapToyCartItem());//add non-recurring
-		
-		
-		CartItem item1 = createRecurringCartItem("Item 1",24.00);
-		item1.setProperty("frequency", "2 weeks");
-		item1.setProperty("occurrences", "12");
-		cart.addItem(item1);
-		
-		CartItem item2 = createRecurringCartItem("Item 2",3.99);
-		item2.setProperty("frequency", "monthly");
-		item2.setProperty("occurrences", "4");
-		cart.addItem(item2);
-		
-		CartItem item3 = createRecurringCartItem("Item 3",8.99);
-		item3.setProperty("frequency", "3 months");
-		item3.setProperty("occurrences", "6");
-		cart.addItem(item3);
-
-		//TODO in the UI:
-		//frequency and occurrences have to be added dynamically 
-		//ie., result of form submit
-		//if (item.getProduct().get("recurring") && item.getProduct().get("allowspartialpayments"))
-		//	display frequency and occurrences options
-		//on submit, before order is processed, 
-		// go through and find those fields and add them to the 
-		// cart items
-		
-		Order order = store.getOrderGenerator().createNewOrder(store, cart);
-		order.setProperty("notes", "This is a note");
-	    
-		CreditPaymentMethod paymentMethod = new CreditPaymentMethod();
-		CreditCardType type = new CreditCardType();
-		type.setName("Visa");
-		paymentMethod.setCreditCardType(type);
-		paymentMethod.setCardNumber("4030000010001234");//beanstream test credit card#
-		//declined: 4003050500040005
-		//approved: 4030000010001234
-		paymentMethod.setCardVerificationCode("123");
-		paymentMethod.setExpirationMonth(10);
-		paymentMethod.setExpirationYear(2014);
-		
-		order.setPaymentMethod(paymentMethod);
-		
-		FreshbooksManager util = (FreshbooksManager) getFixture().getModuleManager().getBean(getStore().getCatalogId(), "freshbooksManager");
-		util.setToken("627d27a09019099d6c8b0e989c1ba8f0");
-		util.setUrl("https://learningevolved.freshbooks.com/api/2.1/xml-in");
-		util.setGateway("beanstream");
-		
-		FreshbooksStatus status = new FreshbooksStatus();
-	    util.processOrder(order, status);
-	    
-	    System.out.println(status.toString());
-		
-	}
+	
 	
 	/**
 	 * @throws Exception

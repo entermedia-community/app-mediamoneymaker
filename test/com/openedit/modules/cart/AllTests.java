@@ -39,7 +39,6 @@ public class AllTests
 		//suite.addTestSuite(ImageResizerTest.class);
 		suite.addTestSuite(OrderExportTest.class);
 		suite.addTestSuite(PriceSupportTest.class);
-		BaseTestCase.getStaticFixture().getWebServer().getOpenEditEngine().shutdown();
 		//$JUnit-END$
 		return suite;
 	}

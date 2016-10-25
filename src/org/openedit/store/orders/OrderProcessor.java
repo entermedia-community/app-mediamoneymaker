@@ -4,6 +4,7 @@
 package org.openedit.store.orders;
 
 import org.openedit.WebPageRequest;
+import org.openedit.money.Money;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 
@@ -19,4 +20,5 @@ public interface OrderProcessor
 	public void processNewOrder(WebPageRequest inContext, Store inStore, Order inOrder) throws StoreException;
 	
 	public void refundOrder(WebPageRequest inContext, Store inStore,  Order inOrder, Refund refund)	throws StoreException;
+
 }

@@ -55,7 +55,7 @@ public abstract class BaseOrderProcessor extends BaseArchive implements OrderPro
 	}
 	
 	
-	protected Money calculateFee(Store inStore, Order inOrder){
+	public Money calculateFee(Store inStore, Order inOrder){
 		Money totalFee = new Money("0");
 		@SuppressWarnings("unchecked")
 		Iterator<CartItem> itr = inOrder.getItems().iterator();
@@ -96,8 +96,13 @@ public abstract class BaseOrderProcessor extends BaseArchive implements OrderPro
 		String fee = inOrder.get("fee");//transaction fee
 		if (fee!=null && fee.isEmpty()==false){
 			Money transfee = new Money(fee);
-			if (transfee.isZero() == false){
-				transfee = transfee.multiply(new Fraction(0.5d));//divide by 2
+			if (transfee.isZero() == false && totalFee.isZero() == false){
+				Money charged = inOrder.getTotalPrice(); //this is what we sent to stripe
+				double ratio = totalFee.doubleValue()/charged.doubleValue();
+				
+				
+				
+				transfee = transfee.multiply(new Fraction(ratio));//divide by 2  Not correct - need to divide by the ratio of the share
 				totalFee = totalFee.subtract(transfee);
 			}
 		}

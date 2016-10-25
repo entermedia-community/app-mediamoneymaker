@@ -486,19 +486,13 @@ public class XmlProductArchive extends BaseXmlArchive implements ProductArchive
 		deleteElements(productelm, "property");
 		// saves out properties
 		PropertyDetails details = getPropertyDetails();
-		PropertyDetail moddetail = details.getDetail("recordmodificationdate");
-		if(moddetail != null && moddetail.getDateFormat() != null)
-		{
-			String recordmod = moddetail.getDateFormat().format(new Date());
-			inProduct.setProperty("recordmodificationdate", recordmod );
-		}
 		
 		
 		for (Iterator iter = inProduct.getProperties().keySet().iterator(); iter.hasNext();)
 		{
 			String key = (String) iter.next();
 			PropertyDetail detail = details.getDetail(key);
-			String value = inProduct.getProperty(key);
+			String value = inProduct.get(key);
 			
 			if( value != null && value.length() > 0)
 			{

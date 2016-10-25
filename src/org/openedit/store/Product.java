@@ -33,8 +33,6 @@ import org.openedit.util.DateStorageUtil;
  */
 public class Product extends BaseData implements Data
 {
-	protected String fieldId;
-	protected String fieldName;
 	protected String fieldSourcePath;
 	protected String fieldCatalogId;
 	protected org.openedit.page.Page fieldSourcePage;
@@ -43,13 +41,12 @@ public class Product extends BaseData implements Data
 	protected List fieldCategories;
 	protected List fieldInventoryItems;
 	protected Category fieldDefaultCategory;
-	protected Map fieldProperties;
 	protected String fieldDepartment;
 	protected PriceSupport fieldPriceSupport;
 	protected List fieldKeywords;
 	protected boolean fieldAvailable = true;
 	protected List fieldOptions;
-	protected boolean fieldCustomPrice = false;
+	
 	protected boolean fieldTaxExempt = false;
 	protected int fieldOrdering = -1; //the order that these product should be shown in a list
 	protected String fieldShippingMethodId;
@@ -93,22 +90,7 @@ public class Product extends BaseData implements Data
 		fieldOrdering = inOrdering;
 	}
 
-	public String getName()
-	{
-		return fieldName;
-	}
-
-	public void setName( String inName )
-	{
-		if( inName != null )
-		{
-			fieldName = inName.trim();
-		}
-		else
-		{
-			fieldName = null;
-		}
-	}
+	
 /**
  * This is an optional field
  * @return
@@ -117,12 +99,12 @@ public class Product extends BaseData implements Data
 	public String getShortDescription()
 	{
 		
-		return getProperty("shortdescription");
+		return (String) getValue("shortdescription");
 	}
 
 	public void setShortDescription( String inDescription )
 	{
-		addProperty("shortdescription",inDescription);
+		setValue("shortdescription",inDescription);
 	}
 
 	public String toString()
@@ -137,79 +119,63 @@ public class Product extends BaseData implements Data
 		else return getId();
 	}
 
-	public String getId()
-	{
-		return fieldId;
-	}
-
-	public void setId( String inString )
-	{
-		fieldId = inString;
-	}
+	
 	
 	/**
 	 * This will look in all the category objects if needed
 	 */
 	
-	public String get(String inAttribute)
-	{
-		if( "name".equals(inAttribute ) )
-		{
-			return getName();
-		}
-		if( "id".equals(inAttribute ) )
-		{
-			return getId();
-		}
-		if ("sourcepath".equals(inAttribute))
-		{
-			return getSourcePath();
-		}
-		if ("catalogid".equals(inAttribute))
-		{
-			return getCatalogId();
-		}
-
-		String value = (String)getProperties().get(inAttribute);
-//		if ( value instanceof PageProperty)
+//	public Object getValue(String inAttribute)
+//	{
+//		if( "name".equals(inAttribute ) )
 //		{
-//			PageProperty prop = (PageProperty)value;
-//			return prop.getValue();
+//			return getName();
 //		}
-		if ( value == null)
-		{
-			//Loop over all the catalogs and look for hit
-			if (getDefaultCatalog() != null)
-			{
-				value = getDefaultCatalog().get(inAttribute);
-			}	
-			if( value == null)
-			{
-				for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-				{
-					Category cat = (Category) iter.next();
-					if( cat != getDefaultCatalog())
-					{
-						value = cat.get(inAttribute);
-						if( value != null)
-						{
-							return value;
-						}
-					}
-				}
-			}
-		}
-		return value;
-	}
-	/**
-	 * @deprecated use setProperty
-	 * @param inValue
-	 */
+//		if( "id".equals(inAttribute ) )
+//		{
+//			return getId();
+//		}
+//		if ("sourcepath".equals(inAttribute))
+//		{
+//			return getSourcePath();
+//		}
+//		if ("catalogid".equals(inAttribute))
+//		{
+//			return getCatalogId();
+//		}
+//
+//		String value = (String)getProperties().get(inAttribute);
+////		if ( value instanceof PageProperty)
+////		{
+////			PageProperty prop = (PageProperty)value;
+////			return prop.getValue();
+////		}
+//		if ( value == null)
+//		{
+//			//Loop over all the catalogs and look for hit
+//			if (getDefaultCatalog() != null)
+//			{
+//				value = getDefaultCatalog().get(inAttribute);
+//			}	
+//			if( value == null)
+//			{
+//				for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+//				{
+//					Category cat = (Category) iter.next();
+//					if( cat != getDefaultCatalog())
+//					{
+//						value = cat.get(inAttribute);
+//						if( value != null)
+//						{
+//							return value;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return value;
+//	}
 	
-	public void addProperty(String inKey, String inValue)
-	{
-		setProperty(inKey, inValue);
-	}
 	
 	public void removeProperties(String[] inKeys)
 	{
@@ -245,6 +211,9 @@ public class Product extends BaseData implements Data
 			getCategories().add(inCatid);
 		}
 	}
+	
+	
+	
 	
 	/**
 	 * @deprecated use removeCategory instead.
@@ -497,90 +466,12 @@ public class Product extends BaseData implements Data
 	{
 		fieldDefaultCategory = inDefaultCategory;
 	}
-	public Map getProperties()
-	{
-		if ( fieldProperties == null)
-		{
-			fieldProperties = ListOrderedMap.decorate(new HashMap());
-		}
-		return fieldProperties;
-	}
-	public String getProperty( String inKey )
-	{
-		if ("id".equals(inKey))
-		{
-			return getId();
-		}
-		if ("name".equals(inKey))
-		{
-			return getName();
-		}
-		if ("sourcepath".equals(inKey))
-		{
-			return getSourcePath();
-		}
-		String value = (String)getProperties().get( inKey );
-		return value;
-	}
-	public void setProperties(Map inAttributes)
-	{
-		fieldProperties = inAttributes;
-	}
-	public void putAttribute(String inKey, String inValue)
-	{
-		setProperty(inKey, inValue);
-	}
 	
-	public void setRogersAS400Id(String inValue)
-	{
-		setProperty("rogersas400id",inValue);
-	}
 	
-	public void setFidoAS400Id(String inValue)
-	{
-		setProperty("fidoas400id",inValue);
-	}
 	
-	public String getRogersAS400Id()
-	{
-		return get("rogersas400id");
-	}
 	
-	public String getFidoAS400Id()
-	{
-		return get("fidoas400id");
-	}
 	
-	public void setProperty(String inKey, String inValue)
-	{
-		if( "id".equals(inKey))
-		{
-			setId(inValue);
-		}
-		else if( "name".equals(inKey))
-		{
-			setName(inValue);
-		}
-		else if( "customprice".equals(inKey))
-		{
-			setCustomPrice(Boolean.parseBoolean(inValue));
-		}
-		else if( "sourcepath".equals(inKey))
-		{
-			setSourcePath(inValue);
-		}
-		else
-		{
-			if (inValue != null)
-			{
-				getProperties().put(inKey, inValue);
-			}
-			else
-			{
-				getProperties().remove(inKey);
-			}
-		}
-	}
+
 	
 	/**
 	 * 
@@ -982,12 +873,12 @@ public class Product extends BaseData implements Data
 	
 	public boolean isCustomPrice()
 	{
-		return fieldCustomPrice;
+		return getBoolean("customprice");
 	}
 
 	public void setCustomPrice(boolean inCustomPrice)
 	{
-		fieldCustomPrice = inCustomPrice;
+		setValue("customprice", inCustomPrice);
 	}
 
 	public boolean isTaxExempt()
@@ -998,29 +889,7 @@ public class Product extends BaseData implements Data
 	{
 		fieldTaxExempt = inTaxExempt;
 	}
-	public boolean hasProperty(String inKey)
-	{
-		String value = getProperty(inKey);
-		if ( value != null)
-		{
-			return true;
-		}
-		for (Iterator iter = getInventoryItems().iterator(); iter.hasNext();)
-		{
-			InventoryItem item = (InventoryItem) iter.next();
-			value = item.getProperty(inKey);
-			if ( value != null)
-			{
-				return true;
-			}
-			List prop = item.getPropertiesStartingWith(inKey);
-			if ( prop.size() > 0)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	//this is a fixed method, this is optional since the cart has a range of methods available	
 	public String getShippingMethodId()
 	{
@@ -1072,22 +941,7 @@ public class Product extends BaseData implements Data
 		fieldDeliveryType = inDeliveryType;
 	}
 
-	public Date getDate(String inField, String inDateFormat)
-	{
-		String date = getProperty(inField);
-		if( date != null)
-		{
-			SimpleDateFormat format = new SimpleDateFormat(inDateFormat);
-			try
-			{
-				return format.parse(date);
-			} catch (ParseException e)
-			{
-				throw new OpenEditRuntimeException(e);
-			}
-		}
-		return null;
-	}
+	
 
   
 	public void setKeywords(List inKeywords)
@@ -1103,18 +957,9 @@ public class Product extends BaseData implements Data
 		}
 	}
 	
-	public void incrementProperty(String property, int delta) throws Exception
-	{
-		String currentValue = getProperty(property);
-		int current = Integer.parseInt(currentValue);
-		current = current + delta;
-		setProperty(property, Integer.toString(current));	
-	}
+	
 
-	public boolean hasRelatedProducts()
-	{
-		return getRelatedProducts().size() >0;
-	}
+	
 	
 	public Product copy(String newId)
 	{
@@ -1206,74 +1051,15 @@ public class Product extends BaseData implements Data
 		fieldSourcePage = inSourcePage;
 	}
 	
-	public String getSaveAsName()
-	{
-		String name = getName();
-		if (name.indexOf(".") == -1)
-		{
-			String ext = getProperty("fileformat");
-			if (ext == null && getSourcePath().indexOf('.') != -1)
-			{
-				ext = getSourcePath().substring(getSourcePath().lastIndexOf('.') + 1);
-			}
-			if (ext != null)
-			{
-				name = name + "." + ext;
-			}
-		}
-		return name;
-	}
+	
 
 
 
-	public Collection getRelatedProducts() 
-	{
-		if (fieldRelatedProducts == null) 
-		{
-			fieldRelatedProducts = new ArrayList();
-		}
-		return fieldRelatedProducts;
-	}
-
-
-	public void clearRelatedProducts() {
-		setRelatedProducts(null);
-		
-	}
-
-	public void setRelatedProducts(Collection inRelatedProducts) {
-		fieldRelatedProducts = inRelatedProducts;
-	}
+	
 
 	
 	
-	public String getMediaName()
-	{
-		String primaryImageName = getProperty("primaryimagename");
-		if( primaryImageName == null)
-		{
-			primaryImageName = getName();
-		}
-//		if( primaryImageName == null)
-//		{
-//			primaryImageName = getId(); //last resort?
-//		}
-		return primaryImageName;
-	}	
-	public String getPrimaryImagePath()
-	{
-		String primaryImageName = getProperty("primaryimagename");
-		String sourcePath = getSourcePath();
-		
-		if (primaryImageName != null && sourcePath.endsWith("/"))
-		{
-			return sourcePath + primaryImageName;
-		}
-		else
-		{
-			return sourcePath;
-		}
-	}
+	
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -1284,7 +1070,7 @@ public class Product extends BaseData implements Data
 	}
 
 	public boolean isCoupon() {
-		return (getProperty("producttype")!=null && getProperty("producttype").equals("coupon"));
+		return (get("producttype")!=null && get("producttype").equals("coupon"));
 	}
 
 	

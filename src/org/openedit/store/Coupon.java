@@ -40,7 +40,7 @@ public class Coupon {
 	public static boolean isCoupon(Product inProduct)
 	{
 		if (inProduct == null) return false;
-		return (inProduct.getProperty("producttype")!=null && inProduct.getProperty("producttype").equals("coupon"));
+		return (inProduct.get("producttype")!=null && inProduct.get("producttype").equals("coupon"));
 	}
 	
 	public boolean isSingleValueCoupon()

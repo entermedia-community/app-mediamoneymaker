@@ -5,13 +5,9 @@ package com.openedit.store;
 
 import java.util.List;
 
-import org.entermediadb.webui.tree.WebTree;
-import org.openedit.WebPageRequest;
 import org.openedit.store.Category;
 import org.openedit.store.Option;
 import org.openedit.store.StoreTestCase;
-import org.openedit.store.modules.CatalogModule;
-import org.openedit.users.filesystem.FileSystemGroup;
 
 
 /**
@@ -68,40 +64,6 @@ public class CatalogTest extends StoreTestCase
 	
 	
 	
-	public void xtestCatalogLimit() throws Exception
-	{
-		Category cat = getStore().getCatalog("LIMITGOODSTUFF");
-		if( cat == null)
-		{
-			cat = getStore().getCategoryArchive().cacheCategory( new Category( "LIMITGOODSTUFF","Some Good Stuff"));
-			getStore().getCategoryArchive().saveCategory( cat );
-		}
-		CatalogModule mod = (CatalogModule)getFixture().getModuleManager().getModule("CatalogModule");
-		
-		WebPageRequest req = getFixture().createPageRequest("/store/categories/index.html");
-		
-		FileSystemGroup g = new FileSystemGroup();
-		g.setName("junk");
-		g.addPermission("limittocategory:LIMITGOODSTUFF");
-		req.getUser().addGroup(g);
-		
-		req.setRequestParameter("root", "index");
-		req.setRequestParameter("tree-name", "test");
-		
-		WebTree tree = mod.getCatalogTree(req);
-		Object top = tree.getModel().getRoot();
-		int count = tree.getModel().getChildCount(top);
-		assertEquals(1,count);
-
-		req.getUser().removeGroup(g);
-		req.setRequestParameter("tree-name", "testfresh");
-		tree = mod.getCatalogTree(req);
-		top = tree.getModel().getRoot();
-		count = tree.getModel().getChildCount(top);
-		assertTrue("Should be more than 1 was " + count, count > 1);
-		
-
-	}
 	
 	/*
 	public void testCategory() throws Exception

@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
+import org.openedit.money.Money;
 import org.openedit.store.Store;
 import org.openedit.store.StoreException;
 
@@ -174,6 +175,7 @@ public class CompositeOrderProcessor implements OrderProcessor
 		
 	}
 
+	
 	
 	
 }
