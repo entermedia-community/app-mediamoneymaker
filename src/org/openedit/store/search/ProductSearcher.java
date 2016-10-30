@@ -736,5 +736,14 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 	}
 	
 	
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		deleteAll(null);
+		reIndexAll();
+		
+	}
+	
+	
 	
 }

@@ -192,6 +192,13 @@ public class OrderSearcher extends 	BaseElasticSearcher {
 		clearIndex(); //Does not flush because it will flush if needed anyways on a search
 
 	}
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		deleteAll(null);
+		reIndexAll();
+		
+	}
 	
 	
 //	public String nextId() {
