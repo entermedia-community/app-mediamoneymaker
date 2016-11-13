@@ -94,11 +94,13 @@ public abstract class BaseOrderProcessor extends BaseArchive implements OrderPro
 			}
 		}
 		String fee = inOrder.get("fee");//transaction fee
+		double totalFeed = totalFee.doubleValue();
 		if (fee!=null && fee.isEmpty()==false){
 			Money transfee = new Money(fee);
 			if (transfee.isZero() == false && totalFee.isZero() == false){
-				Money charged = inOrder.getTotalPrice(); //this is what we sent to stripe
-				double ratio = totalFee.doubleValue()/charged.doubleValue();
+				Money charged = inOrder.getSubTotal(); //this is what we sent to stripe
+				double chargedd = charged.doubleValue();
+				double ratio = totalFeed/chargedd;
 				
 				
 				

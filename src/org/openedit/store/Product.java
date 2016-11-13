@@ -1033,12 +1033,12 @@ public class Product extends BaseData implements Data
 
 	public String getSourcePath()
 	{
-		return fieldSourcePath;
+		return get("sourcepath");
 	}
 
 	public void setSourcePath(String inSourcePath)
 	{
-		fieldSourcePath = inSourcePath;
+		setProperty("sourcepath", inSourcePath);
 	}
 	
 	public Page getSourcePage()
