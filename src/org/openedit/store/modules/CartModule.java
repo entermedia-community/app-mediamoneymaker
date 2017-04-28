@@ -913,10 +913,10 @@ public class CartModule extends BaseStoreModule {
 			WebEvent event = new WebEvent();
 			event.setSearchType("order");
 			event.setCatalogId(getMediaArchive(inPageRequest).getCatalogId());
-			event.setOperation("orders/orderprocessed");
+			event.setOperation("orderprocessed");
 			event.setUser(inPageRequest.getUser());
 			event.setProperty("orderid", order.getId());
-			getMediaArchive(inPageRequest).getMediaEventHandler().eventFired(event);
+			getMediaArchive(inPageRequest).getEventManager().fireEvent(event);
 		}
 		return order;
 	}
@@ -1150,11 +1150,11 @@ public class CartModule extends BaseStoreModule {
 		evt.setSearchType("detailedorderhistory");//productupdates
 		evt.setCatalogId(archive.getCatalogId());
 		evt.setProperty("applicationid", inReq.findValue("applicationid"));
-		evt.setOperation("orderhistory/appendorderhistory");//products/
+		evt.setOperation("appendorderhistory");//products/
 		evt.setProperty("orderid", order.getId());
 		evt.setProperty("type","automatic");
 		evt.setProperty("state",state);
-		archive.getMediaEventHandler().eventFired(evt);
+		archive.getEventManager().fireEvent(evt);
 	}
 	
 	public void changeMode(WebPageRequest inReq) throws Exception{

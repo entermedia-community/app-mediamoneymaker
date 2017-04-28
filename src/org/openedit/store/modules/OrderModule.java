@@ -614,13 +614,13 @@ public class OrderModule extends BaseModule
 				event.setSearchType("detailedorderhistory");
 				event.setCatalogId(archive.getCatalogId());
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
-				event.setOperation("orderhistory/appendorderhistory");
+				event.setOperation("appendorderhistory");
 				event.setProperty("orderid", order.getId());
 				event.setProperty("type","userinput");
 				event.setProperty("state","shippingupdatedmanually");
 				event.setProperty("userid",inReq.getUser().getId());
 				event.setProperty("shipmentid", waybill);
-				archive.getMediaEventHandler().eventFired(event);
+				archive.getEventManager().fireEvent(event);
 				//fire another event if fully shipped
 				if (order.isFullyShipped())
 				{
@@ -628,11 +628,11 @@ public class OrderModule extends BaseModule
 					evt.setSearchType("detailedorderhistory");
 					evt.setCatalogId(archive.getCatalogId());
 					evt.setProperty("applicationid", inReq.findValue("applicationid"));
-					evt.setOperation("orderhistory/appendorderhistory");
+					evt.setOperation("appendorderhistory");
 					evt.setProperty("orderid", order.getId());
 					evt.setProperty("type","automatic");
 					evt.setProperty("state","fullyshipped");
-					archive.getMediaEventHandler().eventFired(evt);
+					archive.getEventManager().fireEvent(evt);
 				}
 			}
 		}
@@ -1039,13 +1039,13 @@ public class OrderModule extends BaseModule
 		event.setSearchType("detailedorderhistory");
 		event.setCatalogId(archive.getCatalogId());
 		event.setProperty("applicationid", inContext.findValue("applicationid"));
-		event.setOperation("orderhistory/appendorderhistory");
+		event.setOperation("appendorderhistory");
 		event.setProperty("orderid", order.getId());
 		event.setProperty("userid",inContext.getUser()==null ? "" : inContext.getUser().getId());
 		event.setProperty("type","userinput");
 		event.setProperty("state","itemsrefunded");
 		event.setProperty("refundid",refund.isSuccess() ? refund.getTransactionId() : "");
-		archive.getMediaEventHandler().eventFired(event);
+		archive.getEventManager().fireEvent(event);
 		
 		inContext.putPageValue("data",order);
 		inContext.putPageValue("order",order);

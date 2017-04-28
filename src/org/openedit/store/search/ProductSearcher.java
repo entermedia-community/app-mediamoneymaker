@@ -251,6 +251,7 @@ public class ProductSearcher extends BaseElasticSearcher implements  ProductPath
 		// writer.mergeFactor = 10;
 		// writer.setMergeFactor(100);
 		// writer.setMaxBufferedDocs(2000);
+		putMappings();
 		final PropertyDetails details = getPropertyDetails();
 		try
 		{

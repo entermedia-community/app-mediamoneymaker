@@ -40,7 +40,6 @@ public class StripeOrderProcessor extends BaseOrderProcessor
 	private static final Log log = LogFactory.getLog(StripeOrderProcessor.class);
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
-	protected BeanstreamUtil fieldBeanstreamUtil;
 
 	public SearcherManager getSearcherManager()
 	{
