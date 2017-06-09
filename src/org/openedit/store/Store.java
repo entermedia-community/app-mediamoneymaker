@@ -27,8 +27,8 @@ import org.openedit.config.Configuration;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
@@ -127,7 +127,7 @@ public class Store extends BaseData {
 	protected ProductSecurityArchive fieldProductSecurityArchive;
 	protected ModuleManager fieldModuleManager;
 	protected MimeTypeMap fieldMimeTypeMap;
-	protected WebEventListener fieldWebEventListener;
+	protected EventManager fieldEventManager;
 	
 	
 	public String getLinkToThumb(String sourcepath){
@@ -591,12 +591,22 @@ public class Store extends BaseData {
 		event.setProperty("user", inOrder.getCustomer().getId());
 		event.setOperation("orderprocessed");
 		event.setProperty("orderid", inOrder.getId());
-		getWebEventListener().eventFired(event);
+		getEventManager().eventFired(event);
 		
 		// save the state again
 		// orderArchive.changeOrderStatus(inOrder.getOrderState(), this,
 		// inOrder);
 		getOrderSearcher().updateIndex(inOrder);
+	}
+
+	public EventManager getEventManager()
+	{
+		return fieldEventManager;
+	}
+
+	public void setEventManager(EventManager inEventManager)
+	{
+		fieldEventManager = inEventManager;
 	}
 
 	public OrderArchive getOrderArchive()
@@ -1057,15 +1067,7 @@ public class Store extends BaseData {
 
 	}
 
-	public WebEventListener getWebEventListener()
-	{
-		return fieldWebEventListener;
-	}
-
-	public void setWebEventListener(WebEventListener inWebEventListener)
-	{
-		fieldWebEventListener = inWebEventListener;
-	}
+	
 
 	public OrderProcessor getOrderProcessor() {
 		return fieldOrderProcessor;
