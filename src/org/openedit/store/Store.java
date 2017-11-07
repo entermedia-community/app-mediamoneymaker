@@ -27,6 +27,7 @@ import org.openedit.config.Configuration;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
@@ -127,7 +128,6 @@ public class Store extends BaseData {
 	protected ProductSecurityArchive fieldProductSecurityArchive;
 	protected ModuleManager fieldModuleManager;
 	protected MimeTypeMap fieldMimeTypeMap;
-	protected WebEventListener fieldWebEventListener;
 	
 	
 	public String getLinkToThumb(String sourcepath){
@@ -383,7 +383,7 @@ public class Store extends BaseData {
 			getMirrorProductArchive().saveProduct(inProduct, inUser);
 		}
 		//getProductArchive().saveBlankProductDescription(inProduct);
-		getProductSearcher().updateIndex(inProduct);
+		getProductSearcher().saveData(inProduct);
 	}
 
 	public void saveProducts(List inProducts) throws StoreException {
@@ -591,7 +591,7 @@ public class Store extends BaseData {
 		event.setProperty("user", inOrder.getCustomer().getId());
 		event.setOperation("orderprocessed");
 		event.setProperty("orderid", inOrder.getId());
-		getWebEventListener().eventFired(event);
+		getEventManager().fireEvent(event);
 		
 		// save the state again
 		// orderArchive.changeOrderStatus(inOrder.getOrderState(), this,
@@ -1057,14 +1057,18 @@ public class Store extends BaseData {
 
 	}
 
-	public WebEventListener getWebEventListener()
-	{
-		return fieldWebEventListener;
-	}
+protected EventManager fieldEventManager;
+	
+//	protected EventManager fieldMediaEventHandler;
+//	protected EventManager fieldLoggingEventHandler;
 
-	public void setWebEventListener(WebEventListener inWebEventListener)
+	public EventManager getEventManager()
 	{
-		fieldWebEventListener = inWebEventListener;
+		return fieldEventManager;
+	}
+	public void setEventManager(EventManager inEventManager)
+	{
+		fieldEventManager = inEventManager;
 	}
 
 	public OrderProcessor getOrderProcessor() {
