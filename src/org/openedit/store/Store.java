@@ -29,7 +29,6 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
@@ -128,6 +127,7 @@ public class Store extends BaseData {
 	protected ProductSecurityArchive fieldProductSecurityArchive;
 	protected ModuleManager fieldModuleManager;
 	protected MimeTypeMap fieldMimeTypeMap;
+	protected EventManager fieldEventManager;
 	
 	
 	public String getLinkToThumb(String sourcepath){
@@ -383,7 +383,7 @@ public class Store extends BaseData {
 			getMirrorProductArchive().saveProduct(inProduct, inUser);
 		}
 		//getProductArchive().saveBlankProductDescription(inProduct);
-		getProductSearcher().saveData(inProduct);
+		getProductSearcher().updateIndex(inProduct);
 	}
 
 	public void saveProducts(List inProducts) throws StoreException {
@@ -591,12 +591,22 @@ public class Store extends BaseData {
 		event.setProperty("user", inOrder.getCustomer().getId());
 		event.setOperation("orderprocessed");
 		event.setProperty("orderid", inOrder.getId());
-		getEventManager().fireEvent(event);
+		getEventManager().eventFired(event);
 		
 		// save the state again
 		// orderArchive.changeOrderStatus(inOrder.getOrderState(), this,
 		// inOrder);
 		getOrderSearcher().updateIndex(inOrder);
+	}
+
+	public EventManager getEventManager()
+	{
+		return fieldEventManager;
+	}
+
+	public void setEventManager(EventManager inEventManager)
+	{
+		fieldEventManager = inEventManager;
 	}
 
 	public OrderArchive getOrderArchive()
@@ -1057,19 +1067,7 @@ public class Store extends BaseData {
 
 	}
 
-protected EventManager fieldEventManager;
 	
-//	protected EventManager fieldMediaEventHandler;
-//	protected EventManager fieldLoggingEventHandler;
-
-	public EventManager getEventManager()
-	{
-		return fieldEventManager;
-	}
-	public void setEventManager(EventManager inEventManager)
-	{
-		fieldEventManager = inEventManager;
-	}
 
 	public OrderProcessor getOrderProcessor() {
 		return fieldOrderProcessor;

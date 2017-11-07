@@ -63,6 +63,7 @@
 
   	<bean id="store" class="org.openedit.store.Store" scope="prototype">
   		<property name="rootDirectory"><ref bean="root"/></property>
+  		<property name="eventManager"><ref bean="eventManager"/></property>
   		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="orderProcessor"><ref bean="compositeOrderProcessor"/></property>
 		<property name="orderGenerator"><ref bean="baseOrderGenerator"/></property>
@@ -72,7 +73,6 @@
 		<property name="productSecurityArchive"><ref bean="productSecurityArchive" /></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 				<property name="pageManager"><ref bean="pageManager"/></property>
-				<property name="eventManager"><ref bean="eventManager" /></property>
 		
   	</bean> 
 
