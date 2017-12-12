@@ -34,6 +34,8 @@ files.deleteMatch( web + "/lib/bsh*.jar");
 files.deleteMatch( web + "/lib/gson*.jar");
 files.deleteMatch( web + "/lib/stripe*.jar");
 files.deleteMatch( web + "/lib/store-reports*.jar");
+files.deleteMatch( web + "/lib/paypal*.jar");
+
 
 files.copyFileByMatch( tmp + "/WEB-INF/lib/app-mediamoney*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/poi*.jar", web + "/lib/");
@@ -45,6 +47,9 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/bsh*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/gson*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/stripe*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/store-reports*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/paypal*.jar", web + "/lib/");
+
+
 
 log.info("5. UPGRADE CART FILES");
 files.deleteAll( root + "/WEB-INF/base/store");
